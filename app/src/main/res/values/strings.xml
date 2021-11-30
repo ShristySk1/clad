@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Clad</string>
+
+    <!--    for onboarding-->
+    <string name="str_onheading">Exceptional\nModern Clothings</string>
+    <string name="str_ontitle">shop for exceptional modern clothings for\nyour everyday life</string>
+    <string name="str_btnonapple">Continue with Apple</string>
+    <string name="str_btnongoole">Continue with Google</string>
+    <string name="str_btnshop">Continue with Shopping</string>
+
+
+    <!--   for phone number-->
+    <string name="str_fopassword">Forgot your password?</string>
+    <string name="str_fotitle">Please enter the 4-digit code send to you at</string>
+    <string name="str_foresend">Resend Code</string>
+    <string name="str_fotiming">New code in 09 seconds</string>
+
+    <!--phone verification-->
+    <string name="str_vetitle">Phone Verification</string>
+    <string name="str_vemessage">Please enter the 4-digit code send to you at</string>
+
+
 </resources>

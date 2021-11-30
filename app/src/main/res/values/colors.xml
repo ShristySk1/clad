@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+<!--color onboarding-->
+    <color name="ColorBlack">#000000</color>
+    <color name="ColorWhite">#FFFFFF</color>
+
+<!--GRAY-->
+    <color name="ColorGrayText">#9912121D</color>
+    <color name="colorGray">#FFC4C4C4</color>
 </resources>
