@@ -15,4 +15,7 @@
 <!--GRAY-->
     <color name="ColorGrayText">#9912121D</color>
     <color name="colorGray">#FFC4C4C4</color>
+
+<!-- cross with drawable-->
+    <color name="colorGraycircle">#12121D0D</color>
 </resources>
