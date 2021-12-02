@@ -3,6 +3,6 @@
     <dimen name="onboard_item_ho_margin">30dp</dimen>
 
     <!--for password verfication-->
-    <dimen name="di_verisize">28sp</dimen>
+    <dimen name="di_verisize">25sp</dimen>
     <dimen name="di_marginstart_forgot">30dp</dimen>
 </resources>

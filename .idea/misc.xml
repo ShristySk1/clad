@@ -5,12 +5,14 @@
       <map>
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/background_circle.xml" value="0.2689568496020109" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/background_curve_black.xml" value="0.28229166666666666" />
+        <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/background_phonenumber_white.xml" value="0.2689568496020109" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/default_pager_dot.xml" value="0.2689568496020109" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/ic_close.xml" value="0.33756990340620235" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/ic_launcher_background.xml" value="0.33756990340620235" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/ripple_on_button_drawable.xml" value="0.2689568496020109" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/tab_background_selector.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/drawable/tab_pager_selector.xml" value="0.17264957264957265" />
+        <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/layout/activity_fragment_verfication.xml" value="0.25384615384615383" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/layout/activity_login.xml" value="0.25384615384615383" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/layout/activity_loginand_password.xml" value="0.25384615384615383" />
         <entry key="..\:/AndroidProjects/Projects/clad/app/src/main/res/layout/activity_main.xml" value="0.25384615384615383" />

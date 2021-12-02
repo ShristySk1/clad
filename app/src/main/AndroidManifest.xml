@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clad">
         <activity
+            android:name=".password.Fragment_Verfication"
+            android:exported="false" />
+        <activity
             android:name=".password.LoginandPassword"
             android:exported="false" />
         <activity
