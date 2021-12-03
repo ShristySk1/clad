@@ -16,6 +16,7 @@ import com.ayata.clad.databinding.FragmentLoginBinding
 import android.text.Editable
 
 import android.text.TextWatcher
+import com.ayata.clad.MainActivity
 import com.github.ybq.android.spinkit.style.DoubleBounce
 
 import com.github.ybq.android.spinkit.sprite.Sprite
@@ -44,6 +45,10 @@ class Fragment_login : Fragment() {
                     {
                         // This method will be executed once the timer is over
                         activityFragmentLoginBinding.spinKit.visibility=View.GONE
+                        parentFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
+                            .replace(R.id.fragments_passwords, Fragment_Verfication()
+                            .addToBackStack(null).commit())
                     },
                     1000 // value in milliseconds
                 )

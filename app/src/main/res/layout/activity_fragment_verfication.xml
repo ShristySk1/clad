@@ -32,9 +32,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="200dp"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -64,7 +62,7 @@
                         android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
                         android:layout_marginTop="30dp"
                         android:fontFamily="@font/sf_pro_text_bold"
-                        android:text="@string/str_fopassword"
+                        android:text="@string/str_vetitle"
                         android:textColor="@color/black"
                         android:textSize="@dimen/di_verisize"
                         app:layout_constraintStart_toStartOf="parent"
@@ -76,11 +74,60 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
                         android:layout_marginTop="8dp"
-                        android:text="@string/str_fopasswordheading"
+                        android:text="@string/str_vemessage"
                         app:layout_constraintTop_toBottomOf="@+id/textView"
                         tools:layout_editor_absoluteX="30dp" />
 
 
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="36dp"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/str_foresend"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView2"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <com.mukesh.OtpView
+                        android:id="@+id/pinview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="77dp"
+                        android:layout_marginEnd="30dp"
+                        android:focusableInTouchMode="true"
+                        android:inputType="number"
+                        android:itemBackground="@drawable/background_circle"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        app:OtpHideLineWhenFilled="true"
+                        app:OtpItemCount="4"
+                        app:OtpItemSpacing="6dp"
+
+                        app:OtpLineColor="@android:color/transparent"
+                        app:OtpState_filled="true"
+                        app:OtpViewType="line"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textView3" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
+                        android:layout_marginTop="56dp"
+                        android:textAlignment="center"
+                        android:text="@string/str_fotiming"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/pinview" />
 
                     <Button
                         android:id="@+id/btnnext"
@@ -99,27 +146,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                    />
-
-                    <com.mukesh.OtpView
-                        android:id="@+id/pinview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusableInTouchMode="true"
-                        android:inputType="number"
-                        android:itemBackground="@drawable/background_circle"
-                        android:textAllCaps="true"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        app:OtpHideLineWhenFilled="true"
-                        app:OtpItemCount="4"
-                        app:OtpItemSpacing="6dp"
-                        app:OtpLineColor="@android:color/transparent"
-                        app:OtpState_filled="true"
-                        app:OtpViewType="line"
-
                         />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
