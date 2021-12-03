@@ -80,7 +80,7 @@
 
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/btnresend"
                         android:layout_width="wrap_content"
 
                         android:layout_height="wrap_content"
@@ -115,10 +115,11 @@
                         app:OtpViewType="line"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/textView3" />
+                        app:layout_constraintTop_toTopOf="@+id/btnresend" />
 
 
                     <TextView
+                        android:id="@+id/text_timer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/di_marginstart_forgot"

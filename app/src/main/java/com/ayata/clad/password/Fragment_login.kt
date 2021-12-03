@@ -17,6 +17,8 @@ import android.text.Editable
 
 import android.text.TextWatcher
 import com.ayata.clad.MainActivity
+import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.PreferenceHandler
 import com.github.ybq.android.spinkit.style.DoubleBounce
 
 import com.github.ybq.android.spinkit.sprite.Sprite
@@ -45,6 +47,7 @@ class Fragment_login : Fragment() {
                     {
                         // This method will be executed once the timer is over
                         activityFragmentLoginBinding.spinKit.visibility=View.GONE
+                        PreferenceHandler.savePhoneNumber(requireContext(),phone)
                         parentFragmentManager.beginTransaction()
                             .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
                             .replace(R.id.fragments_passwords, FragmentVerification())
