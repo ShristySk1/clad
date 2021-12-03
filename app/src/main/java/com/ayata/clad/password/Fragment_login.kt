@@ -47,8 +47,8 @@ class Fragment_login : Fragment() {
                         activityFragmentLoginBinding.spinKit.visibility=View.GONE
                         parentFragmentManager.beginTransaction()
                             .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
-                            .replace(R.id.fragments_passwords, Fragment_Verfication()
-                            .addToBackStack(null).commit())
+                            .replace(R.id.fragments_passwords, FragmentVerification())
+                            .addToBackStack(null).commit()
                     },
                     1000 // value in milliseconds
                 )

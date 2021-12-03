@@ -22,6 +22,8 @@ we can help by sending you a link to reset it.</string>
     <string name="str_vemessage">Please enter the 4-digit code send to you at</string>
 
     <string name="str_btnnext">Next</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
