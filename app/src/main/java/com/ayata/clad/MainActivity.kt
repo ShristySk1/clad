@@ -2,8 +2,12 @@ package com.ayata.clad
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
+import com.ayata.clad.home.FragmentHome
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     lateinit var activityMainBinding: ActivityMainBinding
@@ -14,6 +18,15 @@ class MainActivity : AppCompatActivity() {
         showToolbar1(false)
         showToolbar2(true)
         InitshowFirsttoolbar()
+        activityMainBinding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener)
+        if (findViewById<View?>(R.id.main_fragment) != null) {
+            if (savedInstanceState != null) {
+                return
+            }
+            supportFragmentManager.beginTransaction()
+                .add(R.id.main_fragment, FragmentHome())
+                .commit()
+        }
     }
 
 
@@ -39,6 +52,23 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.appbar.appbar1.visibility=View.GONE
         }
     }
+
+    private val navListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { menuItem: MenuItem ->
+            var selectedFragment: Fragment? = null
+            when (menuItem.itemId) {
+                R.id.nav_home -> selectedFragment =FragmentHome()
+                R.id.nav_hanger -> selectedFragment = FragmentHome()
+                R.id.nav_favorite -> selectedFragment = FragmentHome()
+                R.id.nav_addcart -> selectedFragment = FragmentHome()
+                R.id.nav_rader -> selectedFragment=FragmentHome()
+            }
+            supportFragmentManager.beginTransaction()
+//                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
+                .replace(R.id.main_fragment, selectedFragment!!)
+                .commit()
+            true
+        }
 
 
 }
