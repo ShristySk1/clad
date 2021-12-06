@@ -11,44 +11,34 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityMainBinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
-        initToolbar()
-
+        showToolbar1(false)
+        showToolbar2(true)
+        InitshowFirsttoolbar()
     }
 
-    private fun initToolbar() {
-        appbar.back.setOnClickListener {
-            onBackPressed()
-        }
 
-        appbar.dashboard.setOnClickListener {
-            supportFragmentManager.beginTransaction().replace(
-                R.id.main_fragment,
-                FragmentWatchList()
-            ).addToBackStack(null).commit()
-
+    fun showToolbar2(istrue:Boolean) {
+        if(istrue) {
+            activityMainBinding.appbar.appbar2.visibility = View.VISIBLE
+        }else{
+            activityMainBinding.appbar.appbar2.visibility=View.GONE
         }
     }
 
-    fun showToolbar1() {
-        appbar.visibility = View.VISIBLE
-        appbar.back.visibility = View.GONE
-        appbar.layout_text.visibility = View.GONE
-        appbar.appbar1.visibility = View.VISIBLE
+    fun  InitshowFirsttoolbar()
+    {
+        activityMainBinding.appbar.endTextAppbarEnd.text="DROPS"
     }
 
-    fun showToolbar2() {
-        appbar.visibility = View.VISIBLE
-        appbar.appbar1.visibility = View.GONE
-        appbar.layout_text.visibility = View.GONE
-        appbar.back.visibility = View.VISIBLE
+    fun showToolbar1(istrue: Boolean)
+    {
+        if(istrue)
+        {
+            activityMainBinding.appbar.appbar1.visibility=View.VISIBLE
+        }else{
+            activityMainBinding.appbar.appbar1.visibility=View.GONE
+        }
     }
 
-    fun showToolbar3(name: String, abbreviation: String) {
-        appbar.visibility = View.VISIBLE
-        appbar.back.visibility = View.VISIBLE
-        appbar.layout_text.visibility = View.VISIBLE
-        appbar.appbar1.visibility = View.GONE
-        appbar.title.text = name
-        appbar.abbreviation.text = abbreviation
-    }
+
 }

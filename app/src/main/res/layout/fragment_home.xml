@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".home.FragmentHome">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_story"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/di_marginhorizental" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recycler_story"
+                android:layout_marginHorizontal="@dimen/di_marginhorizental"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/sf_pro_text_regular"
+                android:text="Popular This Month"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/viewall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recycler_story"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="@dimen/di_marginhorizental"
+                android:layout_marginTop="25dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="View All" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_popularmonth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/viewall"
+                android:layout_marginHorizontal="@dimen/di_marginhorizental"
+                android:layout_marginTop="18dp" />
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

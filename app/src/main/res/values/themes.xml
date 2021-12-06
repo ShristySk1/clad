@@ -24,4 +24,12 @@
     </style>
 
 
+    <style name="NavBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorRed</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">#c4c4c4</item>
+    </style>
+
+
 </resources>

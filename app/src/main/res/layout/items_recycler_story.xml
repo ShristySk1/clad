@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/circle_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/block0"
+        app:civ_border_color="#CCC6C6"
+        app:civ_border_width="4dp"
+        app:civ_shadow="true"
+        app:civ_shadow_color="#8BC34A"
+        app:civ_shadow_radius="1dp" />
+
+    <TextView
+        android:id="@+id/titilecircular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/circle_view"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/sf_pro_text_bold"
+        android:text="New In"
+        android:textColor="@color/black" />
+        />
+
+</RelativeLayout>

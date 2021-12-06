@@ -20,4 +20,9 @@
 
 <!-- cross with drawable-->
     <color name="colorGraycircle">#12121D0D</color>
+
+    <color name="colorRed">#FF1100</color>
+
+<!--    dashboard main -->
+    <color name="colorOrange">#F5EDE7</color>
 </resources>
