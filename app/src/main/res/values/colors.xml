@@ -15,8 +15,9 @@
     <color name="ColorWhite">#FFFFFF</color>
 
 <!--GRAY-->
-    <color name="ColorGrayText">#9912121D</color>
+<!--    <color name="ColorGrayText">#9912121D</color>-->
     <color name="colorGray">#FFC4C4C4</color>
+    <color name="colorGrayText">#4D121D1D</color>
 
 <!-- cross with drawable-->
     <color name="colorGraycircle">#12121D0D</color>
