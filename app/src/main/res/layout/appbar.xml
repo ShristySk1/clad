@@ -23,7 +23,7 @@
             android:focusable="true"
             android:fontFamily="@font/sf_pro_text_bold"
             android:padding="7dp"
-            android:src="@drawable/ic_baseline_search_24"
+            android:src="@drawable/ic_search"
             android:text="XXXX"
             android:textColor="@color/black"
             android:visibility="visible" />
@@ -53,7 +53,7 @@
             android:background="@drawable/ripple_5dp"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/ic_baseline_search_24"
+            android:src="@drawable/ic_search"
             android:visibility="visible" />
     </RelativeLayout>
 

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.shop.FragmentShop
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             var selectedFragment: Fragment? = null
             when (menuItem.itemId) {
                 R.id.nav_home -> selectedFragment =FragmentHome()
-                R.id.nav_hanger -> selectedFragment = FragmentHome()
+                R.id.nav_hanger -> selectedFragment = FragmentShop()
                 R.id.nav_favorite -> selectedFragment = FragmentHome()
                 R.id.nav_addcart -> selectedFragment = FragmentHome()
                 R.id.nav_rader -> selectedFragment=FragmentHome()

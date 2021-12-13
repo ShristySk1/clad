@@ -6,4 +6,6 @@
     <dimen name="di_verisize">25sp</dimen>
     <dimen name="di_marginstart_forgot">30dp</dimen>
     <dimen name="di_marginhorizental">14dp</dimen>
+
+    <dimen name="shop_horizontal">15dp</dimen>
 </resources>
