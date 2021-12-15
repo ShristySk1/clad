@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.shop.FragmentShop
+import com.ayata.clad.shopping_bag.FragmentShoppingBag
+import com.ayata.clad.thrift.FragmentThrift
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -60,9 +62,9 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_home -> selectedFragment =FragmentHome()
                 R.id.nav_hanger -> selectedFragment = FragmentShop()
-                R.id.nav_favorite -> selectedFragment = FragmentHome()
+                R.id.nav_favorite -> selectedFragment = FragmentShoppingBag()
                 R.id.nav_addcart -> selectedFragment = FragmentHome()
-                R.id.nav_rader -> selectedFragment=FragmentHome()
+                R.id.nav_rader -> selectedFragment=FragmentThrift()
             }
             supportFragmentManager.beginTransaction()
 //                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)

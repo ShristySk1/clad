@@ -26,4 +26,6 @@
 
 <!--    dashboard main -->
     <color name="colorOrange">#F5EDE7</color>
+
+    <color name="colorCircleUnselect">#ECEDEF</color>
 </resources>

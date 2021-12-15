@@ -86,7 +86,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="7dp"
-            android:src="@drawable/ic_baseline_arrow_back_ios_24"
+            android:src="@drawable/ic_arrow_left_angle"
             android:visibility="visible" />
 
         <TextView
