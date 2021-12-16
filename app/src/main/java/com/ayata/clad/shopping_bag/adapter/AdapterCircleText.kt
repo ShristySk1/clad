@@ -24,8 +24,7 @@ import com.google.android.material.circularreveal.cardview.CircularRevealCardVie
 import org.w3c.dom.Text
 import java.util.*
 
-internal class AdapterCircleText(private var context: Context?, private var listItems:List<ModelCircleText>
-)
+internal class AdapterCircleText(private var context: Context?, private var listItems:List<ModelCircleText>)
     : RecyclerView.Adapter<AdapterCircleText.MyViewHolder>(){
 
 

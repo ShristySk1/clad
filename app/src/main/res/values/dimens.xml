@@ -8,4 +8,6 @@
     <dimen name="di_marginhorizental">14dp</dimen>
 
     <dimen name="shop_horizontal">15dp</dimen>
+
+    <dimen name="shopping_margin1">25dp</dimen>
 </resources>

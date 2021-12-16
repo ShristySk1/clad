@@ -28,4 +28,6 @@
     <color name="colorOrange">#F5EDE7</color>
 
     <color name="colorCircleUnselect">#ECEDEF</color>
+    <color name="colorGrayTextShopping">#7E808E</color>
+    <color name="colorGrayCheckout">#F5F5F5</color>
 </resources>

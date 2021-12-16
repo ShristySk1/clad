@@ -10,6 +10,7 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentShoppingBagBinding
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
+import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -33,6 +34,9 @@ class FragmentShoppingBag : Fragment() {
             showDialogSize()
         }
         initRecycler()
+
+        parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentCheckout()).commit()
+
         return binding.root
     }
 
