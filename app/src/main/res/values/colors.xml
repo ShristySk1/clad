@@ -17,7 +17,8 @@
 <!--GRAY-->
 <!--    <color name="ColorGrayText">#9912121D</color>-->
     <color name="colorGray">#FFC4C4C4</color>
-    <color name="colorGrayText">#4D121D1D</color>
+    <color name="colorGrayText">#7E808E</color>
+<!--    <color name="colorGrayText">#7E808E</color>-->
 
 <!-- cross with drawable-->
     <color name="colorGraycircle">#12121D0D</color>
@@ -26,4 +27,17 @@
 
 <!--    dashboard main -->
     <color name="colorOrange">#F5EDE7</color>
+
+<!--    rating-->
+    <color name="colorRating">#000</color>
+
+<!--    product detail-->
+    <color name="color1">#F3EDE3</color>
+    <color name="color2">#AEDED2</color>
+    <color name="color3">#DEB9AE</color>
+<!--    divider-->
+    <color name="colorDivider">#EDEEF0</color>
+    
+    <color name="colorCouponBorder">#FF406F</color>
+    <color name="colorCoupon">#FEEAEE</color>
 </resources>
