@@ -2,14 +2,20 @@ package com.ayata.clad
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
+import android.transition.Slide
+import android.transition.TransitionManager
+import android.view.*
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.thrift.FragmentThrift
+import com.ayata.clad.home.order.FragmentOrderDetail
+import com.ayata.clad.product.FragmentProductDetail
+import com.ayata.clad.product.FragmentProductDetail2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             supportFragmentManager.beginTransaction()
-                .add(R.id.main_fragment, FragmentHome())
+                .add(R.id.main_fragment, FragmentOrderDetail())
                 .commit()
         }
     }
@@ -45,7 +51,9 @@ class MainActivity : AppCompatActivity() {
     {
         activityMainBinding.appbar.endTextAppbarEnd.text="DROPS"
     }
+fun hideBottomNavigation(){
 
+}
     fun showToolbar1(istrue: Boolean)
     {
         if(istrue)
@@ -55,7 +63,28 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.appbar.appbar1.visibility=View.GONE
         }
     }
-
+    fun showBottomNav(show: Boolean) {
+        activityMainBinding.bottomNavigationView.slideVisibility(show)
+    }
+    fun hideToolbar() {
+        activityMainBinding.appbar.root.visibility = View.GONE
+    }
+    fun setStatusBarLight(color: Int) {
+        val window: Window = this.window
+        var flags = window.decorView.systemUiVisibility // get current flag
+        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // add LIGHT_STATUS_BAR to flag
+        window.decorView.systemUiVisibility = flags
+        window.statusBarColor = ContextCompat.getColor(this, color)
+    }
+    private fun View.slideVisibility(visibility: Boolean, durationTime: Long = 300) {
+        val transition = Slide(Gravity.BOTTOM)
+        transition.apply {
+            duration = durationTime
+            addTarget(this@slideVisibility)
+        }
+        TransitionManager.beginDelayedTransition(this.parent as ViewGroup, transition)
+        this.isVisible = visibility
+    }
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem: MenuItem ->
             var selectedFragment: Fragment? = null

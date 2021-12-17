@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:text="SubTotal"
                 android:textAllCaps="true"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textColor="@color/black" />
 
             <TextView
@@ -92,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs. 7001.0"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"/>
 
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:text="Shipping"
                 android:textAllCaps="true"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textColor="@color/black" />
 
             <TextView
@@ -122,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs. 60.0"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"/>
 
@@ -144,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:text="Promo Code"
                 android:textAllCaps="true"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textColor="@color/black" />
 
             <TextView
@@ -153,7 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs. 100.0"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"/>
 
