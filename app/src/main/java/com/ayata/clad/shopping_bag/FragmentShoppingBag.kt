@@ -12,6 +12,7 @@ import com.ayata.clad.databinding.FragmentShoppingBagBinding
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
+import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class FragmentShoppingBag : Fragment() {
@@ -35,7 +36,7 @@ class FragmentShoppingBag : Fragment() {
         }
         initRecycler()
 
-        parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentCheckout()).commit()
+        parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentShipping()).commit()
 
         return binding.root
     }
