@@ -288,7 +288,7 @@
                     app:tabIndicatorHeight="3dp"
                     app:tabGravity="fill"
                     android:clickable="false"
-                    android:background="@drawable/tab_background_selector"
+                    android:background="@drawable/tab_background_selector_product"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
                     app:tabTextColor="#BDBDBD"
                     android:layout_marginTop="20dp"
@@ -326,7 +326,7 @@
                     app:tabIndicatorFullWidth="false"
                     app:tabSelectedTextColor="@color/black"
                     app:tabIndicatorHeight="3dp"
-                    android:background="@drawable/tab_background_selector"
+                    android:background="@drawable/tab_background_selector_product"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
                     app:tabTextColor="#BDBDBD"
                     android:layout_marginTop="20dp"
@@ -382,7 +382,7 @@
 
                         android:textAlignment="textStart"
                         android:layout_height="wrap_content"
-                        android:text="Uncomforttable" />
+                        android:text="Uncomfortable" />
                     <TextView
                         android:layout_width="0dp"
                         style="@style/smallBlackText"
@@ -399,7 +399,7 @@
                         android:layout_weight="1"
 
                         android:layout_height="wrap_content"
-                        android:text="Comforttable" />
+                        android:text="Comfortable" />
                 </LinearLayout>
 
                 <TextView

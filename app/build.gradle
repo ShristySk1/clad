@@ -64,4 +64,8 @@ dependencies {
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.github.vipulasri:timelineview:1.1.5'
 
+    //see more/less textView
+    implementation 'kr.co.prnd:readmore-textview:1.0.0'
+
+
 }

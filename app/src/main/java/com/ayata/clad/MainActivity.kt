@@ -10,6 +10,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.shop.FragmentShop
+import com.ayata.clad.shopping_bag.FragmentShoppingBag
+import com.ayata.clad.thrift.FragmentThrift
 import com.ayata.clad.home.order.FragmentOrderDetail
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.FragmentProductDetail2
@@ -87,10 +90,10 @@ fun hideBottomNavigation(){
             var selectedFragment: Fragment? = null
             when (menuItem.itemId) {
                 R.id.nav_home -> selectedFragment =FragmentHome()
-                R.id.nav_hanger -> selectedFragment = FragmentHome()
-                R.id.nav_favorite -> selectedFragment = FragmentHome()
+                R.id.nav_hanger -> selectedFragment = FragmentShop()
+                R.id.nav_favorite -> selectedFragment = FragmentShoppingBag()
                 R.id.nav_addcart -> selectedFragment = FragmentHome()
-                R.id.nav_rader -> selectedFragment=FragmentHome()
+                R.id.nav_rader -> selectedFragment=FragmentThrift()
             }
             supportFragmentManager.beginTransaction()
 //                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)

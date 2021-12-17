@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".shopping_bag.FragmentShoppingBag">
+
+    <RelativeLayout
+        android:id="@+id/layout_empty"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dialog"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView1"
+            android:layout_below="@id/btn"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_filled"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/layout_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/layout_texts"
+                android:layout_marginVertical="15dp"
+                android:layout_marginHorizontal="@dimen/shopping_margin1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_left"
+                android:textStyle="bold"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/text_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Checkout"
+                android:textSize="14sp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/text_middle"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shipping"
+                android:layout_marginHorizontal="15dp"
+                android:textSize="14sp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/text_right"
+                android:layout_toEndOf="@id/text_middle"
+                android:layout_alignParentEnd="true"
+                android:textAlignment="textEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payment"
+                android:textSize="14sp"
+                android:textColor="@color/black"/>
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_alignBottom="@id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray"/>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_marginHorizontal="@dimen/shopping_margin1"
+                android:layout_below="@+id/layout_texts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progress="10"
+                app:indicatorColor="@color/black"
+                app:trackColor="@android:color/transparent"
+                app:trackCornerRadius="2dp"
+                app:trackThickness="3dp" />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_shopping"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/layout_top"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+</FrameLayout>

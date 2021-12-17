@@ -9,14 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clad">
-        <activity
-            android:name=".password.Fragment_Verfication"
-            android:exported="false" />
+
         <activity
             android:name=".password.LoginandPassword"
-            android:exported="false" />
-        <activity
-            android:name=".password.Login"
             android:exported="false" />
         <activity
             android:name=".onboarding.ActivityOnboarding"
@@ -31,9 +26,9 @@
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

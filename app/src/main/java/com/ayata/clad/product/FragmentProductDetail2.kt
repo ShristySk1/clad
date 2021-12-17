@@ -13,7 +13,6 @@ import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentProductDetail2Binding
 import com.ayata.clad.databinding.FragmentProductDetailBinding
-import com.google.android.flexbox.*
 
 
 class FragmentProductDetail2 : Fragment() {

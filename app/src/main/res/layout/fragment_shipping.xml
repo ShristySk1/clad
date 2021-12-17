@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".shopping_bag.shipping.FragmentShipping">
+
+   <TextView
+       android:id="@+id/title"
+       android:layout_alignParentStart="true"
+       android:layout_alignBottom="@id/addNewBtn"
+       android:layout_toStartOf="@id/addNewBtn"
+       android:layout_marginStart="15dp"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="SHIPPING ADDRESS"
+       android:paddingVertical="5dp"
+       android:textSize="15sp"
+       android:textColor="@color/black"
+       android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/addNewBtn"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginHorizontal="10dp"
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add new"
+        android:background="@drawable/ripple_5dp"
+        android:textColor="@color/black"
+        android:textStyle="normal"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@id/addNewBtn"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/layout_bottom"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_terms"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginHorizontal="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="By placing an order you agree to our Terms and Conditions."
+            android:textSize="14sp"
+            android:textColor="@color/colorGray"
+            android:layout_marginBottom="18dp"
+            android:layout_marginTop="5dp"/>
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGray"
+            android:layout_marginBottom="15dp" />
+        <LinearLayout
+            android:id="@+id/layout_b"
+            android:layout_marginHorizontal="15dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_sub"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SubTotal"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/sub_total"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rs. 7001.0"
+                android:textSize="14sp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_c"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="15dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_shipping"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shipping"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/shipping_price"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rs. 60.0"
+                android:textSize="14sp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_d"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="15dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_promo"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Promo Code"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/promo_price"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rs. 100.0"
+                android:textSize="14sp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_a"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="15dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_total"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOTAL (incl. VAT)"
+                android:textSize="15sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/total_price"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rs. 7811.0"
+                android:textSize="15sp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnProceed"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PROCEED TO PAYMENT"
+            android:background="@drawable/ripple_5dp_black"
+            android:textAlignment="textStart"
+            android:drawableEnd="@drawable/ic_arrow_right"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
