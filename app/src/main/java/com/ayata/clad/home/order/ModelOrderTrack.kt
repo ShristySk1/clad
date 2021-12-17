@@ -10,10 +10,8 @@ class ModelOrderTrack(
 
     companion object {
         const val ORDER_TYPE_PLACED = "Order Placed"
-        const val ORDER_TYPE_CONFIRMED = "Order Confirmed"
-        const val ORDER_TYPE_PROCESS = "Order Processed"
-        const val ORDER_TYPE_SHIP = "Ready to Ship"
-        const val ORDER_TYPE_DELIVERY = "Out For Delivery"
+        const val ORDER_TYPE_DISPATCHED = "Out for dispatched"
+        const val ORDER_TYPE_TRANSIT = "Out For transit"
         const val ORDER_TYPE_DELIVERED = "Delivered"
         const val ORDER_TYPE_NONE = "None"
     }
