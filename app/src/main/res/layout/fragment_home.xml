@@ -7,53 +7,277 @@
     tools:context=".home.FragmentHome">
 
     <androidx.core.widget.NestedScrollView
-        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_story"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/di_marginhorizental" />
+                android:nestedScrollingEnabled="false"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/recycler_story"
-                android:layout_marginHorizontal="@dimen/di_marginhorizental"
-                android:layout_marginTop="25dp"
-                android:fontFamily="@font/sf_pro_text_regular"
-                android:text="Popular This Month"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/viewall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/recycler_story"
-                android:layout_alignParentEnd="true"
-                android:layout_marginHorizontal="@dimen/di_marginhorizental"
-                android:layout_marginTop="25dp"
-                android:gravity="center_vertical"
-                android:padding="5dp"
-                android:text="View All" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_popularmonth"
+            <RelativeLayout
+                android:id="@+id/layout_popular_this_month"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/viewall"
-                android:layout_marginHorizontal="@dimen/di_marginhorizental"
-                android:layout_marginTop="18dp" />
+                android:layout_below="@id/recycler_story">
+
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/hf_text1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/home_text_size_1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/popular_view_btn"
+                    android:layout_alignBottom="@id/text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:background="@drawable/ripple_5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/view_all" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_popular_month"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text1"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_recommended"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_popular_this_month">
+
+                <TextView
+                    android:id="@+id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/hf_text2"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/home_text_size_1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/recommended_view_btn"
+                    android:layout_alignBottom="@id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:background="@drawable/ripple_5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/view_all" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_recommended"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text2"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_new_subscription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_recommended">
+
+                <TextView
+                    android:id="@+id/text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/hf_text3"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/home_text_size_1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/new_subscription_view_btn"
+                    android:layout_alignBottom="@id/text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:background="@drawable/ripple_5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/view_all" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_new_subscription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text3"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_popular_brand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_new_subscription">
+
+                <TextView
+                    android:id="@+id/text4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/hf_text4"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/home_text_size_1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/popular_brand_view_btn"
+                    android:layout_alignBottom="@id/text4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:background="@drawable/ripple_5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/view_all" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_popular_brands"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text4"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_just_dropped"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_popular_brand">
+
+                <TextView
+                    android:id="@+id/text5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/hf_text5"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/home_text_size_1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/just_dropped_view_btn"
+                    android:layout_alignBottom="@id/text5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:background="@drawable/ripple_5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/view_all" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_just_dropped"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text5"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_most_popular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_just_dropped">
+
+                <TextView
+                    android:id="@+id/text6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/hf_text6"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/home_text_size_1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/most_popular_view_btn"
+                    android:layout_alignBottom="@id/text6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:background="@drawable/ripple_5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/view_all" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_most_popular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text6"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.core.text.color
@@ -38,6 +39,7 @@ internal class AdapterCheckout(private var context: Context?, private var listIt
             val layoutSize=itemView.findViewById<View>(R.id.layout_size)
             val checkBox=itemView.findViewById<CheckBox>(R.id.checkBox)
             val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
+            val cardViewImage=itemView.findViewById<CardView>(R.id.cardView)
 
             fun clickView(){
                layoutQuantity.setOnClickListener {
@@ -47,6 +49,12 @@ internal class AdapterCheckout(private var context: Context?, private var listIt
                     onItemClickListener.onSizeClicked(listItems[adapterPosition],adapterPosition)
                 }
                 checkBox.setOnClickListener {
+                    val isChecked=checkBox.isSelected
+                    listItems[adapterPosition].isSelected=isChecked
+                    onItemClickListener.onCheckBoxClicked(listItems[adapterPosition],isChecked,adapterPosition)
+                }
+                cardViewImage.setOnClickListener{
+                    checkBox.toggle()
                     val isChecked=checkBox.isSelected
                     listItems[adapterPosition].isSelected=isChecked
                     onItemClickListener.onCheckBoxClicked(listItems[adapterPosition],isChecked,adapterPosition)

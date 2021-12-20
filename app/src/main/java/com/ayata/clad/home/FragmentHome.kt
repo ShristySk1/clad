@@ -1,62 +1,244 @@
 package com.ayata.clad.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentHomeBinding
+import com.ayata.clad.home.adapter.*
+import com.ayata.clad.home.adapter.AdapterJustDropped
+import com.ayata.clad.home.adapter.AdapterPopularBrands
+import com.ayata.clad.home.adapter.AdapterPopularMonth
+import com.ayata.clad.home.adapter.AdapterRecommended
+import com.ayata.clad.home.adapter.AdapterStories
+import com.ayata.clad.home.model.*
 
-class FragmentHome : Fragment() {
+class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
+    ,AdapterPopularBrands.OnItemClickListener,AdapterJustDropped.OnItemClickListener
+    ,AdapterMostPopular.OnItemClickListener, AdapterNewSubscription.OnItemClickListener {
 
+    private lateinit var binding: FragmentHomeBinding
 
-    private var liststory = ArrayList<Modelcircularlist>()
-    lateinit var activityFragmentHomeBinding: FragmentHomeBinding
-    private lateinit var adapterFragmentcircle: AdapterFragmentcircle
+    private var liststory = ArrayList<ModelStories>()
+    private lateinit var adapterStories: AdapterStories
+
+    private lateinit var adapterPopularMonth: AdapterPopularMonth
+    private var listPopularMonth=ArrayList<ModelPopularMonth>()
+
+    private lateinit var adapterRecommended: AdapterRecommended
+    private var listRecommended=ArrayList<ModelRecommended>()
+    private var listRecommendedOne=ArrayList<ModelRecommended>()
+
+    private lateinit var adapterPopularBrands: AdapterPopularBrands
+    private var listPopularBrands=ArrayList<ModelPopularBrands>()
+
+    private lateinit var adapterJustDropped: AdapterJustDropped
+    private var listJustDropped=ArrayList<ModelJustDropped>()
+
+    private lateinit var adapterMostPopular: AdapterMostPopular
+    private var listMostPopular=ArrayList<ModelMostPopular>()
+
+    private lateinit var adapterNewSubscription: AdapterNewSubscription
+    private var listNewSubscription=ArrayList<ModelNewSubscription>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View?
     {
-
-        activityFragmentHomeBinding= FragmentHomeBinding.inflate(inflater,container,false)
-        // Inflate the layout for this fragment
-
+        binding= FragmentHomeBinding.inflate(inflater,container,false)
         initRecyclerView()
 
-//       section for circular story
-        adapterFragmentcircle = AdapterFragmentcircle(context, liststory)
-        with(activityFragmentHomeBinding.recyclerStory)
-        {
-            setHasFixedSize(true)
-            isNestedScrollingEnabled=false
-            apply {
-                layoutManager=LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
-                adapter=adapterFragmentcircle
-            }
-        }
-        PrepareDataforStory()
-        adapterFragmentcircle.notifyDataSetChanged()
-//        setion close adapater
-
-        return activityFragmentHomeBinding.root
+        return binding.root
     }
-
-    private fun PrepareDataforStory() {
- liststory.clear()
-        liststory.add(Modelcircularlist("https://static.parade.com/wp-content/uploads/2020/04/4.26_Scarlett-Johanson-FTR.jpg","New In"))
-        liststory.add(Modelcircularlist("https://static.parade.com/wp-content/uploads/2020/04/4.26_Scarlett-Johanson-FTR.jpg","Summer"))
-        liststory.add(Modelcircularlist("https://static.parade.com/wp-content/uploads/2020/04/4.26_Scarlett-Johanson-FTR.jpg","Activewear"))
-        liststory.add(Modelcircularlist("https://static.parade.com/wp-content/uploads/2020/04/4.26_Scarlett-Johanson-FTR.jpg","Basic"))
-        liststory.add(Modelcircularlist("https://static.parade.com/wp-content/uploads/2020/04/4.26_Scarlett-Johanson-FTR.jpg","Сouples"))
-    }
-
 
     private fun initRecyclerView() {
+        //stories view
+        adapterStories = AdapterStories(context, liststory)
+        binding.recyclerStory.apply {
+            layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            adapter=adapterStories
+        }
+        prepareDataForStory()
 
+        //popular this month
+        adapterPopularMonth=AdapterPopularMonth(context,listPopularMonth,this)
+        binding.recyclerPopularMonth.apply {
+            layoutManager=LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
+            adapter=adapterPopularMonth
+        }
+        prepareDataForPopularMonth()
+
+        //recommended == show 1 only
+        adapterRecommended= AdapterRecommended(context,listRecommendedOne,this)
+        binding.recyclerRecommended.apply {
+            layoutManager=LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+            adapter=adapterRecommended
+        }
+        prepareDataForRecommended()
+
+        //popular brand
+        adapterPopularBrands = AdapterPopularBrands(context, listPopularBrands,this)
+        binding.recyclerPopularBrands.apply {
+            layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            adapter=adapterPopularBrands
+        }
+        prepareDataForPopularBrands()
+
+        //just dropped
+        adapterJustDropped= AdapterJustDropped(context,listJustDropped,this)
+        binding.recyclerJustDropped.apply {
+            layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            adapter=adapterJustDropped
+        }
+        prepareDataForJustDropped()
+
+        //most popular
+        adapterMostPopular= AdapterMostPopular(context,listMostPopular,this)
+        binding.recyclerMostPopular.apply {
+            layoutManager=GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL,false)
+            adapter=adapterMostPopular
+        }
+        prepareDataForMostPopular()
+
+        //new subscription
+        adapterNewSubscription=AdapterNewSubscription(context,listNewSubscription,this)
+        binding.recyclerNewSubscription.apply {
+            layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            adapter=adapterNewSubscription
+        }
+        prepareDataForNewSubscription()
+
+    }
+
+    private fun prepareDataForNewSubscription() {
+        listNewSubscription.clear()
+        listNewSubscription.add(ModelNewSubscription("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
+            "Beige bliss"))
+        listNewSubscription.add(ModelNewSubscription("https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
+            "Silk lure"))
+
+        adapterNewSubscription.notifyDataSetChanged()
+
+    }
+
+    private fun prepareDataForStory() {
+        liststory.clear()
+        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgdOBlW9EYsa3H3WCVsoCDYPwLE4Xu2UIUuw&usqp=CAU","New In"))
+        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6EaUzDNvKw5ZmGYZsvBoHjtmu6jLeoJ7xyA&usqp=CAU","Summer"))
+        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBLdseom0mOn2lIbAdoDxwVdEJo4_SxzWpLA&usqp=CAU","Activewear"))
+        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFS2u86hjaTfeDwA6w8ShjzGzqOFjiAUIu6g&usqp=CAU","Basic"))
+        liststory.add(ModelStories("https://static.parade.com/wp-content/uploads/2020/04/4.26_Scarlett-Johanson-FTR.jpg","Сouples"))
+
+        adapterStories.notifyDataSetChanged()
+
+    }
+
+    private fun prepareDataForPopularMonth() {
+        listPopularMonth.clear()
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 70.0","https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 30.0","https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg"))
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 80.0","https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"))
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 120.0","https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"))
+
+        adapterPopularMonth.notifyDataSetChanged()
+
+    }
+
+    private fun prepareDataForRecommended() {
+        listRecommended.clear()
+        listRecommended.add(ModelRecommended("Sportswear (Red)","“Sporty clothes”","Rs. 30.0",
+            "https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg"))
+        listRecommended.add(ModelRecommended("Cashmere Jacket","Casual Wear","Rs. 70.0",
+            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
+
+        listRecommendedOne.clear()
+        listRecommendedOne.add(listRecommended[0])
+        adapterRecommended.notifyDataSetChanged()
+
+    }
+
+    private fun prepareDataForPopularBrands() {
+        listPopularBrands.clear()
+        listPopularBrands.add(ModelPopularBrands("https://cdn.britannica.com/94/193794-050-0FB7060D/Adidas-logo.jpg","Adidas","All 106"))
+        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/e2/1e/d6/e21ed611fec39f3911d7376723811d8a.jpg","Nike","All 106"))
+        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/f4/29/13/f42913698b86ddc1a611163154e71619.jpg","Vans","All 106"))
+        listPopularBrands.add(ModelPopularBrands("https://www.freesvgdownload.com/wp-content/uploads/2021/04/Balenciaga-logo-svg.jpg","Balenciaga","All 106"))
+        listPopularBrands.add(ModelPopularBrands("https://cdn.shopify.com/s/files/1/0249/5892/6941/products/Converse-Logo-Iron-On-Sticker_1890x.jpg?v=1585666919","Converse","All 106"))
+
+        adapterPopularBrands.notifyDataSetChanged()
+
+    }
+
+    private fun prepareDataForJustDropped() {
+        listJustDropped.clear()
+        listJustDropped.add(ModelJustDropped("https://sneakers123.s3.amazonaws.com/release/199915/nike-ispa-overreact-sail-cd9664-100.jpg",
+            "Nike ISPA Overreact Sail Multi","Lowest Ask",
+        "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
+        listJustDropped.add(ModelJustDropped("https://sneakernews.com/wp-content/uploads/2020/01/adidas-yeezy-700-mnvn-bone-1.jpg",
+            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask",
+            "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
+        listJustDropped.add(ModelJustDropped("https://sneakerbardetroit.com/wp-content/uploads/2019/06/Air-Jordan-11-Low-IE-Space-Jam-Black-Concord-919712-041-2019-Release-Date.jpg",
+            "Jordan 11 Retro Low White Concord (W) ","Lowest Ask",
+        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
+
+        adapterJustDropped.notifyDataSetChanged()
+
+    }
+
+    private fun prepareDataForMostPopular() {
+        listMostPopular.clear()
+        listMostPopular.add(
+            ModelMostPopular("https://images.squarespace-cdn.com/content/v1/5c97c2c834c4e28454c66e64/1578809760795-SI5T6MPXQFPLC548UR7E/Air-Jordan-5-Alternate-Grape-136027-500.png",
+            "Jordan 5 Retro Alternate Grape","Lowest Ask","Rs. 5000",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
+        )
+        listMostPopular.add(ModelMostPopular("https://sneakernews.com/wp-content/uploads/2020/01/adidas-yeezy-700-mnvn-bone-1.jpg",
+            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask","Rs. 8000",
+        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
+
+        listMostPopular.add(ModelMostPopular("https://it.kicksmaniac.com/zdjecia/2020/11/01/411/04/NIKE_AIR_JORDAN_14_RETRO_GYM_RED_TORO-mini.jpg",
+            "Jordan 14 Retro Gym Red Toro","Lowest Ask","Rs. 8000",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
+
+        listMostPopular.add(ModelMostPopular("https://images.squarespace-cdn.com/content/v1/5c97c2c834c4e28454c66e64/1578809760795-SI5T6MPXQFPLC548UR7E/Air-Jordan-5-Alternate-Grape-136027-500.png",
+            "Jordan 5 Retro Alternate Grape","Lowest Ask","Rs. 5000",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
+        )
+
+        adapterMostPopular.notifyDataSetChanged()
+
+    }
+
+    override fun onPopularMonthClicked(data: ModelPopularMonth, position: Int) {
+        Toast.makeText(context, "Popular this month: ${ data.title }",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRecommendedClicked(data: ModelRecommended, position: Int) {
+        Toast.makeText(context,"Recommend: ${data.title}",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPopularBrandsClicked(data: ModelPopularBrands, position: Int) {
+        Toast.makeText(context,"Brand: ${data.title}",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onJustDroppedClicked(data: ModelJustDropped, position: Int) {
+        Toast.makeText(context,"Just Dropped: ${data.title}",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onMostPopularClicked(data: ModelMostPopular, position: Int) {
+        Toast.makeText(context,"Most Popular: ${data.title}",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onNewSubscriptionClicked(data: ModelNewSubscription, position: Int) {
+        Toast.makeText(context,"New Subscription: ${data.title}",Toast.LENGTH_SHORT).show()
     }
 
 

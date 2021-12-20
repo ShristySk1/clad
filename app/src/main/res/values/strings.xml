@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Clad</string>
 
+    <string name="clad_shopping_service_url">https://www.google.com/</string>
+    <string name="clad_privacy_notice_url">https://www.google.com/</string>
+    <string name="cookie_notice_url">https://www.google.com/</string>
+    <string name="terms_url">https://www.google.com/</string>
+
     <!--    for onboarding-->
     <string name="str_onheading">Exceptional\nModern Clothings</string>
     <string name="str_ontitle">shop for exceptional modern clothings for\nyour everyday life</string>
@@ -24,6 +29,28 @@ we can help by sending you a link to reset it.</string>
     <string name="str_btnnext">Next</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+<!--    order placed text-->
+    <string name="opf_text1">THANK YOU FOR\nYOUR ORDER</string>
+    <string name="opf_text2">Estimated Delivery</string>
+    <string name="opf_text3">We’ve emailedyou a confirmation and we’ll notify you when your order has shipped.</string>
+    <string name="opf_text4">VIEW ORDER DETAILS</string>
+
+<!--    shopping bag empty-->
+    <string name="sbe_text1">YOUR BAG IS EMPTY</string>
+    <string name="sbe_text2">Add items to your shopping mart</string>
+    <string name="sbe_text3">BROWSE THE SHOP</string>
+
+
+<!--    home fragment-->
+    <string name="hf_text1">Popular This Month</string>
+    <string name="view_all">View All</string>
+    <string name="hf_text2">Recommended</string>
+    <string name="hf_text3">New Subscription Boxes</string>
+    <string name="hf_text4">Popular Brands</string>
+    <string name="hf_text5">Just Dropped</string>
+    <string name="hf_text6">Most Popular</string>
+
 
 
     <string name="randomText">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English.</string>

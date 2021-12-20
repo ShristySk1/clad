@@ -16,6 +16,7 @@ import com.ayata.clad.thrift.FragmentThrift
 import com.ayata.clad.home.order.FragmentOrderDetail
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.FragmentProductDetail2
+import com.ayata.clad.shopping_bag.order_placed.FragmentOrderPlaced
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -101,6 +102,4 @@ fun hideBottomNavigation(){
                 .commit()
             true
         }
-
-
 }

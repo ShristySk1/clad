@@ -27,6 +27,7 @@
         android:minHeight="?actionBarSize"
         android:theme="@style/NavBarTheme"
         app:menu="@menu/dashboard_navigation_item"
+        app:labelVisibilityMode="unlabeled"
         />
 
 

@@ -14,10 +14,12 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentCheckoutBinding
 import com.ayata.clad.shop.model.ModelShop
+import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterCheckout
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
+import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
@@ -40,11 +42,24 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
         // Inflate the layout for this fragment
         binding= FragmentCheckoutBinding.inflate(inflater, container, false)
 
-        binding.textTotal.text=SpannableStringBuilder().bold { append("Total ") }.append("(incl. VAT)")
+        (parentFragment as FragmentShoppingBag).checkoutPage()
+        initView()
 
         initRecycler()
 
         return binding.root
+    }
+
+    private fun initView(){
+        binding.textTotal.text=SpannableStringBuilder().bold { append("Total ") }.append("(incl. VAT)")
+
+        binding.btnCheckout.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentShipping())
+                .addToBackStack(null).commit()
+        }
+
+        binding.totalPrice.text="Rs. 7800"
+        binding.textItemSelected.text="1/2 ITEMS Selected"
     }
 
     private fun initRecycler(){

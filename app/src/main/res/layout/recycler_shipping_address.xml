@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:paddingVertical="24dp"
-    android:layout_margin="4dp"
+    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="15dp"
+    android:id="@+id/layout_main"
+    android:foreground="?attr/selectableItemBackground"
     android:background="@drawable/background_outline_gray"
     android:layout_height="wrap_content">
 
@@ -30,30 +33,38 @@
 
     <TextView
         android:id="@+id/address"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="15dp"
         style="@style/normalText"
         android:text="New Baneshwor - 10, \nKathmandu, Nepal"
+        app:layout_constraintEnd_toStartOf="@id/checkBox"
         app:layout_constraintStart_toStartOf="@+id/title_address"
         app:layout_constraintTop_toBottomOf="@+id/title_address" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:id="@+id/editBtn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:padding="2dp"
+        android:background="?attr/selectableItemBackground"
+        android:layout_marginStart="14dp"
         app:layout_constraintBottom_toBottomOf="@+id/title_address"
         app:layout_constraintStart_toEndOf="@+id/title_address"
         app:layout_constraintTop_toTopOf="@+id/title_address"
         app:srcCompat="@drawable/ic_edit" />
 
-    <RadioButton
-        android:id="@+id/radioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_marginHorizontal="15dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:button="@android:color/transparent"
+        android:background="@drawable/custom_checkbox"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="@+id/address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_address" />
+        app:layout_constraintTop_toTopOf="@+id/title_address"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

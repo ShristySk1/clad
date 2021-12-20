@@ -1,6 +1,6 @@
-package com.ayata.clad.home
+package com.ayata.clad.home.model
 
-class Modelcircularlist {
+class ModelStories {
     var imageurl: String? = null
 
     constructor(imageurl: String?, title: String?) {

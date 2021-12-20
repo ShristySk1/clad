@@ -1,5 +1,6 @@
 package com.ayata.clad.shopping_bag
 
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.ayata.clad.databinding.FragmentShoppingBagBinding
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
+import com.ayata.clad.shopping_bag.payment.FragmentPayment
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -19,11 +21,7 @@ class FragmentShoppingBag : Fragment() {
 
     private lateinit var binding: FragmentShoppingBagBinding
 
-    private lateinit var adapterCircleText: AdapterCircleText
-    private var listText=ArrayList<ModelCircleText>()
 
-    private lateinit var adapterCircleText2: AdapterCircleText
-    private var listText2=ArrayList<ModelCircleText>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,81 +29,36 @@ class FragmentShoppingBag : Fragment() {
         // Inflate the layout for this fragment
         binding= FragmentShoppingBagBinding.inflate(inflater, container, false)
 
-        binding.btn.setOnClickListener {
-            showDialogSize()
-        }
-        initRecycler()
-
-        parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentShipping()).commit()
+        initView()
+        childFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentCheckout()).commit()
 
         return binding.root
     }
 
-    private fun initRecycler(){
-
-        adapterCircleText2= AdapterCircleText(context,listText2).also { adapter ->
-            adapter.setCircleClickListener { data->
-                for(item in listText2){
-                    item.isSelected = item.equals(data)
-                }
-                adapterCircleText2.notifyDataSetChanged()
-            }
-        }
-
-        binding.recyclerView1.apply {
-            layoutManager=GridLayoutManager(context,5)
-            adapter=adapterCircleText2
-        }
-        prepareList2()
-
-
+    private fun initView(){
+        binding.layoutEmpty.visibility=View.GONE
+        binding.layoutFilled.visibility=View.VISIBLE
     }
 
-    private fun prepareList(){
-        listText.clear()
-        listText.add(ModelCircleText("s",true))
-        listText.add(ModelCircleText("m",false))
-        listText.add(ModelCircleText("l",false))
-        listText.add(ModelCircleText("xl",false))
-        listText.add(ModelCircleText("xxl",false))
-        adapterCircleText.notifyDataSetChanged()
-    }
-    private fun prepareList2(){
-        listText2.clear()
-        listText2.add(ModelCircleText("1",true))
-        listText2.add(ModelCircleText("2",false))
-        listText2.add(ModelCircleText("3",false))
-        listText2.add(ModelCircleText("4",false))
-        listText2.add(ModelCircleText("5",false))
-        adapterCircleText2.notifyDataSetChanged()
+    fun checkoutPage(){
+        binding.textMiddle.typeface= Typeface.DEFAULT
+        binding.textRight.typeface= Typeface.DEFAULT
+        binding.textLeft.typeface= Typeface.DEFAULT_BOLD
+        binding.progressBar.progress=10
     }
 
-    private fun showDialogSize(){
+    fun paymentPage(){
+        binding.textMiddle.typeface= Typeface.DEFAULT_BOLD
+        binding.textRight.typeface= Typeface.DEFAULT_BOLD
+        binding.textLeft.typeface= Typeface.DEFAULT_BOLD
+        binding.progressBar.progress=100
+    }
 
-        val dialogBinding=DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
-        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(dialogBinding.root)
-
-        adapterCircleText= AdapterCircleText(context,listText).also { adapter ->
-            adapter.setCircleClickListener { data->
-                for(item in listText){
-                    item.isSelected = item.equals(data)
-                }
-                adapterCircleText.notifyDataSetChanged()
-            }
-        }
-        prepareList()
-
-        dialogBinding.recyclerView.apply {
-            layoutManager=GridLayoutManager(context,5)
-            adapter=adapterCircleText
-        }
-
-        dialogBinding.btnClose.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.show()
+    fun shippingPage(){
+        binding.textMiddle.typeface= Typeface.DEFAULT_BOLD
+        binding.textRight.typeface= Typeface.DEFAULT
+        binding.textLeft.typeface= Typeface.DEFAULT_BOLD
+        binding.progressBar.progress=50
     }
 
 }

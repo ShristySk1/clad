@@ -18,6 +18,7 @@
 <!--    <color name="ColorGrayText">#9912121D</color>-->
     <color name="colorGray">#FFC4C4C4</color>
     <color name="colorGrayText">#7E808E</color>
+    <color name="colorGrayText2">#979797</color>
 <!--    <color name="colorGrayText">#7E808E</color>-->
 
 <!-- cross with drawable-->
@@ -26,7 +27,8 @@
     <color name="colorRed">#FF1100</color>
 
 <!--    dashboard main -->
-    <color name="colorOrange">#F5EDE7</color>
+    <color name="colorHomeBack1">#F5EDE7</color>
+    <color name="colorHomeBack2">#D9A98B</color>
 
 
     <color name="colorCircleUnselect">#ECEDEF</color>

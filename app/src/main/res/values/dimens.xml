@@ -10,4 +10,6 @@
     <dimen name="shop_horizontal">15dp</dimen>
 
     <dimen name="shopping_margin1">25dp</dimen>
+    <dimen name="home_marginHorizontal">15dp</dimen>
+    <dimen name="home_text_size_1">18sp</dimen>
 </resources>
