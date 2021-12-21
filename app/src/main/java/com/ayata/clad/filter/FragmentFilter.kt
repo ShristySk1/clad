@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.MainActivity
+import com.ayata.clad.R
 import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentFilterBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -18,8 +20,19 @@ class FragmentFilter : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentFilterBinding.inflate(inflater, container, false)
+        initAppbar()
         setUpRecyclerView()
         return binding.root
+    }
+
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(false)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar2(
+            isClose = true, isBack = false, isFilter = false, isClear = true,
+            textTitle = getString(R.string.refine_filter),
+            textDescription = "1200 results"
+        )
     }
 
     private fun setUpRecyclerView() {

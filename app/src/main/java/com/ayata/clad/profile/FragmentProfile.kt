@@ -48,6 +48,7 @@ class FragmentProfile : Fragment() {
     private fun initView() {
 
 
+
     }
     private fun setTabLayout(list: List<Fragment>, myTitles: ArrayList<String>) {
         listFragment = ArrayList<Fragment>()

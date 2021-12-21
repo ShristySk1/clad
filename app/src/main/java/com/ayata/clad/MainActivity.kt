@@ -1,5 +1,6 @@
 package com.ayata.clad
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.transition.Slide
@@ -45,22 +46,33 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun showBottomNavigation(show:Boolean) {
-        if(show){
-            binding.bottomNavigationView.visibility=View.VISIBLE
-        }else{
-            binding.bottomNavigationView.visibility=View.GONE
+    fun showBottomNavigation(show: Boolean) {
+        if (show) {
+            binding.bottomNavigationView.visibility = View.VISIBLE
+        } else {
+            binding.bottomNavigationView.visibility = View.GONE
         }
 
     }
 
-    private fun setToolbar(){
+    private fun exitFullScreen() {
+        window.apply {
+            apply {
+                clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+                decorView.systemUiVisibility = 0
+            }
+        }
+        setStatusBarLight(R.color.white)
+    }
+
+    private fun setToolbar() {
         binding.appbar.btnSearch.setOnClickListener {
-            Toast.makeText(this,"Search",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
         }
 
         binding.appbar.btnClear.setOnClickListener {
-            Toast.makeText(this,"Clear All",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Clear All", Toast.LENGTH_SHORT).show()
         }
 
         binding.appbar.btnBack.setOnClickListener {
@@ -76,7 +88,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.appbar.btnFilter.setOnClickListener {
-            Toast.makeText(this, "Filter", Toast.LENGTH_SHORT).show()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, FragmentFilter())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.appbar.btnProfile.setOnClickListener {
@@ -87,71 +102,78 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setToolbar1(title:String,isSearch:Boolean,isProfile:Boolean,isClose:Boolean) {
+    fun setToolbar1(title: String, isSearch: Boolean, isProfile: Boolean, isClose: Boolean) {
+        exitFullScreen()
+        binding.appbar.appbar1.visibility = View.VISIBLE
+        binding.appbar.appbar2.visibility = View.GONE
 
-        binding.appbar.appbar1.visibility=View.VISIBLE
-        binding.appbar.appbar2.visibility=View.GONE
+        binding.appbar.textTitle.text = title
 
-        binding.appbar.textTitle.text=title
-
-        if(isSearch){
-            binding.appbar.btnSearch.visibility=View.VISIBLE
-        }else{
-            binding.appbar.btnSearch.visibility=View.GONE
+        if (isSearch) {
+            binding.appbar.btnSearch.visibility = View.VISIBLE
+        } else {
+            binding.appbar.btnSearch.visibility = View.GONE
         }
 
-        if(isProfile){
-            binding.appbar.btnProfile.visibility=View.VISIBLE
-        }else{
-            binding.appbar.btnProfile.visibility=View.GONE
+        if (isProfile) {
+            binding.appbar.btnProfile.visibility = View.VISIBLE
+        } else {
+            binding.appbar.btnProfile.visibility = View.GONE
         }
 
-        if(isClose){
-            binding.appbar.btnCloseProfile.visibility=View.VISIBLE
-        }else{
-            binding.appbar.btnCloseProfile.visibility=View.GONE
+        if (isClose) {
+            binding.appbar.btnCloseProfile.visibility = View.VISIBLE
+        } else {
+            binding.appbar.btnCloseProfile.visibility = View.GONE
         }
     }
 
-    fun setToolbar2(isClose: Boolean,isBack: Boolean,isFilter:Boolean,isClear:Boolean,textTitle:String,textDescription:String) {
+    fun setToolbar2(
+        isClose: Boolean,
+        isBack: Boolean,
+        isFilter: Boolean,
+        isClear: Boolean,
+        textTitle: String,
+        textDescription: String
+    ) {
+        exitFullScreen()
+        binding.appbar.appbar1.visibility = View.GONE
+        binding.appbar.appbar2.visibility = View.VISIBLE
 
-        binding.appbar.appbar1.visibility=View.GONE
-        binding.appbar.appbar2.visibility=View.VISIBLE
-
-        if(isFilter){
-            binding.appbar.btnFilter.visibility=View.VISIBLE
-        }else{
-            binding.appbar.btnFilter.visibility=View.GONE
+        if (isFilter) {
+            binding.appbar.btnFilter.visibility = View.VISIBLE
+        } else {
+            binding.appbar.btnFilter.visibility = View.GONE
         }
 
-        if(isClose){
-            binding.appbar.btnClose.visibility=View.VISIBLE
-        }else{
-            binding.appbar.btnClose.visibility=View.GONE
+        if (isClose) {
+            binding.appbar.btnClose.visibility = View.VISIBLE
+        } else {
+            binding.appbar.btnClose.visibility = View.GONE
         }
 
-        if(isBack){
-            binding.appbar.btnBack.visibility=View.VISIBLE
-        }else{
-            binding.appbar.btnBack.visibility=View.GONE
+        if (isBack) {
+            binding.appbar.btnBack.visibility = View.VISIBLE
+        } else {
+            binding.appbar.btnBack.visibility = View.GONE
         }
 
-        if(isClear){
-            binding.appbar.btnClear.visibility=View.VISIBLE
-        }else{
-            binding.appbar.btnClear.visibility=View.GONE
+        if (isClear) {
+            binding.appbar.btnClear.visibility = View.VISIBLE
+        } else {
+            binding.appbar.btnClear.visibility = View.GONE
         }
 
-        binding.appbar.title.text=textTitle
-        binding.appbar.description.text=textDescription
+        binding.appbar.title.text = textTitle
+        binding.appbar.description.text = textDescription
 
     }
 
-    fun showToolbar(show:Boolean) {
-        if(show){
-            binding.appbar.root.visibility=View.VISIBLE
-        }else{
-            binding.appbar.root.visibility=View.GONE
+    fun showToolbar(show: Boolean) {
+        if (show) {
+            binding.appbar.root.visibility = View.VISIBLE
+        } else {
+            binding.appbar.root.visibility = View.GONE
         }
     }
 

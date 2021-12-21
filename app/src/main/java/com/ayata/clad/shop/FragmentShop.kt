@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentShopBinding
+import com.ayata.clad.product.productlist.FragmentProductList
 import com.ayata.clad.shop.adapter.AdapterShopFilterable
 import com.ayata.clad.shop.model.ModelShop
 import com.google.android.material.tabs.TabLayout
@@ -56,18 +57,23 @@ class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
 
     private fun initSearchView(){
 
-        binding.searchText.editText!!.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+//        binding.searchText.editText!!.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//            }
+//
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                adapterShopFilterable.filter.filter(p0)
+//            }
+//
+//            override fun afterTextChanged(p0: Editable?) {
+//                adapterShopFilterable.filter.filter(p0)
+//            }
+//        })
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                adapterShopFilterable.filter.filter(p0)
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                adapterShopFilterable.filter.filter(p0)
-            }
-        })
+        binding.layoutSearch.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductList())
+                .addToBackStack(null).commit()
+        }
 
     }
 

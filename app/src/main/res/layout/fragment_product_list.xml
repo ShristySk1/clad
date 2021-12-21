@@ -1,14 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".product.productlist.FragmentProductList">
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rv_product_list"
-    android:clipToPadding="false"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:id="@+id/layout_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/search_icon"
+            android:layout_marginVertical="15dp"
+            android:layout_marginStart="@dimen/shop_horizontal"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_search"
+            android:tint="@color/colorGray" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/search_text"
+            android:layout_marginEnd="@dimen/shop_horizontal"
+            android:layout_alignTop="@id/search_icon"
+            android:layout_alignBottom="@id/search_icon"
+            android:layout_toEndOf="@id/search_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:errorEnabled="false"
+            app:hintEnabled="false"
+            app:boxBackgroundMode="none"
+            android:background="@null">
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:hint="Find Products.."
+                android:inputType="text"
+                android:textColorHint="@color/colorGray"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGraycircle"
+        android:layout_below="@id/layout_search"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_list"
+        android:layout_below="@id/divider"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"/>
+
+</RelativeLayout>
