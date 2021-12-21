@@ -1,5 +1,6 @@
 package com.ayata.clad.profile.account
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,7 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.MainActivity
+import com.ayata.clad.databinding.ActivityOnboardingBinding
 import com.ayata.clad.databinding.FragmentAccountBinding
+import com.ayata.clad.onboarding.ActivityOnboarding
 
 class FragmentAccount : Fragment() {
     lateinit var binding: FragmentAccountBinding
@@ -19,8 +23,15 @@ class FragmentAccount : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentAccountBinding.inflate(inflater, container, false)
+        initView()
         setUpRecyclerView()
         return binding.root
+    }
+
+    private fun initView() {
+        binding.btnLogOut.setOnClickListener {
+            startActivity(Intent(context, ActivityOnboarding::class.java))
+        }
     }
 
     private fun setUpRecyclerView() {
