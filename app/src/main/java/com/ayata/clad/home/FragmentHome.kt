@@ -21,6 +21,7 @@ import com.ayata.clad.home.adapter.AdapterPopularMonth
 import com.ayata.clad.home.adapter.AdapterRecommended
 import com.ayata.clad.home.adapter.AdapterStories
 import com.ayata.clad.home.model.*
+import com.ayata.clad.product.FragmentProductDetail
 
 class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
     ,AdapterPopularBrands.OnItemClickListener,AdapterJustDropped.OnItemClickListener
@@ -235,11 +236,15 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     override fun onPopularMonthClicked(data: ModelPopularMonth, position: Int) {
-        Toast.makeText(context, "Popular this month: ${ data.title }",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "Popular this month: ${ data.title }",Toast.LENGTH_SHORT).show()
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+            .addToBackStack(null).commit()
     }
 
     override fun onRecommendedClicked(data: ModelRecommended, position: Int) {
-        Toast.makeText(context,"Recommend: ${data.title}",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context,"Recommend: ${data.title}",Toast.LENGTH_SHORT).show()
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+            .addToBackStack(null).commit()
     }
 
     override fun onPopularBrandsClicked(data: ModelPopularBrands, position: Int) {
@@ -247,15 +252,21 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     override fun onJustDroppedClicked(data: ModelJustDropped, position: Int) {
-        Toast.makeText(context,"Just Dropped: ${data.title}",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context,"Just Dropped: ${data.title}",Toast.LENGTH_SHORT).show()
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+            .addToBackStack(null).commit()
     }
 
     override fun onMostPopularClicked(data: ModelMostPopular, position: Int) {
-        Toast.makeText(context,"Most Popular: ${data.title}",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context,"Most Popular: ${data.title}",Toast.LENGTH_SHORT).show()
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+            .addToBackStack(null).commit()
     }
 
     override fun onNewSubscriptionClicked(data: ModelNewSubscription, position: Int) {
-        Toast.makeText(context,"New Subscription: ${data.title}",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context,"New Subscription: ${data.title}",Toast.LENGTH_SHORT).show()
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+            .addToBackStack(null).commit()
     }
 
 

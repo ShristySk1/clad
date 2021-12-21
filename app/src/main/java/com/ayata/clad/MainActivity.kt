@@ -10,14 +10,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
+import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.thrift.FragmentThrift
-import com.ayata.clad.home.order.FragmentOrderDetail
+import com.ayata.clad.order.FragmentOrderDetail
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.FragmentProductDetail2
 import com.ayata.clad.shopping_bag.order_placed.FragmentOrderPlaced
+import com.ayata.clad.product.productlist.FragmentProductList
+import com.ayata.clad.profile.FragmentProfile
+import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             supportFragmentManager.beginTransaction()
-                .add(R.id.main_fragment, FragmentOrderDetail())
+                .add(R.id.main_fragment, FragmentHome())
                 .commit()
         }
         setStatusBarLight(R.color.white)
@@ -76,7 +80,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.appbar.btnProfile.setOnClickListener {
-            Toast.makeText(this,"Profile",Toast.LENGTH_SHORT).show()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, FragmentProfile())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -172,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_home -> selectedFragment = FragmentHome()
                 R.id.nav_hanger -> selectedFragment = FragmentShop()
-                R.id.nav_favorite -> selectedFragment = FragmentShoppingBag()
+                R.id.nav_favorite -> selectedFragment = FragmentWishlist()
                 R.id.nav_cart -> selectedFragment = FragmentShoppingBag()
                 R.id.nav_rader -> selectedFragment = FragmentThrift()
             }

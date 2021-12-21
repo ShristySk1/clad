@@ -1,11 +1,10 @@
-package com.ayata.clad.home.order
+package com.ayata.clad.order
 
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
@@ -24,15 +23,20 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
         holder.title.setText(modelOrderTrack.orderTrackTitle)
         holder.desc.setText(modelOrderTrack.orderTrackDescription)
         val color: Int = listitem[position].color
+        holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_without_stroke)
         if (modelOrderTrack.ordertype.equals(ModelOrderTrack.ORDER_TYPE_NONE)) {
-            holder.mTimelineView.setMarkerColor(context.resources.getColor(color))
+            holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_without_stroke)
+            //to set color for completed task
+            holder.title.setTextColor(context.resources.getColor(color))
+            holder.desc.setTextColor(context.resources.getColor(color))
         } else {
-            holder.mTimelineView.setMarkerColor(context.resources.getColor(color))
             holder.title.setTextColor(context.resources.getColor(color))
             holder.desc.setTextColor(context.resources.getColor(color))
             if (position == 0) {
                 if (!modelOrderTrack.actual) {
                     holder.mTimelineView.setEndLineColor(context.resources.getColor(color), 1)
+                }else{
+                    holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_with_stroke)
                 }
                 //do nothing
             } else {
@@ -41,11 +45,17 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
                     holder.mTimelineView.setStartLineColor(context.resources.getColor(color), 0)
                     holder.mTimelineView.setEndLineColor(context.resources.getColor(color), 0)
                 } else {
+                    Log.d(
+                        "currect",
+                        "onBindViewHolder: position: " + position + "size" + listitem.size
+                    )
                     //current
                     holder.mTimelineView.setStartLineColor(
                         context.resources.getColor(listitem[position - 1].color),
                         0
                     )
+
+                    holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_with_stroke)
                 }
             }
             Log.d(
@@ -75,7 +85,6 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
     override fun getItemViewType(position: Int): Int {
         return TimelineView.getTimeLineViewType(position, itemCount)
     }
-
     init {
         this.listitem = listitem
     }

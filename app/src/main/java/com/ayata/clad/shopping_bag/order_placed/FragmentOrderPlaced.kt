@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentOrderPlacedBinding
+import com.ayata.clad.order.FragmentOrderDetail
 
 
 class FragmentOrderPlaced : Fragment() {
@@ -21,7 +22,7 @@ class FragmentOrderPlaced : Fragment() {
         // Inflate the layout for this fragment
         binding= FragmentOrderPlacedBinding.inflate(inflater, container, false)
 
-//        initView()
+        initView()
         return binding.root
     }
 
@@ -30,7 +31,8 @@ class FragmentOrderPlaced : Fragment() {
         binding.textDate.text="June 25 2022"
 
         binding.btnView.setOnClickListener {
-            Toast.makeText(context,"View Details",Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentOrderDetail())
+                .addToBackStack(null).commit()
         }
     }
 

@@ -67,10 +67,6 @@ internal class AdapterCircleText(private var context: Context?, private var list
         return listItems.size
     }
 
-//    interface OnCircleClickListener{
-//        fun onCircleClicked(data:ModelCircleText)
-//    }
-
     private var itemCircleClick: ((ModelCircleText) -> Unit)? = null
     fun setCircleClickListener(listener: ((ModelCircleText) -> Unit)) {
         itemCircleClick = listener
