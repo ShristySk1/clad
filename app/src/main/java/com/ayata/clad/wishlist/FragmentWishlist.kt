@@ -15,6 +15,7 @@ import com.ayata.clad.databinding.FragmentWishlistBinding
 import com.ayata.clad.filter.AdapterFilterContent
 import com.ayata.clad.filter.ModelFilterContent
 import com.ayata.clad.product.AdapterRecommendation
+import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.product.productlist.ItemOffsetDecoration
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -30,23 +31,37 @@ class FragmentWishlist : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentWishlistBinding.inflate(inflater, container, false)
         initAppbar()
-        myProductList= listOf()
+        settUpFilterListener()
+        myProductList = listOf()
         setUpRecyclerProductList()
         if (myProductList.isEmpty()) {
-            binding.rvWishList.visibility=View.GONE
-            binding.llEmpty.visibility=View.VISIBLE
+            binding.rvWishList.visibility = View.GONE
+            binding.llEmpty.visibility = View.VISIBLE
             setUpRecyclerRecommendation()
-        }else{
-            binding.llEmpty.visibility=View.GONE
-            binding.rvWishList.visibility=View.VISIBLE
+        } else {
+            binding.llEmpty.visibility = View.GONE
+            binding.rvWishList.visibility = View.VISIBLE
         }
         return binding.root
     }
 
-    private fun initAppbar(){
+    private fun settUpFilterListener() {
+        binding.btnFilter.setOnClickListener {
+            showDialog(
+                "SORT BY", listOf(
+                    ModelFilterContent("Recommended", true),
+                    ModelFilterContent("Price (low - high)", false),
+                    ModelFilterContent("Price (high - low)", false)
+                )
+            )
+        }
+    }
+
+    private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(true)
         (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar1(getString(R.string.wishlist),
+        (activity as MainActivity).setToolbar1(
+            getString(R.string.wishlist),
             isSearch = false,
             isProfile = true,
             isClose = false
@@ -65,7 +80,10 @@ class FragmentWishlist : Fragment() {
                 )
             ).also {
                 it.setProductClickListener { recommendedProduct ->
-                    Log.d("testrecommend", "setUpRecyclerRecommendation: " + recommendedProduct);
+                    parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
+                        FragmentProductDetail()
+                    )
+                        .addToBackStack(null).commit()
                 }
             }
         }
@@ -74,12 +92,10 @@ class FragmentWishlist : Fragment() {
 
     private fun setUpRecyclerProductList() {
         myProductList = listOf(
-//            ModelProduct(1, "", "ss", "com", "$123", false),
-//            ModelProduct(2, "", "ss", "com", "$123", false),
-//            ModelProduct(3, "", "ss", "com", "$123", false),
-//            ModelProduct(1, "", "ss", "com", "$123", false),
-//            ModelProduct(2, "", "ss", "com", "$123", false),
-//            ModelProduct(3, "", "ss", "com", "$123", false)
+            ModelProduct(1, "", "ss", "com", "$123", false),
+            ModelProduct(2, "", "ss", "com", "$123", false),
+            ModelProduct(3, "", "ss", "com", "$123", false),
+            ModelProduct(1, "", "ss", "com", "$123", false)
         )
         binding.rvWishList.apply {
             layoutManager =

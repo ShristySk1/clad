@@ -87,7 +87,7 @@
 
 
     <!--    product detail-->
-    <style name="ratingTheme">
+    <style name="ratingTheme" parent="Theme.Clad">
         <item name="colorControlNormal">@color/colorGrayText</item>
         <item name="colorControlActivated">@color/black</item>
     </style>

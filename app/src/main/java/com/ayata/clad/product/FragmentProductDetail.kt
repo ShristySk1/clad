@@ -109,7 +109,8 @@ class FragmentProductDetail : Fragment() {
                 )
             ).also {
                 it.setProductClickListener { recommendedProduct ->
-                    Log.d(TAG, "setUpRecyclerRecommendation: " + recommendedProduct);
+                    parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+                        .addToBackStack(null).commit()
                 }
             }
         }
