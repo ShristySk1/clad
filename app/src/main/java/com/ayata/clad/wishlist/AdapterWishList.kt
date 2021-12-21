@@ -20,6 +20,9 @@ class AdapterWishList(
                     function(item)
                 }
             }
+            binding.title.setOnClickListener {
+                binding.image.performClick()
+            }
             binding.ivSetting.setOnClickListener {
                 itemSettingClick?.let { function ->
                     function(item)

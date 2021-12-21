@@ -12,6 +12,7 @@
     android:layout_width="0dp"
     android:layout_weight="1"
     style="@style/normalBoldText"
+    android:textSize="12sp"
     android:text="PERSONAL INFORMATION"
     android:textAllCaps="true"
     android:layout_height="wrap_content"/>
