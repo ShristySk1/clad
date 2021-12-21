@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentThriftBinding
 import com.ayata.clad.thrift.adapter.AdapterThrift
@@ -27,8 +28,19 @@ class FragmentThrift : Fragment() ,AdapterThrift.OnThriftClickListener{
         // Inflate the layout for this fragment
         binding= FragmentThriftBinding.inflate(inflater, container, false)
 
+        initAppbar()
         initRecycler()
         return binding.root
+    }
+
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar1(getString(R.string.thrift),
+            isSearch = false,
+            isProfile = true,
+            isClose = false
+        )
     }
 
 

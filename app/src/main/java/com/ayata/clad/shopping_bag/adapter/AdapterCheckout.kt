@@ -71,8 +71,6 @@ internal class AdapterCheckout(private var context: Context?, private var listIt
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
 
-        val imageList= arrayListOf<String>("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgY0sAjvnM0KEt_HUli9vFxcuS8Pvgvibb4Q&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvr4PdKGMdEkQkzATBlXX_aiM_nexWBAJbzg&usqp=CAU")
         holder.name.text=item.name
         holder.price.text="Rs. "+item.price
         holder.size.text="Size: "+item.size.toUpperCase()
@@ -81,7 +79,7 @@ internal class AdapterCheckout(private var context: Context?, private var listIt
         holder.checkBox.isChecked=item.isSelected
 
         Glide.with(context!!).asDrawable()
-            .load(imageList.random())
+            .load(item.image)
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
             .into(holder.image)

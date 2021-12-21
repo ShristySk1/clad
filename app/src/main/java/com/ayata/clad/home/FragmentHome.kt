@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ayata.clad.MainActivity
+import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentHomeBinding
 import com.ayata.clad.home.adapter.*
 import com.ayata.clad.home.adapter.AdapterJustDropped
@@ -54,9 +56,19 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     ): View?
     {
         binding= FragmentHomeBinding.inflate(inflater,container,false)
+        initAppbar()
         initRecyclerView()
-
         return binding.root
+    }
+
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar1(getString(R.string.drops),
+            isSearch = true,
+            isProfile = true,
+            isClose = false
+        )
     }
 
     private fun initRecyclerView() {
@@ -131,11 +143,16 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private fun prepareDataForStory() {
         liststory.clear()
-        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgdOBlW9EYsa3H3WCVsoCDYPwLE4Xu2UIUuw&usqp=CAU","New In"))
-        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6EaUzDNvKw5ZmGYZsvBoHjtmu6jLeoJ7xyA&usqp=CAU","Summer"))
-        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBLdseom0mOn2lIbAdoDxwVdEJo4_SxzWpLA&usqp=CAU","Activewear"))
-        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFS2u86hjaTfeDwA6w8ShjzGzqOFjiAUIu6g&usqp=CAU","Basic"))
-        liststory.add(ModelStories("https://static.parade.com/wp-content/uploads/2020/04/4.26_Scarlett-Johanson-FTR.jpg","Сouples"))
+        liststory.add(ModelStories("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
+            "New In"))
+        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK4RVHQArXcaTvfasa8QGHYGFMPk3zJG1nfA&usqp=CAU",
+            "Summer"))
+        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBLdseom0mOn2lIbAdoDxwVdEJo4_SxzWpLA&usqp=CAU",
+            "Activewear"))
+        liststory.add(ModelStories("https://media.istockphoto.com/photos/beautiful-lady-overjoyed-by-warm-spring-breeze-dream-of-romantic-date-picture-id1170648040?k=20&m=1170648040&s=612x612&w=0&h=eOMcjFL2qyKnfvkH3IbIYkAKWXtQXCScCE12ahhqX_w=",
+            "Basic"))
+        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs81HZC1Hbu-KVtCSbnyYX3J7CcSYFek0WO-OsK1AdZ3ahJr6E3AHgvKKy8-n08w9qC_U&usqp=CAU",
+            "Сouples"))
 
         adapterStories.notifyDataSetChanged()
 
@@ -179,13 +196,13 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private fun prepareDataForJustDropped() {
         listJustDropped.clear()
-        listJustDropped.add(ModelJustDropped("https://sneakers123.s3.amazonaws.com/release/199915/nike-ispa-overreact-sail-cd9664-100.jpg",
+        listJustDropped.add(ModelJustDropped("https://freepngimg.com/thumb/categories/627.png",
             "Nike ISPA Overreact Sail Multi","Lowest Ask",
         "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
-        listJustDropped.add(ModelJustDropped("https://sneakernews.com/wp-content/uploads/2020/01/adidas-yeezy-700-mnvn-bone-1.jpg",
+        listJustDropped.add(ModelJustDropped("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
             "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask",
             "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
-        listJustDropped.add(ModelJustDropped("https://sneakerbardetroit.com/wp-content/uploads/2019/06/Air-Jordan-11-Low-IE-Space-Jam-Black-Concord-919712-041-2019-Release-Date.jpg",
+        listJustDropped.add(ModelJustDropped("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
             "Jordan 11 Retro Low White Concord (W) ","Lowest Ask",
         "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
@@ -196,19 +213,19 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private fun prepareDataForMostPopular() {
         listMostPopular.clear()
         listMostPopular.add(
-            ModelMostPopular("https://images.squarespace-cdn.com/content/v1/5c97c2c834c4e28454c66e64/1578809760795-SI5T6MPXQFPLC548UR7E/Air-Jordan-5-Alternate-Grape-136027-500.png",
+            ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
             "Jordan 5 Retro Alternate Grape","Lowest Ask","Rs. 5000",
             "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
         )
-        listMostPopular.add(ModelMostPopular("https://sneakernews.com/wp-content/uploads/2020/01/adidas-yeezy-700-mnvn-bone-1.jpg",
+        listMostPopular.add(ModelMostPopular("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
             "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask","Rs. 8000",
         "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
-        listMostPopular.add(ModelMostPopular("https://it.kicksmaniac.com/zdjecia/2020/11/01/411/04/NIKE_AIR_JORDAN_14_RETRO_GYM_RED_TORO-mini.jpg",
+        listMostPopular.add(ModelMostPopular("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
             "Jordan 14 Retro Gym Red Toro","Lowest Ask","Rs. 8000",
             "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
-        listMostPopular.add(ModelMostPopular("https://images.squarespace-cdn.com/content/v1/5c97c2c834c4e28454c66e64/1578809760795-SI5T6MPXQFPLC548UR7E/Air-Jordan-5-Alternate-Grape-136027-500.png",
+        listMostPopular.add(ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
             "Jordan 5 Retro Alternate Grape","Lowest Ask","Rs. 5000",
             "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
         )

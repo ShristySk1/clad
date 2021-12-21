@@ -47,8 +47,8 @@ class FragmentProductDetail : Fragment() {
                 )
             )
         }
-        (activity as MainActivity).hideToolbar()
-        (activity as MainActivity).showBottomNav(false)
+        (activity as MainActivity).showToolbar(false)
+        (activity as MainActivity).showBottomNavigation(false)
         binding.detail2.ivClose.setOnClickListener {
             binding.appBar.setExpanded(true)
             binding.detail2.nestedScroll.scrollTo(0,0)

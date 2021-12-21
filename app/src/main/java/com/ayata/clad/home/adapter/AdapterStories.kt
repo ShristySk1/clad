@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
@@ -20,7 +21,7 @@ internal  class AdapterStories(private var context:Context?, private var listIte
 
    internal inner class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
 
-       val image=itemView.findViewById<CircularImageView>(R.id.imageView)
+       val image=itemView.findViewById<ImageView>(R.id.imageView)
        val title=itemView.findViewById<TextView>(R.id.title)
 
     }

@@ -155,7 +155,7 @@
             android:background="@drawable/background_circle_with_border"
             android:backgroundTint="@color/black"
             android:padding="12dp"
-            android:src="@drawable/ic_cladcart"
+            android:src="@drawable/ic_cart"
             android:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

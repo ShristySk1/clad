@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentShopBinding
 import com.ayata.clad.shop.adapter.AdapterShopFilterable
@@ -36,10 +37,21 @@ class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
         // Inflate the layout for this fragment
         binding= FragmentShopBinding.inflate(inflater, container, false)
 
+        initAppbar()
         initSearchView()
         initRecycler()
         initTabLayout()
         return binding.root
+    }
+
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar1(getString(R.string.shop),
+            isSearch = false,
+            isProfile = true,
+            isClose = false
+        )
     }
 
     private fun initSearchView(){

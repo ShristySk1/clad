@@ -51,6 +51,11 @@ we can help by sending you a link to reset it.</string>
     <string name="hf_text5">Just Dropped</string>
     <string name="hf_text6">Most Popular</string>
 
+    <string name="shopping_bag">SHOPPING BAG</string>
+    <string name="shop">Shop</string>
+    <string name="drops">Drops</string>
+    <string name="thrift">Thrift</string>
+
 
 
     <string name="randomText">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English.</string>

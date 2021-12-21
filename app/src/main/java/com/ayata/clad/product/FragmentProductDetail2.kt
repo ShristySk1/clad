@@ -23,8 +23,8 @@ class FragmentProductDetail2 : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProductDetail2Binding.inflate(inflater, container, false)
-        (activity as MainActivity).hideToolbar()
-        (activity as MainActivity).showBottomNav(false)
+        (activity as MainActivity).showToolbar(false)
+        (activity as MainActivity).showBottomNavigation(false)
         return binding.root
         }
     }

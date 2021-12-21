@@ -1,15 +1,13 @@
 package com.ayata.clad.thrift.adapter
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.core.text.color
@@ -19,6 +17,10 @@ import com.ayata.clad.shop.model.ModelShop
 import com.ayata.clad.thrift.model.ModelThrift
 import com.ayata.clad.utils.TextFormatter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import org.w3c.dom.Text
 import java.util.*
 
@@ -43,6 +45,7 @@ internal class AdapterThrift(private var context: Context?, private var listItem
             val imageLike=itemView.findViewById<ImageView>(R.id.image_like)
             val textLike=itemView.findViewById<TextView>(R.id.text_like)
             val textComment=itemView.findViewById<TextView>(R.id.text_comment)
+            val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
 
             fun clickView(){
                imageLogo.setOnClickListener {
@@ -109,15 +112,38 @@ internal class AdapterThrift(private var context: Context?, private var listItem
         }else{
             holder.timeText.visibility=View.VISIBLE
         }
-
         Glide.with(context!!).asDrawable()
             .load("https://i.pinimg.com/originals/e7/16/9c/e7169c1ffa2da5bfece0ad37c6c850e6.png")
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
             .into(holder.imageLogo)
 
+        holder.progressBar.visibility=View.VISIBLE
         Glide.with(context!!).asDrawable()
             .load(imageList.random())
+            .listener(object :RequestListener<Drawable>{
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.progressBar.visibility=View.GONE
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.progressBar.visibility=View.GONE
+                    return false
+                }
+
+            })
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
             .into(holder.imageMain)

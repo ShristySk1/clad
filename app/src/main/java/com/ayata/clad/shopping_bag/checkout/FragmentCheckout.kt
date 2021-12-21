@@ -75,8 +75,10 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
 
     private fun prepareList(){
         listCheckout.clear()
-        listCheckout.add(ModelCheckout("Nike Air Jordan",784569,8790.0,"A",2,true,""))
-        listCheckout.add(ModelCheckout("Nike Air Jordan",784579,9000.0,"A",1,false,""))
+        listCheckout.add(ModelCheckout("Nike Air Jordan",784569,8790.0,"A",2,true,
+            "https://freepngimg.com/thumb/categories/627.png"))
+        listCheckout.add(ModelCheckout("Nike Air Jordan",784579,9000.0,"A",1,false,
+            "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png"))
 
         adapterCheckout.notifyDataSetChanged()
     }

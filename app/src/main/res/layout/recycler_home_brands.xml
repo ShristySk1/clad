@@ -3,9 +3,6 @@
     android:layout_width="80dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:foreground="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
     android:id="@+id/layout_main">
 
     <RelativeLayout
@@ -13,7 +10,10 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="5dp"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ripple_circle"
+        android:clickable="true"
+        android:focusable="true">
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"

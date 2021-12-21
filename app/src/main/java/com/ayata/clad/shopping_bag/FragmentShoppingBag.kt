@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentShoppingBagBinding
@@ -29,10 +30,21 @@ class FragmentShoppingBag : Fragment() {
         // Inflate the layout for this fragment
         binding= FragmentShoppingBagBinding.inflate(inflater, container, false)
 
+        initAppbar()
         initView()
         childFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentCheckout()).commit()
 
         return binding.root
+    }
+
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar1(getString(R.string.shopping_bag),
+            isSearch = false,
+            isProfile = true,
+            isClose = false
+        )
     }
 
     private fun initView(){
