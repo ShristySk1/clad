@@ -1,4 +1,4 @@
-package com.ayata.clad.home.order
+package com.ayata.clad.order
 
 import android.os.Bundle
 import android.view.LayoutInflater

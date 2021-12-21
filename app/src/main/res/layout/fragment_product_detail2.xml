@@ -16,12 +16,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/background_outline_bottom"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="16dp"
+        android:paddingVertical="10dp"
+        android:gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:paddingLeft="16dp"
             style="@style/bigText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,10 +40,11 @@
 
         <ImageView
             android:id="@+id/ivClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:background="@drawable/ripple_5dp"
+            android:layout_height="50dp"
             android:paddingVertical="8dp"
-            android:paddingLeft="16dp"
+            android:paddingHorizontal="16dp"
             android:src="@drawable/ic_close" />
     </LinearLayout>
 
@@ -90,7 +92,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
                 <TextView
-                    android:id="@+id/textView12"
+                    android:id="@+id/tv_text_to_copy"
                     style="@style/normalText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -104,15 +106,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
                 <TextView
-                    android:id="@+id/textView13"
+                    android:id="@+id/tv_tap_to_copy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:text="Tap to copy"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:background="@drawable/ripple_text_5dp"
                     android:textColor="@color/colorGrayText"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView12"
-                    app:layout_constraintStart_toEndOf="@+id/textView12"
-                    app:layout_constraintTop_toTopOf="@+id/textView12" />
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_text_to_copy"
+                    app:layout_constraintStart_toEndOf="@+id/tv_text_to_copy"
+                    app:layout_constraintTop_toTopOf="@+id/tv_text_to_copy" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -139,6 +144,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:id="@+id/rv_size"
                     app:layout_constraintTop_toBottomOf="@+id/textView14" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -280,6 +286,7 @@
                     android:text="SIZE" />
 
                 <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab"
                     android:layout_width="match_parent"
                     app:tabIndicatorGravity="top"
                     app:tabIndicatorColor="@color/black"
@@ -297,6 +304,7 @@
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+
                         style="@style/smallText"
                         android:text="Too small" />
 
@@ -304,12 +312,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/smallText"
+
                         android:text="Perfect" />
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/smallText"
+
                         android:text="Too large" />
                 </com.google.android.material.tabs.TabLayout>
                 <TextView
@@ -320,6 +330,7 @@
                     android:text="WIDTH" />
 
                 <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     app:tabIndicatorGravity="top"
                     app:tabIndicatorColor="@color/black"
@@ -336,18 +347,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/smallText"
+
                         android:text="Too narrow" />
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/smallText"
+
                         android:text="Perfect" />
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/smallText"
+
                         android:text="Too wide" />
                 </com.google.android.material.tabs.TabLayout>
                 <TextView
@@ -453,7 +467,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_recommendation"
                 android:layout_width="match_parent"
-                android:paddingStart="4dp"
+                android:paddingStart="16dp"
                 android:paddingBottom="52dp"
                 android:clipToPadding="false"
                 android:layout_marginTop="16dp"

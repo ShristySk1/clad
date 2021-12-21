@@ -17,6 +17,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:linePadding="2dp"
         app:lineWidth="1dp"
+        app:lineStyle="dash"
+        app:lineStyleDashGap="1dp"
        app:markerSize="14dp"
         app:marker="@drawable/circle_with_stroke"
         app:startLineColor="@color/colorGrayText" />
@@ -28,8 +30,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="16dp"
+        style="@style/bigText"
         android:text="Delivered Successfully"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/timeline"
         app:layout_constraintTop_toTopOf="@+id/timeline" />

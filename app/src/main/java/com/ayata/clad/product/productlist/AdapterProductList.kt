@@ -1,20 +1,22 @@
-package com.ayata.clad.product
+package com.ayata.clad.product.productlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.ayata.clad.databinding.ItemRecyclerProductlistBinding
 import com.ayata.clad.databinding.ItemRecyclerRecommendationBinding
+import com.ayata.clad.product.ModelProduct
 
-class AdapterRecommendation(
-    var colorList: List<Int>,
-) : RecyclerView.Adapter<AdapterRecommendation.ViewHolder>() {
+class AdapterProductList(
+    var productList: List<ModelProduct>,
+) : RecyclerView.Adapter<AdapterProductList.ViewHolder>() {
 
     // create an inner class with name ViewHolder
     // It takes a view argument, in which pass the generated class of single_item.xml
     // ie SingleItemBinding and in the RecyclerView.ViewHolder(binding.root) pass it like this
-    inner class ViewHolder(val binding: ItemRecyclerRecommendationBinding) :
+    inner class ViewHolder(val binding: ItemRecyclerProductlistBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun clickView(item: Int) {
+        fun clickView(item: ModelProduct) {
             itemView.setOnClickListener {
                 itemProductClick?.let { function ->
                     function(item)
@@ -26,7 +28,7 @@ class AdapterRecommendation(
     // inside the onCreateViewHolder inflate the view of SingleItemBinding
     // and return new ViewHolder object containing this layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemRecyclerRecommendationBinding.inflate(
+        val binding = ItemRecyclerProductlistBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -43,19 +45,19 @@ class AdapterRecommendation(
     // not setting any image data to view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
-            with(colorList[position]) {
-                holder.clickView(colorList[position])
+            with(productList[position]) {
+                holder.clickView(productList[position])
             }
         }
     }
 
     // return the size of languageList
     override fun getItemCount(): Int {
-        return colorList.size
+        return productList.size
     }
 
-    private var itemProductClick: ((Int) -> Unit)? = null
-    fun setProductClickListener(listener: ((Int) -> Unit)) {
+    private var itemProductClick: ((ModelProduct) -> Unit)? = null
+    fun setProductClickListener(listener: ((ModelProduct) -> Unit)) {
         itemProductClick = listener
     }
 }

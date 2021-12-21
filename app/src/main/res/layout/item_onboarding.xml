@@ -33,14 +33,14 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:layout_marginStart="@dimen/onboard_item_ho_margin"
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/onboard_item_ho_margin"
+        android:layout_marginBottom="200dp"
         android:fontFamily="@font/sf_pro_text_regular"
         android:text="@string/str_ontitle"
         android:textColor="@color/ColorBlack"
-        android:layout_marginBottom="180dp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_onboardimage1"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -10,4 +10,5 @@
     <dimen name="shop_horizontal">15dp</dimen>
 
     <dimen name="shopping_margin1">25dp</dimen>
+    <dimen name="item_offset">2dp</dimen>
 </resources>

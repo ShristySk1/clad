@@ -84,14 +84,11 @@
                         android:layout_width="wrap_content"
 
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="36dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/str_foresend"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintStart_toStartOf="@+id/textView2"
+                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
                     <com.mukesh.OtpView
                         android:id="@+id/pinview"

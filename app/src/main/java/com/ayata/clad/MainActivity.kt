@@ -9,13 +9,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
+import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.thrift.FragmentThrift
-import com.ayata.clad.home.order.FragmentOrderDetail
+import com.ayata.clad.order.FragmentOrderDetail
 import com.ayata.clad.product.FragmentProductDetail
-import com.ayata.clad.product.FragmentProductDetail2
+import com.ayata.clad.product.productlist.FragmentProductList
+import com.ayata.clad.profile.FragmentProfile
+import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -89,11 +92,11 @@ fun hideBottomNavigation(){
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem: MenuItem ->
             var selectedFragment: Fragment? = null
             when (menuItem.itemId) {
-                R.id.nav_home -> selectedFragment =FragmentHome()
-                R.id.nav_hanger -> selectedFragment = FragmentShop()
-                R.id.nav_favorite -> selectedFragment = FragmentShoppingBag()
-                R.id.nav_addcart -> selectedFragment = FragmentHome()
-                R.id.nav_rader -> selectedFragment=FragmentThrift()
+                R.id.nav_home -> selectedFragment =FragmentProductDetail()
+                R.id.nav_hanger -> selectedFragment = FragmentProductList()
+                R.id.nav_favorite -> selectedFragment = FragmentFilter()
+                R.id.nav_addcart -> selectedFragment = FragmentProfile()
+                R.id.nav_rader -> selectedFragment=FragmentWishlist()
             }
             supportFragmentManager.beginTransaction()
 //                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
