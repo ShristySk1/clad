@@ -9,6 +9,23 @@
         app:fontStyle="normal"
         app:fontWeight="400"
         app:font="@font/sf_pro_text_regular"/>
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="300"
+        android:font="@font/sf_pro_text_regular"
+        app:fontStyle="normal"
+        app:fontWeight="300"
+        app:font="@font/sf_pro_text_regular"/>
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="500"
+        android:font="@font/sf_pro_text_regular"
+        app:fontStyle="normal"
+        app:fontWeight="500"
+        app:font="@font/sf_pro_text_regular"/>
+
     <font
         android:fontStyle="italic"
         android:fontWeight="400"
@@ -16,6 +33,14 @@
         app:fontStyle="italic"
         app:fontWeight="400"
         app:font="@font/sf_pro_text_regular_italic"/>
+
+    <font
+        android:font="@font/sf_pro_text_semi_bold"
+        android:fontStyle="normal"
+        android:fontWeight="600"
+        app:font="@font/sf_pro_text_semi_bold"
+        app:fontStyle="normal"
+        app:fontWeight="600" />
     <font
         android:font="@font/sf_pro_text_bold"
         android:fontStyle="normal"
@@ -23,5 +48,21 @@
         app:font="@font/sf_pro_text_bold"
         app:fontStyle="normal"
         app:fontWeight="700" />
+
+    <font
+        android:font="@font/sf_pro_text_bold"
+        android:fontStyle="normal"
+        android:fontWeight="900"
+        app:font="@font/sf_pro_text_bold"
+        app:fontStyle="normal"
+        app:fontWeight="900" />
+
+    <font
+        android:font="@font/sf_pro_text_bold"
+        android:fontStyle="normal"
+        android:fontWeight="800"
+        app:font="@font/sf_pro_text_bold"
+        app:fontStyle="normal"
+        app:fontWeight="800" />
 
 </font-family>

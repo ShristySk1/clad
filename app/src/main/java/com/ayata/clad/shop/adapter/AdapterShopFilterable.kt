@@ -1,17 +1,20 @@
 package com.ayata.clad.shop.adapter
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.shop.model.ModelShop
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import java.util.*
 
 internal class AdapterShopFilterable(private var context: Context?, private var listItems:List<ModelShop>,
@@ -34,6 +37,7 @@ internal class AdapterShopFilterable(private var context: Context?, private var 
             val title=itemView.findViewById<TextView>(R.id.name)
             val comment=itemView.findViewById<TextView>(R.id.comment)
             val image=itemView.findViewById<ImageView>(R.id.image)
+            val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
 
             fun clickView(){
                itemView.setOnClickListener {
@@ -52,10 +56,33 @@ internal class AdapterShopFilterable(private var context: Context?, private var 
 
         holder.comment.text=item.comment
         holder.title.text=item.name
+        holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).asDrawable()
             .load("https://www.coverstory.co.in/media/cms/home/category/work.jpg")
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_launcher_background)
+            .listener(object : RequestListener<Drawable?> {
+                override fun onLoadFailed(
+                    @Nullable e: GlideException?,
+                    model: Any,
+                    target: Target<Drawable?>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.progressBar.visibility = View.GONE
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any,
+                    target: Target<Drawable?>,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.progressBar.visibility = View.GONE
+                    return false
+                }
+            })
+//            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.popularcard)
             .into(holder.image)
         if(item.comment.isNullOrBlank() || item.comment.isNullOrEmpty()){
             holder.comment.visibility=View.GONE

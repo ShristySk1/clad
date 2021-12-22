@@ -112,7 +112,7 @@
         android:layout_below="@id/text_description"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorGray" />
+        android:background="@color/colorGraycircle" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView_float"

@@ -70,8 +70,8 @@ internal class AdapterPaymentMethod(private var context: Context?, private var l
         }
 
         Glide.with(context!!).load(imageList[position])
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_launcher_background)
+//            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.background_gray)
             .into(holder.image)
 
         holder.clickView()

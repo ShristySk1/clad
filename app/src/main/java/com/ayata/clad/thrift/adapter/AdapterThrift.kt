@@ -114,8 +114,8 @@ internal class AdapterThrift(private var context: Context?, private var listItem
         }
         Glide.with(context!!).asDrawable()
             .load("https://i.pinimg.com/originals/e7/16/9c/e7169c1ffa2da5bfece0ad37c6c850e6.png")
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_launcher_background)
+//            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.logo_brand_example)
             .into(holder.imageLogo)
 
         holder.progressBar.visibility=View.VISIBLE
@@ -144,8 +144,8 @@ internal class AdapterThrift(private var context: Context?, private var listItem
                 }
 
             })
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_launcher_background)
+//            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.background_gray)
             .into(holder.imageMain)
 
         seeMoreText(holder.description,item.description,item.boldText)

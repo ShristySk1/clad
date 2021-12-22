@@ -73,7 +73,7 @@ internal class AdapterPopularBrands(private var context:Context?,
                     return false
                 }
             })
-            .error(R.drawable.ic_launcher_background)
+            .error(R.drawable.logo_brand_example)
             .into(holder.image)
 
         holder.clickView()

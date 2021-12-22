@@ -28,6 +28,8 @@
         android:theme="@style/NavBarTheme"
         app:menu="@menu/dashboard_navigation_item"
         app:labelVisibilityMode="unlabeled"
+        app:itemTextColor="@color/nav_bar_color"
+        app:itemIconTint="@color/nav_bar_color"
         />
 
 

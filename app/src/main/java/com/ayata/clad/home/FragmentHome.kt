@@ -25,7 +25,8 @@ import com.ayata.clad.product.FragmentProductDetail
 
 class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
     ,AdapterPopularBrands.OnItemClickListener,AdapterJustDropped.OnItemClickListener
-    ,AdapterMostPopular.OnItemClickListener, AdapterNewSubscription.OnItemClickListener {
+    ,AdapterMostPopular.OnItemClickListener, AdapterNewSubscription.OnItemClickListener
+    ,AdapterStories.OnItemClickListener{
 
     private lateinit var binding: FragmentHomeBinding
 
@@ -74,7 +75,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private fun initRecyclerView() {
         //stories view
-        adapterStories = AdapterStories(context, liststory)
+        adapterStories = AdapterStories(context, liststory,this)
         binding.recyclerStory.apply {
             layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             adapter=adapterStories
@@ -267,6 +268,10 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 //        Toast.makeText(context,"New Subscription: ${data.title}",Toast.LENGTH_SHORT).show()
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
             .addToBackStack(null).commit()
+    }
+
+    override fun onStoryClick(data: ModelStories) {
+        //story
     }
 
 

@@ -79,11 +79,11 @@ internal class AdapterMostPopular(private var context:Context?,
                     return false
                 }
             })
-            .error(R.drawable.ic_launcher_background)
+            .error(R.drawable.shoes)
             .into(holder.image)
 
         Glide.with(context!!).asBitmap().load(item.logoUrl)
-            .error(R.drawable.ic_launcher_background).into(holder.imageLogo)
+            .error(R.drawable.ic_hanger).into(holder.imageLogo)
 
         holder.clickView()
     }

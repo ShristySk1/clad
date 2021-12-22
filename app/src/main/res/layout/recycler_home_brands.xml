@@ -20,7 +20,6 @@
             android:layout_height="match_parent"
             android:src="@drawable/block0"
             android:scaleType="centerInside"
-            app:civ_circle_color="#0D12121D"
             app:civ_border_color="#0D12121D"
             app:civ_border_width="1dp"
             app:civ_shadow="false" />

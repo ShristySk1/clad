@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/layout"
+        android:width="70dp"
+        android:height="70dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/white"/>
+        </shape>
+    </item>
+
+    <item android:id="@+id/inner"
+        android:gravity="center"
+        android:width="25dp"
+        android:height="25dp"
+        android:drawable="@drawable/ic_hanger">
+    </item>
+
+</layer-list>

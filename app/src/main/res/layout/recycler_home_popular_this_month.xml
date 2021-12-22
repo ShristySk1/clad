@@ -28,6 +28,9 @@
             app:cardElevation="0dp"
             app:cardBackgroundColor="@color/colorHomeBack1">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             <ImageView
                 android:id="@+id/image"
                 android:scaleType="fitXY"
@@ -35,6 +38,14 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/popularcard"
                 />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+
         </androidx.cardview.widget.CardView>
 
             <TextView

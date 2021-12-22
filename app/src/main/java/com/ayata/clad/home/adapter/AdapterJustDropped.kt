@@ -75,10 +75,10 @@ internal class AdapterJustDropped(private var context:Context?,
                     return false
                 }
             })
-            .error(R.drawable.ic_launcher_background)
+            .error(R.drawable.shoes)
             .into(holder.image)
 
-        Glide.with(context!!).asBitmap().load(item.logoUrl).error(R.drawable.ic_launcher_background)
+        Glide.with(context!!).asBitmap().load(item.logoUrl).error(R.drawable.ic_hanger)
             .into(holder.logo)
 
         holder.clickView()

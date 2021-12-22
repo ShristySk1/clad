@@ -74,7 +74,7 @@ internal class AdapterNewSubscription(private var context:Context?,
                     return false
                 }
             })
-            .error(R.drawable.ic_launcher_background)
+            .error(R.drawable.popularcard)
             .into(holder.image)
 
         holder.clickView()

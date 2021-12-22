@@ -13,12 +13,25 @@
         app:cardElevation="0dp"
         android:layout_margin="10dp">
 
-        <ImageView
-            android:id="@+id/image"
-            android:scaleType="centerCrop"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_launcher_background"/>
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_launcher_background"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+
     </androidx.cardview.widget.CardView>
 
     <RelativeLayout
