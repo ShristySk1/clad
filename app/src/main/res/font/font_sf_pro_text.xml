@@ -17,6 +17,21 @@
         app:fontStyle="normal"
         app:fontWeight="300"
         app:font="@font/sf_pro_text_regular"/>
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="200"
+        android:font="@font/sf_pro_text_regular"
+        app:fontStyle="normal"
+        app:fontWeight="200"
+        app:font="@font/sf_pro_text_regular"/>
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="100"
+        android:font="@font/sf_pro_text_regular"
+        app:fontStyle="normal"
+        app:fontWeight="100"
+        app:font="@font/sf_pro_text_regular"/>
 
     <font
         android:fontStyle="normal"
