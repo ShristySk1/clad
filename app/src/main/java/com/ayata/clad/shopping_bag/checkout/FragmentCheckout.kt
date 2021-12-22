@@ -81,6 +81,7 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
             "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png"))
 
         adapterCheckout.notifyDataSetChanged()
+        calculatePrice()
     }
 
     override fun onSizeClicked(data: ModelCheckout,position:Int) {
@@ -94,8 +95,26 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
     }
 
     override fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean,position:Int) {
-        Toast.makeText(requireContext(),"Checkbox $isChecked",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(),"Checkbox $isChecked++++$position",Toast.LENGTH_SHORT).show()
+        for(item in listCheckout){
+            if(item == data){
+                item.isSelected=isChecked
+            }
+        }
+        calculatePrice()
+    }
 
+    private fun calculatePrice(){
+        var total_price=0.0
+        var selected=0
+        for(item in listCheckout){
+            if(item.isSelected){
+                total_price+=(item.price*item.qty)
+                selected++
+            }
+        }
+        binding.totalPrice.text="Rs. $total_price"
+        binding.textItemSelected.text="$selected/${listCheckout.count()} ITEMS Selected"
     }
 
     private fun showDialogSize(data: ModelCheckout,position:Int){
@@ -145,9 +164,10 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
                 try {
                     data.qty=listItem.title.toInt()
                 }catch (e:Exception){
-                    data.qty=0
+                    data.qty=1
                 }
                 adapterCheckout.notifyItemChanged(position)
+                calculatePrice()
             }
         }
         prepareListQuantity()

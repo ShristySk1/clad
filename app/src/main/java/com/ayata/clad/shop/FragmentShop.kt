@@ -85,7 +85,7 @@ class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
 
         val tabLayout=binding.tabLayout
         for(tabString in listCategory) {
-            tabLayout.addTab(tabLayout.newTab().setText(tabString))
+            tabLayout.addTab(tabLayout.newTab().setText(tabString.toUpperCase()))
         }
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -188,7 +188,9 @@ class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
     }
 
     override fun onSearchClick(data: ModelShop) {
-        Toast.makeText(context,data.name,Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context,data.name,Toast.LENGTH_SHORT).show()
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductList())
+            .addToBackStack(null).commit()
     }
 
 

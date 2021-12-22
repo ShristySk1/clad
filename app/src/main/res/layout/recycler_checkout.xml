@@ -37,7 +37,8 @@
                     android:layout_margin="6dp"
                     android:background="@drawable/custom_checkbox"
                     android:button="@android:color/transparent"
-                    android:text="" />
+                    android:text=""
+                    />
 
                 <ProgressBar
                     android:id="@+id/progressBar"

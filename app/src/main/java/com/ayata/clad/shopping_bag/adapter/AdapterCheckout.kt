@@ -55,14 +55,12 @@ internal class AdapterCheckout(private var context: Context?, private var listIt
                     onItemClickListener.onSizeClicked(listItems[adapterPosition],adapterPosition)
                 }
                 checkBox.setOnClickListener {
-                    val isChecked=checkBox.isSelected
-                    listItems[adapterPosition].isSelected=isChecked
+                    val isChecked=checkBox.isChecked
                     onItemClickListener.onCheckBoxClicked(listItems[adapterPosition],isChecked,adapterPosition)
                 }
                 cardViewImage.setOnClickListener{
                     checkBox.toggle()
-                    val isChecked=checkBox.isSelected
-                    listItems[adapterPosition].isSelected=isChecked
+                    val isChecked=checkBox.isChecked
                     onItemClickListener.onCheckBoxClicked(listItems[adapterPosition],isChecked,adapterPosition)
                 }
 
