@@ -8,22 +8,19 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ayata.clad.R
-import com.ayata.clad.databinding.FragmentVerificationBinding
-import kotlin.math.log
+import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
-import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener
 import com.ayata.clad.MainActivity
+import com.ayata.clad.databinding.FragmentVerificationBinding
 import com.ayata.clad.utils.PreferenceHandler
 
 class FragmentVerification : Fragment() {
 
     lateinit var activityFragmentVerificationBinding: FragmentVerificationBinding
-    var phone=""
+    var phone = ""
 
 
     override fun onCreateView(
@@ -31,15 +28,16 @@ class FragmentVerification : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        activityFragmentVerificationBinding= FragmentVerificationBinding.inflate(inflater,container,false)
+        activityFragmentVerificationBinding =
+            FragmentVerificationBinding.inflate(inflater, container, false)
         InitValues()
 
-        activityFragmentVerificationBinding.spinKit.visibility=View.GONE
+        activityFragmentVerificationBinding.spinKit.visibility = View.GONE
         initTimer()
         //on pin enter called
         activityFragmentVerificationBinding.pinview.setOtpCompletionListener {
-            activityFragmentVerificationBinding.spinKit.visibility=View.VISIBLE
-            Log.d(TAG, "onCreateView: "+it)
+            activityFragmentVerificationBinding.spinKit.visibility = View.VISIBLE
+            Log.d(TAG, "onCreateView: " + it)
             Checkwithapi(it)
         }
         activityFragmentVerificationBinding.btnresend.setOnClickListener {
@@ -72,15 +70,14 @@ class FragmentVerification : Fragment() {
     }
 
     private fun Checkwithapi(it: String?) {
-        if(!it.isNullOrBlank())
-        {
+        if (!it.isNullOrBlank()) {
             //Here is the code for retro api to check verfication code the response token is store in prefrencehandler
 
 
             Handler(Looper.getMainLooper()).postDelayed(
                 {
                     // This method will be executed once the timer is over
-                    if(it.equals("1111")) {
+                    if (it.equals("1111")) {
                         activityFragmentVerificationBinding.spinKit.visibility = View.GONE
                         val pDialog =
                             SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
@@ -91,7 +88,7 @@ class FragmentVerification : Fragment() {
                         Handler(Looper.getMainLooper()).postDelayed(
                             {
                                 // This method will be executed once the timer is over
-                                startActivity(Intent(context,MainActivity::class.java))
+                                startActivity(Intent(context, MainActivity::class.java))
                                 activity?.finish()
 
                             },
@@ -99,8 +96,7 @@ class FragmentVerification : Fragment() {
                         )
 
 
-
-                    }else{
+                    } else {
                         activityFragmentVerificationBinding.spinKit.visibility = View.GONE
                         SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Oops...")
@@ -114,35 +110,32 @@ class FragmentVerification : Fragment() {
 
     }
 
-    private fun InitValues()
-    {
-        if(!PreferenceHandler.getPhoneNumber(context).isNullOrEmpty())
-            phone=PreferenceHandler.getPhoneNumber(context).toString()
-        Log.d(TAG, "InitValues: "+phone)
+    private fun InitValues() {
+        if (!PreferenceHandler.getPhoneNumber(context).isNullOrEmpty())
+            phone = PreferenceHandler.getPhoneNumber(context).toString()
+        Log.d(TAG, "InitValues: " + phone)
 
     }
 
-    fun  initTimer()
-    {
-        var timer = object: CountDownTimer(9000, 1000) {
+    fun initTimer() {
+        var timer = object : CountDownTimer(9000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                activityFragmentVerificationBinding.textTimer.text="New code in "+(millisUntilFinished / 1000).toString()+" seconds"
-               // tvTimer.setText("seconds remaining: " + millisUntilFinished / 1000)
+                activityFragmentVerificationBinding.textTimer.text =
+                    "New code in " + (millisUntilFinished / 1000).toString() + " seconds"
+                // tvTimer.setText("seconds remaining: " + millisUntilFinished / 1000)
 
             }
 
             override fun onFinish() {
-               // tvTimer.setText("done!")
+                // tvTimer.setText("done!")
             }
         }
         timer.start()
     }
 
-    private fun OncloseClick()
-    {
+    private fun OncloseClick() {
         parentFragmentManager.popBackStack()
     }
-
 
 
 }

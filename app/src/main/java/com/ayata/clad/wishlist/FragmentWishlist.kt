@@ -104,7 +104,11 @@ class FragmentWishlist : Fragment() {
                 myProductList
             ).also {
                 it.setProductClickListener { recommendedProduct ->
-                    Log.d("testmyfilter", "setUpRecyclerRecommendation: " + recommendedProduct);
+                    //wishlist
+                    parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
+                        FragmentProductDetail()
+                    )
+                        .addToBackStack(null).commit()
                 }
             }.also {
                 it.setSettingClickListener {

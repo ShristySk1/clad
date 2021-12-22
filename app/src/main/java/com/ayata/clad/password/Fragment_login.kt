@@ -1,33 +1,28 @@
 package com.ayata.clad.password
 
 import android.content.ContentValues.TAG
-import android.nfc.Tag
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.ayata.clad.R
-import com.ayata.clad.databinding.ActivityLoginandPasswordBinding
 import com.ayata.clad.databinding.FragmentLoginBinding
-import android.text.Editable
-
-import android.text.TextWatcher
-import com.ayata.clad.MainActivity
-import com.ayata.clad.utils.Constants
+import com.ayata.clad.onboarding.ActivityOnboarding
 import com.ayata.clad.utils.PreferenceHandler
-import com.github.ybq.android.spinkit.style.DoubleBounce
-
 import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.Circle
 
 
 class Fragment_login : Fragment() {
     private var phone: String = ""
-    private var countrycode:String=""
+    private var countrycode: String = ""
     lateinit var rootView: View
     lateinit var activityFragmentLoginBinding: FragmentLoginBinding
     override fun onCreateView(
@@ -36,18 +31,22 @@ class Fragment_login : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         activityFragmentLoginBinding = FragmentLoginBinding.inflate(inflater, container, false)
+        activityFragmentLoginBinding.btnClose.setOnClickListener {
+            startActivity(Intent(context, ActivityOnboarding::class.java))
+            activity?.finish()
+        }
         val circle: Sprite = Circle()
         activityFragmentLoginBinding.spinKit.setIndeterminateDrawable(circle)
         activityFragmentLoginBinding.btnnext.setOnClickListener {
             if (validatePhone()) {
-                countrycode=activityFragmentLoginBinding.countryCodePicker.fullNumber
-                Log.d(TAG, "onCreateView: " + phone+"  +"+countrycode)
-                activityFragmentLoginBinding.spinKit.visibility=View.VISIBLE
+                countrycode = activityFragmentLoginBinding.countryCodePicker.fullNumber
+                Log.d(TAG, "onCreateView: " + phone + "  +" + countrycode)
+                activityFragmentLoginBinding.spinKit.visibility = View.VISIBLE
                 Handler(Looper.getMainLooper()).postDelayed(
                     {
                         // This method will be executed once the timer is over
-                        activityFragmentLoginBinding.spinKit.visibility=View.GONE
-                        PreferenceHandler.savePhoneNumber(requireContext(),phone)
+                        activityFragmentLoginBinding.spinKit.visibility = View.GONE
+                        PreferenceHandler.savePhoneNumber(requireContext(), phone)
                         parentFragmentManager.beginTransaction()
                             .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
                             .replace(R.id.fragments_passwords, FragmentVerification())
@@ -88,12 +87,12 @@ class Fragment_login : Fragment() {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
         }
+
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             //This sets a textview to the current length
-             if(count==0)
-             {
-                 activityFragmentLoginBinding.textLayoutMobile.error = null
-             }
+            if (count == 0) {
+                activityFragmentLoginBinding.textLayoutMobile.error = null
+            }
         }
 
         override fun afterTextChanged(s: Editable) {}

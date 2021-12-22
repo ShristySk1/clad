@@ -1,149 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".password.Fragment_login">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="200dp"
-        android:orientation="vertical"
-        >
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="@dimen/di_marginstart_forgot"
-        android:layout_marginTop="@dimen/di_marginstart_forgot"
-        android:background="@drawable/background_circle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_close" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/sf_pro_text_bold"
-        android:text="@string/str_fopassword"
-        android:textColor="@color/black"
-        android:textSize="@dimen/di_verisize"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
-        android:layout_marginTop="8dp"
-        android:text="@string/str_fopasswordheading"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:layout_editor_absoluteX="30dp" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="30dp"
-       android:elevation="0.3dp"
-        android:background="@drawable/background_phonenumber_white"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-        <com.hbb20.CountryCodePicker
-            android:id="@+id/countryCodePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:ccp_autoDetectCountry="true"
-            android:background="@color/ColorWhite"
-            app:ccp_autoDetectLanguage="true"
-            app:ccp_countryAutoDetectionPref="SIM_ONLY"
-            app:ccp_defaultNameCode="NP"
-            app:ccp_textSize="16sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-
-            android:id="@+id/textLayout_mobile"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            app:boxBackgroundColor="@color/black"
-            app:boxBackgroundMode="filled"
-            app:boxStrokeColor="@color/ColorWhite"
-            app:boxStrokeWidth="0dp"
-            app:hintEnabled="false">
+            android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:id="@+id/btn_close"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/background_circle"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/largerText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
+                android:layout_marginTop="30dp"
+                android:text="@string/str_fopassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_close" />
+
+            <TextView
+                android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/edittext_phonenumber"
-                android:autofillHints="phone"
-                android:background="@android:color/white"
-                android:gravity="top"
-                android:hint="phone number"
-                android:inputType="number"
-                android:maxEms="1"
-                android:maxLength="10"
-                android:textSize="18sp" />
+                android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
+                android:layout_marginTop="8dp"
+                android:text="@string/str_fopasswordheading"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                tools:layout_editor_absoluteX="30dp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/di_marginstart_forgot"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="77dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/background_outline_bottom"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/countryCodePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="@color/ColorWhite"
+                    app:ccp_autoDetectCountry="true"
+                    app:ccp_autoDetectLanguage="true"
+                    app:ccp_countryAutoDetectionPref="SIM_ONLY"
+                    app:ccp_defaultNameCode="NP"
+                    app:ccp_textSize="16sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    android:id="@+id/textLayout_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    app:boxBackgroundColor="@color/black"
+                    app:boxBackgroundMode="filled"
+                    app:boxStrokeColor="@color/ColorWhite"
+                    app:boxStrokeWidth="0dp"
+                    app:hintEnabled="false">
 
 
-    <Button
-        android:id="@+id/btnnext"
-        android:layout_width="328dp"
-        android:layout_height="43dp"
-        android:layout_marginHorizontal="@dimen/onboard_item_ho_margin"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="94dp"
-        android:layout_marginEnd="30dp"
-        android:background="@drawable/ripple_on_button_drawable"
-        android:text="@string/str_btnnext"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edittext_phonenumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="phone"
+                        android:background="@android:color/white"
+                        android:gravity="top"
+                        android:hint="phone number"
+                        android:inputType="number"
+                        android:maxEms="1"
+                        android:maxLength="10"
+                        android:textSize="18sp" />
 
-    <com.github.ybq.android.spinkit.SpinKitView
-        android:id="@+id/spin_kit"
-        style="@style/SpinKitView.Large.Circle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:SpinKit_Color="@color/red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btnnext"
+                android:layout_width="328dp"
+                android:layout_height="43dp"
+                android:layout_marginHorizontal="@dimen/onboard_item_ho_margin"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="94dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/ripple_on_button_drawable"
+                android:text="@string/str_btnnext"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:backgroundTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+            <com.github.ybq.android.spinkit.SpinKitView
+                android:id="@+id/spin_kit"
+                style="@style/SpinKitView.Large.Circle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:SpinKit_Color="@color/red"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
 </ScrollView>
