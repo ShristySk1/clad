@@ -1,6 +1,5 @@
 package com.ayata.clad
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.transition.Slide
@@ -16,11 +15,6 @@ import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.thrift.FragmentThrift
-import com.ayata.clad.order.FragmentOrderDetail
-import com.ayata.clad.product.FragmentProductDetail
-import com.ayata.clad.product.FragmentProductDetail2
-import com.ayata.clad.shopping_bag.order_placed.FragmentOrderPlaced
-import com.ayata.clad.product.productlist.FragmentProductList
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView

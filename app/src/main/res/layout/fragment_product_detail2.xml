@@ -41,7 +41,7 @@
         <ImageView
             android:id="@+id/ivClose"
             android:layout_width="50dp"
-            android:background="@drawable/ripple_5dp"
+            android:background="@drawable/ripple_circle_transparent_background"
             android:layout_height="50dp"
             android:paddingVertical="8dp"
             android:paddingHorizontal="16dp"
