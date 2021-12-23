@@ -41,14 +41,14 @@
                 <ImageView
                     android:id="@+id/btnBack"
                     android:layout_width="45dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="10dp"
                     android:background="@drawable/ripple_circle_transparent_background"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    android:padding="14dp"
+                    android:padding="15dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="40dp"
                     android:src="@drawable/ic_arrow_left_angle"
                     android:layout_height="45dp"/>
 
@@ -56,7 +56,7 @@
                     android:id="@+id/btnShare"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/ripple_circle_transparent_background"
                     android:clickable="true"
                     android:focusable="true"

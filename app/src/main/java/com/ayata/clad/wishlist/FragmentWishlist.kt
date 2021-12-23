@@ -11,9 +11,8 @@ import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentWishlistBinding
-import com.ayata.clad.filter.AdapterFilterContent
-import com.ayata.clad.filter.ModelFilterContent
-import com.ayata.clad.filter.MyFilterContentViewItem
+import com.ayata.clad.filter.filterdialog.AdapterFilterContent
+import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.product.AdapterRecommendation
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct

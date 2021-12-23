@@ -1,4 +1,4 @@
-package com.ayata.clad.filter
+package com.ayata.clad.filter.filterdialog
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.ayata.clad.R
-import com.ayata.clad.databinding.ItemRecyclerFilterTypeText2Binding
-import com.ayata.clad.databinding.ItemRecyclerFilterTypeTextBinding
+import com.ayata.clad.databinding.ItemRecyclerFilterDialogcontentTypeText2Binding
+import com.ayata.clad.databinding.ItemRecyclerFilterDialogcontentTypeTextBinding
 
 internal class AdapterFilterContent(
     private var context: Context?,
@@ -18,15 +18,15 @@ internal class AdapterFilterContent(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecyclerViewHolder {
 
         return when (viewType) {
-            R.layout.item_recycler_filter_type_text -> HomeRecyclerViewHolder.SingleViewHolder(
-                ItemRecyclerFilterTypeTextBinding.inflate(
+            R.layout.item_recycler_filter_dialogcontent_type_text -> HomeRecyclerViewHolder.SingleViewHolder(
+                ItemRecyclerFilterDialogcontentTypeTextBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            R.layout.item_recycler_filter_type_text2 -> HomeRecyclerViewHolder.MultipleViewHolder(
-                ItemRecyclerFilterTypeText2Binding.inflate(
+            R.layout.item_recycler_filter_dialogcontent_type_text2 -> HomeRecyclerViewHolder.MultipleViewHolder(
+                ItemRecyclerFilterDialogcontentTypeText2Binding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -52,8 +52,8 @@ internal class AdapterFilterContent(
 
     override fun getItemViewType(position: Int): Int {
         return when (listItems[position]) {
-            is MyFilterContentViewItem.SingleChoice -> R.layout.item_recycler_filter_type_text
-            is MyFilterContentViewItem.MultipleChoice -> R.layout.item_recycler_filter_type_text2
+            is MyFilterContentViewItem.SingleChoice -> R.layout.item_recycler_filter_dialogcontent_type_text
+            is MyFilterContentViewItem.MultipleChoice -> R.layout.item_recycler_filter_dialogcontent_type_text2
         }
     }
 
@@ -66,7 +66,7 @@ internal class AdapterFilterContent(
     sealed class HomeRecyclerViewHolder(binding: ViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        class SingleViewHolder(private val binding: ItemRecyclerFilterTypeTextBinding) :
+        class SingleViewHolder(private val binding: ItemRecyclerFilterDialogcontentTypeTextBinding) :
             HomeRecyclerViewHolder(binding) {
 
             fun bind(
@@ -90,7 +90,7 @@ internal class AdapterFilterContent(
         }
 
 
-        class MultipleViewHolder(private val binding: ItemRecyclerFilterTypeText2Binding) :
+        class MultipleViewHolder(private val binding: ItemRecyclerFilterDialogcontentTypeText2Binding) :
             HomeRecyclerViewHolder(binding) {
             fun bind(
                 item: MyFilterContentViewItem.MultipleChoice,

@@ -1,4 +1,4 @@
-package com.ayata.clad.filter
+package com.ayata.clad.filter.filterdialog
 
 import java.io.Serializable
 

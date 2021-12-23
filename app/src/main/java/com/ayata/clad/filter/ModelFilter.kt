@@ -16,6 +16,9 @@ sealed class MyFilterRecyclerViewItem {
     ) : MyFilterRecyclerViewItem()
 
     class Color(
-        val colorList: List<Int>
+        val id:Int,
+        val title: String,
+        val colorList: List<MyColor>
     ) : MyFilterRecyclerViewItem()
 }
+data class MyColor(val colorName:String,val color: Int)

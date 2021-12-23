@@ -10,6 +10,8 @@ import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentFilterBinding
+import com.ayata.clad.filter.filterdialog.AdapterFilterContent
+import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class FragmentFilter : Fragment() {
@@ -47,6 +49,14 @@ class FragmentFilter : Fragment() {
                     MyFilterRecyclerViewItem.Title(2, "Product Type", "Shoes / Sneakers"),
                     MyFilterRecyclerViewItem.Title(3, "Brand", "Adidas Originals / Nike / Vans"),
                     MyFilterRecyclerViewItem.Title(4, "Size", "US 10 / US 10.5 / US 11"),
+                    MyFilterRecyclerViewItem.Color(
+                        7, "Color", listOf(
+                            MyColor("Black", R.color.black),
+                            MyColor("Blue", R.color.blue_btn_bg_color),
+                            MyColor("Gray", R.color.colorGray)
+                        )
+                    ),
+
                     MyFilterRecyclerViewItem.Title(5, "Discount", "10% and above"),
                     MyFilterRecyclerViewItem.Title(6, "Price Range", "Rs. 1000 - Rs. 25000")
                 )
