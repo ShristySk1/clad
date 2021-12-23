@@ -38,7 +38,7 @@ class FragmentShoppingBag : Fragment() {
     }
 
     private fun initAppbar(){
-        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar1(getString(R.string.shopping_bag),
             isSearch = false,
