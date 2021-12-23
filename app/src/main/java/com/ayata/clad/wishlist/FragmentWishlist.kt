@@ -16,6 +16,7 @@ import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.product.AdapterRecommendation
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
+import com.ayata.clad.product.ModelRecommendedProduct
 import com.ayata.clad.product.productlist.ItemOffsetDecoration
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -34,10 +35,14 @@ class FragmentWishlist : Fragment() {
         myProductList = listOf()
         setUpRecyclerProductList()
         if (myProductList.isEmpty()) {
+            binding.textView12.visibility=View.GONE
+            binding.btnFilter.visibility=View.GONE
             binding.rvWishList.visibility = View.GONE
             binding.llEmpty.visibility = View.VISIBLE
             setUpRecyclerRecommendation()
         } else {
+            binding.textView12.visibility=View.VISIBLE
+            binding.btnFilter.visibility=View.VISIBLE
             binding.llEmpty.visibility = View.GONE
             binding.rvWishList.visibility = View.VISIBLE
         }
@@ -73,11 +78,7 @@ class FragmentWishlist : Fragment() {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = AdapterRecommendation(
-                listOf(
-                    R.color.color1,
-                    R.color.color2,
-                    R.color.color3
-                )
+                prepareDataForRecommended(mutableListOf()).toList()
             ).also {
                 it.setProductClickListener { recommendedProduct ->
                     parentFragmentManager.beginTransaction().replace(
@@ -90,12 +91,38 @@ class FragmentWishlist : Fragment() {
         }
 
     }
+    private fun prepareDataForRecommended(listRecommended: MutableList<ModelRecommendedProduct>): MutableList<ModelRecommendedProduct> {
+        listRecommended.clear()
+        listRecommended.add(
+            ModelRecommendedProduct(
+                "https://freepngimg.com/thumb/categories/627.png",
+                "Nike ISPA Overreact Sail Multi", "Nike Company",
+                "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg",
+                "Rs 3561"
+            )
+        )
+        listRecommended.add(
+            ModelRecommendedProduct(
+                "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
+                "adidas Yeezy Boost 700 MNVN Bone", "Lowest Ask",
+                "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",""
+            )
+        )
+        listRecommended.add(
+            ModelRecommendedProduct(
+                "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
+                "Jordan 11 Retro Low White Concord (W) ", "Lowest Ask",
+                "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",""
+            )
+        )
+        return listRecommended
+
+    }
 
     private fun setUpRecyclerProductList() {
         myProductList = listOf(
-            ModelProduct(1, "", "ss", "com", "$123", false),
-            ModelProduct(2, "", "ss", "com", "$123", false),
-            ModelProduct(3, "", "ss", "com", "$123", false),
+            ModelProduct(1, "https://freepngimg.com/thumb/categories/627.png", "ss", "com", "$123", false),
+            ModelProduct(2, "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w", "ss", "com", "$123", false),
             ModelProduct(1, "", "ss", "com", "$123", false)
         )
         binding.rvWishList.apply {
