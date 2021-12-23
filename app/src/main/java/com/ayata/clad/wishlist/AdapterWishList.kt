@@ -1,10 +1,19 @@
 package com.ayata.clad.wishlist
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
+import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerWishlistBinding
 import com.ayata.clad.product.ModelProduct
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 
 class AdapterWishList(
     var productList: List<ModelProduct>,
@@ -15,6 +24,34 @@ class AdapterWishList(
     inner class ViewHolder(val binding: ItemRecyclerWishlistBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun clickView(item: ModelProduct) {
+            binding.progressBar.visibility = View.VISIBLE
+            Glide.with(binding.image.context)
+                .load(item.image)
+                .listener(object : RequestListener<Drawable?> {
+                    override fun onLoadFailed(
+                        @Nullable e: GlideException?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progressBar.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progressBar.visibility = View.GONE
+                        return false
+                    }
+                })
+                .error(R.drawable.shoes)
+                .into(binding.image)
+
             binding.image.setOnClickListener {
                 itemProductClick?.let { function ->
                     function(item)

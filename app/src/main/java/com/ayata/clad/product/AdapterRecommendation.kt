@@ -1,12 +1,21 @@
 package com.ayata.clad.product
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
+import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerRecommendationBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 
 class AdapterRecommendation(
-    var colorList: List<Int>,
+    var productList: List<ModelRecommendedProduct>,
 ) : RecyclerView.Adapter<AdapterRecommendation.ViewHolder>() {
 
     // create an inner class with name ViewHolder
@@ -14,7 +23,37 @@ class AdapterRecommendation(
     // ie SingleItemBinding and in the RecyclerView.ViewHolder(binding.root) pass it like this
     inner class ViewHolder(val binding: ItemRecyclerRecommendationBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun clickView(item: Int) {
+        fun clickView(item: ModelRecommendedProduct) {
+            binding.progressBar.visibility = View.VISIBLE
+            Glide.with(binding.cardView.context)
+                .load(item.imageUrl)
+                .listener(object : RequestListener<Drawable?> {
+                    override fun onLoadFailed(
+                        @Nullable e: GlideException?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progressBar.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progressBar.visibility = View.GONE
+                        return false
+                    }
+                })
+                .error(R.drawable.shoes)
+                .into(binding.image)
+
+            Glide.with(binding.cardView.context).asBitmap().load(item.logo).error(R.drawable.ic_hanger)
+                .into(binding.imageLogo)
             itemView.setOnClickListener {
                 itemProductClick?.let { function ->
                     function(item)
@@ -43,19 +82,19 @@ class AdapterRecommendation(
     // not setting any image data to view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
-            with(colorList[position]) {
-                holder.clickView(colorList[position])
+            with(productList[position]) {
+                holder.clickView(productList[position])
             }
         }
     }
 
     // return the size of languageList
     override fun getItemCount(): Int {
-        return colorList.size
+        return productList.size
     }
 
-    private var itemProductClick: ((Int) -> Unit)? = null
-    fun setProductClickListener(listener: ((Int) -> Unit)) {
+    private var itemProductClick: ((ModelRecommendedProduct) -> Unit)? = null
+    fun setProductClickListener(listener: ((ModelRecommendedProduct) -> Unit)) {
         itemProductClick = listener
     }
 }
