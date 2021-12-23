@@ -29,7 +29,7 @@ class FragmentOrderPlaced : Fragment() {
     }
 
     private fun initAppbar() {
-        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(false)
     }
     private fun initView(){
