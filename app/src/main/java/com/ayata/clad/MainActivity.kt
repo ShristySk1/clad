@@ -1,21 +1,22 @@
 package com.ayata.clad
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.thrift.FragmentThrift
-import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -203,7 +204,23 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
 //                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
                 .replace(R.id.main_fragment, selectedFragment!!)
+//                .addToBackStack(null)
                 .commit()
             true
         }
+
+    override fun onBackPressed() {
+        val fm = supportFragmentManager
+        for (frag in fm.fragments) {
+            if (frag.isVisible) {
+                val childFm = frag.childFragmentManager
+                if (childFm.backStackEntryCount > 0) {
+                    childFm.popBackStack()
+                    return
+                }
+            }
+        }
+        super.onBackPressed()
+    }
+
 }

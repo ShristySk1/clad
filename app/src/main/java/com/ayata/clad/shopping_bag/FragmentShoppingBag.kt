@@ -2,6 +2,7 @@ package com.ayata.clad.shopping_bag
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -29,10 +30,15 @@ class FragmentShoppingBag : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding= FragmentShoppingBagBinding.inflate(inflater, container, false)
-
+        checkoutPage()
         initAppbar()
         initView()
-        childFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentCheckout()).commit()
+        if(binding.fragmentShopping != null) {
+            if (savedInstanceState == null) {
+                childFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_shopping, FragmentCheckout()).commit()
+            }
+        }
 
         return binding.root
     }

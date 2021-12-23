@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView.BufferType
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
@@ -46,8 +47,10 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 
     private fun initView(){
         binding.btnConfirm.setOnClickListener {
+            parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
             activity?.supportFragmentManager!!.beginTransaction()
                 .replace(R.id.main_fragment,FragmentOrderPlaced())
+                .addToBackStack(null)
                 .commit()
         }
         binding.totalPrice.text="Rs. 7800.0"

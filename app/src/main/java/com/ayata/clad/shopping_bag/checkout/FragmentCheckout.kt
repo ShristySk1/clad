@@ -55,7 +55,7 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
 
         binding.btnCheckout.setOnClickListener {
             parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentShipping())
-                .addToBackStack(null).commit()
+                .addToBackStack("checkout").commit()
         }
 
         binding.totalPrice.text="Rs. 7800"

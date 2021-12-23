@@ -55,7 +55,8 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
         }
 
         binding.btnProceed.setOnClickListener {
-            parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping, FragmentPayment())
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_shopping, FragmentPayment())
                 .addToBackStack(null).commit()
         }
 
