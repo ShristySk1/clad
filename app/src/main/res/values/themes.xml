@@ -119,11 +119,11 @@
         <item name="textAllCaps">true</item>
     </style>
     <style name="SelectableItemTheme">
-        <item name="colorControlHighlight">@color/colorGray</item>
+        <item name="colorControlHighlight">@color/colorGraycircle</item>
     </style>
 
-    <style name="SelectableItemBackgroundProduct">
+    <style name="CustomSelectableItemBackground">
         <item name="android:theme">@style/SelectableItemTheme</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
     </style>
 </resources>
