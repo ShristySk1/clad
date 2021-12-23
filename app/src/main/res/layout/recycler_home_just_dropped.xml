@@ -5,10 +5,7 @@
     android:orientation="vertical"
     android:layout_height="wrap_content"
     android:paddingHorizontal="5dp"
-    android:paddingVertical="5dp"
-    android:foreground="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true">
+    android:paddingVertical="5dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -16,7 +13,8 @@
         app:cardCornerRadius="15dp"
         app:cardElevation="0dp"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="120dp"
+        android:foreground="?attr/selectableItemBackground">
 
         <RelativeLayout
             android:layout_width="match_parent"
