@@ -102,7 +102,7 @@
                         android:autofillHints="phone"
                         android:background="@android:color/white"
                         android:gravity="top"
-                        android:hint="phone number"
+                        android:hint="98XXXXXXXX"
                         android:inputType="number"
                         android:maxEms="1"
                         android:maxLength="10"
