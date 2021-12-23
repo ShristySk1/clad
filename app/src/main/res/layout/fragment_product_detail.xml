@@ -38,19 +38,20 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:src="@drawable/splashimage" />
+
                 <ImageView
                     android:id="@+id/btnBack"
                     android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="40dp"
                     android:background="@drawable/ripple_circle_transparent_background"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:padding="15dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_marginTop="40dp"
+                    android:padding="15dp"
                     android:src="@drawable/ic_arrow_left_angle"
-                    android:layout_height="45dp"/>
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/btnShare"
@@ -65,6 +66,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/btnBack"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -73,20 +75,16 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:layout_editor_absoluteX="16dp">
 
-                    <RatingBar
+                    <com.ayata.clad.utils.SvgRatingBar
                         android:id="@+id/ratingBar1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="20dp"
                         android:layout_marginTop="16dp"
                         android:isIndicator="true"
                         android:numStars="5"
+                        android:progressDrawable="@drawable/custom_rating_star"
                         android:rating="3.5"
-                        android:scaleX=".5"
-                        android:scaleY=".5"
                         android:stepSize="0.5"
-                        android:theme="@style/ratingTheme"
-                        android:transformPivotX="0dp"
-                        android:transformPivotY="0dp"
                         app:layout_constraintStart_toStartOf="@+id/textView7"
                         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -95,6 +93,7 @@
                         style="@style/largerText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:text="Classic Cotton Jacket"
                         app:layout_constraintEnd_toStartOf="@+id/textView9"
                         app:layout_constraintStart_toStartOf="parent"
@@ -134,7 +133,7 @@
                         style="@style/normalText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-16dp"
+                        android:layout_marginTop="16dp"
                         android:text="Color"
                         app:layout_constraintStart_toStartOf="@+id/ratingBar1"
                         app:layout_constraintTop_toBottomOf="@+id/ratingBar1" />
@@ -196,6 +195,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/textView5">
+
                         <ImageView
                             android:id="@+id/imageView5"
                             android:layout_width="50dp"
