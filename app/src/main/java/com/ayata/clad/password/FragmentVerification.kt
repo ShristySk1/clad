@@ -78,13 +78,13 @@ class FragmentVerification : Fragment() {
                 {
                     // This method will be executed once the timer is over
                     if (it.equals("1111")) {
-                        activityFragmentVerificationBinding.spinKit.visibility = View.GONE
-                        val pDialog =
-                            SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
-                        pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
-                        pDialog.titleText = "Loading ..."
-                        pDialog.setCancelable(true)
-                        pDialog.show()
+//                        activityFragmentVerificationBinding.spinKit.visibility = View.GONE
+//                        val pDialog =
+//                            SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
+//                        pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
+//                        pDialog.titleText = "Loading ..."
+//                        pDialog.setCancelable(true)
+//                        pDialog.show()
                         Handler(Looper.getMainLooper()).postDelayed(
                             {
                                 // This method will be executed once the timer is over
