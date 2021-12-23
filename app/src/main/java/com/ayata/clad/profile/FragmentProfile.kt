@@ -47,6 +47,12 @@ class FragmentProfile : Fragment() {
 
     private fun initView() {
 
+        val initials = "Ronesh Shrestha"
+            .split(' ')
+            .mapNotNull { it.firstOrNull()?.toString() }
+            .reduce { acc, s -> acc + s }
+        binding.profileNamePlaceholder.text = initials
+
 
 
     }

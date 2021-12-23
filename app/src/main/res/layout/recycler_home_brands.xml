@@ -11,9 +11,7 @@
         android:layout_height="70dp"
         android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/ripple_circle_white_background"
-        android:clickable="true"
-        android:focusable="true">
+        android:background="@drawable/ripple_circle_white_background">
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
@@ -51,6 +49,7 @@
         android:layout_below="@id/imageLayout"
         android:textAlignment="center"
         android:text="New In"
+        android:textStyle="bold"
         android:textSize="13sp"
         android:textColor="@color/black" />
 

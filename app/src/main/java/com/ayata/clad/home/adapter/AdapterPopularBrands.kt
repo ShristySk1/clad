@@ -36,7 +36,7 @@ internal class AdapterPopularBrands(private var context:Context?,
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
        val layoutImage=itemView.findViewById<View>(R.id.imageLayout)
        fun clickView(){
-           layoutImage.setOnClickListener {
+           itemView.setOnClickListener {
                onItemClickListener.onPopularBrandsClicked(listItems[adapterPosition],adapterPosition)
            }
        }

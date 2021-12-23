@@ -22,7 +22,7 @@ import com.google.android.material.circularreveal.cardview.CircularRevealCardVie
 import com.mikhaellopez.circularimageview.CircularImageView
 
 internal  class AdapterStories(private var context:Context?, private var listItems:List<ModelStories>
-    ,private val onItemClickListener: OnItemClickListener):RecyclerView.Adapter<AdapterStories.MyViewHolder>(){
+    ,private var onItemClickListener: OnItemClickListener):RecyclerView.Adapter<AdapterStories.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view= LayoutInflater.from(context).inflate(R.layout.recycler_home_story,parent,false)
@@ -73,6 +73,8 @@ internal  class AdapterStories(private var context:Context?, private var listIte
                 }
             })
             .error(R.drawable.logo_brand_example).into(holder.image)
+
+        holder.clickView()
     }
 
     override fun getItemCount(): Int {

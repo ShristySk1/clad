@@ -80,8 +80,8 @@ class FragmentProductList : Fragment() {
             layoutManager =
                 GridLayoutManager(requireContext(), 2)
             adapter = adapterProductList
-            val itemDecoration = ItemOffsetDecoration(context, R.dimen.item_offset)
-            addItemDecoration(itemDecoration)
+//            val itemDecoration = ItemOffsetDecoration(context, R.dimen.item_offset)
+//            addItemDecoration(itemDecoration)
         }
 
         prepareProductList()
@@ -122,6 +122,7 @@ class ItemOffsetDecoration(private val mItemOffset: Int) : ItemDecoration() {
         state: RecyclerView.State
     ) {
         super.getItemOffsets(outRect, view, parent, state)
-        outRect[mItemOffset, mItemOffset, mItemOffset] = mItemOffset
+//        outRect[mItemOffset, mItemOffset, mItemOffset] = mItemOffset
+        outRect.set(mItemOffset,0,mItemOffset,0)
     }
 }

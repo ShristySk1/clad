@@ -42,7 +42,8 @@ class MainActivity : AppCompatActivity() {
 
     fun showBottomNavigation(show: Boolean) {
         if (show) {
-            binding.bottomNavigationView.visibility = View.VISIBLE
+//            binding.bottomNavigationView.visibility = View.VISIBLE
+            binding.bottomNavigationView.slideVisibility(show)
         } else {
             binding.bottomNavigationView.visibility = View.GONE
         }
@@ -171,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setStatusBarLight(color: Int) {
+    private fun setStatusBarLight(color: Int) {
         val window: Window = this.window
         var flags = window.decorView.systemUiVisibility // get current flag
         flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // add LIGHT_STATUS_BAR to flag
@@ -179,7 +180,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, color)
     }
 
-    private fun View.slideVisibility(visibility: Boolean, durationTime: Long = 300) {
+    private fun View.slideVisibility(visibility: Boolean, durationTime: Long = 250) {
         val transition = Slide(Gravity.BOTTOM)
         transition.apply {
             duration = durationTime

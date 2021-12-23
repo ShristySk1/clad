@@ -46,7 +46,9 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 
     private fun initView(){
         binding.btnConfirm.setOnClickListener {
-            activity?.supportFragmentManager!!.beginTransaction().replace(R.id.main_fragment,FragmentOrderPlaced()).commit()
+            activity?.supportFragmentManager!!.beginTransaction()
+                .replace(R.id.main_fragment,FragmentOrderPlaced())
+                .commit()
         }
         binding.totalPrice.text="Rs. 7800.0"
     }
