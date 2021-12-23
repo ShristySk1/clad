@@ -25,7 +25,7 @@ class FragmentFilter : Fragment() {
         return binding.root
     }
 
-    private fun initAppbar(){
+    private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar2(
@@ -53,7 +53,17 @@ class FragmentFilter : Fragment() {
             myAdapter.setFilterClickListener {
                 when (it.id) {
                     1 -> {//Sort by
-                        showDialog(it.title)
+                        val list = listOf(
+                            MyFilterContentViewItem.SingleChoice("Recommended", true),
+                            MyFilterContentViewItem.SingleChoice("Price (low - high)", false),
+                            MyFilterContentViewItem.SingleChoice("Price (high - low)", false),
+                        )
+//                        val list = listOf(
+//                            MyFilterContentViewItem.MultipleChoice("Recommended", true),
+//                            MyFilterContentViewItem.MultipleChoice("Price (low - high)", false),
+//                            MyFilterContentViewItem.MultipleChoice("Price (high - low)", false),
+//                        )
+                        showDialogSingleChoice(it.title, list)
                     }
                     2 -> {//Product Type
 
@@ -74,15 +84,14 @@ class FragmentFilter : Fragment() {
         }
     }
 
-    private fun showDialog(title: String) {
+    private fun showDialogSingleChoice(
+        title: String,
+        list: List<MyFilterContentViewItem.SingleChoice>
+    ) {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(dialogBinding.root)
-        val list = listOf(
-            ModelFilterContent("Recommended", true),
-            ModelFilterContent("Price (low - high)", false),
-            ModelFilterContent("Price (high - low)", false)
-        )
+
         val adapterfilterContent = AdapterFilterContent(
             context, list
         ).also { adapter ->
@@ -104,4 +113,39 @@ class FragmentFilter : Fragment() {
         }
         bottomSheetDialog.show()
     }
+
+    private fun showDialogMultipleChoice(
+        title: String,
+        list: List<MyFilterContentViewItem.MultipleChoice>
+    ) {
+        val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
+        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(dialogBinding.root)
+
+        val adapterfilterContent = AdapterFilterContent(
+            context, list
+        ).also { adapter ->
+            adapter.setFilterContentMultipleClickListener { data ->
+                for (item in list) {
+                    if (item.equals(data)) {
+                        item.isSelected = !item.isSelected
+                        adapter.notifyItemChanged(list.indexOf(item))
+                        return@setFilterContentMultipleClickListener
+                    }
+                }
+
+            }
+        }
+        dialogBinding.title.text = title
+        dialogBinding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = adapterfilterContent
+        }
+
+        dialogBinding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
+    }
+
 }

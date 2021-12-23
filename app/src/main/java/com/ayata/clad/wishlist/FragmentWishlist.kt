@@ -1,7 +1,6 @@
 package com.ayata.clad.wishlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentWishlistBinding
 import com.ayata.clad.filter.AdapterFilterContent
 import com.ayata.clad.filter.ModelFilterContent
+import com.ayata.clad.filter.MyFilterContentViewItem
 import com.ayata.clad.product.AdapterRecommendation
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
@@ -47,12 +47,13 @@ class FragmentWishlist : Fragment() {
 
     private fun settUpFilterListener() {
         binding.btnFilter.setOnClickListener {
+            val list = listOf(
+                MyFilterContentViewItem.SingleChoice("Recommended", true),
+                MyFilterContentViewItem.SingleChoice("Price (low - high)", false),
+                MyFilterContentViewItem.SingleChoice("Price (high - low)", false),
+            )
             showDialog(
-                "SORT BY", listOf(
-                    ModelFilterContent("Recommended", true),
-                    ModelFilterContent("Price (low - high)", false),
-                    ModelFilterContent("Price (high - low)", false)
-                )
+                "SORT BY", list
             )
         }
     }
@@ -80,7 +81,8 @@ class FragmentWishlist : Fragment() {
                 )
             ).also {
                 it.setProductClickListener { recommendedProduct ->
-                    parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
+                    parentFragmentManager.beginTransaction().replace(
+                        R.id.main_fragment,
                         FragmentProductDetail()
                     )
                         .addToBackStack(null).commit()
@@ -105,7 +107,8 @@ class FragmentWishlist : Fragment() {
             ).also {
                 it.setProductClickListener { recommendedProduct ->
                     //wishlist
-                    parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
+                    parentFragmentManager.beginTransaction().replace(
+                        R.id.main_fragment,
                         FragmentProductDetail()
                     )
                         .addToBackStack(null).commit()
@@ -113,8 +116,8 @@ class FragmentWishlist : Fragment() {
             }.also {
                 it.setSettingClickListener {
                     val list = listOf(
-                        ModelFilterContent("Add to Bag", false),
-                        ModelFilterContent("Remove from wishlist", false)
+                        MyFilterContentViewItem.SingleChoice("Add to Bag", false),
+                        MyFilterContentViewItem.SingleChoice("Remove from wishlist", false)
                     )
                     showDialog("Options", list)
                 }
@@ -124,7 +127,7 @@ class FragmentWishlist : Fragment() {
         }
     }
 
-    private fun showDialog(title: String, listContent: List<ModelFilterContent>) {
+    private fun showDialog(title: String, listContent: List<MyFilterContentViewItem.SingleChoice>) {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(dialogBinding.root)
