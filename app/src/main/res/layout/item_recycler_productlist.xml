@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
-    android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="120dp"
+        style="@style/CustomSelectableItemBackground"
         android:layout_marginLeft="0dp"
         android:background="@drawable/background_gray"
         android:scaleType="centerInside"

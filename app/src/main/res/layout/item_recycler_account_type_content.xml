@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingVertical="20dp"
     android:paddingHorizontal="16dp"
-    android:foreground="?attr/selectableItemBackground"
+    style="@style/CustomSelectableItemBackground"
     android:background="@drawable/background_outline_bottom"
     android:orientation="horizontal">
 <TextView
