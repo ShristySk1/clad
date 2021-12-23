@@ -27,11 +27,11 @@
 
         <ImageView
             android:id="@+id/btnSearch"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/appbar_icon_size"
+            android:layout_height="@dimen/appbar_icon_size"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:padding="3dp"
+            android:layout_marginEnd="8dp"
+            android:padding="@dimen/appbar_icon_padding2"
             android:layout_toStartOf="@id/layout_3"
             android:background="@drawable/ripple_5dp"
             android:clickable="true"
@@ -44,12 +44,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="12dp">
+            android:layout_marginEnd="10dp">
         <ImageView
             android:id="@+id/btnProfile"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:padding="3dp"
+            android:layout_width="@dimen/appbar_icon_size"
+            android:layout_height="@dimen/appbar_icon_size"
+            android:padding="@dimen/appbar_icon_padding2"
             android:background="@drawable/ripple_5dp"
             android:clickable="true"
             android:focusable="true"
@@ -59,12 +59,12 @@
 
         <ImageView
             android:id="@+id/btnClose_profile"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/appbar_icon_size"
+            android:layout_height="@dimen/appbar_icon_size"
             android:background="@drawable/ripple_5dp"
             android:clickable="true"
             android:focusable="true"
-            android:padding="7dp"
+            android:padding="@dimen/appbar_icon_padding1"
             android:src="@drawable/ic_close"
             android:visibility="visible" />
         </RelativeLayout>
@@ -85,23 +85,23 @@
 
             <ImageView
                 android:id="@+id/btnClose"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/appbar_icon_size"
+                android:layout_height="@dimen/appbar_icon_size"
                 android:background="@drawable/ripple_5dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="7dp"
+                android:padding="@dimen/appbar_icon_padding1"
                 android:src="@drawable/ic_close"
                 android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/btnBack"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/appbar_icon_size"
+                android:layout_height="@dimen/appbar_icon_size"
                 android:background="@drawable/ripple_5dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="7dp"
+                android:padding="@dimen/appbar_icon_padding1"
                 android:src="@drawable/ic_arrow_left_angle"
                 android:visibility="gone" />
 
@@ -168,9 +168,9 @@
                 android:visibility="visible"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="5dp"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:padding="@dimen/appbar_icon_padding3"
+                android:layout_width="@dimen/appbar_icon_size"
+                android:layout_height="@dimen/appbar_icon_size"
                 android:src="@drawable/ic_filter"
                 android:background="@drawable/ripple_5dp"
                 app:tint="@color/black" />
