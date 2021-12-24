@@ -56,6 +56,10 @@ class FragmentShoppingBag : Fragment() {
     private fun initView(){
         binding.layoutEmpty.visibility=View.GONE
         binding.layoutFilled.visibility=View.VISIBLE
+
+        binding.btnBrowse.setOnClickListener {
+            (activity as MainActivity).openFragmentShop()
+        }
     }
 
     fun checkoutPage(){

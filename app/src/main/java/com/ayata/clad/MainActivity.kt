@@ -223,4 +223,12 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
+    fun openFragmentShop(){
+        binding.bottomNavigationView.selectedItemId=R.id.nav_hanger
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment,FragmentShop())
+            .addToBackStack(null)
+            .commit()
+    }
+
 }
