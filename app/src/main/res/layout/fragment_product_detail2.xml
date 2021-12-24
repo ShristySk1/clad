@@ -15,17 +15,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_outline_bottom"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingVertical="10dp"
-        android:gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:paddingLeft="16dp"
             style="@style/bigText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
             android:text="CLASSIC RETRO\nCOTTON JACKET" />
 
         <TextView
@@ -41,25 +41,25 @@
         <ImageView
             android:id="@+id/ivClose"
             android:layout_width="50dp"
-            android:background="@drawable/ripple_circle_transparent_background"
             android:layout_height="50dp"
-            android:paddingVertical="8dp"
+            android:background="@drawable/ripple_circle_transparent_background"
             android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
             android:src="@drawable/ic_close" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/nestedScroll"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:nestedScrollingEnabled="false"
+            android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,13 +87,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:paddingRight="100dp"
-                    android:text="Apply the coupon during chekcout. Orders above Rs. 1999 (only on first purchase). T&amp;C apply."
+                    android:text="Apply the coupon during checkout. Orders above Rs. 1999 (only on first purchase). T&amp;C apply."
                     app:layout_constraintStart_toStartOf="@+id/textView10"
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
                 <TextView
                     android:id="@+id/tv_text_to_copy"
-                    style="@style/normalText"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -101,6 +101,9 @@
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="8dp"
                     android:text="CLAD300"
+                    android:textAllCaps="true"
+                    style="@style/CustomSelectableItemBackground"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/textView11"
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />
@@ -110,10 +113,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Tap to copy"
+                    android:background="@drawable/ripple_text_5dp"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
-                    android:background="@drawable/ripple_text_5dp"
+                    android:text="Tap to copy"
                     android:textColor="@color/colorGrayText"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_text_to_copy"
                     app:layout_constraintStart_toEndOf="@+id/tv_text_to_copy"
@@ -141,10 +144,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:id="@+id/rv_size"
                     app:layout_constraintTop_toBottomOf="@+id/textView14" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -181,7 +184,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:text="EXHCHANGES AND RETURNS" />
+                    android:text="EXCHANGES AND RETURNS" />
 
                 <TextView
                     android:id="@+id/textView18"
@@ -245,8 +248,8 @@
                     android:layout_height="wrap_content"
                     android:isIndicator="true"
                     android:numStars="5"
-                    android:rating="4.5"
                     android:progressDrawable="@drawable/custom_rating_star"
+                    android:rating="4.5"
                     android:stepSize="0.5"
 
 
@@ -268,207 +271,216 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="52dp"
-                android:background="@drawable/background_outline_bottom"
                 android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/background_outline_bottom"
+                android:orientation="vertical"
 
-                android:orientation="vertical">
+                android:paddingBottom="52dp">
 
                 <TextView
                     android:id="@+id/textView24"
-                    android:layout_width="match_parent"
                     style="@style/normalBoldText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="SIZE" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab"
                     android:layout_width="match_parent"
-                    app:tabIndicatorGravity="top"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/tab_background_selector_product"
+                    android:clickable="false"
+                    app:tabGravity="fill"
                     app:tabIndicatorColor="@color/black"
                     app:tabIndicatorFullWidth="false"
-                    app:tabSelectedTextColor="@color/black"
+                    app:tabIndicatorGravity="top"
                     app:tabIndicatorHeight="3dp"
-                    app:tabGravity="fill"
-                    android:clickable="false"
-                    android:background="@drawable/tab_background_selector_product"
+                    app:tabSelectedTextColor="@color/black"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
-                    app:tabTextColor="#BDBDBD"
-                    android:layout_marginTop="20dp"
-                    android:layout_height="wrap_content">
+                    app:tabTextColor="#BDBDBD">
 
                     <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
                         style="@style/smallText"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
                         android:text="Too small" />
 
                     <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/smallText"
 
                         android:text="Perfect" />
 
                     <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/smallText"
 
                         android:text="Too large" />
                 </com.google.android.material.tabs.TabLayout>
+
                 <TextView
                     android:id="@+id/textView25"
-                    android:layout_width="match_parent"
                     style="@style/normalBoldText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="WIDTH" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
-                    app:tabIndicatorGravity="top"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/tab_background_selector_product"
                     app:tabIndicatorColor="@color/black"
                     app:tabIndicatorFullWidth="false"
-                    app:tabSelectedTextColor="@color/black"
+                    app:tabIndicatorGravity="top"
                     app:tabIndicatorHeight="3dp"
-                    android:background="@drawable/tab_background_selector_product"
+                    app:tabSelectedTextColor="@color/black"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
-                    app:tabTextColor="#BDBDBD"
-                    android:layout_marginTop="20dp"
-                    android:layout_height="wrap_content">
+                    app:tabTextColor="#BDBDBD">
 
                     <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/smallText"
 
                         android:text="Too narrow" />
 
                     <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/smallText"
 
                         android:text="Perfect" />
 
                     <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/smallText"
 
                         android:text="Too wide" />
                 </com.google.android.material.tabs.TabLayout>
+
                 <TextView
                     android:id="@+id/textView26"
-                    android:layout_width="match_parent"
                     style="@style/normalBoldText"
-                    android:layout_marginTop="8dp"
-                    android:textAllCaps="true"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Comfort" />
+                    android:layout_marginTop="8dp"
+                    android:text="Comfort"
+                    android:textAllCaps="true" />
+
                 <ProgressBar
                     android:id="@+id/progressBar"
-                    android:layout_below="@+id/layout_texts"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:progress="80"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:indeterminate="false"
-                    android:progressDrawable="@drawable/progressbar_custom"
+                    android:layout_below="@+id/layout_texts"
                     android:layout_marginTop="20dp"
-                    />
+                    android:indeterminate="false"
+                    android:progress="80"
+                    android:progressDrawable="@drawable/progressbar_custom" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
+
                     <TextView
-                        android:layout_width="0dp"
                         style="@style/smallBlackText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+                        android:text="Uncomfortable"
+                        android:textAlignment="textStart" />
+
+                    <TextView
+                        style="@style/smallBlackText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
 
-                        android:textAlignment="textStart"
-                        android:layout_height="wrap_content"
-                        android:text="Uncomfortable" />
+                        android:text="Perfect"
+                        android:textAlignment="center" />
+
                     <TextView
-                        android:layout_width="0dp"
                         style="@style/smallBlackText"
-                        android:textAlignment="center"
+                        android:layout_width="0dp"
+
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
 
-                        android:layout_height="wrap_content"
-                        android:text="Perfect" />
-                    <TextView
-                        android:layout_width="0dp"
-                        style="@style/smallBlackText"
-
-                        android:textAlignment="textEnd"
-                        android:layout_weight="1"
-
-                        android:layout_height="wrap_content"
-                        android:text="Comfortable" />
+                        android:text="Comfortable"
+                        android:textAlignment="textEnd" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView27"
-                    android:layout_width="match_parent"
                     style="@style/normalBoldText"
-                    android:textAllCaps="true"
-                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Quality" />
+                    android:layout_marginTop="20dp"
+                    android:text="Quality"
+                    android:textAllCaps="true" />
+
                 <ProgressBar
                     android:id="@+id/progressBar2"
-                    android:layout_below="@+id/layout_texts"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:progress="80"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:indeterminate="false"
-                    android:progressDrawable="@drawable/progressbar_custom"
+                    android:layout_below="@+id/layout_texts"
                     android:layout_marginTop="20dp"
-                    />
+                    android:indeterminate="false"
+                    android:progress="80"
+                    android:progressDrawable="@drawable/progressbar_custom" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
+
                     <TextView
-                        android:layout_width="0dp"
                         style="@style/smallBlackText"
-                        android:layout_weight="1"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Poor" />
+
                     <TextView
-                        android:layout_width="0dp"
                         style="@style/smallBlackText"
-                        android:textAlignment="textEnd"
-                        android:layout_weight="1"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Perfect" />
+                        android:layout_weight="1"
+                        android:text="Perfect"
+                        android:textAlignment="textEnd" />
                 </LinearLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView28"
                 style="@style/bigText"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
                 android:text="OTHERS ALSO BOUGHT" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_recommendation"
                 android:layout_width="match_parent"
-                android:paddingStart="16dp"
-                android:paddingBottom="52dp"
-                android:clipToPadding="false"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_height="wrap_content"/>
+                android:clipToPadding="false"
+                android:paddingStart="16dp"
+                android:paddingBottom="52dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

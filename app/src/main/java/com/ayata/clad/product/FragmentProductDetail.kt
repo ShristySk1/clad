@@ -96,6 +96,18 @@ class FragmentProductDetail : Fragment() {
 //                toast.setGravity(Gravity.BOTTOM or Gravity.RIGHT, 50, 50)
                 toast.show()
             }
+        binding
+            .detail2.tvTextToCopy.setOnClickListener {
+                val text =
+                    requireContext().copyToClipboard(binding.detail2.tvTextToCopy.text.toString())
+                Log.d(TAG, "tapToCopyListener: " + text);
+                val toast = Toast.makeText(
+                    requireContext(),
+                    "Copied to Clipboard!", Toast.LENGTH_SHORT
+                )
+//                toast.setGravity(Gravity.BOTTOM or Gravity.RIGHT, 50, 50)
+                toast.show()
+            }
     }
 
     private fun setUpRecyclerRecommendation() {
