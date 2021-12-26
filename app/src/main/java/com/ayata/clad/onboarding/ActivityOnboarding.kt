@@ -32,6 +32,7 @@ class ActivityOnboarding : AppCompatActivity(), AdapaterActivityOnboarding.setOn
         val adapter = AdapaterActivityOnboarding(this)
         viewPager2.adapter = adapter
 
+
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         TabLayoutMediator(tabLayout, viewPager2,
             TabLayoutMediator.TabConfigurationStrategy { tab: TabLayout.Tab?, position: Int -> }
