@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".password.Fragment_login">
+    tools:context=".login.FragmentLogin">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -83,7 +83,6 @@
                     app:ccp_textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-
                     android:id="@+id/textLayout_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

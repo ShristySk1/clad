@@ -4,13 +4,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ActivityOnboardingBinding
-import com.ayata.clad.password.LoginandPassword
+import com.ayata.clad.login.LoginActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -38,7 +37,7 @@ class ActivityOnboarding : AppCompatActivity(), AdapaterActivityOnboarding.setOn
         ).attach()
 
         activityOnboarding.btnonboard.setOnClickListener {
-            val intent = Intent(applicationContext, LoginandPassword::class.java)
+            val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }

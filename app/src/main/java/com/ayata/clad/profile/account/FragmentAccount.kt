@@ -9,9 +9,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
+import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.ActivityOnboardingBinding
 import com.ayata.clad.databinding.FragmentAccountBinding
 import com.ayata.clad.onboarding.ActivityOnboarding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class FragmentAccount : Fragment() {
     lateinit var binding: FragmentAccountBinding
@@ -30,7 +36,10 @@ class FragmentAccount : Fragment() {
 
     private fun initView() {
         binding.btnLogOut.setOnClickListener {
-            startActivity(Intent(context, ActivityOnboarding::class.java))
+            GlobalScope.launch(Dispatchers.IO) {
+                DataStoreManager(requireContext()).logout()
+                startActivity(Intent(context, ActivityOnboarding::class.java))
+            }
         }
     }
 

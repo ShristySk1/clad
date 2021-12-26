@@ -1,8 +1,7 @@
-package com.ayata.clad.password
+package com.ayata.clad.login
 
 import android.content.ContentValues.TAG
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -11,18 +10,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.ayata.clad.MainActivity
+import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.FragmentVerificationBinding
 import com.ayata.clad.utils.PreferenceHandler
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
 class FragmentVerification : Fragment() {
 
     lateinit var activityFragmentVerificationBinding: FragmentVerificationBinding
     var phone = ""
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -118,7 +121,7 @@ class FragmentVerification : Fragment() {
     }
 
     fun initTimer() {
-        var timer = object : CountDownTimer(9000, 1000) {
+        val timer = object : CountDownTimer(9000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 activityFragmentVerificationBinding.textTimer.text =
                     "New code in " + (millisUntilFinished / 1000).toString() + " seconds"
@@ -137,5 +140,22 @@ class FragmentVerification : Fragment() {
         parentFragmentManager.popBackStack()
     }
 
+    private fun saveToDataStore(){
+        val dataStoreManager=DataStoreManager(requireContext())
+        GlobalScope.launch(Dispatchers.IO) {
+            dataStoreManager.savePhoneNumber("1000000000")
+        }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            dataStoreManager.getPhoneNumber().catch { e ->
+                e.printStackTrace()
+            }.collect {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context,"$it",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    }
 
 }
