@@ -32,12 +32,13 @@
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                 tools:context=".product.FragmentProductDetail">
 
-                <ImageView
+                <com.ayata.clad.utils.PercentageCropImageView
                     android:id="@+id/imageView3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/splashimage" />
+                    android:src="@drawable/splashimage"
+                    android:scaleType="matrix"
+                    />
 
                 <ImageView
                     android:id="@+id/btnBack"

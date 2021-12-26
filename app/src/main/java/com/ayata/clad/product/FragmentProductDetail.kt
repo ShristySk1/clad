@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentProductDetailBinding
-import com.ayata.clad.home.model.ModelJustDropped
-import com.ayata.clad.home.model.ModelRecommended
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
+import com.ayata.clad.utils.PercentageCropImageView
+import com.ayata.clad.utils.TopRightCropTransformation
 import com.ayata.clad.utils.copyToClipboard
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -140,15 +142,19 @@ class FragmentProductDetail : Fragment() {
         listRecommended.add(
             ModelRecommendedProduct(
                 "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-                "adidas Yeezy Boost 700 MNVN Bone", "Lowest Ask",
-                "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",""
+                "adidas Yeezy Boost 700 MNVN Bone",
+                "Lowest Ask",
+                "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",
+                ""
             )
         )
         listRecommended.add(
             ModelRecommendedProduct(
                 "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-                "Jordan 11 Retro Low White Concord (W) ", "Lowest Ask",
-                "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",""
+                "Jordan 11 Retro Low White Concord (W) ",
+                "Lowest Ask",
+                "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",
+                ""
             )
         )
         return listRecommended
@@ -160,6 +166,7 @@ class FragmentProductDetail : Fragment() {
         (activity as MainActivity).showBottomNavigation(false)
         val product = ModelProduct(1, "", "ss", "com", "$123", false)
 
+        setProductImage(binding.imageView3)
         binding.btnBack.setOnClickListener {
             parentFragmentManager.popBackStackImmediate()
         }
@@ -168,6 +175,21 @@ class FragmentProductDetail : Fragment() {
             //share
         }
 
+    }
+
+    private fun setProductImage(imageView: PercentageCropImageView) {
+//        Glide.with(requireContext())
+//            .load(R.drawable.splashimage)
+//            .transition(DrawableTransitionOptions.withCrossFade())
+//            .transform(TopRightCropTransformation(requireContext(), 0f, 0f))
+//            .into(binding.imageView3)
+
+
+        imageView.setCropYCenterOffsetPct(0f);
+////        If you wish to have a bottom crop, call:
+//        imageView.setCropYCenterOffsetPct(1.0f);
+////        If you wish to have a crop 1/3 of the way down, call:
+//        imageView.setCropYCenterOffsetPct(0.33f);
     }
 
     private fun setUpTabChoose() {

@@ -15,17 +15,19 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
     private val listitem: List<ModelOrderTrack>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): modelViewHolder {
         val view: View =
-            LayoutInflater.from(context).inflate(R.layout.item_recycler_order_tracker, parent, false)
+            LayoutInflater.from(context)
+                .inflate(R.layout.item_recycler_order_tracker, parent, false)
         return modelViewHolder(view, viewType)
     }
+
     override fun onBindViewHolder(holder: modelViewHolder, position: Int) {
         val modelOrderTrack: ModelOrderTrack = listitem[position]
         holder.title.setText(modelOrderTrack.orderTrackTitle)
         holder.desc.setText(modelOrderTrack.orderTrackDescription)
         val color: Int = listitem[position].color
-        holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_without_stroke)
+        holder.mTimelineView.marker = context.getDrawable(R.drawable.circle_without_stroke)
         if (modelOrderTrack.ordertype.equals(ModelOrderTrack.ORDER_TYPE_NONE)) {
-            holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_without_stroke)
+            holder.mTimelineView.marker = context.getDrawable(R.drawable.circle_without_stroke)
             //to set color for completed task
             holder.title.setTextColor(context.resources.getColor(color))
             holder.desc.setTextColor(context.resources.getColor(color))
@@ -35,8 +37,8 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
             if (position == 0) {
                 if (!modelOrderTrack.actual) {
                     holder.mTimelineView.setEndLineColor(context.resources.getColor(color), 1)
-                }else{
-                    holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_with_stroke)
+                } else {
+                    holder.mTimelineView.marker = context.getDrawable(R.drawable.circle_with_stroke)
                 }
                 //do nothing
             } else {
@@ -55,7 +57,7 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
                         0
                     )
 
-                    holder.mTimelineView.marker=context.getDrawable(R.drawable.circle_with_stroke)
+                    holder.mTimelineView.marker = context.getDrawable(R.drawable.circle_with_stroke)
                 }
             }
             Log.d(
@@ -74,7 +76,9 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
         var mTimelineView: TimelineView
         var title: TextView
         var desc: TextView
+
         init {
+
             mTimelineView = itemView.findViewById<View>(R.id.timeline) as TimelineView
             title = itemView.findViewById(R.id.title)
             desc = itemView.findViewById(R.id.desc)
@@ -85,6 +89,7 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
     override fun getItemViewType(position: Int): Int {
         return TimelineView.getTimeLineViewType(position, itemCount)
     }
+
     init {
         this.listitem = listitem
     }
