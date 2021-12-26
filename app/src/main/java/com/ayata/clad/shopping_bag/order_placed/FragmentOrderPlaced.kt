@@ -38,7 +38,7 @@ class FragmentOrderPlaced : Fragment() {
 
         binding.btnView.setOnClickListener {
             parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentOrderDetail())
-                .addToBackStack(null).commit()
+                .commit()
         }
     }
 

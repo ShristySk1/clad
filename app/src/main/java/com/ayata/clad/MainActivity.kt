@@ -3,13 +3,13 @@ package com.ayata.clad
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
@@ -202,9 +202,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_rader -> selectedFragment = FragmentThrift()
             }
             supportFragmentManager.beginTransaction()
-//                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
                 .replace(R.id.main_fragment, selectedFragment!!)
-//                .addToBackStack(null)
                 .commit()
             true
         }
@@ -215,12 +213,15 @@ class MainActivity : AppCompatActivity() {
             if (frag.isVisible) {
                 val childFm = frag.childFragmentManager
                 if (childFm.backStackEntryCount > 0) {
-                    childFm.popBackStack()
+                    childFm.popBackStackImmediate()
+                    Log.d("BackCheck", "onBackPressed: childFrag")
                     return
                 }
             }
         }
+        Log.d("BackCheck", "onBackPressed: normal")
         super.onBackPressed()
+
     }
 
     fun openFragmentShop(){
@@ -229,6 +230,10 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.main_fragment,FragmentShop())
             .addToBackStack(null)
             .commit()
+    }
+
+    fun removeAllFragment(){
+        binding.mainFragment.removeAllViews()
     }
 
 }

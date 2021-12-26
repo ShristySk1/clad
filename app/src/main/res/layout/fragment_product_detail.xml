@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    android:theme="@style/Base.Theme.DesignDemo">
+    android:theme="@style/Base.Theme.DesignDemo"
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"

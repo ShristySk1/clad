@@ -33,6 +33,8 @@ class FragmentShoppingBag : Fragment() {
         checkoutPage()
         initAppbar()
         initView()
+        (activity as MainActivity).removeAllFragment()
+        Log.d("BackCheck", "onCreateView: here")
         if(binding.fragmentShopping != null) {
             if (savedInstanceState == null) {
                 childFragmentManager.beginTransaction()

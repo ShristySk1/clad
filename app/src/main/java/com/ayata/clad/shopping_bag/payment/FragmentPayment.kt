@@ -47,11 +47,11 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 
     private fun initView(){
         binding.btnConfirm.setOnClickListener {
-            parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
             activity?.supportFragmentManager!!.beginTransaction()
                 .replace(R.id.main_fragment,FragmentOrderPlaced())
                 .addToBackStack(null)
                 .commit()
+            parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
         binding.totalPrice.text="Rs. 7800.0"
     }

@@ -33,7 +33,7 @@ we can help by sending you a link to reset it.</string>
 <!--    order placed text-->
     <string name="opf_text1">THANK YOU FOR\nYOUR ORDER</string>
     <string name="opf_text2">Estimated Delivery</string>
-    <string name="opf_text3">We’ve emailedyou a confirmation and we’ll notify you when your order has shipped.</string>
+    <string name="opf_text3">We’ve emailed you a confirmation and we’ll notify you when your order has shipped.</string>
     <string name="opf_text4">VIEW ORDER DETAILS</string>
 
 <!--    shopping bag empty-->

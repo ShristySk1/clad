@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".shopping_bag.shipping.FragmentShipping">
+    tools:context=".shopping_bag.shipping.FragmentShipping"
+    android:background="@color/white">
 
    <TextView
        android:id="@+id/title"
