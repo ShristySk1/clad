@@ -15,10 +15,8 @@
 
 
     <!--   for phone number-->
-    <string name="str_fopassword">Forgot your password?</string>
-    <string name="str_fopasswordheading">If you need help resetting your password
-we can help by sending you a link to reset it.</string>
-    <string name="str_fotitle">Please enter the 4-digit code send to you at</string>
+    <string name="str_fopassword">Enter your phone number.</string>
+    <string name="str_fopasswordheading">We will send your 4-digit verification code in this number.</string>
     <string name="str_foresend">Resend Code</string>
     <string name="str_fotiming">New code in 09 seconds</string>
 
