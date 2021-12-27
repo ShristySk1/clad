@@ -1,11 +1,13 @@
 package com.ayata.clad.login
 
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentLoginBinding
 import com.ayata.clad.login.viewmodel.LoginViewModel
@@ -27,6 +30,12 @@ import com.ayata.clad.utils.CheckForNetwork
 import com.ayata.clad.utils.PreferenceHandler
 import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.Circle
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class FragmentLogin : Fragment() {
@@ -65,11 +74,19 @@ class FragmentLogin : Fragment() {
                     {
                         // This method will be executed once the timer is over
                         activityFragmentLoginBinding.spinKit.visibility = View.GONE
-                        PreferenceHandler.savePhoneNumber(requireContext(), phone)
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
-                            .replace(R.id.fragments_passwords, FragmentVerification())
-                            .addToBackStack(null).commit()
+                        val dataStoreManager= DataStoreManager(requireContext())
+                        GlobalScope.launch(Dispatchers.IO) {
+                            dataStoreManager.savePhoneNumber(phone)
+                            parentFragmentManager.beginTransaction()
+                                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
+                                .replace(R.id.fragments_passwords, FragmentVerification())
+                                .addToBackStack(null).commit()
+                        }
+//                        PreferenceHandler.savePhoneNumber(requireContext(), phone)
+//                        parentFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
+//                            .replace(R.id.fragments_passwords, FragmentVerification())
+//                            .addToBackStack(null).commit()
                     },
                     1000 // value in milliseconds
                 )
@@ -81,6 +98,19 @@ class FragmentLogin : Fragment() {
         return activityFragmentLoginBinding.root
     }
 
+    private fun getPhone(){
+        GlobalScope.launch(Dispatchers.IO) {
+            DataStoreManager(requireContext()).getPhoneNumber().catch { e ->
+                e.printStackTrace()
+                Log.d(TAG, "getPhone: ${e.message}")
+            }.collect {
+                withContext(Dispatchers.Main) {
+                    phone=it
+                    Log.d(TAG, "initValues: $phone")
+                }
+            }
+        }
+    }
 
     private fun validatePhone(): Boolean {
         phone = activityFragmentLoginBinding.textLayoutMobile.editText!!.text.toString().trim()
