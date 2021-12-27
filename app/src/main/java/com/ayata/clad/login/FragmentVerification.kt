@@ -6,14 +6,19 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.color
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.ayata.clad.MainActivity
+import com.ayata.clad.R
 import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.FragmentVerificationBinding
 import com.ayata.clad.utils.PreferenceHandler
@@ -33,14 +38,14 @@ class FragmentVerification : Fragment() {
         // Inflate the layout for this fragment
         activityFragmentVerificationBinding =
             FragmentVerificationBinding.inflate(inflater, container, false)
-        InitValues()
+        initValues()
 
         activityFragmentVerificationBinding.spinKit.visibility = View.GONE
         initTimer()
         //on pin enter called
         activityFragmentVerificationBinding.pinview.setOtpCompletionListener {
             activityFragmentVerificationBinding.spinKit.visibility = View.VISIBLE
-            Log.d(TAG, "onCreateView: " + it)
+            Log.d(TAG, "onCreateView: $it")
             Checkwithapi(it)
         }
         activityFragmentVerificationBinding.btnresend.setOnClickListener {
@@ -113,11 +118,23 @@ class FragmentVerification : Fragment() {
 
     }
 
-    private fun InitValues() {
-        if (!PreferenceHandler.getPhoneNumber(context).isNullOrEmpty())
-            phone = PreferenceHandler.getPhoneNumber(context).toString()
-        Log.d(TAG, "InitValues: " + phone)
+    private fun initValues() {
 
+        GlobalScope.launch(Dispatchers.IO) {
+            DataStoreManager(requireContext()).getPhoneNumber().catch { e ->
+                e.printStackTrace()
+            }.collect {
+                withContext(Dispatchers.Main) {
+                    phone=it
+                    Log.d(TAG, "initValues: $phone")
+                    activityFragmentVerificationBinding.textView2.text=
+                        SpannableStringBuilder().append(getString(R.string.str_vemessage)).append(" at ")
+                            .bold { color(ContextCompat.getColor(requireContext(),R.color.black)) {
+                                append("+977 $phone")
+                            }}
+                }
+            }
+        }
     }
 
     fun initTimer() {

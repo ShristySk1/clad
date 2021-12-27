@@ -6,18 +6,22 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.ayata.clad.data.network.ApiService
 import kotlinx.coroutines.flow.map
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+
+
+private val USER_DATASTORE="USER DATASTORE"
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_DATASTORE)
 
 class DataStoreManager(private val context: Context) {
-    private val USER_DATASTORE="USER DATASTORE"
-
     companion object {
-
         val TOKEN = stringPreferencesKey("TOKEN_KEY")
         val PHONE_NUMBER = stringPreferencesKey("PHONE_NUMBER")
     }
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_DATASTORE)
 
     suspend fun savePhoneNumber(phone: String) {
         context.dataStore.edit {
