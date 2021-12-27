@@ -12,7 +12,7 @@
         app:cardCornerRadius="20dp"
         app:cardElevation="4dp"
         app:cardBackgroundColor="@color/colorHomeBack1"
-        android:foreground="?attr/selectableItemBackground"
+        style="@style/CustomSelectableItemBackground"
         android:clickable="true"
         android:focusable="true">
 

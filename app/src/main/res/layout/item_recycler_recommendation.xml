@@ -14,7 +14,7 @@
         app:cardElevation="0dp"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:foreground="?attr/selectableItemBackground">
+        style="@style/CustomSelectableItemBackground">
 
         <RelativeLayout
             android:layout_width="match_parent"
