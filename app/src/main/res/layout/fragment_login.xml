@@ -24,7 +24,7 @@
                 android:layout_marginStart="28dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/background_circle"
-                android:foreground="?attr/selectableItemBackground"
+                android:foreground="@drawable/ripple_circle_transparent_background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
