@@ -5,8 +5,9 @@ import com.google.gson.JsonObject
 
 class ApiRepository constructor(private val retrofitService: ApiService) {
 
-    suspend fun phoneAPI(phone:String) = retrofitService.phoneAPI(phone)
-    suspend fun otpVerification(phone: String,otp:String) = retrofitService.otpVerification(phone,otp)
+    suspend fun phoneAPI(jsonObject: JsonObject) = retrofitService.phoneAPI(jsonObject)
+    suspend fun otpVerification(jsonObject: JsonObject) = retrofitService.otpVerification(jsonObject)
+    suspend fun dashboardAPI()=retrofitService.dashboardAPI()
 
 
 }

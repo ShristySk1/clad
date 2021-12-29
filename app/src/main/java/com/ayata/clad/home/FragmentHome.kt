@@ -8,11 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentHomeBinding
 import com.ayata.clad.home.adapter.*
 import com.ayata.clad.home.adapter.AdapterJustDropped
@@ -21,6 +25,8 @@ import com.ayata.clad.home.adapter.AdapterPopularMonth
 import com.ayata.clad.home.adapter.AdapterRecommended
 import com.ayata.clad.home.adapter.AdapterStories
 import com.ayata.clad.home.model.*
+import com.ayata.clad.home.viewmodel.HomeViewModel
+import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
 
 class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
@@ -29,6 +35,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     ,AdapterStories.OnItemClickListener{
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var viewModel:HomeViewModel
 
     private var liststory = ArrayList<ModelStories>()
     private lateinit var adapterStories: AdapterStories
@@ -58,6 +65,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     ): View?
     {
         binding= FragmentHomeBinding.inflate(inflater,container,false)
+        setUpViewModel()
         initAppbar()
         initRecyclerView()
         return binding.root
@@ -71,6 +79,11 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             isProfile = true,
             isClose = false
         )
+    }
+
+    private fun setUpViewModel(){
+        viewModel=ViewModelProvider(this,HomeViewModelFactory(ApiRepository(ApiService.getInstance())))
+            .get(HomeViewModel::class.java)
     }
 
     private fun initRecyclerView() {
