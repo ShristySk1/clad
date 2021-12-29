@@ -8,12 +8,11 @@ import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
+import retrofit2.http.Query
 
 class LoginViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
 
     val errorMessage = MutableLiveData<String>()
-    val movieList = MutableLiveData<JsonObject>()
-
     private val loginResponse = MutableLiveData<Resource<JsonObject>>()
 
     var job: Job? = null
@@ -25,7 +24,9 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository)  : V
     fun phoneAPI(phone:String) {
         loginResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.phoneAPI(phone)
+            val jsonObject=JsonObject()
+            jsonObject.addProperty("phone_no",phone)
+            val response = mainRepository.phoneAPI(jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("phoneResponse", "login: "+response.body().toString())
@@ -45,7 +46,10 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository)  : V
     fun otpVerification(phone: String,otp:String) {
         loginResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.otpVerification(phone,otp)
+            val jsonObject=JsonObject()
+            jsonObject.addProperty("phone_no",phone)
+            jsonObject.addProperty("otp_code",otp)
+            val response = mainRepository.otpVerification(jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("otpResponse", "otp: "+response.body().toString())

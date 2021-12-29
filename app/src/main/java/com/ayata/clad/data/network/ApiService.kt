@@ -40,12 +40,14 @@ interface ApiService {
 
     }
 
-    @GET("auth/google")
-    suspend fun phoneAPI(@Query("phone") phone: String): Response<JsonObject>
+    @POST("register/")
+    suspend fun phoneAPI(@Body jsonObject: JsonObject): Response<JsonObject>
 
-    @GET("otp")
-    suspend fun otpVerification(@Query("phone") phone: String,@Query("otp") otp: String): Response<JsonObject>
+    @POST("otp-verify/")
+    suspend fun otpVerification(@Body jsonObject: JsonObject): Response<JsonObject>
 
+    @GET("home/")
+    suspend fun dashboardAPI(): Response<JsonObject>
 //    @Headers("Content-Type: application/json")
 //    @POST("hangingman/bulk/")
 //    suspend fun hangmanScoreSave(
