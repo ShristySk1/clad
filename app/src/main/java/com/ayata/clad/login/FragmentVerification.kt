@@ -1,6 +1,5 @@
 package com.ayata.clad.login
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -16,18 +15,29 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.preference.DataStoreManager
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentVerificationBinding
+import com.ayata.clad.login.response.VerificationResponse
+import com.ayata.clad.login.viewmodel.LoginViewModel
+import com.ayata.clad.login.viewmodel.LoginViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
+import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 
+const val TAG="FragmentVerification"
 class FragmentVerification : Fragment() {
+    private lateinit var loginViewModel: LoginViewModel
 
     lateinit var activityFragmentVerificationBinding: FragmentVerificationBinding
     var phone = ""
@@ -39,14 +49,21 @@ class FragmentVerification : Fragment() {
         activityFragmentVerificationBinding =
             FragmentVerificationBinding.inflate(inflater, container, false)
         initValues()
+        setupViewModel()
 
         activityFragmentVerificationBinding.spinKit.visibility = View.GONE
         initTimer()
         //on pin enter called
         activityFragmentVerificationBinding.pinview.setOtpCompletionListener {
+            if(it.isNullOrEmpty() || it.isNullOrBlank()){
+                return@setOtpCompletionListener
+            }
+            if(it.trim().length!=4){
+                return@setOtpCompletionListener
+            }
             activityFragmentVerificationBinding.spinKit.visibility = View.VISIBLE
             Log.d(TAG, "onCreateView: $it")
-            Checkwithapi(it)
+            verificationApi(it)
         }
         activityFragmentVerificationBinding.btnresend.setOnClickListener {
 
@@ -58,6 +75,14 @@ class FragmentVerification : Fragment() {
         }
 
         return activityFragmentVerificationBinding.root
+    }
+
+    private fun setupViewModel() {
+        loginViewModel = ViewModelProviders.of(
+            this,
+            LoginViewModelFactory(ApiRepository(ApiService.getInstance()))
+        ).get(LoginViewModel::class.java)
+
     }
 
     private fun OncallReSendotp(phone: String) {
@@ -77,46 +102,62 @@ class FragmentVerification : Fragment() {
 
     }
 
-    private fun Checkwithapi(it: String?) {
-        if (!it.isNullOrBlank()) {
-            //Here is the code for retro api to check verfication code the response token is store in prefrencehandler
+    private fun verificationApi(code: String?) {
+        if (!code.isNullOrBlank() && !code.isNullOrEmpty()) {
+            if (code.trim().length != 4) {
+                activityFragmentVerificationBinding.spinKit.visibility = View.GONE
+                Toast.makeText(
+                    context,
+                    "Error: Invalid Pin Code ${code.trim()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                //Here is the code for retro api to check verfication code the response token is store in prefrencehandler
+                loginViewModel.otpVerification(phone, code!!.trim())
+                //observe
+                loginViewModel.doOTPCheck().observe(viewLifecycleOwner, Observer {
+                    when (it.status) {
+                        Status.SUCCESS -> {
+                            Log.d(TAG, "verificationApi: ${it.data}")
+                            activityFragmentVerificationBinding.spinKit.visibility = View.GONE
+                            try {
+                                val verificationResponse = Gson().fromJson<VerificationResponse>(
+                                    it.data,
+                                    VerificationResponse::class.java
+                                )
+                                if (verificationResponse.details != null) {
+                                    GlobalScope.launch(Dispatchers.IO) {
+                                        DataStoreManager(requireContext()).saveToken(
+                                            verificationResponse.details.token
+                                        )
+                                        startActivity(Intent(context, MainActivity::class.java))
+                                        activity?.finish()
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                            }
 
-
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    // This method will be executed once the timer is over
-                    if (it.equals("1111")) {
-//                        activityFragmentVerificationBinding.spinKit.visibility = View.GONE
-//                        val pDialog =
-//                            SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
-//                        pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
-//                        pDialog.titleText = "Loading ..."
-//                        pDialog.setCancelable(true)
-//                        pDialog.show()
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                // This method will be executed once the timer is over
-                                startActivity(Intent(context, MainActivity::class.java))
-                                activity?.finish()
-
-                            },
-                            500 // value in milliseconds
-                        )
-
-
-                    } else {
-                        activityFragmentVerificationBinding.spinKit.visibility = View.GONE
-                        SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Oops...")
-                            .setContentText("Something went wrong!")
-                            .show()
+                        }
+                        Status.LOADING -> {
+                        }
+                        Status.ERROR -> {
+                            //Handle Error
+                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                            Log.d(TAG, "verificationApi: ${it.message}")
+                            activityFragmentVerificationBinding.spinKit.visibility = View.GONE
+//                        SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                            .setTitleText("Oops...")
+//                            .setContentText("Something went wrong!")
+//                            .show()
+                        }
                     }
-                },
-                1000 // value in milliseconds
-            )
-        }
+                })
+            }
 
+        }
     }
+
 
     private fun initValues() {
 
@@ -157,22 +198,5 @@ class FragmentVerification : Fragment() {
         parentFragmentManager.popBackStack()
     }
 
-    private fun saveToDataStore(){
-        val dataStoreManager=DataStoreManager(requireContext())
-        GlobalScope.launch(Dispatchers.IO) {
-            dataStoreManager.savePhoneNumber("1000000000")
-        }
-
-        GlobalScope.launch(Dispatchers.IO) {
-            dataStoreManager.getPhoneNumber().catch { e ->
-                e.printStackTrace()
-            }.collect {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context,"$it",Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-    }
 
 }

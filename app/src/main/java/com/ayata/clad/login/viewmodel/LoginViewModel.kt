@@ -16,16 +16,17 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository)  : V
     private val loginResponse = MutableLiveData<Resource<JsonObject>>()
 
     var job: Job? = null
-    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
-    val loading = MutableLiveData<Boolean>()
+    private val loading = MutableLiveData<Boolean>()
 
     fun phoneAPI(phone:String) {
         loginResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("phone_no",phone)
+            Log.d("phoneResponse", "login: $jsonObject")
             val response = mainRepository.phoneAPI(jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -35,7 +36,7 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository)  : V
                 } else {
                     Log.e("phoneResponse", "error: $response")
                     onError("Error : ${response.message()} ")
-                    loginResponse.postValue(Resource.error("Something Went Wrong", null))
+                    loginResponse.postValue(Resource.error(response.message(), null))
                 }
             }
         }
@@ -58,7 +59,7 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository)  : V
                 } else {
                     Log.e("otpResponse", "error: $response")
                     onError("Error : ${response.message()} ")
-                    loginResponse.postValue(Resource.error("Something Went Wrong", null))
+                    loginResponse.postValue(Resource.error(response.message(), null))
                 }
             }
         }

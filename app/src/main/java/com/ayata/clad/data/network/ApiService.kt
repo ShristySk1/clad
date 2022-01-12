@@ -13,6 +13,9 @@ import java.util.concurrent.TimeUnit
 interface ApiService {
 
     companion object {
+
+        private const val baseUrl="http://clad.ayata.com.np/api/v1/"
+//        "https://backend.medipuzzle.avyaas.com/api/v1/"
         private val httpLoggingInterceptor = run {
             val httpLoggingInterceptor = HttpLoggingInterceptor()
             httpLoggingInterceptor.apply {
@@ -28,7 +31,7 @@ interface ApiService {
         fun getInstance(): ApiService {
             if (retrofitService == null) {
                 val retrofit = Retrofit.Builder()
-                    .baseUrl("https://backend.medipuzzle.avyaas.com/api/v1/")
+                    .baseUrl(baseUrl)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
