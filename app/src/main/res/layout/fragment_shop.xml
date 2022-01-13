@@ -1,100 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".shop.FragmentShop"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".shop.FragmentShop">
 
     <RelativeLayout
         android:id="@+id/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
         android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground">
+        android:focusable="true">
 
         <ImageView
             android:id="@+id/search_icon"
-            android:layout_marginVertical="15dp"
-            android:layout_marginStart="@dimen/shop_horizontal"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_marginVertical="15dp"
+            android:layout_marginStart="@dimen/shop_horizontal"
             android:src="@drawable/ic_search"
             android:tint="@color/colorGray" />
 
         <TextView
             android:id="@+id/text"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="@dimen/shop_horizontal"
-            android:layout_alignTop="@id/search_icon"
-            android:layout_alignBottom="@id/search_icon"
-            android:layout_toEndOf="@id/search_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@id/search_icon"
+            android:layout_alignBottom="@id/search_icon"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="@dimen/shop_horizontal"
+            android:layout_toEndOf="@id/search_icon"
             android:gravity="center_vertical"
             android:hint="Find Products.."
-            android:textSize="14sp"
             android:textColor="@color/colorGray"
-            />
+            android:textSize="14sp" />
 
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/search_text"-->
-<!--            android:layout_marginEnd="@dimen/shop_horizontal"-->
-<!--            android:layout_alignTop="@id/search_icon"-->
-<!--            android:layout_alignBottom="@id/search_icon"-->
-<!--            android:layout_toEndOf="@id/search_icon"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:gravity="center_vertical"-->
-<!--            android:focusable="false"-->
-<!--            android:clickable="false"-->
-<!--            app:errorEnabled="false"-->
-<!--            app:hintEnabled="false"-->
-<!--            app:boxBackgroundMode="none"-->
-<!--            android:background="@null">-->
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:padding="0dp"-->
-<!--                android:hint="Find Products.."-->
-<!--                android:inputType="text"-->
-<!--                android:focusable="false"-->
-<!--                android:clickable="false"-->
-<!--                android:textColorHint="@color/colorGray"-->
-<!--                android:textColor="@color/black" />-->
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
+        <!--        <com.google.android.material.textfield.TextInputLayout-->
+        <!--            android:id="@+id/search_text"-->
+        <!--            android:layout_marginEnd="@dimen/shop_horizontal"-->
+        <!--            android:layout_alignTop="@id/search_icon"-->
+        <!--            android:layout_alignBottom="@id/search_icon"-->
+        <!--            android:layout_toEndOf="@id/search_icon"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:gravity="center_vertical"-->
+        <!--            android:focusable="false"-->
+        <!--            android:clickable="false"-->
+        <!--            app:errorEnabled="false"-->
+        <!--            app:hintEnabled="false"-->
+        <!--            app:boxBackgroundMode="none"-->
+        <!--            android:background="@null">-->
+        <!--            <com.google.android.material.textfield.TextInputEditText-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:padding="0dp"-->
+        <!--                android:hint="Find Products.."-->
+        <!--                android:inputType="text"-->
+        <!--                android:focusable="false"-->
+        <!--                android:clickable="false"-->
+        <!--                android:textColorHint="@color/colorGray"-->
+        <!--                android:textColor="@color/black" />-->
+        <!--        </com.google.android.material.textfield.TextInputLayout>-->
 
     </RelativeLayout>
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGraycircle"
-            android:layout_below="@id/layout_search"/>
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/layout_search"
+        android:background="@color/colorGraycircle" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_below="@id/divider"
-            app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
-            app:tabIndicatorHeight="2dp"
-            app:tabIndicatorColor="@color/black"
-            app:tabMode="scrollable"
-            app:tabGravity="fill"
-            app:tabRippleColor="@null"
-            app:tabSelectedTextColor="@color/black"
-            app:tabTextColor="@color/black"
-            android:background="@drawable/tab_background_selector"/>
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_below="@id/divider"
+        android:background="@drawable/tab_background_selector"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/black"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="scrollable"
+        app:tabRippleColor="@null"
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
+        app:tabTextColor="@color/black" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/tabLayout"
-            android:paddingTop="10dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tabLayout"
+        android:paddingTop="10dp" />
 
 </RelativeLayout>
