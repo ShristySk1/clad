@@ -52,7 +52,7 @@ class FragmentVerification : Fragment() {
         setupViewModel()
 
         activityFragmentVerificationBinding.spinKit.visibility = View.GONE
-        initTimer()
+//        initTimer()
         //on pin enter called
         activityFragmentVerificationBinding.pinview.setOtpCompletionListener {
             if(it.isNullOrEmpty() || it.isNullOrBlank()){
@@ -66,8 +66,7 @@ class FragmentVerification : Fragment() {
             verificationApi(it)
         }
         activityFragmentVerificationBinding.btnresend.setOnClickListener {
-
-            OncallReSendotp(phone)
+            resendOtpApi()
         }
 
         activityFragmentVerificationBinding.relativeLayout.setOnClickListener {
@@ -82,23 +81,6 @@ class FragmentVerification : Fragment() {
             this,
             LoginViewModelFactory(ApiRepository(ApiService.getInstance()))
         ).get(LoginViewModel::class.java)
-
-    }
-
-    private fun OncallReSendotp(phone: String) {
-        //Here is the code for retro api call
-        SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-            .setContentText("Wait for otp code")
-            .show()
-        initTimer()
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                // This method will be executed once the timer is over
-
-
-            },
-            1000 // value in milliseconds
-        )
 
     }
 
@@ -118,21 +100,25 @@ class FragmentVerification : Fragment() {
                 loginViewModel.doOTPCheck().observe(viewLifecycleOwner, Observer {
                     when (it.status) {
                         Status.SUCCESS -> {
-                            Log.d(TAG, "verificationApi: ${it.data}")
+                            Log.d(TAG, "verificationApi: success ${it.data}")
                             activityFragmentVerificationBinding.spinKit.visibility = View.GONE
                             try {
                                 val verificationResponse = Gson().fromJson<VerificationResponse>(
                                     it.data,
                                     VerificationResponse::class.java
                                 )
-                                if (verificationResponse.details != null) {
-                                    GlobalScope.launch(Dispatchers.IO) {
-                                        DataStoreManager(requireContext()).saveToken(
-                                            verificationResponse.details.token
-                                        )
-                                        startActivity(Intent(context, MainActivity::class.java))
-                                        activity?.finish()
+                                if(verificationResponse.message.startsWith("success",true)) {
+                                    if (verificationResponse.details != null) {
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            DataStoreManager(requireContext()).saveToken(
+                                                verificationResponse.details.token
+                                            )
+                                            startActivity(Intent(context, MainActivity::class.java))
+                                            activity?.finish()
+                                        }
                                     }
+                                }else{
+                                    Toast.makeText(context,verificationResponse.message, Toast.LENGTH_LONG).show()
                                 }
                             } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
@@ -144,7 +130,7 @@ class FragmentVerification : Fragment() {
                         Status.ERROR -> {
                             //Handle Error
                             Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                            Log.d(TAG, "verificationApi: ${it.message}")
+                            Log.d(TAG, "verificationApi: success ${it.message}")
                             activityFragmentVerificationBinding.spinKit.visibility = View.GONE
 //                        SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
 //                            .setTitleText("Oops...")
@@ -157,7 +143,6 @@ class FragmentVerification : Fragment() {
 
         }
     }
-
 
     private fun initValues() {
 
@@ -196,6 +181,29 @@ class FragmentVerification : Fragment() {
 
     private fun OncloseClick() {
         parentFragmentManager.popBackStack()
+    }
+
+    private fun resendOtpApi() {
+        activityFragmentVerificationBinding.spinKit.visibility = View.GONE
+        //Here is the code for retro api to check verfication code the response token is store in prefrencehandler
+        loginViewModel.resendOtpAPI(phone)
+        //observe
+        loginViewModel.doPhone().observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "resendOtpApi: success ${it.data}")
+                    activityFragmentVerificationBinding.spinKit.visibility = View.GONE
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "resendOtpApi: fail ${it.message}")
+                    activityFragmentVerificationBinding.spinKit.visibility = View.GONE
+                }
+            }
+        })
     }
 
 

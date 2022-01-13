@@ -1,4 +1,4 @@
-package com.ayata.clad.wishlist
+package com.ayata.clad.product.adapter
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -7,26 +7,27 @@ import android.view.ViewGroup
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.databinding.ItemRecyclerWishlistBinding
-import com.ayata.clad.product.ModelProduct
+import com.ayata.clad.databinding.ItemRecyclerRecommendationBinding
+import com.ayata.clad.product.ModelRecommendedProduct
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-class AdapterWishList(
-    var productList: List<ModelProduct>,
-) : RecyclerView.Adapter<AdapterWishList.ViewHolder>() {
+class AdapterRecommendation(
+    var productList: List<ModelRecommendedProduct>,
+) : RecyclerView.Adapter<AdapterRecommendation.ViewHolder>() {
+
     // create an inner class with name ViewHolder
     // It takes a view argument, in which pass the generated class of single_item.xml
     // ie SingleItemBinding and in the RecyclerView.ViewHolder(binding.root) pass it like this
-    inner class ViewHolder(val binding: ItemRecyclerWishlistBinding) :
+    inner class ViewHolder(val binding: ItemRecyclerRecommendationBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun clickView(item: ModelProduct) {
+        fun clickView(item: ModelRecommendedProduct) {
             binding.progressBar.visibility = View.VISIBLE
-            Glide.with(binding.image.context)
-                .load(item.image)
+            Glide.with(binding.cardView.context)
+                .load(item.imageUrl)
                 .listener(object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
                         @Nullable e: GlideException?,
@@ -52,16 +53,10 @@ class AdapterWishList(
                 .error(R.drawable.shoes)
                 .into(binding.image)
 
-            binding.image.setOnClickListener {
+            Glide.with(binding.cardView.context).asBitmap().load(item.logo).error(R.drawable.ic_hanger)
+                .into(binding.imageLogo)
+            itemView.setOnClickListener {
                 itemProductClick?.let { function ->
-                    function(item)
-                }
-            }
-            binding.title.setOnClickListener {
-                binding.image.performClick()
-            }
-            binding.ivSetting.setOnClickListener {
-                itemSettingClick?.let { function ->
                     function(item)
                 }
             }
@@ -71,7 +66,7 @@ class AdapterWishList(
     // inside the onCreateViewHolder inflate the view of SingleItemBinding
     // and return new ViewHolder object containing this layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemRecyclerWishlistBinding.inflate(
+        val binding = ItemRecyclerRecommendationBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -99,13 +94,8 @@ class AdapterWishList(
         return productList.size
     }
 
-    private var itemProductClick: ((ModelProduct) -> Unit)? = null
-    fun setProductClickListener(listener: ((ModelProduct) -> Unit)) {
+    private var itemProductClick: ((ModelRecommendedProduct) -> Unit)? = null
+    fun setProductClickListener(listener: ((ModelRecommendedProduct) -> Unit)) {
         itemProductClick = listener
-    }
-
-    private var itemSettingClick: ((ModelProduct) -> Unit)? = null
-    fun setSettingClickListener(listener: ((ModelProduct) -> Unit)) {
-        itemSettingClick = listener
     }
 }

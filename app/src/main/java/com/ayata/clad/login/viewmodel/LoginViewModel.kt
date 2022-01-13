@@ -66,10 +66,31 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository)  : V
 
     }
 
+    fun resendOtpAPI(phone:String) {
+        loginResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val jsonObject=JsonObject()
+            jsonObject.addProperty("phone_no",phone)
+            Log.d("phoneResponse", "login: $jsonObject")
+            val response = mainRepository.resendOtpAPI(jsonObject)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("resendOtpAPI", "success: "+response.body().toString())
+                    loginResponse.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("resendOtpAPI", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    loginResponse.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+
+    }
+
     fun doPhone(): LiveData<Resource<JsonObject>> {
         return loginResponse
     }
-
 
     fun doOTPCheck(): LiveData<Resource<JsonObject>> {
         return loginResponse

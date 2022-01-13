@@ -15,7 +15,6 @@ interface ApiService {
     companion object {
 
         private const val baseUrl="http://clad.ayata.com.np/api/v1/"
-//        "https://backend.medipuzzle.avyaas.com/api/v1/"
         private val httpLoggingInterceptor = run {
             val httpLoggingInterceptor = HttpLoggingInterceptor()
             httpLoggingInterceptor.apply {
@@ -43,28 +42,61 @@ interface ApiService {
 
     }
 
+    //login-register-verification
     @POST("register/")
     suspend fun phoneAPI(@Body jsonObject: JsonObject): Response<JsonObject>
+
+    @POST("resend-otp/")
+    suspend fun resendOtpAPI(@Body jsonObject: JsonObject): Response<JsonObject>
 
     @POST("otp-verify/")
     suspend fun otpVerification(@Body jsonObject: JsonObject): Response<JsonObject>
 
+    //dashboard
     @GET("home/")
     suspend fun dashboardAPI(): Response<JsonObject>
-//    @Headers("Content-Type: application/json")
-//    @POST("hangingman/bulk/")
-//    suspend fun hangmanScoreSave(
-//        @Header("Authorization") token: String,
-//        @Body jsonData: HangmanScoreList
-//    ): Response<JsonObject>
-//
-//    @POST("mockviva/bulk/")
-//    suspend fun mockVivaScoreSave(
-//        @Header("Authorization") token: String,
-//        @Body jsonData: MockVivaScoreList
-//    ): Response<JsonObject>
 
-//    @GET("hangingman/leaderboard")
-//    suspend fun getLeaderBoard(@Header("Authorization") token: String): Response<LeaderBoardResponse>
+    @GET("category-list/")
+    suspend fun categoryListAPI(): Response<JsonObject>
+
+    //user wishlist
+    @GET("wishlist/")
+    suspend fun wishListAPI( @Header("Authorization") token: String): Response<JsonObject>
+
+    @POST("add-to-wish/")
+    suspend fun addToWishAPI( @Header("Authorization") token: String,@Body jsonObject: JsonObject): Response<JsonObject>
+
+    @POST("remove-from-wish/")
+    suspend fun removeFromWishAPI( @Header("Authorization") token: String,@Body jsonObject: JsonObject): Response<JsonObject>
+
+
+    //user cart info
+    @GET("usercart-list/")
+    suspend fun cartListAPI( @Header("Authorization") token: String): Response<JsonObject>
+
+    @POST("add-to-cart/")
+    suspend fun addToCartAPI( @Header("Authorization") token: String,@Body jsonObject: JsonObject): Response<JsonObject>
+
+    @POST("remove-from-cart/")
+    suspend fun removeFromCartAPI( @Header("Authorization") token: String,@Body jsonObject: JsonObject): Response<JsonObject>
+
+
+    //user profile
+    @GET("account/profile/")
+    suspend fun profileAPI( @Header("Authorization") token: String): Response<JsonObject>
+
+    @GET("user-orders/")
+    suspend fun orderListAPI( @Header("Authorization") token: String): Response<JsonObject>
+
+    @GET("user-order-details/")
+    suspend fun orderDetailAPI( @Header("Authorization") token: String,@Query("id")id:Int): Response<JsonObject>
+
+    //product list
+    @GET("products-list/")
+    suspend fun productListAPI( @Header("Authorization") token: String): Response<JsonObject>
+
+    @GET("product/details/")
+    suspend fun productDetailAPI( @Header("Authorization") token: String,@Query("id")id:Int): Response<JsonObject>
+
 
 }

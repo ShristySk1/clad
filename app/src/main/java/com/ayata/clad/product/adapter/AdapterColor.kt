@@ -1,10 +1,8 @@
-package com.ayata.clad.product
+package com.ayata.clad.product.adapter
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.databinding.ItemRecyclerColorChooseBinding
 

@@ -1,4 +1,4 @@
-package com.ayata.clad.home.viewmodel
+package com.ayata.clad.productlist.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -10,11 +10,11 @@ import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import retrofit2.http.Query
 
-class HomeViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
+class ProductListViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
 
     val errorMessage = MutableLiveData<String>()
 
-    private val homeResponse = MutableLiveData<Resource<JsonObject>>()
+    private val listResponse = MutableLiveData<Resource<JsonObject>>()
 
     var job: Job? = null
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -22,27 +22,27 @@ class HomeViewModel constructor(private val mainRepository: ApiRepository)  : Vi
     }
     val loading = MutableLiveData<Boolean>()
 
-    fun dashboardAPI() {
-        homeResponse.postValue(Resource.loading(null))
+    fun productListApi(token:String) {
+        listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.dashboardAPI()
+            val response = mainRepository.productListApi("Bearer $token")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("homeResponse", "success: "+response.body())
-                    homeResponse.postValue(Resource.success(response.body()))
+                    Log.d("productListApi", "success: "+response.body())
+                    listResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
-                    Log.e("homeResponse", "error: $response")
+                    Log.e("productListApi", "error: $response")
                     onError("Error : ${response.message()} ")
-                    homeResponse.postValue(Resource.error(response.message(), null))
+                    listResponse.postValue(Resource.error(response.message(), null))
                 }
             }
         }
 
     }
 
-    fun getDashboardAPI(): LiveData<Resource<JsonObject>> {
-        return homeResponse
+    fun getProductListAPI(): LiveData<Resource<JsonObject>> {
+        return listResponse
     }
 
     private fun onError(message: String) {

@@ -5,33 +5,43 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentWishlistBinding
 import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
-import com.ayata.clad.product.AdapterRecommendation
+import com.ayata.clad.product.adapter.AdapterRecommendation
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.product.ModelRecommendedProduct
-import com.ayata.clad.product.productlist.ItemOffsetDecoration
+import com.ayata.clad.productlist.ItemOffsetDecoration
+import com.ayata.clad.wishlist.adapter.AdapterWishList
+import com.ayata.clad.wishlist.viewmodel.WishListViewModel
+import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class FragmentWishlist : Fragment() {
     private lateinit var binding: FragmentWishlistBinding
     private lateinit var myProductList: List<ModelProduct>
+
+    private lateinit var viewModel:WishListViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentWishlistBinding.inflate(inflater, container, false)
+        setUpViewModel()
         initAppbar()
-        settUpFilterListener()
+        setUpFilterListener()
         myProductList = listOf()
         setUpRecyclerProductList()
         if (myProductList.isEmpty()) {
@@ -49,7 +59,12 @@ class FragmentWishlist : Fragment() {
         return binding.root
     }
 
-    private fun settUpFilterListener() {
+    private fun setUpViewModel(){
+        viewModel=ViewModelProvider(this,
+            WishListViewModelFactory(ApiRepository(ApiService.getInstance()))).get(WishListViewModel::class.java)
+    }
+
+    private fun setUpFilterListener() {
         binding.btnFilter.setOnClickListener {
             val list = listOf(
                 MyFilterContentViewItem.SingleChoice("Recommended", true),

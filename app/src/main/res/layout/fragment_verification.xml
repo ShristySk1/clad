@@ -84,9 +84,11 @@
                     <TextView
                         android:id="@+id/btnresend"
                         android:layout_width="wrap_content"
-
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="-5dp"
+                        android:padding="5dp"
+                        android:background="?attr/selectableItemBackground"
                         android:text="@string/str_foresend"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/textView2"
@@ -118,6 +120,7 @@
 
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/text_timer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

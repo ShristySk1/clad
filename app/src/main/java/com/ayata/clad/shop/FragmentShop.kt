@@ -2,21 +2,18 @@ package com.ayata.clad.shop
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentShopBinding
-import com.ayata.clad.product.productlist.FragmentProductList
+import com.ayata.clad.productlist.FragmentProductList
 import com.ayata.clad.shop.adapter.AdapterShopFilterable
 import com.ayata.clad.shop.model.ModelShop
 import com.google.android.material.tabs.TabLayout

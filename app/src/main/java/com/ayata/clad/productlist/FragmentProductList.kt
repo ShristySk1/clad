@@ -1,4 +1,4 @@
-package com.ayata.clad.product.productlist
+package com.ayata.clad.productlist
 
 import android.content.Context
 import android.graphics.Rect
@@ -11,14 +11,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentProductListBinding
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
+import com.ayata.clad.productlist.adapter.AdapterProductList
+import com.ayata.clad.productlist.viewmodel.ProductListViewModel
+import com.ayata.clad.productlist.viewmodel.ProductListViewModelFactory
 
 
 class FragmentProductList : Fragment() {
@@ -26,16 +32,24 @@ class FragmentProductList : Fragment() {
     private lateinit var adapterProductList: AdapterProductList
     private var listProduct = ArrayList<ModelProduct>()
 
+    private lateinit var viewModel:ProductListViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProductListBinding.inflate(inflater, container, false)
+        setUpViewModel()
         initAppbar()
         setUpRecyclerProductList()
         initSearchView()
         return binding.root
+    }
+
+    private fun setUpViewModel(){
+        viewModel=ViewModelProvider(this,
+            ProductListViewModelFactory(ApiRepository(ApiService.getInstance())))[ProductListViewModel::class.java]
     }
 
     private fun initAppbar(){

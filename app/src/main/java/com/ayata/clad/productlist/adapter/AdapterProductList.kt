@@ -1,4 +1,4 @@
-package com.ayata.clad.product.productlist
+package com.ayata.clad.productlist.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,9 +8,7 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerProductlistBinding
-import com.ayata.clad.databinding.ItemRecyclerRecommendationBinding
 import com.ayata.clad.product.ModelProduct
-import com.ayata.clad.shop.model.ModelShop
 import com.bumptech.glide.Glide
 import java.util.ArrayList
 

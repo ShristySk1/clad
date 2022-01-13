@@ -11,18 +11,23 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentProductDetailBinding
+import com.ayata.clad.product.adapter.AdapterColor
+import com.ayata.clad.product.adapter.AdapterRecommendation
+import com.ayata.clad.product.viewmodel.ProductViewModel
+import com.ayata.clad.product.viewmodel.ProductViewModelFactory
+import com.ayata.clad.productlist.viewmodel.ProductListViewModel
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PercentageCropImageView
-import com.ayata.clad.utils.TopRightCropTransformation
 import com.ayata.clad.utils.copyToClipboard
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -35,12 +40,16 @@ class FragmentProductDetail : Fragment() {
     private lateinit var binding: FragmentProductDetailBinding
     private var listText = ArrayList<ModelCircleText>()
     private var isProductLiked: Boolean = false
+
+    private lateinit var viewModel:ProductViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProductDetailBinding.inflate(inflater, container, false)
+        setUpViewModel()
         initView()
         setUpFullScreen()
         setUpRecyclerColor()
@@ -56,6 +65,10 @@ class FragmentProductDetail : Fragment() {
         return binding.root
     }
 
+    private fun setUpViewModel(){
+        viewModel=ViewModelProvider(this,
+            ProductViewModelFactory(ApiRepository(ApiService.getInstance())))[ProductViewModel::class.java]
+    }
     private fun productLikedListener() {
         binding.frame.setOnClickListener {
             if (isProductLiked) {
