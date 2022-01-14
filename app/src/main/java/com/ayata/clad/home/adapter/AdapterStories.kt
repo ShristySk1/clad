@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.Nullable
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelStories
@@ -34,7 +35,7 @@ internal  class AdapterStories(private var context:Context?, private var listIte
        val image=itemView.findViewById<ImageView>(R.id.imageView)
        val title=itemView.findViewById<TextView>(R.id.title)
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
-       val cardViewImage=itemView.findViewById<CircularRevealCardView>(R.id.cardView_image)
+       val cardViewImage=itemView.findViewById<CardView>(R.id.cardView_image)
 
        fun clickView(){
            cardViewImage.setOnClickListener {

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.Nullable
@@ -30,11 +31,11 @@ internal class AdapterPopularBrands(private var context:Context?,
 
    internal inner class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
 
-       val image=itemView.findViewById<CircularImageView>(R.id.imageView)
+//       val image=itemView.findViewById<CircularImageView>(R.id.imageView)
+       val image=itemView.findViewById<ImageView>(R.id.imageView)
        val title=itemView.findViewById<TextView>(R.id.title)
-       val description=itemView.findViewById<TextView>(R.id.desp)
+//       val description=itemView.findViewById<TextView>(R.id.desp)
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
-       val layoutImage=itemView.findViewById<View>(R.id.imageLayout)
        fun clickView(){
            itemView.setOnClickListener {
                onItemClickListener.onPopularBrandsClicked(listItems[adapterPosition],adapterPosition)
@@ -45,8 +46,9 @@ internal class AdapterPopularBrands(private var context:Context?,
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
-        holder.title.text=item.title
-        holder.description.text=item.description
+//        holder.title.text=item.title
+//        holder.description.text=item.description
+        holder.title.text="(106)"
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
