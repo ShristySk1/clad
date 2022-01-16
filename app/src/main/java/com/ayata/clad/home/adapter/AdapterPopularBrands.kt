@@ -33,7 +33,7 @@ internal class AdapterPopularBrands(private var context:Context?,
 
 //       val image=itemView.findViewById<CircularImageView>(R.id.imageView)
        val image=itemView.findViewById<ImageView>(R.id.imageView)
-       val title=itemView.findViewById<TextView>(R.id.title)
+//       val title=itemView.findViewById<TextView>(R.id.title)
 //       val description=itemView.findViewById<TextView>(R.id.desp)
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
        fun clickView(){
@@ -48,11 +48,10 @@ internal class AdapterPopularBrands(private var context:Context?,
         val item=listItems[position]
 //        holder.title.text=item.title
 //        holder.description.text=item.description
-        holder.title.text="(106)"
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.imageurl)
+            .load(item.imageDrawable)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,

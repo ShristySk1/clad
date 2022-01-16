@@ -8,24 +8,20 @@
 
     <RelativeLayout
         android:id="@+id/layout"
-        android:paddingVertical="10dp"
-        android:paddingHorizontal="10dp"
+        android:paddingVertical="30dp"
+        android:paddingHorizontal="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     <RelativeLayout
         android:id="@+id/imageLayout"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         android:layout_centerHorizontal="true">
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/block0"
-            android:scaleType="fitXY"/>
-
-
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/block0"/>
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="20dp"
@@ -35,20 +31,18 @@
             />
 
     </RelativeLayout>
-    <TextView
-        android:id="@+id/title"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="-15dp"
-        android:layout_alignStart="@id/imageLayout"
-        android:layout_alignEnd="@id/imageLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/imageLayout"
-        android:textAlignment="center"
-        android:text="New In"
-        android:textStyle="normal"
-        android:textSize="12sp"
-        android:textColor="@color/black" />
+<!--    <TextView-->
+<!--        android:id="@+id/title"-->
+<!--        android:layout_alignStart="@id/imageLayout"-->
+<!--        android:layout_alignEnd="@id/imageLayout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/imageLayout"-->
+<!--        android:textAlignment="center"-->
+<!--        android:text="New In"-->
+<!--        android:textStyle="normal"-->
+<!--        android:textSize="12sp"-->
+<!--        android:textColor="@color/black" />-->
 
 <!--    <TextView-->
 <!--        android:id="@+id/desp"-->

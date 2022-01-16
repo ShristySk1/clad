@@ -8,8 +8,15 @@ class ModelPopularBrands {
         this.description=description
     }
 
+    constructor(imageDrawable: Int, title: String, description:String) {
+        this.imageDrawable = imageDrawable
+        this.title = title
+        this.description=description
+    }
+
     var title: String = ""
     var description:String=""
     var imageurl: String=""
+    var imageDrawable:Int=0
 
 }

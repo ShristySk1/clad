@@ -90,4 +90,8 @@ dependencies {
     //dataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
+    //story view
+    implementation 'com.github.OMARIHAMZA:StoryView:1.0.2-alpha'
+    //ticket view
+    implementation 'com.vipulasri:ticketview:1.1.2'
 }

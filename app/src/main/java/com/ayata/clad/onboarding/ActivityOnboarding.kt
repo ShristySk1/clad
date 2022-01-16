@@ -73,21 +73,4 @@ class ActivityOnboarding : AppCompatActivity(), AdapaterActivityOnboarding.setOn
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        GlobalScope.launch(Dispatchers.IO) {
-            DataStoreManager(this@ActivityOnboarding).getToken().catch { e ->
-                e.printStackTrace()
-            }.collect {
-                withContext(Dispatchers.Main) {
-                    val token=it
-                    if(!token.isNullOrBlank()&& !token.isNullOrEmpty()){
-                        startActivity(Intent(this@ActivityOnboarding, MainActivity::class.java))
-                        finish()
-                    }
-                }
-            }
-        }
-    }
-
 }

@@ -74,7 +74,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private fun initAppbar(){
         (activity as MainActivity).showBottomNavigation(true)
         (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar1(getString(R.string.drops),
+        (activity as MainActivity).setToolbar1(getString(R.string.clad),
             isSearch = true,
             isProfile = true,
             isClose = false
@@ -197,14 +197,28 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     }
 
+    private var listDrawable= arrayListOf<Int>(R.drawable.brand_aamayra,
+        R.drawable.brand_aroan,R.drawable.brand_bishrom,
+        R.drawable.brand_caliber,R.drawable.brand_creative_touch,
+        R.drawable.brand_fibro,R.drawable.brand_fuloo,
+        R.drawable.brand_gofi,R.drawable.brand_goldstar,
+        R.drawable.brand_hillsandclouds,R.drawable.brand_jujuwears,
+        R.drawable.brand_kasa,R.drawable.brand_ktm_city,R.drawable.brand_logo,
+        R.drawable.brand_mode23,R.drawable.brand_newmew,
+        R.drawable.brand_phalanoluga,R.drawable.brand_sabah,
+        R.drawable.brand_station,R.drawable.brand_tsarmoire)
     private fun prepareDataForPopularBrands() {
+        listDrawable.shuffle()
         listPopularBrands.clear()
-        listPopularBrands.add(ModelPopularBrands("https://cdn.britannica.com/94/193794-050-0FB7060D/Adidas-logo.jpg","Adidas","All 106"))
-        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/e2/1e/d6/e21ed611fec39f3911d7376723811d8a.jpg","Nike","All 106"))
-        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/f4/29/13/f42913698b86ddc1a611163154e71619.jpg","Vans","All 106"))
-        listPopularBrands.add(ModelPopularBrands("https://www.freesvgdownload.com/wp-content/uploads/2021/04/Balenciaga-logo-svg.jpg","Balenciaga","All 106"))
-        listPopularBrands.add(ModelPopularBrands("https://cdn.shopify.com/s/files/1/0249/5892/6941/products/Converse-Logo-Iron-On-Sticker_1890x.jpg?v=1585666919","Converse","All 106"))
+//        listPopularBrands.add(ModelPopularBrands("https://cdn.britannica.com/94/193794-050-0FB7060D/Adidas-logo.jpg","Adidas","All 106"))
+//        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/e2/1e/d6/e21ed611fec39f3911d7376723811d8a.jpg","Nike","All 106"))
+//        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/f4/29/13/f42913698b86ddc1a611163154e71619.jpg","Vans","All 106"))
+//        listPopularBrands.add(ModelPopularBrands("https://www.freesvgdownload.com/wp-content/uploads/2021/04/Balenciaga-logo-svg.jpg","Balenciaga","All 106"))
+//        listPopularBrands.add(ModelPopularBrands("https://cdn.shopify.com/s/files/1/0249/5892/6941/products/Converse-Logo-Iron-On-Sticker_1890x.jpg?v=1585666919","Converse","All 106"))
 
+        for(i in listDrawable){
+            listPopularBrands.add(ModelPopularBrands(i,"Name","All 106"))
+        }
         adapterPopularBrands.notifyDataSetChanged()
 
     }
