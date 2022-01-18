@@ -9,14 +9,16 @@
         android:id="@+id/appbar1"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:paddingStart="10dp">
 
         <ImageView
             android:id="@+id/appLogo"
             android:layout_alignParentStart="true"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:scaleType="fitXY"
             android:layout_centerVertical="true"
             android:src="@drawable/logoonly"/>
 
@@ -25,9 +27,9 @@
             android:layout_toEndOf="@id/appLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_centerVertical="true"
             android:text="XXXX"
+            android:layout_marginStart="5dp"
             android:textAllCaps="true"
             android:textSize="19sp"
             android:textStyle="bold"
@@ -73,8 +75,9 @@
             android:background="@drawable/ripple_5dp"
             android:clickable="true"
             android:focusable="true"
-            android:padding="@dimen/appbar_icon_padding1"
+            android:padding="@dimen/appbar_icon_padding2"
             android:src="@drawable/ic_close"
+            android:tint="@color/black"
             android:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
@@ -99,8 +102,9 @@
                 android:background="@drawable/ripple_5dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="@dimen/appbar_icon_padding1"
+                android:padding="@dimen/appbar_icon_padding2"
                 android:src="@drawable/ic_close"
+                android:tint="@color/black"
                 android:visibility="visible" />
 
             <ImageView

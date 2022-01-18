@@ -38,10 +38,10 @@ class FragmentGiftCard : Fragment(),AdapterGiftCard.OnItemClickListener {
 
     private fun prepareGiftCard(){
         listGiftCard.clear()
-        listGiftCard.add(ModelGiftCard("Gift Card 1","","GIFT-100gh","Valid until 22 Feb 2022"))
-        listGiftCard.add(ModelGiftCard("Gift Card 2","","GIFT-ae400","Valid until 01 Feb 2022"))
-        listGiftCard.add(ModelGiftCard("Gift Card 3","","GIFT-70000","Valid until 15 Feb 2022"))
-        listGiftCard.add(ModelGiftCard("Gift Card 4","","GIFT-100","Valid until 30 Jan 2022"))
+        listGiftCard.add(ModelGiftCard("Gift Card 1","Promo code is not applicable in cart","GIFT-100gh","Valid until 22 Feb 2022"))
+        listGiftCard.add(ModelGiftCard("Gift Card 2","Promo code is not applicable in cart","GIFT-ae400","Valid until 01 Feb 2022"))
+        listGiftCard.add(ModelGiftCard("Gift Card 3","Promo code is not applicable in cart","GIFT-70000","Valid until 15 Feb 2022"))
+        listGiftCard.add(ModelGiftCard("Gift Card 4","Promo code is not applicable in cart","GIFT-100","Valid until 30 Jan 2022"))
         adapterGiftCard.notifyDataSetChanged()
     }
 

@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setToolbar1(title: String, isSearch: Boolean, isProfile: Boolean, isClose: Boolean) {
+    fun setToolbar1(title: String, isSearch: Boolean, isProfile: Boolean, isClose: Boolean, isLogo:Boolean=false) {
         exitFullScreen()
         binding.appbar.appbar1.visibility = View.VISIBLE
         binding.appbar.appbar2.visibility = View.GONE
@@ -125,6 +125,12 @@ class MainActivity : AppCompatActivity() {
             binding.appbar.btnCloseProfile.visibility = View.VISIBLE
         } else {
             binding.appbar.btnCloseProfile.visibility = View.GONE
+        }
+
+        if (isLogo) {
+            binding.appbar.appLogo.visibility = View.VISIBLE
+        } else {
+            binding.appbar.appLogo.visibility = View.GONE
         }
     }
 
@@ -203,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_hanger -> selectedFragment = FragmentShop()
                 R.id.nav_favorite -> selectedFragment = FragmentWishlist()
                 R.id.nav_cart -> selectedFragment = FragmentShoppingBag()
-                R.id.nav_rader -> selectedFragment = FragmentThrift()
+                R.id.nav_rader -> selectedFragment = FragmentPreorder()
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, selectedFragment!!)

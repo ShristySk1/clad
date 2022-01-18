@@ -32,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
         setUpFullScreen()
         Handler().postDelayed({
             nextActivity()
-        }, 3000)
+        }, 1000)
     }
 
     private fun setUpFullScreen() {

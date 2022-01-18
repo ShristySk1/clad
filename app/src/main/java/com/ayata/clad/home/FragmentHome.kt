@@ -1,5 +1,6 @@
 package com.ayata.clad.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.StoryActivity
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentHomeBinding
@@ -37,7 +39,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel:HomeViewModel
 
-    private var liststory = ArrayList<ModelStories>()
+    private var listStory = ArrayList<ModelStory>()
     private lateinit var adapterStories: AdapterStories
 
     private lateinit var adapterPopularMonth: AdapterPopularMonth
@@ -45,7 +47,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private lateinit var adapterRecommended: AdapterRecommended
     private var listRecommended=ArrayList<ModelRecommended>()
-    private var listRecommendedOne=ArrayList<ModelRecommended>()
+//    private var listRecommendedOne=ArrayList<ModelRecommended>()
 
     private lateinit var adapterPopularBrands: AdapterPopularBrands
     private var listPopularBrands=ArrayList<ModelPopularBrands>()
@@ -77,7 +79,8 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         (activity as MainActivity).setToolbar1(getString(R.string.clad),
             isSearch = true,
             isProfile = true,
-            isClose = false
+            isClose = false,
+            isLogo = true
         )
     }
 
@@ -88,7 +91,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private fun initRecyclerView() {
         //stories view
-        adapterStories = AdapterStories(context, liststory,this)
+        adapterStories = AdapterStories(context, listStory,this)
         binding.recyclerStory.apply {
             layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             adapter=adapterStories
@@ -104,9 +107,9 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         prepareDataForPopularMonth()
 
         //recommended == show 1 only
-        adapterRecommended= AdapterRecommended(context,listRecommendedOne,this)
+        adapterRecommended= AdapterRecommended(context,listRecommended,this)
         binding.recyclerRecommended.apply {
-            layoutManager=LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+            layoutManager=LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
             adapter=adapterRecommended
         }
         prepareDataForRecommended()
@@ -157,17 +160,40 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     private fun prepareDataForStory() {
-        liststory.clear()
-        liststory.add(ModelStories("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
-            "New In"))
-        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK4RVHQArXcaTvfasa8QGHYGFMPk3zJG1nfA&usqp=CAU",
-            "Summer"))
-        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBLdseom0mOn2lIbAdoDxwVdEJo4_SxzWpLA&usqp=CAU",
-            "Activewear"))
-        liststory.add(ModelStories("https://media.istockphoto.com/photos/beautiful-lady-overjoyed-by-warm-spring-breeze-dream-of-romantic-date-picture-id1170648040?k=20&m=1170648040&s=612x612&w=0&h=eOMcjFL2qyKnfvkH3IbIYkAKWXtQXCScCE12ahhqX_w=",
-            "Basic"))
-        liststory.add(ModelStories("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs81HZC1Hbu-KVtCSbnyYX3J7CcSYFek0WO-OsK1AdZ3ahJr6E3AHgvKKy8-n08w9qC_U&usqp=CAU",
-            "Сouples"))
+        listStory.clear()
+
+        val list2 = arrayListOf<String>(
+            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
+            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
+        )
+        listStory.add(ModelStory("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK4RVHQArXcaTvfasa8QGHYGFMPk3zJG1nfA&usqp=CAU", "Summer", "Description 2", list2))
+
+        val listString = arrayListOf<String>(
+            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
+            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
+            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
+        )
+        listStory.add(ModelStory("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg", "New In", "Description 1", listString))
+
+        val list3=ArrayList<String>()
+        list3.add("https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg")
+        list3.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
+        listStory.add(ModelStory("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBLdseom0mOn2lIbAdoDxwVdEJo4_SxzWpLA&usqp=CAU", "Activewear", "Description 3", list3))
+
+        val list4=ArrayList<String>()
+        list4.add(
+            0,
+            "https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"
+        )
+        list4.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
+
+        listStory.add(ModelStory("https://media.istockphoto.com/photos/beautiful-lady-overjoyed-by-warm-spring-breeze-dream-of-romantic-date-picture-id1170648040?k=20&m=1170648040&s=612x612&w=0&h=eOMcjFL2qyKnfvkH3IbIYkAKWXtQXCScCE12ahhqX_w=",
+            "Basic", "Description 4", list4))
+
+        val list5=ArrayList<String>()
+        list5.add("https://i.pinimg.com/originals/71/4b/cc/714bcc5b6c5171cb82a5cea81e176b89.webp")
+        listStory.add(ModelStory("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs81HZC1Hbu-KVtCSbnyYX3J7CcSYFek0WO-OsK1AdZ3ahJr6E3AHgvKKy8-n08w9qC_U&usqp=CAU",
+            "Couple Wear","Description 5",list5))
 
         adapterStories.notifyDataSetChanged()
 
@@ -191,8 +217,8 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         listRecommended.add(ModelRecommended("Cashmere Jacket","Casual Wear","Rs. 70.0",
             "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
 
-        listRecommendedOne.clear()
-        listRecommendedOne.add(listRecommended[0])
+//        listRecommendedOne.clear()
+//        listRecommendedOne.add(listRecommended[0])
         adapterRecommended.notifyDataSetChanged()
 
     }
@@ -297,8 +323,13 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             .addToBackStack(null).commit()
     }
 
-    override fun onStoryClick(data: ModelStories) {
+    override fun onStoryClick(data: ModelStory,position: Int) {
         //story
+        StoryActivity.storyIndex=position
+        StoryActivity.listStory.clear()
+        StoryActivity.listStory.addAll(listStory)
+        val i = Intent(requireContext(), StoryActivity::class.java)
+        startActivity(i)
     }
 
 

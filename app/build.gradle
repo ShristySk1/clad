@@ -92,6 +92,9 @@ dependencies {
 
     //story view
     implementation 'com.github.OMARIHAMZA:StoryView:1.0.2-alpha'
+    implementation 'com.github.shts:StoriesProgressView:3.0.0'
+
     //ticket view
     implementation 'com.vipulasri:ticketview:1.1.2'
+
 }

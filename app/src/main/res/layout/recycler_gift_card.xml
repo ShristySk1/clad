@@ -7,9 +7,9 @@
     <com.vipulasri.ticketview.TicketView
     android:id="@+id/ticketView"
     android:layout_width="match_parent"
-    android:layout_height="140dp"
+    android:layout_height="120dp"
     app:layout_constraintTop_toTopOf="parent"
-    app:ticketBackgroundColor="@color/blue_btn_bg_color"
+    app:ticketBackgroundColor="#4CAF50"
     app:ticketCornerRadius="10dp"
     app:ticketCornerType="rounded"
     app:ticketDividerColor="@color/white"
@@ -17,7 +17,7 @@
     app:ticketDividerType="dash"
     app:ticketElevation="14dp"
     app:ticketOrientation="horizontal"
-    app:ticketScallopPositionPercent="70"
+    app:ticketScallopPositionPercent="65"
     app:ticketScallopRadius="10dp"
     app:ticketShowBorder="false"
     app:ticketShowDivider="true" />

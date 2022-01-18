@@ -15,7 +15,7 @@
     <dimen name="item_offset">2dp</dimen>
 
     <dimen name="appbar_icon_size">32dp</dimen>
-    <dimen name="appbar_icon_padding1">9dp</dimen>
+    <dimen name="appbar_icon_padding1">8dp</dimen>
     <dimen name="appbar_icon_padding2">5dp</dimen>
     <dimen name="appbar_icon_padding3">7dp</dimen>
 </resources>

@@ -14,12 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clad"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SplashActivity"
+        <activity android:name=".StoryActivity"></activity>
+        <activity
+            android:name=".SplashActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -32,12 +35,12 @@
             android:name=".onboarding.ActivityOnboarding"
             android:configChanges="orientation"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
