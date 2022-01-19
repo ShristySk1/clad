@@ -65,8 +65,8 @@ class FragmentFilter : Fragment() {
                     1 -> {//Sort by
                         val list = listOf(
                             MyFilterContentViewItem.SingleChoice("Recommended", true),
-                            MyFilterContentViewItem.SingleChoice("Price (low - high)", false),
-                            MyFilterContentViewItem.SingleChoice("Price (high - low)", false),
+                            MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false),
+                            MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false),
                         )
 //                        val list = listOf(
 //                            MyFilterContentViewItem.MultipleChoice("Recommended", true),

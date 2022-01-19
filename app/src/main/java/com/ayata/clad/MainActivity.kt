@@ -13,10 +13,10 @@ import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.preorder.FragmentPreorder
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
-import com.ayata.clad.thrift.FragmentThrift
 import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

@@ -30,6 +30,8 @@ import com.ayata.clad.home.model.*
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.SliderAnimations
 
 class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
     ,AdapterPopularBrands.OnItemClickListener,AdapterJustDropped.OnItemClickListener
@@ -60,6 +62,9 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private lateinit var adapterNewSubscription: AdapterNewSubscription
     private var listNewSubscription=ArrayList<ModelNewSubscription>()
+
+    private lateinit var adapterBanner: AdapterBanner
+    private var listBanner=ArrayList<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -146,6 +151,22 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         }
         prepareDataForNewSubscription()
 
+
+        //banner
+        prepareBanner()
+        adapterBanner= AdapterBanner(requireContext(),listBanner)
+        binding.imageSlider.setSliderAdapter(adapterBanner)
+        binding.imageSlider.setIndicatorAnimation(IndicatorAnimationType.WORM)
+        binding.imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+        binding.imageSlider.startAutoCycle()
+    }
+
+    private fun prepareBanner(){
+        listBanner.clear()
+        listBanner.add("https://www.thoughtco.com/thmb/C7RiS4QG5TXcBG2d_Sh9i4hFpg0=/3620x2036/smart/filters:no_upscale()/close-up-of-clothes-hanging-in-row-739240657-5a78b11f8e1b6e003715c0ec.jpg")
+        listBanner.add("https://st.depositphotos.com/1003633/2284/i/600/depositphotos_22848360-stock-photo-fashion-clothes-hang-on-a.jpg")
+        listBanner.add("https://cdn.stocksnap.io/img-thumbs/280h/white-sneakers_EA7TDORJBT.jpg")
+//        binding.imageSlider.startAutoCycle()
     }
 
     private fun prepareDataForNewSubscription() {
