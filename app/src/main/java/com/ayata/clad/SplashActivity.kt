@@ -32,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
         setUpFullScreen()
         Handler().postDelayed({
             nextActivity()
-        }, 1000)
+        }, 2000)
     }
 
     private fun setUpFullScreen() {
@@ -108,12 +108,14 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun nextActivity(){
-        if(goTo==1){
-            startActivity(Intent(this@SplashActivity, ActivityOnboarding::class.java))
-            finish()
-        }else if(goTo==2){
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-            finish()
-        }
+//        if(goTo==1){
+//            startActivity(Intent(this@SplashActivity, ActivityOnboarding::class.java))
+//            finish()
+//        }else if(goTo==2){
+//            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+//            finish()
+//        }
+        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+        finish()
     }
 }

@@ -30,6 +30,8 @@ import com.ayata.clad.home.model.*
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
+import com.ayata.clad.utils.Constants
+import com.ayata.clad.view_all.FragmentViewAllProduct
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
 
@@ -73,6 +75,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     {
         binding= FragmentHomeBinding.inflate(inflater,container,false)
         setUpViewModel()
+        initButtonClick()
         initAppbar()
         initRecyclerView()
         return binding.root
@@ -353,5 +356,41 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         startActivity(i)
     }
 
+    private fun initButtonClick(){
+
+        binding.justDroppedViewBtn.setOnClickListener {
+            val bundle=Bundle()
+            bundle.putString(Constants.FILTER_HOME,"Just Dropped")
+            val fragmentViewAllProduct=FragmentViewAllProduct()
+            fragmentViewAllProduct.arguments=bundle
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
+                .addToBackStack(null).commit()
+        }
+
+        binding.mostPopularViewBtn.setOnClickListener {
+            val bundle=Bundle()
+            bundle.putString(Constants.FILTER_HOME,"Most Popular")
+            val fragmentViewAllProduct=FragmentViewAllProduct()
+            fragmentViewAllProduct.arguments=bundle
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
+                .addToBackStack(null).commit()
+        }
+        binding.popularViewBtn.setOnClickListener {
+            val bundle=Bundle()
+            bundle.putString(Constants.FILTER_HOME,"Popular This Month")
+            val fragmentViewAllProduct=FragmentViewAllProduct()
+            fragmentViewAllProduct.arguments=bundle
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
+                .addToBackStack(null).commit()
+        }
+        binding.recommendedViewBtn.setOnClickListener {
+            val bundle=Bundle()
+            bundle.putString(Constants.FILTER_HOME,"Recommended")
+            val fragmentViewAllProduct=FragmentViewAllProduct()
+            fragmentViewAllProduct.arguments=bundle
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
+                .addToBackStack(null).commit()
+        }
+    }
 
 }

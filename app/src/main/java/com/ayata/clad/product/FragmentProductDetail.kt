@@ -27,14 +27,17 @@ import com.ayata.clad.productlist.viewmodel.ProductListViewModel
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PercentageCropImageView
+import com.ayata.clad.utils.TopRightCropTransformation
 import com.ayata.clad.utils.copyToClipboard
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
 
 
-class FragmentProductDetail : Fragment() {
+class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
     val TAG = "FragmentProductDetail"
     private lateinit var adapterCircleText: AdapterCircleText
     private lateinit var binding: FragmentProductDetailBinding
@@ -230,7 +233,7 @@ class FragmentProductDetail : Fragment() {
                     R.color.color1,
                     R.color.color2,
                     R.color.color3
-                )
+                ),this@FragmentProductDetail
             )
         }
     }
@@ -275,5 +278,26 @@ class FragmentProductDetail : Fragment() {
         listText.add(ModelCircleText("l", false))
         listText.add(ModelCircleText("xl", false))
         adapterCircleText.notifyDataSetChanged()
+    }
+
+    override fun onColorClicked(color: Int,position:Int) {
+        //change image
+        val url=when (position) {
+            2 -> {
+               "https://pa.namshicdn.com/product/A6/20076W/1-zoom-desktop.jpg"
+            }
+            1 -> {
+                "https://m.media-amazon.com/images/I/71hNVecVSrL._AC_UX342_.jpg"
+            }
+            else -> {
+                ""
+            }
+        }
+        Glide.with(requireContext())
+            .load(url)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .error(R.drawable.splashimage)
+            .into(binding.imageView3)
+        binding.imageView3.cropYCenterOffsetPct = 0f
     }
 }

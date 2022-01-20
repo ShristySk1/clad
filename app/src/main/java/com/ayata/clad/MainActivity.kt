@@ -64,11 +64,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         binding.appbar.btnSearch.setOnClickListener {
-            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, TestFragment())
-                .addToBackStack(null)
-                .commit()
+//            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.main_fragment, TestFragment())
+//                .addToBackStack(null)
+//                .commit()
         }
 
         binding.appbar.btnClear.setOnClickListener {

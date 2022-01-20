@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.databinding.ItemRecyclerColorChooseBinding
 
 class AdapterColor(
-    var colorList: List<Int>,
+    var colorList: List<Int>,var onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<AdapterColor.ViewHolder>() {
 
     // create an inner class with name ViewHolder
@@ -33,7 +33,10 @@ class AdapterColor(
         with(holder){
             with(colorList[position]){
                 binding.color.apply {
-                    setColorFilter(ContextCompat.getColor(context, colorList[position]));
+                    setColorFilter(ContextCompat.getColor(context, colorList[position]))
+                }
+                binding.root.setOnClickListener {
+                    onItemClickListener.onColorClicked(colorList[position],position)
                 }
             }
         }
@@ -42,5 +45,9 @@ class AdapterColor(
     // return the size of languageList
     override fun getItemCount(): Int {
         return colorList.size
+    }
+
+    interface OnItemClickListener{
+        fun onColorClicked(color:Int,position:Int)
     }
 }
