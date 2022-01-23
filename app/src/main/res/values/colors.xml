@@ -47,4 +47,6 @@
     
     <color name="colorCouponBorder">#FF406F</color>
     <color name="colorCoupon">#FEEAEE</color>
+
+    <color name="overlay_color">#34000000</color>
 </resources>

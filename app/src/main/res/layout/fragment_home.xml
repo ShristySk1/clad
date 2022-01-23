@@ -22,16 +22,18 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="5dp"/>
 
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
                 android:id="@+id/bannerLayout"
+                android:layout_marginHorizontal="10dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
                 android:layout_below="@+id/recycler_story"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.smarteist.autoimageslider.SliderView
                     android:id="@+id/imageSlider"
-                    android:layout_marginHorizontal="15dp"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="200dp"
                     app:sliderAnimationDuration="600"
                     app:sliderAutoCycleDirection="back_and_forth"
                     app:sliderAutoCycleEnabled="true"
@@ -45,7 +47,7 @@
                     app:sliderIndicatorUnselectedColor="#FFF"
                     app:sliderScrollTimeInSec="1"
                     app:sliderStartAutoCycle="true"/>
-            </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
             <RelativeLayout
                 android:id="@+id/layout_popular_this_month"

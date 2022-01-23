@@ -18,4 +18,7 @@
     <dimen name="appbar_icon_padding1">8dp</dimen>
     <dimen name="appbar_icon_padding2">5dp</dimen>
     <dimen name="appbar_icon_padding3">7dp</dimen>
+
+    <dimen name="p_height">190dp</dimen>
+    <dimen name="p_width">170dp</dimen>
 </resources>

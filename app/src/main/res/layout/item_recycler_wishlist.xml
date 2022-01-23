@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="@dimen/p_height"
         android:background="@drawable/background_gray"
         style="@style/CustomSelectableItemBackground"
         android:scaleType="fitCenter"

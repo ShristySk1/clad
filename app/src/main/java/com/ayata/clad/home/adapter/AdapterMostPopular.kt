@@ -34,9 +34,9 @@ internal class AdapterMostPopular(private var context:Context?,
    internal inner class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
 
        val image=itemView.findViewById<ImageView>(R.id.image)
-       val imageLogo=itemView.findViewById<ImageView>(R.id.image_logo)
+//       val imageLogo=itemView.findViewById<ImageView>(R.id.image_logo)
        val title=itemView.findViewById<TextView>(R.id.name)
-       val description=itemView.findViewById<TextView>(R.id.ask_text)
+//       val description=itemView.findViewById<TextView>(R.id.ask_text)
        val price=itemView.findViewById<TextView>(R.id.price)
 
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
@@ -51,7 +51,7 @@ internal class AdapterMostPopular(private var context:Context?,
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
         holder.title.text=item.title
-        holder.description.text=item.description
+//        holder.description.text=item.description
         holder.price.text=item.price
 
         holder.progressBar.visibility = View.VISIBLE
@@ -82,8 +82,8 @@ internal class AdapterMostPopular(private var context:Context?,
             .error(R.drawable.shoes)
             .into(holder.image)
 
-        Glide.with(context!!).asBitmap().load(item.logoUrl)
-            .error(R.drawable.ic_hanger).into(holder.imageLogo)
+//        Glide.with(context!!).asBitmap().load(item.logoUrl)
+//            .error(R.drawable.ic_hanger).into(holder.imageLogo)
 
         holder.clickView()
     }

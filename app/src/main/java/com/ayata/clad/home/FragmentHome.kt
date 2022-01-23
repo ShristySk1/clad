@@ -84,7 +84,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private fun initAppbar(){
         (activity as MainActivity).showBottomNavigation(true)
         (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar1(getString(R.string.clad),
+        (activity as MainActivity).setToolbar1("",
             isSearch = true,
             isProfile = true,
             isClose = false,
@@ -141,7 +141,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         //most popular
         adapterMostPopular= AdapterMostPopular(context,listMostPopular,this)
         binding.recyclerMostPopular.apply {
-            layoutManager=GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL,false)
+            layoutManager=GridLayoutManager(context,1,GridLayoutManager.HORIZONTAL,false)
             adapter=adapterMostPopular
         }
         prepareDataForMostPopular()

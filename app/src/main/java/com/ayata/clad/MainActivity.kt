@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.main_fragment, FragmentHome())
                 .commit()
         }
-        setStatusBarLight(R.color.white)
+        setStatusBarLight(R.color.black)
         setToolbar()
 
     }
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 decorView.systemUiVisibility = 0
             }
         }
-        setStatusBarLight(R.color.white)
+        setStatusBarLight(R.color.black)
     }
 
     private fun setToolbar() {
@@ -128,9 +128,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (isLogo) {
-            binding.appbar.appLogo.visibility = View.VISIBLE
+            binding.appbar.layoutLogo.visibility = View.VISIBLE
         } else {
-            binding.appbar.appLogo.visibility = View.GONE
+            binding.appbar.layoutLogo.visibility = View.GONE
         }
     }
 
@@ -187,6 +187,7 @@ class MainActivity : AppCompatActivity() {
         val window: Window = this.window
         var flags = window.decorView.systemUiVisibility // get current flag
         flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // add LIGHT_STATUS_BAR to flag
+        flags=flags xor  View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         window.decorView.systemUiVisibility = flags
         window.statusBarColor = ContextCompat.getColor(this, color)
     }
