@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/p_width"
+    android:layout_width="@dimen/p_width2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_height="wrap_content"
@@ -13,7 +13,7 @@
         app:cardCornerRadius="15dp"
         app:cardElevation="0dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/p_height"
+        android:layout_height="@dimen/p_height2"
         style="@style/CustomSelectableItemBackground">
 
         <RelativeLayout
@@ -60,7 +60,7 @@
             android:layout_marginTop="8dp"
             android:text="Nike Air Max"/>
         <TextView
-            android:id="@+id/ask_text"
+            android:id="@+id/price"
             android:layout_width="match_parent"
             android:textSize="13sp"
             android:textColor="@color/colorGrayText"

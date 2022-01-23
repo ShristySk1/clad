@@ -35,7 +35,7 @@ internal class AdapterJustDropped(private var context:Context?,
        val image=itemView.findViewById<ImageView>(R.id.image)
        val logo=itemView.findViewById<ImageView>(R.id.image_logo)
        val title=itemView.findViewById<TextView>(R.id.name)
-       val description=itemView.findViewById<TextView>(R.id.ask_text)
+       val description=itemView.findViewById<TextView>(R.id.price)
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
        fun clickView(){
            itemView.setOnClickListener {

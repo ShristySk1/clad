@@ -42,18 +42,18 @@ internal class AdapterPopularMonth(private var context: Context?, private var li
             val name=itemView.findViewById<TextView>(R.id.name)
             val price=itemView.findViewById<TextView>(R.id.price)
             val image=itemView.findViewById<ImageView>(R.id.image)
-            val cardView=itemView.findViewById<CardView>(R.id.cardView)
+//            val cardView=itemView.findViewById<CardView>(R.id.cardView)
             val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
 
             fun clickView(){
-                cardView.setOnClickListener {
+                itemView.setOnClickListener {
                     onItemClickListener.onPopularMonthClicked(listItems[adapterPosition],adapterPosition)
                 }
             }
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view= LayoutInflater.from(context).inflate(R.layout.recycler_home_popular_this_month,parent,false)
+        val view= LayoutInflater.from(context).inflate(R.layout.recycler_home_recommended,parent,false)
         return MyViewHolder(view)
     }
 

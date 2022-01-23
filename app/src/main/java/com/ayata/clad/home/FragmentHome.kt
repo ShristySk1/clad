@@ -276,13 +276,13 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private fun prepareDataForJustDropped() {
         listJustDropped.clear()
         listJustDropped.add(ModelJustDropped("https://freepngimg.com/thumb/categories/627.png",
-            "Nike ISPA Overreact Sail Multi","Lowest Ask",
+            "Nike ISPA Overreact Sail Multi","Rs. 5000",
         "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
         listJustDropped.add(ModelJustDropped("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask",
+            "adidas Yeezy Boost 700 MNVN Bone","Rs. 5000",
             "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
         listJustDropped.add(ModelJustDropped("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-            "Jordan 11 Retro Low White Concord (W) ","Lowest Ask",
+            "Jordan 11 Retro Low White Concord (W) ","Rs. 5000",
         "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
         adapterJustDropped.notifyDataSetChanged()

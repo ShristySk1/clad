@@ -153,19 +153,19 @@ class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
         val listMen=ArrayList<ModelShop>()
         val listKids=ArrayList<ModelShop>()
 
-        listWomen.add(ModelShop("New Arrivals","Upcoming: June 2021",""))
-        listWomen.add(ModelShop("On Sale","Up to 40% off",""))
-        listWomen.add(ModelShop("Clothing","",""))
-        listWomen.add(ModelShop("Accessories","",""))
-        listWomen.add(ModelShop("Kurthas","",""))
+        listWomen.add(ModelShop("New Arrivals","Upcoming: June 2021","https://www.coverstory.co.in/media/cms/home/category/work.jpg"))
+        listWomen.add(ModelShop("On Sale","Up to 40% off","https://www.coverstory.co.in/media/cms/home/category/work.jpg"))
+        listWomen.add(ModelShop("Clothing","","https://www.coverstory.co.in/media/cms/home/category/work.jpg"))
+        listWomen.add(ModelShop("Accessories","","https://www.coverstory.co.in/media/cms/home/category/work.jpg"))
+        listWomen.add(ModelShop("Kurthas","","https://www.coverstory.co.in/media/cms/home/category/work.jpg"))
 
-        listMen.add(ModelShop("New Arrivals","Upcoming: June 2021",""))
-        listMen.add(ModelShop("On Sale","Up to 30% off",""))
-        listMen.add(ModelShop("Shoes","",""))
+        listMen.add(ModelShop("New Arrivals","Upcoming: June 2021","https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"))
+        listMen.add(ModelShop("On Sale","Up to 30% off","https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"))
+        listMen.add(ModelShop("Shoes","","https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"))
 
-        listKids.add(ModelShop("New Arrivals","Upcoming: June 2021",""))
-        listKids.add(ModelShop("On Sale","Up to 80% off",""))
-        listKids.add(ModelShop("Toys","",""))
+        listKids.add(ModelShop("New Arrivals","Upcoming: June 2021","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSklPj6OR9Qecp-ilpT0UH3yzfx-ngRbADw3g&usqp=CAU"))
+        listKids.add(ModelShop("On Sale","Up to 80% off","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSklPj6OR9Qecp-ilpT0UH3yzfx-ngRbADw3g&usqp=CAU"))
+        listKids.add(ModelShop("Toys","","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSklPj6OR9Qecp-ilpT0UH3yzfx-ngRbADw3g&usqp=CAU"))
 
         shopRecyclerList.clear()
         when {

@@ -21,4 +21,8 @@
 
     <dimen name="p_height">190dp</dimen>
     <dimen name="p_width">170dp</dimen>
+
+<!--    home page-->
+    <dimen name="p_height2">200dp</dimen>
+    <dimen name="p_width2">180dp</dimen>
 </resources>

@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black">
-<!--    android:background="@drawable/background_outline_bottom"-->
+    android:background="@drawable/background_outline_bottom">
 
     <RelativeLayout
         android:id="@+id/appbar1"
@@ -33,7 +32,7 @@
                 android:layout_width="50dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="5dp"
-                android:tint="@color/white"
+                android:tint="@color/black"
                 android:src="@drawable/ic_clad_text"/>
         </LinearLayout>
 
@@ -49,7 +48,7 @@
             android:textAllCaps="true"
             android:textSize="19sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:visibility="visible" />
 
         <ImageView
@@ -64,8 +63,8 @@
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_search"
-            android:tint="@color/white"
-            android:backgroundTint="@color/black"
+            android:tint="@color/black"
+            android:backgroundTint="@color/white"
             android:visibility="visible" />
         <RelativeLayout
             android:id="@+id/layout_3"
@@ -82,8 +81,8 @@
             android:background="@drawable/ripple_5dp"
             android:clickable="true"
             android:focusable="true"
-            android:tint="@color/white"
-            android:backgroundTint="@color/black"
+            android:tint="@color/black"
+            android:backgroundTint="@color/white"
             android:src="@drawable/ic_user"
             android:visibility="visible" />
 
@@ -97,8 +96,8 @@
             android:focusable="true"
             android:padding="@dimen/appbar_icon_padding2"
             android:src="@drawable/ic_close"
-            android:tint="@color/white"
-            android:backgroundTint="@color/black"
+            android:tint="@color/black"
+            android:backgroundTint="@color/white"
             android:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
@@ -125,8 +124,8 @@
                 android:focusable="true"
                 android:padding="@dimen/appbar_icon_padding2"
                 android:src="@drawable/ic_close"
-                android:tint="@color/white"
-                android:backgroundTint="@color/black"
+                android:tint="@color/black"
+                android:backgroundTint="@color/white"
                 android:visibility="visible" />
 
             <ImageView
@@ -137,8 +136,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="@dimen/appbar_icon_padding1"
-                android:tint="@color/white"
-                android:backgroundTint="@color/black"
+                android:tint="@color/black"
+                android:backgroundTint="@color/white"
                 android:src="@drawable/ic_arrow_left_angle"
                 android:visibility="gone" />
 
@@ -159,7 +158,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="xxx.xxx"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:textAllCaps="true"
@@ -171,7 +170,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="visible"
                 android:text="xxxx"
-                android:textColor="@color/white"
+                android:textColor="@color/colorGrayText"
                 android:textAlignment="center"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -197,8 +196,8 @@
                 android:text="Clear All"
                 android:textStyle="bold"
                 android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/black"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/white"
                 android:visibility="gone" />
 
             <ImageView
@@ -211,8 +210,8 @@
                 android:layout_height="@dimen/appbar_icon_size"
                 android:src="@drawable/ic_filter"
                 android:background="@drawable/ripple_5dp"
-                android:backgroundTint="@color/black"
-                app:tint="@color/white" />
+                android:backgroundTint="@color/white"
+                app:tint="@color/black" />
         </RelativeLayout>
     </RelativeLayout>
 

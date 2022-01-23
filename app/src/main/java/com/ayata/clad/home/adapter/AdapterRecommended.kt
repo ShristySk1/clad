@@ -41,14 +41,14 @@ internal class AdapterRecommended(private var context: Context?, private var lis
         internal inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
             val name=itemView.findViewById<TextView>(R.id.name)
-            val desp=itemView.findViewById<TextView>(R.id.desp)
+//            val desp=itemView.findViewById<TextView>(R.id.desp)
             val price=itemView.findViewById<TextView>(R.id.price)
             val image=itemView.findViewById<ImageView>(R.id.image)
-            val cardView=itemView.findViewById<CardView>(R.id.cardView)
+//            val cardView=itemView.findViewById<CardView>(R.id.cardView)
             val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
 
             fun clickView(){
-                cardView.setOnClickListener {
+                itemView.setOnClickListener {
                     onItemClickListener.onRecommendedClicked(listItems[adapterPosition],adapterPosition)
                 }
             }
@@ -64,7 +64,6 @@ internal class AdapterRecommended(private var context: Context?, private var lis
 
         holder.name.text=item.title
         holder.price.text=item.price
-        holder.desp.text=item.description
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).load(item.imageUrl)

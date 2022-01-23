@@ -27,14 +27,14 @@ internal class AdapterMostPopular(private var context:Context?,
     :RecyclerView.Adapter<AdapterMostPopular.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view= LayoutInflater.from(context).inflate(R.layout.recycler_home_most_popular,parent,false)
+        val view= LayoutInflater.from(context).inflate(R.layout.recycler_home_just_dropped,parent,false)
         return MyViewHolder(view)
     }
 
    internal inner class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
 
        val image=itemView.findViewById<ImageView>(R.id.image)
-//       val imageLogo=itemView.findViewById<ImageView>(R.id.image_logo)
+       val imageLogo=itemView.findViewById<ImageView>(R.id.image_logo)
        val title=itemView.findViewById<TextView>(R.id.name)
 //       val description=itemView.findViewById<TextView>(R.id.ask_text)
        val price=itemView.findViewById<TextView>(R.id.price)
@@ -82,8 +82,8 @@ internal class AdapterMostPopular(private var context:Context?,
             .error(R.drawable.shoes)
             .into(holder.image)
 
-//        Glide.with(context!!).asBitmap().load(item.logoUrl)
-//            .error(R.drawable.ic_hanger).into(holder.imageLogo)
+        Glide.with(context!!).asBitmap().load(item.logoUrl)
+            .error(R.drawable.ic_hanger).into(holder.imageLogo)
 
         holder.clickView()
     }

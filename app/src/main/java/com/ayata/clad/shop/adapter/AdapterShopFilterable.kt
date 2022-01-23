@@ -58,7 +58,7 @@ internal class AdapterShopFilterable(private var context: Context?, private var 
         holder.title.text=item.name
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).asDrawable()
-            .load("https://www.coverstory.co.in/media/cms/home/category/work.jpg")
+            .load(item.image)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
