@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clad"
         android:usesCleartextTraffic="true">
-        <activity android:name=".StoryActivity"></activity>
+        <activity android:name=".StoryActivity"/>
         <activity
             android:name=".SplashActivity"
             android:configChanges="orientation"

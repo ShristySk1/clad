@@ -12,15 +12,15 @@ import retrofit2.http.Query
 
 class HomeViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
 
-    val errorMessage = MutableLiveData<String>()
+    private val errorMessage = MutableLiveData<String>()
 
     private val homeResponse = MutableLiveData<Resource<JsonObject>>()
 
-    var job: Job? = null
-    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+    private var job: Job? = null
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
-    val loading = MutableLiveData<Boolean>()
+    private val loading = MutableLiveData<Boolean>()
 
     fun dashboardAPI() {
         homeResponse.postValue(Resource.loading(null))

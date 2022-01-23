@@ -18,6 +18,8 @@ import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.StoryActivity
 import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentHomeBinding
 import com.ayata.clad.home.adapter.*
@@ -29,17 +31,27 @@ import com.ayata.clad.home.adapter.AdapterStories
 import com.ayata.clad.home.model.*
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
+import com.ayata.clad.login.FragmentVerification
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.view_all.FragmentViewAllProduct
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
     ,AdapterPopularBrands.OnItemClickListener,AdapterJustDropped.OnItemClickListener
     ,AdapterMostPopular.OnItemClickListener, AdapterNewSubscription.OnItemClickListener
     ,AdapterStories.OnItemClickListener{
 
+    companion object{
+        private const val TAG="FragmentHome"
+    }
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel:HomeViewModel
 
@@ -75,6 +87,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     {
         binding= FragmentHomeBinding.inflate(inflater,container,false)
         setUpViewModel()
+        prepareAPI()
         initButtonClick()
         initAppbar()
         initRecyclerView()
@@ -393,4 +406,33 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         }
     }
 
+    private fun prepareAPI(){
+
+//        GlobalScope.launch(Dispatchers.IO) {
+//            DataStoreManager(requireContext()).getToken().catch { e ->
+//                e.printStackTrace()
+//            }.collect {
+//                withContext(Dispatchers.Main) {
+//                    val token=it
+//
+//                }
+//            }
+//        }
+//
+        viewModel.dashboardAPI()
+            viewModel.getDashboardAPI().observe(this,{
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        Log.d(TAG, "home: ${it.data}")
+                    }
+                    Status.LOADING -> {
+                    }
+                    Status.ERROR -> {
+                        //Handle Error
+                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                        Log.d(TAG, "phoneApi: ${it.message}")
+                    }
+                }
+            })
+    }
 }

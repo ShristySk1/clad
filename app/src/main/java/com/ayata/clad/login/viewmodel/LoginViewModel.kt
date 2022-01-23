@@ -12,10 +12,10 @@ import retrofit2.http.Query
 
 class LoginViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
 
-    val errorMessage = MutableLiveData<String>()
+    private val errorMessage = MutableLiveData<String>()
     private val loginResponse = MutableLiveData<Resource<JsonObject>>()
 
-    var job: Job? = null
+    private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
