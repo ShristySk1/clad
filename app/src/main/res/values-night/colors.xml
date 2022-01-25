@@ -10,11 +10,10 @@
     <color name="green">#7CFF00</color>
     <color name="red">#FF1100</color>
 
-
-<!--    change for dark theme-->
+<!--    change for light theme-->
 <!--color onboarding-->
-    <color name="colorBlack">#000000</color>
-    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#FFFFFF</color>
+    <color name="colorWhite">#000000</color>
 
 <!--GRAY-->
 <!--    <color name="ColorGrayText">#9912121D</color>-->
@@ -24,7 +23,7 @@
 <!--    <color name="colorGrayText">#7E808E</color>-->
 
 <!-- cross with drawable-->
-    <color name="colorGrayCircle">#12121D0D</color>
+    <color name="colorGrayCircle">#EDEDED</color>
 
     <color name="colorRed">#FF1100</color>
 
@@ -45,17 +44,18 @@
     <color name="color2">#AEDED2</color>
     <color name="color3">#DEB9AE</color>
 <!--    divider-->
-    <color name="colorDivider">#EDEEF0</color>
+    <color name="colorDivider">#92BABABA</color>
     
     <color name="colorCouponBorder">#FF406F</color>
     <color name="colorCoupon">#FEEAEE</color>
 
     <color name="overlay_color">#34000000</color>
-    <color name="brand_background">#0D12121D</color>
-    <color name="home_product_background">#12121D0D</color>
+    <color name="brand_background">#DDDDDD</color>
+    <color name="home_product_background">#EFEFEF</color>
 
-    <color name="tab_unselect">#12121D0D</color>
-    <color name="divider2">#FFC4C4C4</color>
-    <color name="order_background">#FBFBFB</color>
+    <color name="tab_unselect">#92BABABA</color>
+    <color name="divider2">#92BABABA</color>
+    <color name="order_background">#000000</color>
+
 
 </resources>

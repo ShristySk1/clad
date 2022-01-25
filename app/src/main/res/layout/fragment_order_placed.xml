@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".shopping_bag.order_placed.FragmentOrderPlaced"
-    android:background="#FBFBFB">
+    android:background="@color/order_background">
 
     <TextView
         android:id="@+id/title"
@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/opf_text1"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:textSize="20sp"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"
@@ -37,7 +37,7 @@
         android:text="@string/opf_text2"
         android:layout_marginHorizontal="30dp"
         android:layout_above="@id/text_date"
-        android:textColor="@color/black"/>
+        android:textColor="@color/colorBlack"/>
 
     <TextView
         android:id="@+id/text_date"

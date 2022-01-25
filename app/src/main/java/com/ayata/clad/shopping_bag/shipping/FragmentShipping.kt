@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.Display
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentShippingBinding
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterShippingAddress
-import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.shopping_bag.payment.FragmentPayment
 
@@ -45,7 +43,7 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
 
     private fun initView(){
         binding.textTerms.text=SpannableStringBuilder().append("By placing an order you agree to our \n")
-            .underline {color(ContextCompat.getColor(requireContext(),R.color.black)) { append("Terms and Conditions.") }}
+            .underline {color(ContextCompat.getColor(requireContext(),R.color.colorBlack)) { append("Terms and Conditions.") }}
 
         binding.textTerms.setOnClickListener {
             val url = getString(R.string.terms_url)

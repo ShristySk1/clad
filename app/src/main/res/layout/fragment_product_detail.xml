@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     android:theme="@style/Base.Theme.DesignDemo"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -185,7 +185,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/background_circle_with_border"
-                            android:backgroundTint="@color/white"
+                            android:backgroundTint="@color/colorWhite"
                             android:clickable="false"
                             android:padding="10dp"
                             android:src="@drawable/ic_heart_outline" />
@@ -209,10 +209,10 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/background_circle_with_border"
-                            android:backgroundTint="@color/black"
+                            android:backgroundTint="@color/colorBlack"
                             android:padding="12dp"
                             android:src="@drawable/ic_cart"
-                            android:tint="@color/white"
+                            android:tint="@color/colorWhite"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textView5" />

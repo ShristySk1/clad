@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_main"
-    android:background="#0D12121D"
+    android:background="@color/brand_background"
     android:foreground="?attr/selectableItemBackground">
 
     <RelativeLayout
@@ -28,7 +28,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerInParent="true"
-            android:progressTint="@color/black"
+            android:progressTint="@color/colorBlack"
             />
 
     </RelativeLayout>
@@ -41,7 +41,7 @@
 <!--        android:layout_alignTop="@id/layout"-->
 <!--        android:layout_alignStart="@id/layout"-->
 <!--        android:layout_alignEnd="@id/layout"-->
-<!--        android:background="#0D12121D" />-->
+<!--        android:background="@color/brand_background" />-->
 
 </RelativeLayout>
 

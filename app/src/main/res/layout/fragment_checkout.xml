@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/colorWhite"
     tools:context=".shopping_bag.checkout.FragmentCheckout">
 
     <RelativeLayout
@@ -34,7 +34,7 @@
                 android:layout_marginStart="10dp"
                 android:text="1/1 Items Selected"
                 android:textAllCaps="true"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorBlack" />
 
         </LinearLayout>
 
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorGray" />
+            android:background="@color/divider2" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="15dp"
-            android:background="@color/colorGray" />
+            android:background="@color/divider2" />
 
         <LinearLayout
             android:id="@+id/layout_a"
@@ -81,7 +81,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:text="TOTAL (incl. VAT)"
-                android:textColor="@color/black"
+                android:textColor="@color/colorBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_weight="1"
                 android:text="Rs. 7811.0"
                 android:textAlignment="textEnd"
-                android:textColor="@color/black"
+                android:textColor="@color/colorBlack"
                 android:textSize="15sp" />
 
         </LinearLayout>

@@ -1,27 +1,15 @@
 package com.ayata.clad.shopping_bag.adapter
 
 import android.content.Context
-import android.text.Html
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.text.bold
-import androidx.core.text.color
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.shop.model.ModelShop
 import com.ayata.clad.shopping_bag.model.ModelCircleText
-import com.ayata.clad.thrift.model.ModelThrift
-import com.ayata.clad.utils.TextFormatter
-import com.bumptech.glide.Glide
 import com.google.android.material.circularreveal.cardview.CircularRevealCardView
-import org.w3c.dom.Text
 import java.util.*
 
 internal class AdapterCircleText(private var context: Context?, private var listItems:List<ModelCircleText>)
@@ -53,7 +41,7 @@ internal class AdapterCircleText(private var context: Context?, private var list
 
         holder.textView.text=item.title
         if(item.isSelected) {
-            holder.cardView.strokeColor = ContextCompat.getColor(context!!, R.color.black)
+            holder.cardView.strokeColor = ContextCompat.getColor(context!!, R.color.colorBlack)
         }else{
             holder.cardView.strokeColor = ContextCompat.getColor(context!!, R.color.colorCircleUnselect)
         }

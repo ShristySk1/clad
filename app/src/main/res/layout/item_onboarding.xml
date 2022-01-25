@@ -38,7 +38,7 @@
         android:layout_marginBottom="200dp"
         android:fontFamily="@font/sf_pro_text_regular"
         android:text="@string/str_ontitle"
-        android:textColor="@color/ColorBlack"
+        android:textColor="@color/colorBlack"
         app:layout_constraintBottom_toBottomOf="@+id/iv_onboardimage1"
         app:layout_constraintStart_toStartOf="parent" />
 

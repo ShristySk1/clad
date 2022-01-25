@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".productlist.FragmentProductList"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <RelativeLayout
         android:id="@+id/layout_search"
@@ -42,7 +42,7 @@
                 android:inputType="text"
                 android:textSize="14sp"
                 android:textColorHint="@color/colorGray"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorBlack" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </RelativeLayout>
@@ -51,7 +51,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorGraycircle"
+        android:background="@color/tab_unselect"
         android:layout_below="@id/layout_search"/>
 
     <androidx.recyclerview.widget.RecyclerView

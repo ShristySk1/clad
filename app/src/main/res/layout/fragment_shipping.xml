@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".shopping_bag.shipping.FragmentShipping"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
    <TextView
        android:id="@+id/title"
@@ -17,7 +17,7 @@
        android:text="SHIPPING ADDRESS"
        android:paddingVertical="5dp"
        android:textSize="15sp"
-       android:textColor="@color/black"
+       android:textColor="@color/colorBlack"
        android:textStyle="bold"/>
 
     <TextView
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:text="Add new"
         android:background="@drawable/ripple_5dp"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:textStyle="normal"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -68,7 +68,7 @@
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorGray"
+            android:background="@color/divider2"
             android:layout_marginBottom="15dp" />
         <LinearLayout
             android:id="@+id/layout_b"
@@ -86,7 +86,7 @@
                 android:text="SubTotal"
                 android:textAllCaps="true"
                 android:textSize="14sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorBlack" />
 
             <TextView
                 android:id="@+id/sub_total"
@@ -96,7 +96,7 @@
                 android:text="Rs. 7001.0"
                 android:textSize="14sp"
                 android:textAlignment="textEnd"
-                android:textColor="@color/black"/>
+                android:textColor="@color/colorBlack"/>
 
         </LinearLayout>
         <LinearLayout
@@ -116,7 +116,7 @@
                 android:text="Shipping"
                 android:textAllCaps="true"
                 android:textSize="14sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorBlack" />
 
             <TextView
                 android:id="@+id/shipping_price"
@@ -126,7 +126,7 @@
                 android:text="Rs. 60.0"
                 android:textSize="14sp"
                 android:textAlignment="textEnd"
-                android:textColor="@color/black"/>
+                android:textColor="@color/colorBlack"/>
 
         </LinearLayout>
 
@@ -147,7 +147,7 @@
                 android:text="Promo Code"
                 android:textAllCaps="true"
                 android:textSize="14sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorBlack" />
 
             <TextView
                 android:id="@+id/promo_price"
@@ -157,7 +157,7 @@
                 android:text="Rs. 100.0"
                 android:textSize="14sp"
                 android:textAlignment="textEnd"
-                android:textColor="@color/black"/>
+                android:textColor="@color/colorBlack"/>
 
         </LinearLayout>
 
@@ -177,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:text="TOTAL (incl. VAT)"
                 android:textSize="15sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorBlack" />
 
             <TextView
                 android:id="@+id/total_price"
@@ -187,7 +187,7 @@
                 android:text="Rs. 7811.0"
                 android:textSize="15sp"
                 android:textAlignment="textEnd"
-                android:textColor="@color/black"/>
+                android:textColor="@color/colorBlack"/>
 
         </LinearLayout>
 

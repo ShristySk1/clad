@@ -5,7 +5,7 @@
     android:layout_marginVertical="4dp"
     android:layout_marginRight="4dp"
     android:padding="2dp"
-    android:backgroundTint="@color/white"
+    android:backgroundTint="@color/colorWhite"
     android:background="@drawable/background_circle_with_border"
     android:layout_height="35dp">
     <ImageView

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:text="Nike Air Max"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:textSize="14sp" />
 
         <TextView

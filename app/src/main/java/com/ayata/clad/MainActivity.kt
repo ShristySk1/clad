@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -36,7 +37,14 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.main_fragment, FragmentHome())
                 .commit()
         }
-        setStatusBarLight(R.color.white)
+//        AppCompatDelegate
+//            .setDefaultNightMode(
+//                AppCompatDelegate
+//                    .MODE_NIGHT_NO)
+        AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate
+                    .MODE_NIGHT_YES)
+        setStatusBarLight(R.color.colorWhite)
         setToolbar()
 
     }
@@ -59,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 decorView.systemUiVisibility = 0
             }
         }
-        setStatusBarLight(R.color.white)
+        setStatusBarLight(R.color.colorWhite)
     }
 
     private fun setToolbar() {

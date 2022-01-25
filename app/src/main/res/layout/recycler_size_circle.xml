@@ -10,7 +10,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:strokeWidth="1dp"
-        app:strokeColor="@color/black"
+        app:strokeColor="@color/colorBlack"
         app:cardCornerRadius="50dp"
         android:layout_margin="5dp"
         app:cardElevation="0dp">
@@ -24,7 +24,7 @@
             android:text="xx"
             android:textAlignment="center"
             android:textAllCaps="true"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold"
             android:layout_gravity="center"/>
     </com.google.android.material.circularreveal.cardview.CircularRevealCardView>

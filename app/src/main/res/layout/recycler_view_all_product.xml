@@ -32,7 +32,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/background_circle_with_border"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/colorWhite"
             android:padding="6dp"
             android:src="@drawable/ic_heart_filled"
             android:layout_alignParentEnd="true" />
@@ -46,7 +46,7 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="8dp"
         android:text="Nike Air Max"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:textSize="14sp" />
 
     <TextView
@@ -66,7 +66,7 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="4dp"
         android:text="NRs. 235"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:textSize="16sp"
         android:textStyle="bold" />
 </LinearLayout>

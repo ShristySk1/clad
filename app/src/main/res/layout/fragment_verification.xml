@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".login.FragmentVerification"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/spin_kit"
@@ -105,7 +105,7 @@
                         android:inputType="number"
                         android:itemBackground="@drawable/background_circle"
                         android:textAllCaps="true"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         android:textStyle="bold"
                         app:OtpHideLineWhenFilled="true"
                         app:OtpItemCount="4"

@@ -34,5 +34,5 @@
         android:layout_height="15dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_arrow_right_angle"
-        android:tint="@color/black" />
+        android:tint="@color/colorBlack" />
 </LinearLayout>

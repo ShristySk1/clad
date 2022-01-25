@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.FragmentHome"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                     android:layout_marginHorizontal="@dimen/home_marginHorizontal"
                     android:layout_marginTop="15dp"
                     android:text="@string/hf_text1"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/home_text_size_1"
                     android:textStyle="bold" />
 
@@ -105,7 +105,7 @@
                     android:layout_marginHorizontal="@dimen/home_marginHorizontal"
                     android:layout_marginTop="15dp"
                     android:text="@string/hf_text2"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/home_text_size_1"
                     android:textStyle="bold" />
 
@@ -147,7 +147,7 @@
                     android:layout_marginHorizontal="@dimen/home_marginHorizontal"
                     android:layout_marginTop="15dp"
                     android:text="@string/hf_text3"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/home_text_size_1"
                     android:textStyle="bold" />
 
@@ -190,7 +190,7 @@
                     android:layout_marginHorizontal="@dimen/home_marginHorizontal"
                     android:layout_marginTop="15dp"
                     android:text="@string/hf_text4"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/home_text_size_1"
                     android:textStyle="bold" />
 
@@ -231,7 +231,7 @@
                     android:layout_marginHorizontal="@dimen/home_marginHorizontal"
                     android:layout_marginTop="15dp"
                     android:text="@string/hf_text5"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/home_text_size_1"
                     android:textStyle="bold" />
 
@@ -274,7 +274,7 @@
                     android:layout_marginHorizontal="@dimen/home_marginHorizontal"
                     android:layout_marginTop="15dp"
                     android:text="@string/hf_text6"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/home_text_size_1"
                     android:textStyle="bold" />
 

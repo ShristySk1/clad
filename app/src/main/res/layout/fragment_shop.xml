@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/colorWhite"
     tools:context=".shop.FragmentShop">
 
     <RelativeLayout
@@ -72,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/layout_search"
-        android:background="@color/colorGraycircle" />
+        android:background="@color/tab_unselect" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
@@ -81,13 +81,13 @@
         android:layout_below="@id/divider"
         android:background="@drawable/tab_background_selector"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@color/black"
+        app:tabIndicatorColor="@color/colorBlack"
         app:tabIndicatorHeight="2dp"
         app:tabMode="scrollable"
         app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/black"
+        app:tabSelectedTextColor="@color/colorBlack"
         app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
-        app:tabTextColor="@color/black" />
+        app:tabTextColor="@color/colorBlack" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Story"
-            android:background="@color/white"
+            android:background="@color/colorWhite"
             android:textColor="@color/red"
             android:paddingHorizontal="15dp"/>
     </RelativeLayout>

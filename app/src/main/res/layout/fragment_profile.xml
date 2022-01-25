@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".profile.FragmentProfile"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <RelativeLayout
         android:id="@+id/ll_top"
@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/background_circle_with_border"
-                    android:backgroundTint="@color/colorGraycircle"
+                    android:backgroundTint="@color/colorGrayCircle"
                     android:gravity="center"
                     android:text="RS"
                     android:textAlignment="center"
@@ -59,7 +59,7 @@
             android:layout_toRightOf="@+id/acc_image"
             android:text="Ronesh Shrestha"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <TextView
@@ -85,10 +85,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_top"
-        app:tabIndicatorColor="@color/black"
+        app:tabIndicatorColor="@color/colorBlack"
         app:tabIndicatorFullWidth="false"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/black"
+        app:tabSelectedTextColor="@color/colorBlack"
         app:tabTextAppearance="@style/TabLayoutTextStyleProfile"
         app:tabTextColor="#BDBDBD" />
 

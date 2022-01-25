@@ -8,13 +8,13 @@
     android:layout_width="match_parent"
     android:src="@drawable/image_shoe"
     android:scaleType="centerInside"
-    android:background="@color/white"
+    android:background="@color/colorWhite"
     android:layout_height="200dp"/>
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:textSize="14sp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
@@ -36,6 +36,6 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:layout_marginHorizontal="16dp"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:text="NRs. 235"/>
 </LinearLayout>

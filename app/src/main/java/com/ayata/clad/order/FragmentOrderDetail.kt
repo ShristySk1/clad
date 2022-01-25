@@ -58,7 +58,7 @@ class FragmentOrderDetail : Fragment() {
         descriptions.reverse()
         val colorInComplete: Int = R.color.colorGray
         val colorCompleted: Int = R.color.colorGray
-        val colorCurrent: Int = R.color.black
+        val colorCurrent: Int = R.color.colorBlack
         var setNone = false
         for (i in titles.indices) {
             if (titles[i].toLowerCase().trim { it <= ' ' } != conditionalStatus.toLowerCase()
