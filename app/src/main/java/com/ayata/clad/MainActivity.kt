@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,6 +17,7 @@ import com.ayata.clad.preorder.FragmentPreorder
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -37,13 +37,6 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.main_fragment, FragmentHome())
                 .commit()
         }
-//        AppCompatDelegate
-//            .setDefaultNightMode(
-//                AppCompatDelegate
-//                    .MODE_NIGHT_NO)
-        AppCompatDelegate.setDefaultNightMode(
-            AppCompatDelegate
-                    .MODE_NIGHT_YES)
         setStatusBarLight(R.color.colorWhite)
         setToolbar()
 
@@ -69,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         }
         setStatusBarLight(R.color.colorWhite)
     }
+
 
     private fun setToolbar() {
         binding.appbar.btnSearch.setOnClickListener {
@@ -195,7 +189,9 @@ class MainActivity : AppCompatActivity() {
         val window: Window = this.window
         var flags = window.decorView.systemUiVisibility // get current flag
         flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // add LIGHT_STATUS_BAR to flag
-//        flags=flags xor  View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        if(PreferenceHandler.isThemeDark(this)){
+            flags=flags xor  View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
         window.decorView.systemUiVisibility = flags
         window.statusBarColor = ContextCompat.getColor(this, color)
     }
@@ -255,4 +251,11 @@ class MainActivity : AppCompatActivity() {
         binding.mainFragment.removeAllViews()
     }
 
+    override fun recreate() {
+        super.recreate()
+        finish()
+        overridePendingTransition(0,0)
+        startActivity(intent)
+        overridePendingTransition(0,0)
+    }
 }

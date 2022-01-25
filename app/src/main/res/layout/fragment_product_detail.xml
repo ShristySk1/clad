@@ -56,6 +56,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="15dp"
+                    android:tint="@color/black"
                     android:src="@drawable/ic_arrow_left_angle"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -64,7 +65,8 @@
                     android:id="@+id/btnShare"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:tint="@color/black"
                     android:background="@drawable/ripple_circle_transparent_background"
                     android:clickable="true"
                     android:focusable="true"
@@ -101,6 +103,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
+                        android:textColor="@color/black"
                         android:text="Classic Cotton Jacket"
                         app:layout_constraintEnd_toStartOf="@+id/textView9"
                         app:layout_constraintStart_toStartOf="parent"
@@ -112,6 +115,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
+                        android:textColor="@color/black"
                         android:text="Clad Fashion Store"
                         app:layout_constraintStart_toStartOf="@+id/textView6"
                         app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -133,6 +137,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rs. 2300"
+                        android:textColor="@color/black"
                         app:layout_constraintBaseline_toBaselineOf="@+id/textView7"
                         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -143,6 +148,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="Color"
+                        android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="@+id/ratingBar1"
                         app:layout_constraintTop_toBottomOf="@+id/ratingBar1" />
 
@@ -163,6 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="32dp"
+                        android:textColor="@color/black"
                         android:text="Welted sole from construction delivers exceptional durability, and is resistant to oil, fat, acid, petrol and alkali; air-crushed honeycomb perfect for hand wash."
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/frame2"

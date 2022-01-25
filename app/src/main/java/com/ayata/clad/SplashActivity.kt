@@ -9,9 +9,11 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AppCompatDelegate
 import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.ActivitySplashBinding
 import com.ayata.clad.onboarding.ActivityOnboarding
+import com.ayata.clad.utils.PreferenceHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.catch
@@ -60,7 +62,6 @@ class SplashActivity : AppCompatActivity() {
     private fun setImageLoop(){
         val animationFadeIn: Animation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
         val animationFadeOut: Animation = AnimationUtils.loadAnimation(this,  android.R.anim.fade_out)
-
         animationFadeIn.duration=225
         animationFadeOut.duration=226
         var count=0
@@ -91,6 +92,15 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        if(PreferenceHandler.isThemeDark(this)){
+            AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate
+                    .MODE_NIGHT_YES)
+        }else{
+            AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate
+                    .MODE_NIGHT_NO)
+        }
         GlobalScope.launch(Dispatchers.IO) {
             DataStoreManager(this@SplashActivity).getToken().catch { e ->
                 e.printStackTrace()

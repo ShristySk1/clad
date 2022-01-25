@@ -16,11 +16,9 @@
     <color name="colorWhite">#000000</color>
 
 <!--GRAY-->
-<!--    <color name="ColorGrayText">#9912121D</color>-->
     <color name="colorGray">#FFC4C4C4</color>
     <color name="colorGrayText">#7E808E</color>
     <color name="colorGrayText2">#979797</color>
-<!--    <color name="colorGrayText">#7E808E</color>-->
 
 <!-- cross with drawable-->
     <color name="colorGrayCircle">#EDEDED</color>
@@ -32,7 +30,7 @@
     <color name="colorHomeBack2">#D9A98B</color>
 
 
-    <color name="colorCircleUnselect">#ECEDEF</color>
+    <color name="colorCircleUnselect">#4AECEDEF</color>
     <color name="colorGrayTextShopping">#7E808E</color>
     <color name="colorGrayCheckout">#F5F5F5</color>
 
@@ -56,6 +54,7 @@
     <color name="tab_unselect">#92BABABA</color>
     <color name="divider2">#92BABABA</color>
     <color name="order_background">#000000</color>
+    <color name="gift_card_background">#FFFFFF</color>
 
 
 </resources>

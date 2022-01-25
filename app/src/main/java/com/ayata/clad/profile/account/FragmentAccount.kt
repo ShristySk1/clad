@@ -6,13 +6,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
+import com.ayata.clad.R
 import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.ActivityOnboardingBinding
+import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentAccountBinding
+import com.ayata.clad.filter.filterdialog.AdapterFilterContent
+import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.onboarding.ActivityOnboarding
+import com.ayata.clad.utils.PreferenceHandler
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.catch
@@ -22,6 +30,8 @@ import kotlinx.coroutines.launch
 class FragmentAccount : Fragment() {
     lateinit var binding: FragmentAccountBinding
     val TAG = "FragmentAccount"
+
+    private var prevTheme:String=""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,6 +39,11 @@ class FragmentAccount : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentAccountBinding.inflate(inflater, container, false)
+        prevTheme = if(PreferenceHandler.isThemeDark(context)){
+            "dark"
+        }else{
+            "light"
+        }
         initView()
         setUpRecyclerView()
         return binding.root
@@ -55,6 +70,7 @@ class FragmentAccount : Fragment() {
                     ModelAccount(2, 1, "APP SETTINGS"),
                     ModelAccount(3, 2, "COUNTRY & LANGUAGE"),
                     ModelAccount(4, 2, "NOTIFICATION"),
+                    ModelAccount(8, 2, "THEME"),
                     ModelAccount(5, 1, "PRIVACY"),
                     ModelAccount(6, 2, "TERMS AND CONDITIONS"),
                     ModelAccount(7, 2, "PRIVACY POLICY"),
@@ -75,10 +91,73 @@ class FragmentAccount : Fragment() {
                         }
                         7 -> {//PRIVACY POLICY
                         }
+                        8->{
+                            //theme
+                            showDialogTheme()
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun showDialogTheme(
+    ) {
+        val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
+        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(dialogBinding.root)
+        val list= listOf<MyFilterContentViewItem.SingleChoice>(MyFilterContentViewItem.SingleChoice("Light Theme", false),
+                MyFilterContentViewItem.SingleChoice("Dark Theme", false))
+
+        if(PreferenceHandler.isThemeDark(context)){
+            list[1].isSelected=true
+            list[0].isSelected=false
+        }else{
+            list[0].isSelected=true
+            list[1].isSelected=false
+        }
+
+        val adapterfilterContent = AdapterFilterContent(
+            context, list
+        ).also { adapter ->
+            adapter.setCircleClickListener { data ->
+                for (item in list) {
+                    item.isSelected = item == data
+                }
+                adapter.notifyDataSetChanged()
+                if(!data.title.contains(prevTheme,true)) {
+                    if (data.title.contains("dark", true)) {
+                        PreferenceHandler.setTheme(context, true)
+                        prevTheme = "dark"
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }else{
+                        PreferenceHandler.setTheme(context, false)
+                        prevTheme = "light"
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                }
+            }
+        }
+        dialogBinding.title.text = "Select Theme"
+        dialogBinding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = adapterfilterContent
+        }
+
+        dialogBinding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
+    }
+
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(false)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar1(getString(R.string.profile),
+            isSearch = false,
+            isProfile = false,
+            isClose = true
+        )
     }
 
 }

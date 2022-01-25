@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="120dp"
     app:layout_constraintTop_toTopOf="parent"
-    app:ticketBackgroundColor="#4CAF50"
+    app:ticketBackgroundColor="@color/gift_card_background"
     app:ticketCornerRadius="10dp"
     app:ticketCornerType="rounded"
     app:ticketDividerColor="@color/colorWhite"

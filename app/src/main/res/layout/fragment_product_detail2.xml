@@ -25,18 +25,17 @@
             style="@style/bigText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
             android:text="CLASSIC RETRO\nCOTTON JACKET" />
 
         <TextView
             style="@style/bigText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            android:text="Rs. 2300"
-            android:textAlignment="textEnd" />
+            android:textAlignment="textEnd"
+            android:text="Rs. 2300" />
 
         <ImageView
             android:id="@+id/ivClose"
@@ -45,6 +44,7 @@
             android:background="@drawable/ripple_circle_transparent_background"
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
+            android:tint="@color/colorBlack"
             android:src="@drawable/ic_close" />
     </LinearLayout>
 
@@ -93,7 +93,6 @@
 
                 <TextView
                     android:id="@+id/tv_text_to_copy"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -103,7 +102,7 @@
                     android:text="CLAD300"
                     android:textAllCaps="true"
                     style="@style/CustomSelectableItemBackground"
-                    android:textColor="@color/colorBlack"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/textView11"
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />
@@ -248,11 +247,9 @@
                     android:layout_height="wrap_content"
                     android:isIndicator="true"
                     android:numStars="5"
-                    android:progressDrawable="@drawable/custom_rating_star"
+                    android:progressDrawable="@drawable/custom_rating_star_theme"
                     android:rating="4.5"
                     android:stepSize="0.5"
-
-
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
@@ -275,7 +272,6 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/background_outline_bottom"
                 android:orientation="vertical"
-
                 android:paddingBottom="52dp">
 
                 <TextView
@@ -380,7 +376,7 @@
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:layout_below="@+id/layout_texts"
+                    android:layout_below="@id/layout_texts"
                     android:layout_marginTop="20dp"
                     android:indeterminate="false"
                     android:progress="80"
@@ -396,7 +392,6 @@
                         style="@style/smallBlackText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-
                         android:layout_weight="1"
                         android:text="Uncomfortable"
                         android:textAlignment="textStart" />
@@ -413,10 +408,8 @@
                     <TextView
                         style="@style/smallBlackText"
                         android:layout_width="0dp"
-
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-
                         android:text="Comfortable"
                         android:textAlignment="textEnd" />
                 </LinearLayout>

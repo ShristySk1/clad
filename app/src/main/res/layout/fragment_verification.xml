@@ -54,7 +54,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-
+                            android:tint="@color/black"
                             android:src="@drawable/ic_close" />
                     </RelativeLayout>
 
@@ -105,12 +105,11 @@
                         android:inputType="number"
                         android:itemBackground="@drawable/background_circle"
                         android:textAllCaps="true"
-                        android:textColor="@color/colorBlack"
+                        android:textColor="@color/black"
                         android:textStyle="bold"
                         app:OtpHideLineWhenFilled="true"
                         app:OtpItemCount="4"
                         app:OtpItemSpacing="6dp"
-
                         app:OtpLineColor="@android:color/transparent"
                         app:OtpState_filled="true"
                         app:OtpViewType="line"
