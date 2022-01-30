@@ -30,7 +30,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/company"
+            android:id="@+id/itemId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -40,21 +40,12 @@
             android:textSize="13sp" />
 
         <TextView
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="0dp"
             android:text="Size: S / Colour: Blue / Qty: 1"
-            android:textColor="@color/colorGrayText"
-            android:textSize="13sp" />
-
-        <TextView
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="0dp"
-            android:text="Rs. 2300"
             android:textColor="@color/colorGrayText"
             android:textSize="13sp" />
 

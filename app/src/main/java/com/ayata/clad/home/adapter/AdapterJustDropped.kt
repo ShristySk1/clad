@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -48,11 +49,15 @@ internal class AdapterJustDropped(private var context:Context?,
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
         holder.title.text=item.title
-        holder.description.text=item.description
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.description.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+        }else{
+            holder.description.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+        }
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.imageurl)
+            .load(item.imageUrl)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,

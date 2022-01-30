@@ -18,7 +18,9 @@ sealed class MyOrderRecyclerViewItem {
     class Product(
         val name: String,
         val quantity: String,
-        val image: String
+        val image: String,
+        val priceNPR:String,
+        val priceUSD:String
 
     ) : MyOrderRecyclerViewItem()
     class Divider(

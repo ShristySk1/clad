@@ -18,6 +18,7 @@ import com.ayata.clad.R
 import com.ayata.clad.shop.model.ModelShop
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.thrift.model.ModelThrift
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.TextFormatter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -76,7 +77,12 @@ internal class AdapterCheckout(private var context: Context?, private var listIt
         val item=listItems[position]
 
         holder.name.text=item.name
-        holder.price.text="Rs. "+item.price
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+        }else{
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+        }
+
         holder.size.text="Size: "+item.size.toUpperCase()
         holder.quantity.text="QTY: "+item.qty
         holder.itemId.text="Item ID: "+item.itemId

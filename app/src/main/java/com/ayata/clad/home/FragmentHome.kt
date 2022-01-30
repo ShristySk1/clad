@@ -238,10 +238,10 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private fun prepareDataForPopularMonth() {
         listPopularMonth.clear()
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 70.0","https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 30.0","https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg"))
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 80.0","https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"))
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","Rs. 120.0","https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"))
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","7000.0","10","https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","3000.0","50","https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg"))
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","8000.0","20","https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"))
+        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","9200.0","40","https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"))
 
         adapterPopularMonth.notifyDataSetChanged()
 
@@ -249,9 +249,9 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     private fun prepareDataForRecommended() {
         listRecommended.clear()
-        listRecommended.add(ModelRecommended("Sportswear (Red)","“Sporty clothes”","Rs. 30.0",
+        listRecommended.add(ModelRecommended("Sportswear (Red)","“Sporty clothes”","4500.0","30.0",
             "https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg"))
-        listRecommended.add(ModelRecommended("Cashmere Jacket","Casual Wear","Rs. 70.0",
+        listRecommended.add(ModelRecommended("Cashmere Jacket","Casual Wear","7890.0","70.0",
             "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
 
 //        listRecommendedOne.clear()
@@ -289,13 +289,13 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private fun prepareDataForJustDropped() {
         listJustDropped.clear()
         listJustDropped.add(ModelJustDropped("https://freepngimg.com/thumb/categories/627.png",
-            "Nike ISPA Overreact Sail Multi","Rs. 5000",
+            "Nike ISPA Overreact Sail Multi","5000","50",
         "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
         listJustDropped.add(ModelJustDropped("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-            "adidas Yeezy Boost 700 MNVN Bone","Rs. 5000",
+            "adidas Yeezy Boost 700 MNVN Bone","5000","45",
             "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
         listJustDropped.add(ModelJustDropped("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-            "Jordan 11 Retro Low White Concord (W) ","Rs. 5000",
+            "Jordan 11 Retro Low White Concord (W) ","5000","65",
         "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
         adapterJustDropped.notifyDataSetChanged()
@@ -306,19 +306,19 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         listMostPopular.clear()
         listMostPopular.add(
             ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
-            "Jordan 5 Retro Alternate Grape","Lowest Ask","Rs. 5000",
+            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","50",
             "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
         )
         listMostPopular.add(ModelMostPopular("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask","Rs. 8000",
+            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask","8000","80",
         "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
         listMostPopular.add(ModelMostPopular("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-            "Jordan 14 Retro Gym Red Toro","Lowest Ask","Rs. 8000",
+            "Jordan 14 Retro Gym Red Toro","Lowest Ask","8000","65",
             "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
         listMostPopular.add(ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
-            "Jordan 5 Retro Alternate Grape","Lowest Ask","Rs. 5000",
+            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","45",
             "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
         )
 
@@ -420,7 +420,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 //        }
 //
         viewModel.dashboardAPI()
-            viewModel.getDashboardAPI().observe(this,{
+            viewModel.getDashboardAPI().observe(viewLifecycleOwner,{
                 when (it.status) {
                     Status.SUCCESS -> {
                         Log.d(TAG, "home: ${it.data}")

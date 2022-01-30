@@ -22,6 +22,7 @@ import com.ayata.clad.shopping_bag.adapter.AdapterPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.order_placed.FragmentOrderPlaced
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
+import com.ayata.clad.utils.PreferenceHandler
 
 
 class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
@@ -53,7 +54,11 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
                 .commit()
             parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
-        binding.totalPrice.text="Rs. 7800.0"
+        if(PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case),true)){
+            binding.totalPrice.text="${getString(R.string.rs)} 7800.0"
+        }else{
+            binding.totalPrice.text="${getString(R.string.usd)} 890"
+        }
     }
 
     private fun setTermText(){

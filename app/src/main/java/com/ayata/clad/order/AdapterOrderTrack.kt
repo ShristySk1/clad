@@ -22,8 +22,8 @@ class AdapterOrderTrack(private val context: Context, listitem: List<ModelOrderT
 
     override fun onBindViewHolder(holder: modelViewHolder, position: Int) {
         val modelOrderTrack: ModelOrderTrack = listitem[position]
-        holder.title.setText(modelOrderTrack.orderTrackTitle)
-        holder.desc.setText(modelOrderTrack.orderTrackDescription)
+        holder.title.text = modelOrderTrack.orderTrackTitle
+        holder.desc.text = modelOrderTrack.orderTrackDescription
         val color: Int = listitem[position].color
         holder.mTimelineView.marker = context.getDrawable(R.drawable.circle_without_stroke)
         if (modelOrderTrack.ordertype.equals(ModelOrderTrack.ORDER_TYPE_NONE)) {

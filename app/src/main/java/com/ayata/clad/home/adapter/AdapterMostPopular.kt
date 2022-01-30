@@ -14,6 +14,7 @@ import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.model.ModelMostPopular
 import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -52,7 +53,11 @@ internal class AdapterMostPopular(private var context:Context?,
         val item=listItems[position]
         holder.title.text=item.title
 //        holder.description.text=item.description
-        holder.price.text=item.price
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+        }else{
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+        }
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)

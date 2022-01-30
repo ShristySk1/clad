@@ -22,6 +22,7 @@ import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.thrift.model.ModelThrift
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.TextFormatter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -63,8 +64,11 @@ internal class AdapterRecommended(private var context: Context?, private var lis
         val item=listItems[position]
 
         holder.name.text=item.title
-        holder.price.text=item.price
-
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+        }else{
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+        }
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).load(item.imageUrl)
             .listener(object : RequestListener<Drawable?> {

@@ -92,7 +92,7 @@ class FragmentWishlist : Fragment() {
         binding.rvRecommendation.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = AdapterRecommendation(
+            adapter = AdapterRecommendation(requireContext(),
                 prepareDataForRecommended(mutableListOf()).toList()
             ).also {
                 it.setProductClickListener { recommendedProduct ->
@@ -113,21 +113,23 @@ class FragmentWishlist : Fragment() {
                 "https://freepngimg.com/thumb/categories/627.png",
                 "Nike ISPA Overreact Sail Multi", "Nike Company",
                 "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg",
-                "Rs 3561"
+                "3561","37"
             )
         )
         listRecommended.add(
             ModelRecommendedProduct(
                 "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
                 "adidas Yeezy Boost 700 MNVN Bone", "Lowest Ask",
-                "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",""
+                "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",
+                "5004","64"
             )
         )
         listRecommended.add(
             ModelRecommendedProduct(
                 "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
                 "Jordan 11 Retro Low White Concord (W) ", "Lowest Ask",
-                "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",""
+                "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",
+                "4500","100"
             )
         )
         return listRecommended
@@ -136,14 +138,14 @@ class FragmentWishlist : Fragment() {
 
     private fun setUpRecyclerProductList() {
         myProductList = listOf(
-            ModelProduct(1, "https://freepngimg.com/thumb/categories/627.png", "ss", "com", "$123", false),
-            ModelProduct(2, "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w", "ss", "com", "$123", false),
-            ModelProduct(1, "", "ss", "com", "$123", false)
+            ModelProduct(1, "https://freepngimg.com/thumb/categories/627.png", "ss", "com", "8523","123", false),
+            ModelProduct(2, "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w", "ss", "com", "4500","123", false),
+            ModelProduct(1, "", "ss", "com", "7800","123", false)
         )
         binding.rvWishList.apply {
             layoutManager =
                 GridLayoutManager(requireContext(), 2)
-            adapter = AdapterWishList(
+            adapter = AdapterWishList(requireContext(),
                 myProductList
             ).also {
                 it.setProductClickListener { recommendedProduct ->

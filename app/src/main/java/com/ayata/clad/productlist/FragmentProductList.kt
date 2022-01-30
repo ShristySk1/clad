@@ -106,17 +106,17 @@ class FragmentProductList : Fragment() {
         listProduct.clear()
         listProduct.addAll(listOf(
             ModelProduct(1, "https://freepngimg.com/thumb/categories/627.png",
-                "Nike Air Max", "Nike Company", "Rs. 123", false),
+                "Nike Air Max", "Nike Company", "123","50", false),
             ModelProduct(2, "https://freepngimg.com/thumb/categories/627.png",
-                "Adidas Yeezy Boost 700 MNVN Bone", "Adidas Company", "Rs. 123", false),
+                "Adidas Yeezy Boost 700 MNVN Bone", "Adidas Company", "123","54", false),
             ModelProduct(3, "https://freepngimg.com/thumb/categories/627.png",
-                "Nike Air Max", "Nike Company", "Rs .123", false),
+                "Nike Air Max", "Nike Company", "123","50", false),
             ModelProduct(4, "https://freepngimg.com/thumb/categories/627.png",
-                "Adidas Yeezy Boost 700 MNVN Bone", "Adidas Company", "Rs. 123", false),
+                "Adidas Yeezy Boost 700 MNVN Bone", "Adidas Company", "123","50", false),
             ModelProduct(5, "https://freepngimg.com/thumb/categories/627.png",
-                "Nike Air Max", "Nike Company", "Rs. 123", false),
+                "Nike Air Max", "Nike Company", "123","50", false),
             ModelProduct(6, "https://freepngimg.com/thumb/categories/627.png",
-                "Adidas Yeezy Boost 700 MNVN Bone", "Adidas Company", "Rs. 123", false)
+                "Adidas Yeezy Boost 700 MNVN Bone", "Adidas Company", "123","50", false)
 
         ))
 

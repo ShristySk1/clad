@@ -20,6 +20,7 @@ import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
+import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
@@ -75,9 +76,9 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
 
     private fun prepareList(){
         listCheckout.clear()
-        listCheckout.add(ModelCheckout("Nike Air Jordan",784569,8790.0,"A",2,true,
+        listCheckout.add(ModelCheckout("Nike Air Jordan",784569,8790.0,80.0,"A",2,true,
             "https://freepngimg.com/thumb/categories/627.png"))
-        listCheckout.add(ModelCheckout("Nike Air Jordan",784579,9000.0,"A",1,false,
+        listCheckout.add(ModelCheckout("Nike Air Jordan",784579,9000.0,180.0,"A",1,false,
             "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png"))
 
         adapterCheckout.notifyDataSetChanged()
@@ -109,11 +110,19 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
         var selected=0
         for(item in listCheckout){
             if(item.isSelected){
-                total_price+=(item.price*item.qty)
+                total_price += if(PreferenceHandler.getCurrency(context).equals("npr",true)){
+                    (item.priceNPR*item.qty)
+                }else{
+                    (item.priceUSD*item.qty)
+                }
                 selected++
             }
         }
-        binding.totalPrice.text="Rs. $total_price"
+        binding.totalPrice.text=if(PreferenceHandler.getCurrency(context).equals("npr",true)){
+            "${getString(R.string.rs)} $total_price"
+        }else{
+            "${getString(R.string.usd)} $total_price"
+        }
         binding.textItemSelected.text="$selected/${listCheckout.count()} ITEMS Selected"
     }
 

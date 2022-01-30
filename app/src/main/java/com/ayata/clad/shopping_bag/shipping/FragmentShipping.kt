@@ -19,6 +19,7 @@ import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterShippingAddress
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.shopping_bag.payment.FragmentPayment
+import com.ayata.clad.utils.PreferenceHandler
 
 
 class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
@@ -62,10 +63,17 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
             Toast.makeText(context,"Add address",Toast.LENGTH_SHORT).show()
         }
 
-        binding.shippingPrice.text="Rs. 60"
-        binding.promoPrice.text="Rs. 100"
-        binding.subTotal.text="Rs. 9840"
-        binding.totalPrice.text="Rs. 9800"
+        if(PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case),true)){
+            binding.shippingPrice.text="${getString(R.string.rs)} 100"
+            binding.promoPrice.text="${getString(R.string.rs)} 200"
+            binding.subTotal.text="${getString(R.string.rs)} 7900"
+            binding.totalPrice.text="${getString(R.string.rs)} 7800.0"
+        }else{
+            binding.shippingPrice.text="${getString(R.string.usd)} 60"
+            binding.promoPrice.text="${getString(R.string.usd)} 20"
+            binding.subTotal.text="${getString(R.string.usd)} 850"
+            binding.totalPrice.text="${getString(R.string.usd)} 890"
+        }
     }
 
     private fun initRecycler(){

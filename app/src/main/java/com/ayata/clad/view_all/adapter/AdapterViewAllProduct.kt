@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.view_all.model.ModelViewAllProduct
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -107,7 +108,11 @@ internal class AdapterViewAllProduct(var context: Context?,
         val item = itemList!![position]
         viewHolder.textName.text = item!!.title
         viewHolder.textCompany.text = item!!.company
-        viewHolder.textPrice.text = "Rs. "+item!!.price
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            viewHolder.textPrice.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+        }else{
+            viewHolder.textPrice.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+        }
 
         viewHolder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)

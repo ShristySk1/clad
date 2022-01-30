@@ -125,7 +125,8 @@ class SplashActivity : AppCompatActivity() {
 //            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
 //            finish()
 //        }
-        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+        startActivity(Intent(this@SplashActivity, MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
         finish()
     }
 }

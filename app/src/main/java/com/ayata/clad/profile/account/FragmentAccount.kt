@@ -53,10 +53,12 @@ class FragmentAccount : Fragment() {
         binding.btnLogOut.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 DataStoreManager(requireContext()).logout()
-                startActivity(Intent(context, ActivityOnboarding::class.java))
+                startActivity(Intent(context, ActivityOnboarding::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             }
         }
     }
+
 
     private fun setUpRecyclerView() {
         binding.rvAccount.apply {
@@ -71,14 +73,15 @@ class FragmentAccount : Fragment() {
                     ModelAccount(3, 2, "COUNTRY & LANGUAGE"),
                     ModelAccount(4, 2, "NOTIFICATION"),
                     ModelAccount(8, 2, "THEME"),
+                    ModelAccount(9, 2, "CURRENCY"),
                     ModelAccount(5, 1, "PRIVACY"),
                     ModelAccount(6, 2, "TERMS AND CONDITIONS"),
                     ModelAccount(7, 2, "PRIVACY POLICY"),
                 )
             ).also {
-                it.setAccountClickListener {
-                    Log.d(TAG, "setUpRecyclerView: " + it.textData);
-                    when (it.position) {
+                it.setAccountClickListener { model->
+                    Log.d(TAG, "setUpRecyclerView: " + model.textData);
+                    when (model.position) {
                         0 -> {//PERSONAL INFORMATION
                         }
                         1 -> {//ADDRESS BOOK
@@ -94,6 +97,9 @@ class FragmentAccount : Fragment() {
                         8->{
                             //theme
                             showDialogTheme()
+                        }
+                        9->{
+                            showDialogCurrency()
                         }
                     }
                 }
@@ -117,7 +123,7 @@ class FragmentAccount : Fragment() {
             list[1].isSelected=false
         }
 
-        val adapterfilterContent = AdapterFilterContent(
+        val adapterFilterContent = AdapterFilterContent(
             context, list
         ).also { adapter ->
             adapter.setCircleClickListener { data ->
@@ -141,7 +147,7 @@ class FragmentAccount : Fragment() {
         dialogBinding.title.text = "Select Theme"
         dialogBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = adapterfilterContent
+            adapter = adapterFilterContent
         }
 
         dialogBinding.btnClose.setOnClickListener {
@@ -158,6 +164,50 @@ class FragmentAccount : Fragment() {
             isProfile = false,
             isClose = true
         )
+    }
+
+    private fun showDialogCurrency(
+    ) {
+        val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
+        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(dialogBinding.root)
+        val list= listOf<MyFilterContentViewItem.SingleChoice>(
+            MyFilterContentViewItem.SingleChoice("Nepali (NPR)", false),
+            MyFilterContentViewItem.SingleChoice("Dollar (USD)", false))
+
+        if(PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case),true)){
+            list[0].isSelected=true
+            list[1].isSelected=false
+        }else{
+            list[1].isSelected=true
+            list[0].isSelected=false
+        }
+
+        val adapterFilterContent = AdapterFilterContent(
+            context, list
+        ).also { adapter ->
+            adapter.setCircleClickListener { data ->
+                for (item in list) {
+                    item.isSelected = item == data
+                }
+                adapter.notifyDataSetChanged()
+                if (data.title.contains("npr", true)) {
+                    PreferenceHandler.setCurrency(context, "npr")
+                }else{
+                    PreferenceHandler.setCurrency(context, "usd")
+                }
+            }
+        }
+        dialogBinding.title.text = "Select Currency"
+        dialogBinding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = adapterFilterContent
+        }
+
+        dialogBinding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
     }
 
 }

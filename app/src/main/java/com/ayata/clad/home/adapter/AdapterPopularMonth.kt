@@ -21,6 +21,7 @@ import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.thrift.model.ModelThrift
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.TextFormatter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -61,7 +62,12 @@ internal class AdapterPopularMonth(private var context: Context?, private var li
         val item=listItems[position]
 
         holder.name.text=item.title
-        holder.price.text=item.price
+
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.price.text="${context!!.getString(R.string.rs)} ${item.price}"
+        }else{
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+        }
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).load(item.imageUrl)

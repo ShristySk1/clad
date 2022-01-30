@@ -132,7 +132,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
         binding.detail2.rvRecommendation.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = AdapterRecommendation(
+            adapter = AdapterRecommendation(requireContext(),
                 prepareDataForRecommended(mutableListOf()).toList()
             ).also {
                 it.setProductClickListener { recommendedProduct ->
@@ -152,7 +152,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
                 "https://freepngimg.com/thumb/categories/627.png",
                 "Nike ISPA Overreact Sail Multi", "Nike Company",
                 "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg",
-                "Rs 3561"
+                "3561","555"
             )
         )
         listRecommended.add(
@@ -161,7 +161,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
                 "adidas Yeezy Boost 700 MNVN Bone",
                 "Lowest Ask",
                 "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",
-                ""
+                "7589","550"
             )
         )
         listRecommended.add(
@@ -170,7 +170,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
                 "Jordan 11 Retro Low White Concord (W) ",
                 "Lowest Ask",
                 "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",
-                ""
+                "4555","458"
             )
         )
         return listRecommended
@@ -180,7 +180,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
     private fun initView() {
         (activity as MainActivity).showToolbar(false)
         (activity as MainActivity).showBottomNavigation(false)
-        val product = ModelProduct(1, "", "ss", "com", "$123", false)
+        val product = ModelProduct(1, "", "ss", "com", "7890","123", false)
 
         setProductImage(binding.imageView3)
         binding.btnBack.setOnClickListener {

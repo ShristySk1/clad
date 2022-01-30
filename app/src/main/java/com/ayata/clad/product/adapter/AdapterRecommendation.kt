@@ -1,5 +1,6 @@
 package com.ayata.clad.product.adapter
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerRecommendationBinding
 import com.ayata.clad.product.ModelRecommendedProduct
+import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-class AdapterRecommendation(
+class AdapterRecommendation(val context:Context,
     var productList: List<ModelRecommendedProduct>,
 ) : RecyclerView.Adapter<AdapterRecommendation.ViewHolder>() {
 
@@ -52,6 +54,12 @@ class AdapterRecommendation(
                 })
                 .error(R.drawable.shoes)
                 .into(binding.image)
+
+            if(PreferenceHandler.getCurrency(context).equals(context.getString(R.string.npr_case),true)){
+                binding.priceText.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+            }else{
+                binding.priceText.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+            }
 
             Glide.with(binding.cardView.context).asBitmap().load(item.logo).error(R.drawable.ic_hanger)
                 .into(binding.imageLogo)

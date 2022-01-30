@@ -1,5 +1,6 @@
 package com.ayata.clad.wishlist.adapter
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerWishlistBinding
 import com.ayata.clad.product.ModelProduct
+import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -16,6 +18,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
 class AdapterWishList(
+    val context:Context,
     var productList: List<ModelProduct>,
 ) : RecyclerView.Adapter<AdapterWishList.ViewHolder>() {
     // create an inner class with name ViewHolder
@@ -51,6 +54,11 @@ class AdapterWishList(
                 })
                 .error(R.drawable.shoes)
                 .into(binding.image)
+            if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+                binding.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+            }else{
+                binding.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+            }
 
             binding.image.setOnClickListener {
                 itemProductClick?.let { function ->

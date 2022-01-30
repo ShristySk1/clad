@@ -74,7 +74,7 @@ class FragmentViewAllProduct : Fragment(),AdapterViewAllProduct.OnItemClickListe
         listItem.clear()
         var i = 0
         while (i < 10) {
-            listItem.add(ModelViewAllProduct("Product $i","500.0","Company ABC",false,listImage.random()))
+            listItem.add(ModelViewAllProduct("Product $i","500.0","150","Company ABC",false,listImage.random()))
             i++
         }
     }
@@ -113,7 +113,7 @@ class FragmentViewAllProduct : Fragment(),AdapterViewAllProduct.OnItemClickListe
             val nextLimit = currentSize + 9
             Log.d("infinitescroll", "loadMore: $scrollPosition --$nextLimit")
             while (currentSize - 1 < nextLimit) {
-                listItem.add(ModelViewAllProduct("Product $currentSize","500.0",
+                listItem.add(ModelViewAllProduct("Product $currentSize","500.0","80",
                     "Company ABC",false,listImage.random()))
                 currentSize++
             }

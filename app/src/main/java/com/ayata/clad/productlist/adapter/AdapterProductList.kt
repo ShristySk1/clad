@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerProductlistBinding
 import com.ayata.clad.product.ModelProduct
+import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import java.util.ArrayList
 
@@ -44,7 +45,11 @@ class AdapterProductList(var context: Context?,
                 .placeholder(R.drawable.shoes)
                 .into(binding.image)
             binding.name.text=item.name
-            binding.price.text=item.price
+            if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+                binding.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+            }else{
+                binding.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+            }
 
         }
     }
