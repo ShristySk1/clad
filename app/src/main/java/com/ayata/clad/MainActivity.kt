@@ -172,6 +172,12 @@ class MainActivity : AppCompatActivity() {
             binding.appbar.btnClear.visibility = View.GONE
         }
 
+        if(textDescription.isEmpty()||textDescription.isBlank()){
+            binding.appbar.description.visibility=View.GONE
+        }else{
+            binding.appbar.description.visibility=View.VISIBLE
+        }
+
         binding.appbar.title.text = textTitle
         binding.appbar.description.text = textDescription
 

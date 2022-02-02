@@ -19,6 +19,8 @@ import com.ayata.clad.databinding.FragmentAccountBinding
 import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.onboarding.ActivityOnboarding
+import com.ayata.clad.profile.address.FragmentAddressAdd
+import com.ayata.clad.profile.edit.FragmentProfileEdit
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
@@ -83,8 +85,12 @@ class FragmentAccount : Fragment() {
                     Log.d(TAG, "setUpRecyclerView: " + model.textData);
                     when (model.position) {
                         0 -> {//PERSONAL INFORMATION
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment,FragmentProfileEdit()).addToBackStack(null).commit()
                         }
                         1 -> {//ADDRESS BOOK
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment,FragmentAddressAdd()).addToBackStack(null).commit()
                         }
                         3 -> {//COUNTRY & LANGUAGE
                         }

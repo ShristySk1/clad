@@ -25,4 +25,10 @@
 <!--    home page-->
     <dimen name="p_height2">200dp</dimen>
     <dimen name="p_width2">180dp</dimen>
+
+<!--    edit profile-->
+    <dimen name="pe_margin1">20dp</dimen>
+    <dimen name="pe_margin2">15dp</dimen>
+    <dimen name="pe_margin3">15dp</dimen>
+
 </resources>
