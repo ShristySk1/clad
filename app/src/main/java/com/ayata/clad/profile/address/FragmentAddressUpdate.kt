@@ -9,7 +9,7 @@ import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentAddressAddBinding
 
-class FragmentAddressAdd : Fragment() {
+class FragmentAddressUpdate : Fragment() {
 
     private lateinit var binding:FragmentAddressAddBinding
 
@@ -33,7 +33,7 @@ class FragmentAddressAdd : Fragment() {
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar2(
             isClose = false, isBack = true, isFilter = false, isClear = false,
-            textTitle = "Add New Address",
+            textTitle = "Update Address",
             textDescription = ""
         )
     }

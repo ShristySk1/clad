@@ -20,6 +20,7 @@ import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.onboarding.ActivityOnboarding
 import com.ayata.clad.profile.address.FragmentAddressAdd
+import com.ayata.clad.profile.address.FragmentAddressDetail
 import com.ayata.clad.profile.edit.FragmentProfileEdit
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -90,7 +91,7 @@ class FragmentAccount : Fragment() {
                         }
                         1 -> {//ADDRESS BOOK
                             requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.main_fragment,FragmentAddressAdd()).addToBackStack(null).commit()
+                                .replace(R.id.main_fragment,FragmentAddressDetail()).addToBackStack(null).commit()
                         }
                         3 -> {//COUNTRY & LANGUAGE
                         }

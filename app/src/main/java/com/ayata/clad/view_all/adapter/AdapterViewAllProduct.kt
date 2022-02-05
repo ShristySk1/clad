@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.Nullable
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.utils.PreferenceHandler
@@ -145,7 +146,9 @@ internal class AdapterViewAllProduct(var context: Context?,
         if(item.isOnWishList){
             Glide.with(context!!).load(R.drawable.ic_heart_filled).into(viewHolder.imageWish)
         }else{
-            Glide.with(context!!).load(R.drawable.ic_heart_outline).into(viewHolder.imageWish)
+            viewHolder.imageWish.setImageResource(R.drawable.ic_heart_outline)
+            viewHolder.imageWish.drawable.setTint(ContextCompat.getColor(context!!,R.color.colorBlack))
+//            Glide.with(context!!).load(R.drawable.ic_heart_outline).into(viewHolder.imageWish)
         }
 
         viewHolder.clickView()

@@ -15,6 +15,8 @@ import androidx.core.text.underline
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentShippingBinding
+import com.ayata.clad.profile.address.FragmentAddressAdd
+import com.ayata.clad.profile.address.FragmentAddressUpdate
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterShippingAddress
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
@@ -60,7 +62,8 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
         }
 
         binding.addNewBtn.setOnClickListener {
-            Toast.makeText(context,"Add address",Toast.LENGTH_SHORT).show()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, FragmentAddressAdd()).addToBackStack(null).commit()
         }
 
         if(PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case),true)){
@@ -85,6 +88,11 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
         }
 
         prepareListAddress()
+        if(listAddress.size>=2){
+            binding.addNewBtn.visibility=View.GONE
+        }else{
+            binding.addNewBtn.visibility=View.VISIBLE
+        }
     }
 
     private fun prepareListAddress(){
@@ -104,7 +112,9 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
     }
 
     override fun onEditClicked(data: ModelShippingAddress, position: Int) {
-        Toast.makeText(context,"Edit--${data.name}",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context,"Edit--${data.name}",Toast.LENGTH_SHORT).show()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment, FragmentAddressUpdate()).addToBackStack(null).commit()
     }
 
 }

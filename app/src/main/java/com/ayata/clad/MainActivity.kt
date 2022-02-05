@@ -15,6 +15,7 @@ import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.preorder.FragmentPreorder
 import com.ayata.clad.profile.FragmentProfile
+import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.utils.PreferenceHandler
@@ -67,10 +68,10 @@ class MainActivity : AppCompatActivity() {
     private fun setToolbar() {
         binding.appbar.btnSearch.setOnClickListener {
 //            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.main_fragment, TestFragment())
-//                .addToBackStack(null)
-//                .commit()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, FragmentSearch())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.appbar.btnClear.setOnClickListener {
@@ -184,6 +185,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showToolbar(show: Boolean) {
+        exitFullScreen()
         if (show) {
             binding.appbar.root.visibility = View.VISIBLE
         } else {
