@@ -14,10 +14,12 @@ import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.preorder.FragmentPreorder
+import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -41,6 +43,23 @@ class MainActivity : AppCompatActivity() {
         setStatusBarLight(R.color.colorWhite)
         setToolbar()
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val extras = intent.extras
+        if (extras != null) {
+            val value = extras.getBoolean(Constants.FROM_STORY,false)
+            if(value){
+                fromStory()
+            }
+        }
+    }
+
+    private fun fromStory(){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment, FragmentProductDetail())
+            .commit()
     }
 
     fun showBottomNavigation(show: Boolean) {

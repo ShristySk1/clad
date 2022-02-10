@@ -10,7 +10,8 @@ import com.bumptech.glide.Glide
 import com.smarteist.autoimageslider.SliderViewAdapter
 
 
-internal class AdapterBanner(private val context:Context,private val listItems:ArrayList<String>) : SliderViewAdapter<AdapterBanner.MyViewHolder>() {
+internal class AdapterBanner(private val context:Context,private val listItems:ArrayList<String>,
+    private val onItemClickListener: OnItemClickListener) : SliderViewAdapter<AdapterBanner.MyViewHolder>() {
 
 
     internal inner class MyViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -20,6 +21,12 @@ internal class AdapterBanner(private val context:Context,private val listItems:A
         init {
             imageView = itemView.findViewById(R.id.image)
 //            this.itemView = itemView
+        }
+
+        fun clickView(data: String){
+            itemView.setOnClickListener {
+                onItemClickListener.onBannerClicked(data)
+            }
         }
     }
 
@@ -38,6 +45,11 @@ internal class AdapterBanner(private val context:Context,private val listItems:A
             .load(listItems[position])
             .fitCenter()
             .into(viewHolder!!.imageView)
+        viewHolder.clickView(listItems[position])
+    }
+
+    interface OnItemClickListener{
+        fun onBannerClicked(data:String)
     }
 
 }

@@ -1,5 +1,6 @@
-package com.ayata.clad
+package com.ayata.clad.story
 
+import android.R.attr.value
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -9,11 +10,14 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.MainActivity
 import com.ayata.clad.databinding.ActivityStoryBinding
+import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.model.ModelStory
+import com.ayata.clad.utils.Constants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -23,7 +27,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener{
+class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener,AdapterStoryProduct.OnItemClickListener{
 //    StoriesProgressView.StoriesListener
 
     companion object{
@@ -42,6 +46,9 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener{
     private var fromPause=false
     private var isImageLoading=false
 
+    private lateinit var adapterStoryProduct: AdapterStoryProduct
+    private var listProduct=ArrayList<ModelJustDropped>()
+
     private lateinit var binding:ActivityStoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +58,7 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener{
         GlobalScope.launch(Dispatchers.IO) {
             Glide.get(this@StoryActivity).clearDiskCache()
         }
+        initRecyclerView()
         counter=0
         // adding on click listener for our reverse view.
         binding.reverse.setOnClickListener {
@@ -78,7 +86,7 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener{
         binding.skip.setOnTouchListener(handleTouch)
 
 
-        if(storyIndex>=0&& storyIndex<listStory.size) {
+        if(storyIndex >=0&& storyIndex < listStory.size) {
             fromPause=false
             setStoryView(listStory[storyIndex])
         }else{
@@ -87,8 +95,30 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener{
 
     }
 
+    private fun initRecyclerView(){
+        adapterStoryProduct= AdapterStoryProduct(context =this,listProduct,this)
+        binding.recyclerProduct.apply {
+            adapter=adapterStoryProduct
+            layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        }
+
+    }
+    private fun prepareData() {
+        listProduct.clear()
+        listProduct.add(ModelJustDropped("https://www.onlinepng.com/media/catalog/product/cache/571072fdb4ae023a8c393de549460086/r/i/rin639656_1.jpg",
+            "10% OFF","5000","50",
+            "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
+        listProduct.add(ModelJustDropped("https://i.pinimg.com/736x/37/2c/6f/372c6f40eb0835eea3abd13a02a64cd0.jpg",
+            "20% OFF","5000","45",
+            "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
+
+        listProduct.shuffle()
+        adapterStoryProduct.notifyDataSetChanged()
+
+    }
 
     private fun setStoryView(data: ModelStory){
+        prepareData()
         //set view
         binding.textTitle.text=data.title
         binding.textSubTitle.text=data.description
@@ -220,7 +250,7 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener{
         if(isImageLoading){
             return
         }
-        if(storyIndex<listStory.lastIndex){
+        if(storyIndex < listStory.lastIndex){
             counter=0
             ++storyIndex
 //            binding.stories.destroy()
@@ -261,5 +291,11 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener{
     override fun onDestroy() {
         binding.stories.destroy()
         super.onDestroy()
+    }
+
+    override fun onProductClick(data: ModelJustDropped, position: Int) {
+        val i = Intent(this, MainActivity::class.java)
+        i.putExtra(Constants.FROM_STORY, true)
+        startActivity(i)
     }
 }

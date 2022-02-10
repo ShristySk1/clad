@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.FragmentTestBinding
 import com.ayata.clad.home.model.ModelStory
 import com.ayata.clad.product.FragmentProductDetail
+import com.ayata.clad.story.StoryActivity
 import omari.hamza.storyview.StoryView
 import omari.hamza.storyview.callback.StoryClickListeners
 import omari.hamza.storyview.model.MyStory

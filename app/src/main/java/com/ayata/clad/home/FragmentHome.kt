@@ -7,19 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
-import com.ayata.clad.StoryActivity
+import com.ayata.clad.story.StoryActivity
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
-import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentHomeBinding
 import com.ayata.clad.home.adapter.*
@@ -31,23 +28,16 @@ import com.ayata.clad.home.adapter.AdapterStories
 import com.ayata.clad.home.model.*
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
-import com.ayata.clad.login.FragmentVerification
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.view_all.FragmentViewAllProduct
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
     ,AdapterPopularBrands.OnItemClickListener,AdapterJustDropped.OnItemClickListener
     ,AdapterMostPopular.OnItemClickListener, AdapterNewSubscription.OnItemClickListener
-    ,AdapterStories.OnItemClickListener{
+    ,AdapterStories.OnItemClickListener,AdapterBanner.OnItemClickListener{
 
     companion object{
         private const val TAG="FragmentHome"
@@ -170,7 +160,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
         //banner
         prepareBanner()
-        adapterBanner= AdapterBanner(requireContext(),listBanner)
+        adapterBanner= AdapterBanner(requireContext(),listBanner,this)
         binding.imageSlider.setSliderAdapter(adapterBanner)
         binding.imageSlider.setIndicatorAnimation(IndicatorAnimationType.WORM)
         binding.imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
@@ -434,5 +424,14 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
                     }
                 }
             })
+    }
+
+    override fun onBannerClicked(data: String) {
+        val bundle=Bundle()
+        bundle.putString(Constants.FILTER_HOME,"Discounted Items")
+        val fragmentViewAllProduct=FragmentViewAllProduct()
+        fragmentViewAllProduct.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
+            .addToBackStack(null).commit()
     }
 }

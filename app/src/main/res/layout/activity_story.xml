@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StoryActivity">
+    tools:context=".story.StoryActivity">
 
     <ImageView
         android:id="@+id/image"
@@ -108,5 +108,20 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerProduct"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
 
 </RelativeLayout>
