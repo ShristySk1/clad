@@ -28,6 +28,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name"
+                    android:textSize="@dimen/pe_text2"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"
                     android:textAllCaps="true"/>
@@ -35,7 +36,6 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputName"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/background_outline_bottom"
                     app:hintEnabled="false"
                     app:hintAnimationEnabled="false"
                     android:layout_marginHorizontal="@dimen/pe_margin2"
@@ -46,6 +46,7 @@
                         android:paddingStart="5dp"
                         android:paddingEnd="5dp"
                         android:paddingVertical="10dp"
+                        android:textSize="@dimen/pe_text1"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:textColor="@color/colorBlack"
@@ -59,6 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Date Of Birth"
+                    android:textSize="@dimen/pe_text2"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"
                     android:textAllCaps="true"/>
@@ -66,17 +68,21 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputDOB"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/background_outline_bottom"
                     app:hintEnabled="false"
                     app:hintAnimationEnabled="false"
                     android:layout_marginHorizontal="@dimen/pe_margin2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textEditDob"
                         android:layout_width="match_parent"
                         android:paddingStart="5dp"
                         android:paddingEnd="5dp"
+                        android:focusableInTouchMode="false"
+                        android:focusable="false"
+                        android:clickable="true"
                         android:paddingVertical="10dp"
+                        android:textSize="@dimen/pe_text1"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:textColor="@color/colorBlack"
@@ -90,6 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Email"
+                    android:textSize="@dimen/pe_text2"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"
                     android:textAllCaps="true"/>
@@ -97,7 +104,6 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputEmail"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/background_outline_bottom"
                     app:hintEnabled="false"
                     app:hintAnimationEnabled="false"
                     android:layout_marginHorizontal="@dimen/pe_margin2"
@@ -108,43 +114,44 @@
                         android:paddingStart="5dp"
                         android:paddingEnd="5dp"
                         android:paddingVertical="10dp"
+                        android:textSize="@dimen/pe_text1"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:textColor="@color/colorBlack"
                         android:hint="Enter Your Email"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/text4"
-                    android:layout_marginTop="@dimen/pe_margin3"
-                    android:layout_marginHorizontal="@dimen/pe_margin1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Password"
-                    android:textColor="@color/colorBlack"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/text4"-->
+<!--                    android:layout_marginTop="@dimen/pe_margin3"-->
+<!--                    android:layout_marginHorizontal="@dimen/pe_margin1"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Password"-->
+<!--                    android:textColor="@color/colorBlack"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textAllCaps="true"/>-->
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputPassword"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/background_outline_bottom"
-                    app:hintEnabled="false"
-                    app:hintAnimationEnabled="false"
-                    android:layout_marginHorizontal="@dimen/pe_margin2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:paddingVertical="10dp"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:textColor="@color/colorBlack"
-                        android:hint="Enter Your Password"
-                        android:inputType="textPassword"/>
-                </com.google.android.material.textfield.TextInputLayout>
+<!--                <com.google.android.material.textfield.TextInputLayout-->
+<!--                    android:id="@+id/textInputPassword"-->
+<!--                    android:layout_marginTop="5dp"-->
+<!--                    android:background="@drawable/background_outline_bottom"-->
+<!--                    app:hintEnabled="false"-->
+<!--                    app:hintAnimationEnabled="false"-->
+<!--                    android:layout_marginHorizontal="@dimen/pe_margin2"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content">-->
+<!--                    <com.google.android.material.textfield.TextInputEditText-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:paddingStart="5dp"-->
+<!--                        android:paddingEnd="5dp"-->
+<!--                        android:paddingVertical="10dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="@android:color/transparent"-->
+<!--                        android:textColor="@color/colorBlack"-->
+<!--                        android:hint="Enter Your Password"-->
+<!--                        android:inputType="textPassword"/>-->
+<!--                </com.google.android.material.textfield.TextInputLayout>-->
 
                 <TextView
                     android:id="@+id/text5"
@@ -153,6 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Gender"
+                    android:textSize="@dimen/pe_text2"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"
                     android:textAllCaps="true"/>

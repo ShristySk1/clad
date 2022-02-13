@@ -30,6 +30,7 @@ import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.view_all.FragmentViewAllBrand
 import com.ayata.clad.view_all.FragmentViewAllProduct
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
@@ -270,7 +271,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 //        listPopularBrands.add(ModelPopularBrands("https://cdn.shopify.com/s/files/1/0249/5892/6941/products/Converse-Logo-Iron-On-Sticker_1890x.jpg?v=1585666919","Converse","All 106"))
 
         for(i in listDrawable){
-            listPopularBrands.add(ModelPopularBrands(i,"Name","All 106"))
+            listPopularBrands.add(ModelPopularBrands(i,"Brand Name","All 106"))
         }
         adapterPopularBrands.notifyDataSetChanged()
 
@@ -329,7 +330,12 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     override fun onPopularBrandsClicked(data: ModelPopularBrands, position: Int) {
-        Toast.makeText(context,"Brand: ${data.title}",Toast.LENGTH_SHORT).show()
+        val bundle=Bundle()
+        bundle.putString(Constants.FILTER_HOME,data.title)
+        val fragmentViewAllProduct=FragmentViewAllProduct()
+        fragmentViewAllProduct.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
+            .addToBackStack(null).commit()
     }
 
     override fun onJustDroppedClicked(data: ModelJustDropped, position: Int) {
@@ -392,6 +398,10 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             val fragmentViewAllProduct=FragmentViewAllProduct()
             fragmentViewAllProduct.arguments=bundle
             parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
+                .addToBackStack(null).commit()
+        }
+        binding.popularBrandViewBtn.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentViewAllBrand())
                 .addToBackStack(null).commit()
         }
     }

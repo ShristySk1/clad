@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentAddressAddBinding
+import com.google.android.material.textfield.TextInputLayout
 
 class FragmentAddressUpdate : Fragment() {
 
@@ -23,7 +24,14 @@ class FragmentAddressUpdate : Fragment() {
         initAppbar()
 
         binding.btnSave.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStackImmediate()
+            validateTextField(binding.textInputTitle)
+            validateTextField(binding.textInputAddress)
+            validateTextField(binding.textInputCity)
+            validateTextField(binding.textInputLine)
+            validateTextField(binding.textInputPhone)
+            validateTextField(binding.textInputState)
+            validateTextField(binding.textInputZip)
+//            requireActivity().supportFragmentManager.popBackStackImmediate()
         }
         return binding.root
     }
@@ -36,6 +44,17 @@ class FragmentAddressUpdate : Fragment() {
             textTitle = "Update Address",
             textDescription = ""
         )
+    }
+
+    private fun validateTextField(textField: TextInputLayout): Boolean {
+        val data = textField.editText!!.text.toString().trim()
+        return if (data.isEmpty() or (data == " ")) {
+            textField.error = "This field can't be empty"
+            false
+        } else {
+            textField.error = null
+            true
+        }
     }
 
 }

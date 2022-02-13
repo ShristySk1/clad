@@ -62,56 +62,81 @@ class FragmentAccount : Fragment() {
         }
     }
 
+    private val listAccount=ArrayList<ModelAccount>()
+    private fun prepareListAccount(){
+        listAccount.clear()
+        listAccount.add(ModelAccount(0, 2, "PERSONAL INFORMATION"))
+        listAccount.add(ModelAccount(1, 2, "ADDRESS BOOK"))
+        listAccount.add(ModelAccount(2, 1, "APP SETTINGS"))
+        listAccount.add(ModelAccount(4, 2, "NOTIFICATION"))
+        listAccount.add(ModelAccount(8, 2, "THEME"))
+        listAccount.add(ModelAccount(9, 2, "CURRENCY"))
+        listAccount.add(ModelAccount(5, 1, "GUIDE"))
+        listAccount.add(ModelAccount(6, 2, "TERMS AND CONDITIONS"))
+        listAccount.add(ModelAccount(7, 2, "PRIVACY POLICY"))
+        listAccount.add(ModelAccount(10, 2, "RETURN POLICY"))
+        listAccount.add(ModelAccount(11, 2, "HOW TO ORDER"))
+//        val listAccount= arrayListOf(
+//            ModelAccount(0, 2, "PERSONAL INFORMATION"),
+//            ModelAccount(1, 2, "ADDRESS BOOK"),
+//            ModelAccount(2, 1, "APP SETTINGS"),
+////                    ModelAccount(3, 2, "COUNTRY & LANGUAGE"),
+//            ModelAccount(4, 2, "NOTIFICATION"),
+//            ModelAccount(8, 2, "THEME"),
+//            ModelAccount(9, 2, "CURRENCY"),
+//            ModelAccount(5, 1, "GUIDE"),
+//            ModelAccount(6, 2, "TERMS AND CONDITIONS"),
+//            ModelAccount(7, 2, "PRIVACY POLICY"),
+//            ModelAccount(10, 2, "RETURN POLICY"),
+//            ModelAccount(11, 2, "HOW TO ORDER")
+//        )
+    }
 
     private fun setUpRecyclerView() {
-        binding.rvAccount.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext())
-            adapter = AdapterAccount(
-                context,
-                arrayListOf(
-                    ModelAccount(0, 2, "PERSONAL INFORMATION"),
-                    ModelAccount(1, 2, "ADDRESS BOOK"),
-                    ModelAccount(2, 1, "APP SETTINGS"),
-                    ModelAccount(3, 2, "COUNTRY & LANGUAGE"),
-                    ModelAccount(4, 2, "NOTIFICATION"),
-                    ModelAccount(8, 2, "THEME"),
-                    ModelAccount(9, 2, "CURRENCY"),
-                    ModelAccount(5, 1, "PRIVACY"),
-                    ModelAccount(6, 2, "TERMS AND CONDITIONS"),
-                    ModelAccount(7, 2, "PRIVACY POLICY"),
-                )
-            ).also {
-                it.setAccountClickListener { model->
-                    Log.d(TAG, "setUpRecyclerView: " + model.textData);
-                    when (model.position) {
-                        0 -> {//PERSONAL INFORMATION
-                            requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.main_fragment,FragmentProfileEdit()).addToBackStack(null).commit()
-                        }
-                        1 -> {//ADDRESS BOOK
-                            requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.main_fragment,FragmentAddressDetail()).addToBackStack(null).commit()
-                        }
-                        3 -> {//COUNTRY & LANGUAGE
-                        }
-                        4 -> {//NOTIFICATION
-                        }
-                        6 -> {//TERMS AND CONDITIONS
-                        }
-                        7 -> {//PRIVACY POLICY
-                        }
-                        8->{
-                            //theme
-                            showDialogTheme()
-                        }
-                        9->{
-                            showDialogCurrency()
-                        }
+        prepareListAccount()
+        val adapterAccount= AdapterAccount(
+            requireContext(),
+            listAccount
+        ).also {
+            it.setAccountClickListener { model->
+                Log.d(TAG, "setUpRecyclerView: " + model.textData)
+                when (model.position) {
+                    0 -> {//PERSONAL INFORMATION
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_fragment,FragmentProfileEdit()).addToBackStack(null).commit()
+                    }
+                    1 -> {//ADDRESS BOOK
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_fragment,FragmentAddressDetail()).addToBackStack(null).commit()
+                    }
+                    3 -> {//COUNTRY & LANGUAGE
+                    }
+                    4 -> {//NOTIFICATION
+                    }
+                    6 -> {//TERMS AND CONDITIONS
+                    }
+                    7 -> {//PRIVACY POLICY
+                    }
+                    8->{
+                        //theme
+                        showDialogTheme()
+                    }
+                    9->{
+                        showDialogCurrency()
+                    }
+                    10 -> {//Return policy
+                    }
+                    11 -> {//how to order
                     }
                 }
             }
         }
+        binding.rvAccount.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext())
+            adapter = adapterAccount
+        }
+        Log.d(TAG, "setUpRecyclerView: "+listAccount.size+"---"+adapterAccount.list.size)
     }
 
     private fun showDialogTheme(
