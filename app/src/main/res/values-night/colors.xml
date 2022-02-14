@@ -55,6 +55,7 @@
     <color name="divider2">#92BABABA</color>
     <color name="order_background">#000000</color>
     <color name="gift_card_background">#FFFFFF</color>
+    <color name="thrift_color1">#72000000</color>
 
 
 </resources>

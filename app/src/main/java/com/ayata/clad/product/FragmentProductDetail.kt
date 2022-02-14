@@ -184,7 +184,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
 
         setProductImage(binding.imageView3)
         binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStackImmediate()
+            (activity as MainActivity).onBackPressed()
         }
 
         binding.btnShare.setOnClickListener {

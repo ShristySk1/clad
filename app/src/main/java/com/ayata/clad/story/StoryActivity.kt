@@ -93,6 +93,10 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener,A
             onBackPressed()
         }
 
+        binding.btnClose.setOnClickListener {
+            onBackPressed()
+        }
+
     }
 
     private fun initRecyclerView(){
@@ -291,6 +295,16 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener,A
     override fun onDestroy() {
         binding.stories.destroy()
         super.onDestroy()
+    }
+
+    override fun onPause() {
+        binding.stories.pause()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        binding.stories.resume()
+        super.onResume()
     }
 
     override fun onProductClick(data: ModelJustDropped, position: Int) {

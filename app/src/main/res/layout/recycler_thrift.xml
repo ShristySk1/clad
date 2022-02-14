@@ -119,7 +119,7 @@
         android:layout_alignBottom="@id/layout_image_big"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#80FFFFFF"
+        app:cardBackgroundColor="@color/thrift_color1"
         app:cardCornerRadius="30dp"
         android:layout_margin="15dp"
         app:cardElevation="0dp">
@@ -218,6 +218,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:tint="@color/colorBlack"
                 android:src="@drawable/ic_bookmark_filled"
                 android:layout_margin="4dp"
                 android:padding="2dp"

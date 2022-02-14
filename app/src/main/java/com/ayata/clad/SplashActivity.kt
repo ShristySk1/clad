@@ -5,10 +5,12 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.ActivitySplashBinding
@@ -29,6 +31,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setAppMode()
         listDrawable.shuffle()
         setImageLoop()
         setUpFullScreen()
@@ -90,17 +93,28 @@ class SplashActivity : AppCompatActivity() {
         binding.imageLoop.startAnimation(animationFadeIn)
     }
 
+    private fun setAppMode(){
+        val isDarkMode=PreferenceHandler.isThemeDark(this)
+        val currentMode= if(isDarkMode){
+            AppCompatDelegate.MODE_NIGHT_YES
+        }else{
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        if(currentMode!=AppCompatDelegate.getDefaultNightMode()){
+            if(PreferenceHandler.isThemeDark(this)){
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate
+                        .MODE_NIGHT_YES)
+            }else{
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate
+                        .MODE_NIGHT_NO)
+            }
+        }
+    }
+
     override fun onStart() {
         super.onStart()
-        if(PreferenceHandler.isThemeDark(this)){
-            AppCompatDelegate.setDefaultNightMode(
-                AppCompatDelegate
-                    .MODE_NIGHT_YES)
-        }else{
-            AppCompatDelegate.setDefaultNightMode(
-                AppCompatDelegate
-                    .MODE_NIGHT_NO)
-        }
         GlobalScope.launch(Dispatchers.IO) {
             DataStoreManager(this@SplashActivity).getToken().catch { e ->
                 e.printStackTrace()

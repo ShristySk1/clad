@@ -51,6 +51,11 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        (parentFragment as FragmentShoppingBag).checkoutPage()
+    }
+
     private fun initView(){
         binding.textTotal.text=SpannableStringBuilder().bold { append("Total ") }.append("(incl. VAT)")
 
