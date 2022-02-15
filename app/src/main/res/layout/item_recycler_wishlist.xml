@@ -68,12 +68,11 @@
         <ImageView
             android:id="@+id/iv_setting"
             android:layout_width="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
             android:background="@drawable/ripple_text_5dp"
-            android:paddingBottom="16dp"
             android:layout_height="wrap_content"
+            android:tint="@color/colorBlack"
             android:src="@drawable/ic_dot" />
     </LinearLayout>
 

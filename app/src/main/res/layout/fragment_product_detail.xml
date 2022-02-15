@@ -94,51 +94,51 @@
                         android:progressDrawable="@drawable/custom_rating_star"
                         android:rating="3.5"
                         android:stepSize="0.5"
-                        app:layout_constraintStart_toStartOf="@+id/textView7"
-                        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                        app:layout_constraintStart_toStartOf="@+id/storeName"
+                        app:layout_constraintTop_toBottomOf="@+id/storeName" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/name"
                         style="@style/largerText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:textColor="@color/black"
                         android:text="Classic Cotton Jacket"
-                        app:layout_constraintEnd_toStartOf="@+id/textView9"
+                        app:layout_constraintEnd_toStartOf="@+id/price"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/storeName"
                         style="@style/normalText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="@color/black"
                         android:text="Clad Fashion Store"
-                        app:layout_constraintStart_toStartOf="@+id/textView6"
-                        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                        app:layout_constraintStart_toStartOf="@+id/name"
+                        app:layout_constraintTop_toBottomOf="@+id/name" />
 
                     <TextView
-                        android:id="@+id/textView8"
-                        style="@style/largeText"
+                        android:id="@+id/oldPrice"
+                        android:textSize="17sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_strikethrough"
                         android:text="Rs. 2600"
-                        android:textColor="#AB000000"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+                        android:textColor="#707070"
+                        app:layout_constraintBottom_toBottomOf="@+id/name"
                         app:layout_constraintEnd_toEndOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView9"
+                        android:id="@+id/price"
                         style="@style/largerText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rs. 2300"
                         android:textColor="@color/black"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/textView7"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/storeName"
                         app:layout_constraintEnd_toEndOf="parent" />
 
                     <TextView
@@ -157,13 +157,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toStartOf="@+id/frame"
+                        app:layout_constraintEnd_toStartOf="@+id/card_Wish"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@+id/textView4"
                         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                     <TextView
-                        android:id="@+id/textView5"
+                        android:id="@+id/description"
                         style="@style/normalText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -172,19 +172,19 @@
                         android:textColor="@color/black"
                         android:text="Welted sole from construction delivers exceptional durability, and is resistant to oil, fat, acid, petrol and alkali; air-crushed honeycomb perfect for hand wash."
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/frame2"
+                        app:layout_constraintEnd_toStartOf="@+id/card_cart"
                         app:layout_constraintStart_toStartOf="@+id/rv_color"
                         app:layout_constraintTop_toBottomOf="@+id/rv_color" />
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/frame"
+                        android:id="@+id/card_Wish"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginBottom="10dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardCornerRadius="25dp"
-                        app:layout_constraintBottom_toTopOf="@+id/frame2"
+                        app:layout_constraintBottom_toTopOf="@+id/card_cart"
                         app:layout_constraintEnd_toEndOf="parent">
 
                         <ImageView
@@ -200,7 +200,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/frame2"
+                        android:id="@+id/card_cart"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginBottom="10dp"
@@ -209,10 +209,10 @@
                         app:cardCornerRadius="25dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/textView5">
+                        app:layout_constraintTop_toTopOf="@+id/description">
 
                         <ImageView
-                            android:id="@+id/imageView5"
+                            android:id="@+id/image_cart"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/background_circle_with_border"

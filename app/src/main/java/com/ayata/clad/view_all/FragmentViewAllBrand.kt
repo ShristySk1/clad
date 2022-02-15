@@ -40,7 +40,7 @@ class FragmentViewAllBrand : Fragment(),AdapterViewAllBrand.OnItemClickListener 
     }
 
     private fun initAppbar(){
-        (activity as MainActivity).showBottomNavigation(false)
+        (activity as MainActivity).showBottomNavigation(true)
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar1("Brands",
             isSearch = false,

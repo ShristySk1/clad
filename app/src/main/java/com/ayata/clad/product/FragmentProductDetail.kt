@@ -27,6 +27,7 @@ import com.ayata.clad.productlist.viewmodel.ProductListViewModel
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PercentageCropImageView
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.TopRightCropTransformation
 import com.ayata.clad.utils.copyToClipboard
 import com.bumptech.glide.Glide
@@ -43,6 +44,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
     private lateinit var binding: FragmentProductDetailBinding
     private var listText = ArrayList<ModelCircleText>()
     private var isProductLiked: Boolean = false
+    private var isProductInCart:Boolean = false
 
     private lateinit var viewModel:ProductViewModel
 
@@ -73,7 +75,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
             ProductViewModelFactory(ApiRepository(ApiService.getInstance())))[ProductViewModel::class.java]
     }
     private fun productLikedListener() {
-        binding.frame.setOnClickListener {
+        binding.cardWish.setOnClickListener {
             if (isProductLiked) {
                 isProductLiked = false
                 val snackbar = Snackbar
@@ -92,12 +94,25 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
                 binding.ivHeart.setImageResource(R.drawable.ic_heart_filled)
             }
         }
-        binding.frame2.setOnClickListener {
-            val snackbar = Snackbar
-                .make(binding.root, "Product added to cart", Snackbar.LENGTH_SHORT)
+        binding.cardCart.setOnClickListener {
+            if(isProductInCart){
+                isProductInCart=false
+                binding.imageCart.setImageResource(R.drawable.ic_cart)
+                val snackbar = Snackbar
+                    .make(binding.root, "Product removed from cart", Snackbar.LENGTH_SHORT)
 //                .setAction("RETRY") { }
-            snackbar.setActionTextColor(Color.WHITE)
-            snackbar.show()
+                snackbar.setActionTextColor(Color.WHITE)
+                snackbar.show()
+            }else{
+                isProductInCart=true
+                binding.imageCart.setImageResource(R.drawable.ic_bag_filled)
+                val snackbar = Snackbar
+                    .make(binding.root, "Product added to cart", Snackbar.LENGTH_SHORT)
+//                .setAction("RETRY") { }
+                snackbar.setActionTextColor(Color.WHITE)
+                snackbar.show()
+            }
+
         }
     }
 
@@ -106,7 +121,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
             .detail2.tvTapToCopy.setOnClickListener {
                 val text =
                     requireContext().copyToClipboard(binding.detail2.tvTextToCopy.text.toString())
-                Log.d(TAG, "tapToCopyListener: " + text);
+                Log.d(TAG, "tapToCopyListener: $text")
                 val toast = Toast.makeText(
                     requireContext(),
                     "Copied to Clipboard!", Toast.LENGTH_SHORT
@@ -118,7 +133,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
             .detail2.tvTextToCopy.setOnClickListener {
                 val text =
                     requireContext().copyToClipboard(binding.detail2.tvTextToCopy.text.toString())
-                Log.d(TAG, "tapToCopyListener: " + text);
+                Log.d(TAG, "tapToCopyListener: $text")
                 val toast = Toast.makeText(
                     requireContext(),
                     "Copied to Clipboard!", Toast.LENGTH_SHORT
@@ -190,6 +205,19 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
         binding.btnShare.setOnClickListener {
             //share
         }
+
+        if(PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case),true)){
+            binding.price.text=getString(R.string.rs)+" 5000"
+            binding.oldPrice.text=getString(R.string.rs)+" 5500"
+            binding.detail2.price.text=getString(R.string.rs)+" 5000"
+            binding.detail2.payPrice.text=getString(R.string.rs)+" 4500"
+        }else{
+            binding.price.text=getString(R.string.usd)+" 100"
+            binding.oldPrice.text=getString(R.string.usd)+" 120"
+            binding.detail2.price.text=getString(R.string.usd)+" 100"
+            binding.detail2.payPrice.text=getString(R.string.usd)+" 80"
+        }
+
 
     }
 

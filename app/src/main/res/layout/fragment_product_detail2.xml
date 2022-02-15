@@ -29,6 +29,7 @@
             android:text="CLASSIC RETRO\nCOTTON JACKET" />
 
         <TextView
+            android:id="@+id/price"
             style="@style/bigText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -72,7 +73,7 @@
                 android:paddingBottom="16dp">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/payPrice"
                     style="@style/largeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,8 +89,8 @@
                     android:layout_marginTop="24dp"
                     android:paddingRight="100dp"
                     android:text="Apply the coupon during checkout. Orders above Rs. 1999 (only on first purchase). T&amp;C apply."
-                    app:layout_constraintStart_toStartOf="@+id/textView10"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintStart_toStartOf="@+id/payPrice"
+                    app:layout_constraintTop_toBottomOf="@+id/payPrice" />
 
                 <TextView
                     android:id="@+id/tv_text_to_copy"
