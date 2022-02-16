@@ -51,7 +51,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private lateinit var adapterStories: AdapterStories
 
     private lateinit var adapterPopularMonth: AdapterPopularMonth
-    private var listPopularMonth=ArrayList<ModelPopularMonth>()
+    private var listPopularMonth=ArrayList<ProductDetail>()
 
     private lateinit var adapterRecommended: AdapterRecommended
     private var listRecommended=ArrayList<ProductDetail>()
@@ -153,7 +153,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             layoutManager=LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
             adapter=adapterPopularMonth
         }
-        prepareDataForPopularMonth()
+//        prepareDataForPopularMonth(null)
 
         //recommended
         adapterRecommended= AdapterRecommended(context,listRecommended,this)
@@ -264,13 +264,16 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     }
 
-    private fun prepareDataForPopularMonth() {
+    private fun prepareDataForPopularMonth(listGiven: List<ProductDetail>?) {
         listPopularMonth.clear()
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","7000.0","10","https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","3000.0","50","https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg"))
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","8000.0","20","https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"))
-        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","9200.0","40","https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"))
+//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","7000.0","10","https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
+//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","3000.0","50","https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg"))
+//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","8000.0","20","https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"))
+//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","9200.0","40","https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"))
 
+        if(listGiven!=null){
+            listPopularMonth.addAll(listGiven)
+        }
         adapterPopularMonth.notifyDataSetChanged()
 
     }
@@ -359,7 +362,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     }
 
-    override fun onPopularMonthClicked(data: ModelPopularMonth, position: Int) {
+    override fun onPopularMonthClicked(data: ProductDetail, position: Int) {
 //        Toast.makeText(context, "Popular this month: ${ data.title }",Toast.LENGTH_SHORT).show()
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
             .addToBackStack(null).commit()
@@ -477,6 +480,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
                                     prepareDataForRecommended(detail.recommended)
                                     prepareDataForJustDropped(detail.just_dropped)
                                     prepareDataForMostPopular(detail.most_popular)
+                                    prepareDataForPopularMonth(detail.most_popular)
                                 }
                             }catch (e:Exception){
                                 Log.d(TAG, "prepareAPI: ${e.message}")
