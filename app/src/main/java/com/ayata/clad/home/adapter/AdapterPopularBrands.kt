@@ -12,6 +12,8 @@ import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.home.response.Brand
+import com.ayata.clad.home.response.Brands
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -20,8 +22,8 @@ import com.bumptech.glide.request.target.Target
 import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class AdapterPopularBrands(private var context:Context?,
-                                     private var listItems:List<ModelPopularBrands>,
-                                     private val onItemClickListener: OnItemClickListener)
+                                    private var listItems:List<Brand>,
+                                    private val onItemClickListener: OnItemClickListener)
     :RecyclerView.Adapter<AdapterPopularBrands.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -51,7 +53,7 @@ internal class AdapterPopularBrands(private var context:Context?,
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.imageDrawable)
+            .load(item.icon_url)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -85,7 +87,7 @@ internal class AdapterPopularBrands(private var context:Context?,
     }
 
     interface OnItemClickListener{
-        fun onPopularBrandsClicked(data: ModelPopularBrands, position:Int)
+        fun onPopularBrandsClicked(data: Brand, position:Int)
     }
 
 }

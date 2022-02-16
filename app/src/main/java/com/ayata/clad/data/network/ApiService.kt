@@ -14,7 +14,7 @@ interface ApiService {
 
     companion object {
 
-        private const val baseUrl="http://clad.ayata.com.np/api/v1/"
+        private const val baseUrl="https://clad.ayata.com.np/api/v1/"
         private val httpLoggingInterceptor = run {
             val httpLoggingInterceptor = HttpLoggingInterceptor()
             httpLoggingInterceptor.apply {

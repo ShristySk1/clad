@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/layout1"
+        android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+        android:layout_marginTop="@dimen/sl_marginV1"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="@dimen/sl_size1"
+            android:layout_height="@dimen/sl_size2"
+            android:background="@color/shimmer_color"/>
+
+        <View
+            android:layout_marginTop="@dimen/sl_marginT1"
+            android:layout_alignParentEnd="true"
+            android:background="@color/shimmer_color"
+            android:layout_width="@dimen/sl_size3"
+            android:layout_height="@dimen/sl_size4"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/layout2"
+        android:layout_below="@id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp">
+
+        <View
+            android:layout_width="@dimen/sl_size7"
+            android:layout_height="@dimen/sl_size8"
+            android:layout_marginHorizontal="5dp"
+            android:background="@color/shimmer_color"
+            />
+        <View
+            android:layout_width="@dimen/sl_size7"
+            android:layout_height="@dimen/sl_size8"
+            android:layout_marginHorizontal="5dp"
+            android:background="@color/shimmer_color"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -39,7 +39,7 @@ import com.google.android.material.snackbar.Snackbar
 
 
 class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
-    val TAG = "FragmentProductDetail"
+    private val TAG = "FragmentProductDetail"
     private lateinit var adapterCircleText: AdapterCircleText
     private lateinit var binding: FragmentProductDetailBinding
     private var listText = ArrayList<ModelCircleText>()
@@ -229,7 +229,7 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
 //            .into(binding.imageView3)
 
 
-        imageView.setCropYCenterOffsetPct(0f);
+        imageView.cropYCenterOffsetPct = 0f
 ////        If you wish to have a bottom crop, call:
 //        imageView.setCropYCenterOffsetPct(1.0f);
 ////        If you wish to have a crop 1/3 of the way down, call:
@@ -260,7 +260,8 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
                 listOf(
                     R.color.color1,
                     R.color.color2,
-                    R.color.color3
+                    R.color.color3,
+                    R.color.color4
                 ),this@FragmentProductDetail
             )
         }
@@ -316,6 +317,9 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
             }
             1 -> {
                 "https://m.media-amazon.com/images/I/71hNVecVSrL._AC_UX342_.jpg"
+            }
+            3->{
+                R.drawable.example_img
             }
             else -> {
                 ""

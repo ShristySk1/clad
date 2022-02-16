@@ -42,4 +42,15 @@
     <dimen name="pe_text1">13sp</dimen>
     <dimen name="pe_text2">14sp</dimen>
 
+<!--    shimmer-->
+    <dimen name="sl_size1">150dp</dimen>
+    <dimen name="sl_size2">22dp</dimen>
+    <dimen name="sl_size3">50dp</dimen>
+    <dimen name="sl_size4">15dp</dimen>
+    <dimen name="sl_marginV1">15dp</dimen>
+    <dimen name="sl_marginT1">5dp</dimen>
+    <dimen name="sl_size5">90dp</dimen>
+    <dimen name="sl_size6">110dp</dimen>
+    <dimen name="sl_size7">170dp</dimen>
+    <dimen name="sl_size8">240dp</dimen>
 </resources>

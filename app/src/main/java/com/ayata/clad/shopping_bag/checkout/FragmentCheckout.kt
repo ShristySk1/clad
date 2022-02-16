@@ -6,13 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.core.text.bold
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
-import com.ayata.clad.databinding.FragmentCheckoutBinding
+import com.ayata.clad.databinding.FragmentCartCheckoutBinding
 import com.ayata.clad.shop.model.ModelShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterCheckout
@@ -25,7 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
 
-    private lateinit var binding: FragmentCheckoutBinding
+    private lateinit var binding: FragmentCartCheckoutBinding
 
     private lateinit var adapterCheckout: AdapterCheckout
     private var listCheckout=ArrayList<ModelCheckout>()
@@ -41,27 +43,56 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding= FragmentCheckoutBinding.inflate(inflater, container, false)
+        binding= FragmentCartCheckoutBinding.inflate(inflater, container, false)
 
-        (parentFragment as FragmentShoppingBag).checkoutPage()
+//        (parentFragment as FragmentShoppingBag).checkoutPage()
+        initAppbar()
         initView()
-
         initRecycler()
-
+        initEmpty()
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        (parentFragment as FragmentShoppingBag).checkoutPage()
+//        (parentFragment as FragmentShoppingBag).checkoutPage()
+    }
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar1(getString(R.string.shopping_bag),
+            isSearch = false,
+            isProfile = true,
+            isClose = false
+        )
+    }
+
+    private fun initEmpty(){
+        binding.layoutEmpty.visibility=View.GONE
+        binding.layoutMain.visibility=View.VISIBLE
+
+        binding.btnBrowse.setOnClickListener {
+            (activity as MainActivity).openFragmentShop()
+        }
     }
 
     private fun initView(){
         binding.textTotal.text=SpannableStringBuilder().bold { append("Total ") }.append("(incl. VAT)")
 
         binding.btnCheckout.setOnClickListener {
-            parentFragmentManager.beginTransaction().replace(R.id.fragment_shopping,FragmentShipping())
+//            fragment_shopping
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentShipping())
                 .addToBackStack("checkout").commit()
+        }
+
+        binding.checkBoxAll.setOnCheckedChangeListener { buttonView, isChecked ->
+           if (isChecked){
+               for(item in listCheckout){
+                   item.isSelected=true
+               }
+               adapterCheckout.notifyDataSetChanged()
+               calculatePrice()
+           }
         }
 
         binding.totalPrice.text="Rs. 7800"
@@ -107,7 +138,19 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
                 item.isSelected=isChecked
             }
         }
+        isCheckAll()
         calculatePrice()
+    }
+
+    private fun isCheckAll(){
+        var isAllChecked=true
+        for(item in listCheckout){
+           if(!item.isSelected){
+               isAllChecked=false
+               break
+           }
+        }
+        binding.checkBoxAll.isChecked = isAllChecked
     }
 
     private fun calculatePrice(){

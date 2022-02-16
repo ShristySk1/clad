@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Clad</string>
+    <string name="app_name">CLAD</string>
 
     <string name="clad_shopping_service_url">https://www.google.com/</string>
     <string name="clad_privacy_notice_url">https://www.google.com/</string>

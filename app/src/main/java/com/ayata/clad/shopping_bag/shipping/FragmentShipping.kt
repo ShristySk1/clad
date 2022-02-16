@@ -13,8 +13,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.color
 import androidx.core.text.underline
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.MainActivity
 import com.ayata.clad.R
-import com.ayata.clad.databinding.FragmentShippingBinding
+import com.ayata.clad.databinding.FragmentCartShippingBinding
 import com.ayata.clad.profile.address.FragmentAddressAdd
 import com.ayata.clad.profile.address.FragmentAddressUpdate
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
@@ -26,7 +27,7 @@ import com.ayata.clad.utils.PreferenceHandler
 
 class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
 
-    private lateinit var binding:FragmentShippingBinding
+    private lateinit var binding:FragmentCartShippingBinding
 
     private lateinit var adapterShippingAddress: AdapterShippingAddress
     private var listAddress=ArrayList<ModelShippingAddress>()
@@ -36,12 +37,23 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding= FragmentShippingBinding.inflate(inflater, container, false)
+        binding= FragmentCartShippingBinding.inflate(inflater, container, false)
 
-        (parentFragment as FragmentShoppingBag).shippingPage()
+//        (parentFragment as FragmentShoppingBag).shippingPage()
+        initAppbar()
         initView()
         initRecycler()
         return binding.root
+    }
+
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar2(
+            isClose = false, isBack = true, isFilter = false, isClear = false,
+            textTitle = "Shipping",
+            textDescription = ""
+        )
     }
 
     private fun initView(){
@@ -56,9 +68,10 @@ class FragmentShipping : Fragment(),AdapterShippingAddress.OnItemClickListener {
         }
 
         binding.btnProceed.setOnClickListener {
+//            fragment_shopping
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_shopping, FragmentPayment())
-                .addToBackStack(null).commit()
+                .replace(R.id.main_fragment, FragmentPayment())
+                .addToBackStack("shipping").commit()
         }
 
         binding.addNewBtn.setOnClickListener {

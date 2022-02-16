@@ -3,37 +3,38 @@ package com.ayata.clad.home
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
-import com.ayata.clad.story.StoryActivity
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentHomeBinding
 import com.ayata.clad.home.adapter.*
-import com.ayata.clad.home.adapter.AdapterJustDropped
-import com.ayata.clad.home.adapter.AdapterPopularBrands
-import com.ayata.clad.home.adapter.AdapterPopularMonth
-import com.ayata.clad.home.adapter.AdapterRecommended
-import com.ayata.clad.home.adapter.AdapterStories
 import com.ayata.clad.home.model.*
+import com.ayata.clad.home.response.Brand
+import com.ayata.clad.home.response.HomeResponse
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
+import com.ayata.clad.story.StoryActivity
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.view_all.FragmentViewAllBrand
 import com.ayata.clad.view_all.FragmentViewAllProduct
+import com.google.gson.Gson
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
+
 
 class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterRecommended.OnItemClickListener
     ,AdapterPopularBrands.OnItemClickListener,AdapterJustDropped.OnItemClickListener
@@ -53,17 +54,16 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private var listPopularMonth=ArrayList<ModelPopularMonth>()
 
     private lateinit var adapterRecommended: AdapterRecommended
-    private var listRecommended=ArrayList<ModelRecommended>()
-//    private var listRecommendedOne=ArrayList<ModelRecommended>()
+    private var listRecommended=ArrayList<ProductDetail>()
 
     private lateinit var adapterPopularBrands: AdapterPopularBrands
-    private var listPopularBrands=ArrayList<ModelPopularBrands>()
+    private var listPopularBrands=ArrayList<Brand>()
 
     private lateinit var adapterJustDropped: AdapterJustDropped
-    private var listJustDropped=ArrayList<ModelJustDropped>()
+    private var listJustDropped=ArrayList<ProductDetail>()
 
     private lateinit var adapterMostPopular: AdapterMostPopular
-    private var listMostPopular=ArrayList<ModelMostPopular>()
+    private var listMostPopular=ArrayList<ProductDetail>()
 
     private lateinit var adapterNewSubscription: AdapterNewSubscription
     private var listNewSubscription=ArrayList<ModelNewSubscription>()
@@ -78,6 +78,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     {
         binding= FragmentHomeBinding.inflate(inflater,container,false)
         setUpViewModel()
+        initRefreshLayout()
         prepareAPI()
         initButtonClick()
         initAppbar()
@@ -94,6 +95,42 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             isClose = false,
             isLogo = true
         )
+    }
+
+    private fun initRefreshLayout(){
+        //refresh layout on swipe
+        binding.swipeRefreshLayout.setOnRefreshListener(OnRefreshListener {
+            prepareAPI()
+            binding.swipeRefreshLayout.isRefreshing = false
+        })
+        //Adding ScrollListener to activate swipe refresh layout
+        binding.mainLayout.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
+        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
+
+        // Adding ScrollListener to getting whether we're on First Item position or not
+//        recyclerView_available.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                binding.swipeRefreshLayout.isEnabled = manager1.findFirstCompletelyVisibleItemPosition() == 0 // 0 is for first item position
+//            }
+//        })
+
+    }
+
+    private fun setShimmerLayout(isVisible:Boolean){
+        if(isVisible){
+            binding.mainLayout.visibility=View.GONE
+            binding.shimmerFrameLayout.visibility=View.VISIBLE
+            binding.shimmerFrameLayout.startShimmer()
+        }else{
+            binding.mainLayout.visibility=View.VISIBLE
+            binding.shimmerFrameLayout.visibility=View.GONE
+            binding.shimmerFrameLayout.stopShimmer()
+        }
     }
 
     private fun setUpViewModel(){
@@ -118,13 +155,13 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         }
         prepareDataForPopularMonth()
 
-        //recommended == show 1 only
+        //recommended
         adapterRecommended= AdapterRecommended(context,listRecommended,this)
         binding.recyclerRecommended.apply {
             layoutManager=LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
             adapter=adapterRecommended
         }
-        prepareDataForRecommended()
+//        prepareDataForRecommended(null)
 
         //popular brand
         adapterPopularBrands = AdapterPopularBrands(context, listPopularBrands,this)
@@ -132,7 +169,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             adapter=adapterPopularBrands
         }
-        prepareDataForPopularBrands()
+//        prepareDataForPopularBrands(null)
 
         //just dropped
         adapterJustDropped= AdapterJustDropped(context,listJustDropped,this)
@@ -140,7 +177,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             adapter=adapterJustDropped
         }
-        prepareDataForJustDropped()
+//        prepareDataForJustDropped(null)
 
         //most popular
         adapterMostPopular= AdapterMostPopular(context,listMostPopular,this)
@@ -148,7 +185,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             layoutManager=GridLayoutManager(context,1,GridLayoutManager.HORIZONTAL,false)
             adapter=adapterMostPopular
         }
-        prepareDataForMostPopular()
+//        prepareDataForMostPopular(null)
 
         //new subscription
         adapterNewSubscription=AdapterNewSubscription(context,listNewSubscription,this)
@@ -238,15 +275,16 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     }
 
-    private fun prepareDataForRecommended() {
+    private fun prepareDataForRecommended(listGiven: List<ProductDetail>?) {
         listRecommended.clear()
-        listRecommended.add(ModelRecommended("Sportswear (Red)","“Sporty clothes”","4500.0","30.0",
-            "https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg"))
-        listRecommended.add(ModelRecommended("Cashmere Jacket","Casual Wear","7890.0","70.0",
-            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
+//        listRecommended.add(ModelRecommended("Sportswear (Red)","“Sporty clothes”","4500.0","30.0",
+//            "https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg"))
+//        listRecommended.add(ModelRecommended("Cashmere Jacket","Casual Wear","7890.0","70.0",
+//            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
 
-//        listRecommendedOne.clear()
-//        listRecommendedOne.add(listRecommended[0])
+        if(listGiven!=null){
+            listRecommended.addAll(listGiven)
+        }
         adapterRecommended.notifyDataSetChanged()
 
     }
@@ -261,57 +299,61 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         R.drawable.brand_mode23,R.drawable.brand_newmew,
         R.drawable.brand_phalanoluga,R.drawable.brand_sabah,
         R.drawable.brand_station,R.drawable.brand_tsarmoire)
-    private fun prepareDataForPopularBrands() {
-        listDrawable.shuffle()
+    private fun prepareDataForPopularBrands(listGiven: List<Brand>?) {
+//        listDrawable.shuffle()
         listPopularBrands.clear()
-//        listPopularBrands.add(ModelPopularBrands("https://cdn.britannica.com/94/193794-050-0FB7060D/Adidas-logo.jpg","Adidas","All 106"))
-//        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/e2/1e/d6/e21ed611fec39f3911d7376723811d8a.jpg","Nike","All 106"))
-//        listPopularBrands.add(ModelPopularBrands("https://i.pinimg.com/originals/f4/29/13/f42913698b86ddc1a611163154e71619.jpg","Vans","All 106"))
-//        listPopularBrands.add(ModelPopularBrands("https://www.freesvgdownload.com/wp-content/uploads/2021/04/Balenciaga-logo-svg.jpg","Balenciaga","All 106"))
-//        listPopularBrands.add(ModelPopularBrands("https://cdn.shopify.com/s/files/1/0249/5892/6941/products/Converse-Logo-Iron-On-Sticker_1890x.jpg?v=1585666919","Converse","All 106"))
-
-        for(i in listDrawable){
-            listPopularBrands.add(ModelPopularBrands(i,"Brand Name","All 106"))
+//        for(i in listDrawable){
+//            listPopularBrands.add(ModelPopularBrands(i,"Brand Name","All 106"))
+//        }
+        if(listGiven!=null){
+            listPopularBrands.addAll(listGiven)
         }
         adapterPopularBrands.notifyDataSetChanged()
 
     }
 
-    private fun prepareDataForJustDropped() {
+    private fun prepareDataForJustDropped(listGiven: List<ProductDetail>?) {
         listJustDropped.clear()
-        listJustDropped.add(ModelJustDropped("https://freepngimg.com/thumb/categories/627.png",
-            "Nike ISPA Overreact Sail Multi","5000","50",
-        "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
-        listJustDropped.add(ModelJustDropped("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-            "adidas Yeezy Boost 700 MNVN Bone","5000","45",
-            "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
-        listJustDropped.add(ModelJustDropped("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-            "Jordan 11 Retro Low White Concord (W) ","5000","65",
-        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
+//        listJustDropped.add(ModelJustDropped("https://freepngimg.com/thumb/categories/627.png",
+//            "Nike ISPA Overreact Sail Multi","5000","50",
+//        "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
+//        listJustDropped.add(ModelJustDropped("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
+//            "adidas Yeezy Boost 700 MNVN Bone","5000","45",
+//            "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
+//        listJustDropped.add(ModelJustDropped("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
+//            "Jordan 11 Retro Low White Concord (W) ","5000","65",
+//        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
+
+        if(listGiven!=null){
+            listJustDropped.addAll(listGiven)
+        }
 
         adapterJustDropped.notifyDataSetChanged()
 
     }
 
-    private fun prepareDataForMostPopular() {
+    private fun prepareDataForMostPopular(listGiven: List<ProductDetail>?) {
         listMostPopular.clear()
-        listMostPopular.add(
-            ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
-            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","50",
-            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
-        )
-        listMostPopular.add(ModelMostPopular("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask","8000","80",
-        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
-
-        listMostPopular.add(ModelMostPopular("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-            "Jordan 14 Retro Gym Red Toro","Lowest Ask","8000","65",
-            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
-
-        listMostPopular.add(ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
-            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","45",
-            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
-        )
+//        listMostPopular.add(
+//            ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
+//            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","50",
+//            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
+//        )
+//        listMostPopular.add(ModelMostPopular("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
+//            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask","8000","80",
+//        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
+//
+//        listMostPopular.add(ModelMostPopular("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
+//            "Jordan 14 Retro Gym Red Toro","Lowest Ask","8000","65",
+//            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
+//
+//        listMostPopular.add(ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
+//            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","45",
+//            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
+//        )
+        if(listGiven!=null){
+            listMostPopular.addAll(listGiven)
+        }
 
         adapterMostPopular.notifyDataSetChanged()
 
@@ -323,28 +365,28 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             .addToBackStack(null).commit()
     }
 
-    override fun onRecommendedClicked(data: ModelRecommended, position: Int) {
+    override fun onRecommendedClicked(data: ProductDetail, position: Int) {
 //        Toast.makeText(context,"Recommend: ${data.title}",Toast.LENGTH_SHORT).show()
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
             .addToBackStack(null).commit()
     }
 
-    override fun onPopularBrandsClicked(data: ModelPopularBrands, position: Int) {
+    override fun onPopularBrandsClicked(data: Brand, position: Int) {
         val bundle=Bundle()
-        bundle.putString(Constants.FILTER_HOME,data.title)
+        bundle.putString(Constants.FILTER_HOME,data.name)
         val fragmentViewAllProduct=FragmentViewAllProduct()
         fragmentViewAllProduct.arguments=bundle
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
             .addToBackStack(null).commit()
     }
 
-    override fun onJustDroppedClicked(data: ModelJustDropped, position: Int) {
+    override fun onJustDroppedClicked(data: ProductDetail, position: Int) {
 //        Toast.makeText(context,"Just Dropped: ${data.title}",Toast.LENGTH_SHORT).show()
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
             .addToBackStack(null).commit()
     }
 
-    override fun onMostPopularClicked(data: ModelMostPopular, position: Int) {
+    override fun onMostPopularClicked(data: ProductDetail, position: Int) {
 //        Toast.makeText(context,"Most Popular: ${data.title}",Toast.LENGTH_SHORT).show()
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
             .addToBackStack(null).commit()
@@ -366,7 +408,6 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     private fun initButtonClick(){
-
         binding.justDroppedViewBtn.setOnClickListener {
             val bundle=Bundle()
             bundle.putString(Constants.FILTER_HOME,"Just Dropped")
@@ -407,6 +448,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     private fun prepareAPI(){
+        setShimmerLayout(true)
 
 //        GlobalScope.launch(Dispatchers.IO) {
 //            DataStoreManager(requireContext()).getToken().catch { e ->
@@ -423,14 +465,32 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             viewModel.getDashboardAPI().observe(viewLifecycleOwner,{
                 when (it.status) {
                     Status.SUCCESS -> {
+                        setShimmerLayout(false)
                         Log.d(TAG, "home: ${it.data}")
+                        val jsonObject=it.data
+                        if(jsonObject!=null){
+                            try{
+                                val homeResponse=Gson().fromJson<HomeResponse>(jsonObject,HomeResponse::class.java)
+                                if(homeResponse.details!=null){
+                                    val detail=homeResponse.details
+                                    prepareDataForPopularBrands(detail.brands)
+                                    prepareDataForRecommended(detail.recommended)
+                                    prepareDataForJustDropped(detail.just_dropped)
+                                    prepareDataForMostPopular(detail.most_popular)
+                                }
+                            }catch (e:Exception){
+                                Log.d(TAG, "prepareAPI: ${e.message}")
+                            }
+                        }
+
                     }
                     Status.LOADING -> {
                     }
                     Status.ERROR -> {
                         //Handle Error
+                        setShimmerLayout(false)
                         Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                        Log.d(TAG, "phoneApi: ${it.message}")
+                        Log.d(TAG, "home: ${it.message}")
                     }
                 }
             })

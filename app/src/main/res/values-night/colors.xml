@@ -57,5 +57,6 @@
     <color name="gift_card_background">#FFFFFF</color>
     <color name="thrift_color1">#72000000</color>
 
+    <color name="shimmer_color">#D1D1D1</color>
 
 </resources>

@@ -2,6 +2,8 @@ package com.ayata.clad.shop
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +22,10 @@ import com.google.android.material.tabs.TabLayout
 
 
 class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
+
+    companion object{
+        const val TITLE="category name"
+    }
 
     private lateinit var binding: FragmentShopBinding
 
@@ -54,23 +60,23 @@ class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
 
     private fun initSearchView(){
 
-//        binding.searchText.editText!!.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                adapterShopFilterable.filter.filter(p0)
-//            }
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//                adapterShopFilterable.filter.filter(p0)
-//            }
-//        })
+        binding.searchText.editText!!.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
 
-        binding.layoutSearch.setOnClickListener {
-            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductList())
-                .addToBackStack(null).commit()
-        }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                adapterShopFilterable.filter.filter(p0)
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                adapterShopFilterable.filter.filter(p0)
+            }
+        })
+
+//        binding.layoutSearch.setOnClickListener {
+//            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductList())
+//                .addToBackStack(null).commit()
+//        }
 
     }
 
@@ -186,7 +192,11 @@ class FragmentShop : Fragment(),AdapterShopFilterable.OnSearchClickListener {
 
     override fun onSearchClick(data: ModelShop) {
 //        Toast.makeText(context,data.name,Toast.LENGTH_SHORT).show()
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductList())
+        val fragmentSubCategory=FragmentSubCategory()
+        val bundle=Bundle()
+        bundle.putString(TITLE,data.name)
+        fragmentSubCategory.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentSubCategory)
             .addToBackStack(null).commit()
     }
 

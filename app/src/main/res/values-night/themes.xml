@@ -3,7 +3,7 @@
     <style name="Theme.Clad" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorBlack</item>
-        <item name="colorPrimaryVariant">@color/colorBlack</item>
+        <item name="colorPrimaryVariant">@color/color1</item>
         <item name="colorOnPrimary">@color/colorWhite</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/colorBlack</item>

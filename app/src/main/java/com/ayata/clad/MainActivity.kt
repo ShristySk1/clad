@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
+import com.ayata.clad.databinding.FragmentCartCheckoutBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.preorder.FragmentPreorder
@@ -19,6 +20,7 @@ import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
+import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.FragmentWishlist
@@ -240,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home -> selectedFragment = FragmentHome()
                 R.id.nav_hanger -> selectedFragment = FragmentShop()
                 R.id.nav_favorite -> selectedFragment = FragmentWishlist()
-                R.id.nav_cart -> selectedFragment = FragmentShoppingBag()
+                R.id.nav_cart -> selectedFragment = FragmentCheckout()
                 R.id.nav_rader -> selectedFragment = FragmentPreorder()
             }
             supportFragmentManager.beginTransaction()

@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
-import com.ayata.clad.databinding.FragmentPaymentBinding
+import com.ayata.clad.databinding.FragmentCartPaymentBinding
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
@@ -27,7 +27,7 @@ import com.ayata.clad.utils.PreferenceHandler
 
 class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 
-    private lateinit var binding:FragmentPaymentBinding
+    private lateinit var binding:FragmentCartPaymentBinding
     private lateinit var adapterPaymentMethod:AdapterPaymentMethod
     private var listPaymentMethod=ArrayList<ModelPaymentMethod>()
 
@@ -36,9 +36,10 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding= FragmentPaymentBinding.inflate(inflater, container, false)
+        binding= FragmentCartPaymentBinding.inflate(inflater, container, false)
 
-        (parentFragment as FragmentShoppingBag).paymentPage()
+//        (parentFragment as FragmentShoppingBag).paymentPage()
+        initAppbar()
         initView()
         initRecycler()
         setTermText()
@@ -46,13 +47,27 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         return binding.root
     }
 
+    private fun initAppbar(){
+        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar2(
+            isClose = false, isBack = true, isFilter = false, isClear = false,
+            textTitle = "Payment",
+            textDescription = ""
+        )
+    }
+
     private fun initView(){
         binding.btnConfirm.setOnClickListener {
-            activity?.supportFragmentManager!!.beginTransaction()
+//            activity?.supportFragmentManager!!.beginTransaction()
+//                .replace(R.id.main_fragment,FragmentOrderPlaced())
+//                .addToBackStack(null)
+//                .commit()
+            parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            parentFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment,FragmentOrderPlaced())
                 .addToBackStack(null)
                 .commit()
-            parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
         if(PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case),true)){
             binding.totalPrice.text="${getString(R.string.rs)} 7800.0"

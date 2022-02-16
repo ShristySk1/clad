@@ -25,8 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/shoe2"
-                android:scaleType="centerInside"
-                android:layout_marginHorizontal="16dp"
+                android:scaleType="centerCrop"
                 />
 
             <ProgressBar
@@ -56,6 +55,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorBlack"
             android:textSize="14sp"
+            android:maxLines="1"
             android:layout_marginTop="8dp"
             android:text="Nike Air Max"/>
         <TextView

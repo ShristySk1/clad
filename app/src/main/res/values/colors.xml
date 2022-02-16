@@ -42,6 +42,7 @@
     <color name="color1">#F3EDE3</color>
     <color name="color2">#AEDED2</color>
     <color name="color3">#DEB9AE</color>
+    <color name="color4">#8F756D</color>
 <!--    divider-->
     <color name="colorDivider">#EDEEF0</color>
     
@@ -58,4 +59,5 @@
     <color name="gift_card_background">#4CAF50</color>
     <color name="thrift_color1">#80FFFFFF</color>
 
+    <color name="shimmer_color">#D1D1D1</color>
 </resources>

@@ -21,7 +21,7 @@
                 android:scaleType="centerCrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_launcher_background"
+                android:src="@drawable/ic_clad_logo_grey"
                 android:background="?attr/selectableItemBackground"/>
 
             <ImageView
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="270dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher_background" />
+            android:src="@drawable/ic_clad_logo_grey" />
 
         <ProgressBar
             android:id="@+id/progressBar"
