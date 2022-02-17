@@ -25,6 +25,7 @@ import com.ayata.clad.databinding.FragmentVerificationBinding
 import com.ayata.clad.login.response.VerificationResponse
 import com.ayata.clad.login.viewmodel.LoginViewModel
 import com.ayata.clad.login.viewmodel.LoginViewModelFactory
+import com.ayata.clad.utils.PreferenceHandler
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
@@ -90,7 +91,7 @@ class FragmentVerification : Fragment() {
                 ).show()
             }else{
                 //Here is the code for retro api to check verfication code the response token is store in prefrencehandler
-                loginViewModel.otpVerification(phone, code!!.trim())
+                loginViewModel.otpVerification(phone, code.trim())
                 //observe
                 loginViewModel.doOTPCheck().observe(viewLifecycleOwner, Observer {
                     when (it.status) {
@@ -108,6 +109,7 @@ class FragmentVerification : Fragment() {
                                             DataStoreManager(requireContext()).saveToken(
                                                 verificationResponse.details.token
                                             )
+                                            PreferenceHandler.setToken(context,verificationResponse.details.token)
                                             startActivity(Intent(context, MainActivity::class.java))
                                             activity?.finish()
                                         }

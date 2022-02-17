@@ -43,6 +43,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
     companion object{
         private const val TAG="FragmentHome"
+        const val PRODUCT_DETAIL="product detail"
     }
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel:HomeViewModel
@@ -363,14 +364,20 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     override fun onPopularMonthClicked(data: ProductDetail, position: Int) {
-//        Toast.makeText(context, "Popular this month: ${ data.title }",Toast.LENGTH_SHORT).show()
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+        val bundle=Bundle()
+        bundle.putSerializable(PRODUCT_DETAIL,data)
+        val fragmentProductDetail=FragmentProductDetail()
+        fragmentProductDetail.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentProductDetail)
             .addToBackStack(null).commit()
     }
 
     override fun onRecommendedClicked(data: ProductDetail, position: Int) {
-//        Toast.makeText(context,"Recommend: ${data.title}",Toast.LENGTH_SHORT).show()
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+        val bundle=Bundle()
+        bundle.putSerializable(PRODUCT_DETAIL,data)
+        val fragmentProductDetail=FragmentProductDetail()
+        fragmentProductDetail.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentProductDetail)
             .addToBackStack(null).commit()
     }
 
@@ -384,14 +391,20 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     override fun onJustDroppedClicked(data: ProductDetail, position: Int) {
-//        Toast.makeText(context,"Just Dropped: ${data.title}",Toast.LENGTH_SHORT).show()
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+        val bundle=Bundle()
+        bundle.putSerializable(PRODUCT_DETAIL,data)
+        val fragmentProductDetail=FragmentProductDetail()
+        fragmentProductDetail.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentProductDetail)
             .addToBackStack(null).commit()
     }
 
     override fun onMostPopularClicked(data: ProductDetail, position: Int) {
-//        Toast.makeText(context,"Most Popular: ${data.title}",Toast.LENGTH_SHORT).show()
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentProductDetail())
+        val bundle=Bundle()
+        bundle.putSerializable(PRODUCT_DETAIL,data)
+        val fragmentProductDetail=FragmentProductDetail()
+        fragmentProductDetail.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentProductDetail)
             .addToBackStack(null).commit()
     }
 

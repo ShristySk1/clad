@@ -9,6 +9,7 @@ class PreferenceHandler {
     companion object Data {
         private const val DARK_THEME="dark theme"
         private const val CURRENCY="currency"
+        private const val TOKEN="bearer token"
         fun savePhoneNumber(context: Context?,tokenid:String?){
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
             val editor = sharedPref.edit()
@@ -48,6 +49,18 @@ class PreferenceHandler {
             return sharedPref.getString(CURRENCY, "npr")
         }
 
+        fun setToken(context: Context?,token:String){
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+            val editor = sharedPref.edit()
+            editor.putString(TOKEN, token)
+            editor.apply()
+        }
+
+        fun getToken(context: Context?): String?
+        {
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+            return sharedPref.getString(TOKEN, "")
+        }
 
 
 

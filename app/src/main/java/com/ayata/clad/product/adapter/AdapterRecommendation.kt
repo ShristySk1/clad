@@ -61,7 +61,7 @@ class AdapterRecommendation(val context:Context,
                 binding.priceText.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
             }
 
-            Glide.with(binding.cardView.context).asBitmap().load(item.logo).error(R.drawable.ic_hanger)
+            Glide.with(binding.cardView.context).asBitmap().load(item.logo).error(R.drawable.ic_clad_logo_grey)
                 .into(binding.imageLogo)
             itemView.setOnClickListener {
                 itemProductClick?.let { function ->

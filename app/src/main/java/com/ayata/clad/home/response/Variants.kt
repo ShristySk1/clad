@@ -1,6 +1,7 @@
 package com.ayata.clad.home.response
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class Variants (
@@ -18,4 +19,4 @@ data class Variants (
 	@SerializedName("color") val color : Color,
 	@SerializedName("image_url") val image_url : String,
 	@SerializedName("size") val size : String
-)
+): Serializable

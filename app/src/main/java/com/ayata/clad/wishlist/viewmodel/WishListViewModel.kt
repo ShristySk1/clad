@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import retrofit2.http.Query
@@ -27,7 +28,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
     fun wishListAPI(token:String) {
         listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.wishListApi("Bearer $token")
+            val response = mainRepository.wishListApi("${Constants.Bearer} $token")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("wishListAPI", "success: "+response.body())
@@ -52,7 +53,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("product_id",id)
-            val response = mainRepository.removeFromWishAPI("Bearer $token",jsonObject)
+            val response = mainRepository.removeFromWishAPI("${Constants.Bearer} $token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("removeFromWishAPI", "success: "+response.body())
@@ -77,7 +78,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("product_id",id)
-            val response = mainRepository.addToCartApi("Bearer $token",jsonObject)
+            val response = mainRepository.addToCartApi("${Constants.Bearer} $token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("addToCartAPI", "success: "+response.body())

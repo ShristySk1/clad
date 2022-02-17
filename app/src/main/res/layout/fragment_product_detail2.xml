@@ -11,7 +11,6 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_outline_bottom"
@@ -22,6 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/name"
             style="@style/bigText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,14 +39,14 @@
             android:text="Rs. 2300" />
 
         <ImageView
-            android:id="@+id/ivClose"
+            android:id="@+id/ivCart"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/ripple_circle_transparent_background"
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             android:tint="@color/colorBlack"
-            android:src="@drawable/ic_close" />
+            android:src="@drawable/ic_cart" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView

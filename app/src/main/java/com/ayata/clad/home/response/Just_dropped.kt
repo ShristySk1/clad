@@ -1,6 +1,7 @@
 package com.ayata.clad.home.response
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class Just_dropped (
@@ -40,4 +41,4 @@ data class Just_dropped (
 	@SerializedName("coupon") val coupon : String,
 	@SerializedName("is_in_wishlist") val is_in_wishlist : Boolean,
 	@SerializedName("reviews") val reviews : Reviews
-)
+): Serializable

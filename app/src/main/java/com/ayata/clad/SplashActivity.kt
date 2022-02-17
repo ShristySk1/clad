@@ -132,15 +132,15 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun nextActivity(){
-//        if(goTo==1){
-//            startActivity(Intent(this@SplashActivity, ActivityOnboarding::class.java))
-//            finish()
-//        }else if(goTo==2){
-//            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-//            finish()
-//        }
-        startActivity(Intent(this@SplashActivity, MainActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-        finish()
+        if(goTo==1){
+            startActivity(Intent(this@SplashActivity, ActivityOnboarding::class.java))
+            finish()
+        }else if(goTo==2){
+            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            finish()
+        }
+//        startActivity(Intent(this@SplashActivity, MainActivity::class.java)
+//            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+//        finish()
     }
 }

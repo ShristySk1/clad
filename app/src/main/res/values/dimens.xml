@@ -53,4 +53,5 @@
     <dimen name="sl_size6">110dp</dimen>
     <dimen name="sl_size7">170dp</dimen>
     <dimen name="sl_size8">240dp</dimen>
+    <dimen name="sl_size9">260dp</dimen>
 </resources>

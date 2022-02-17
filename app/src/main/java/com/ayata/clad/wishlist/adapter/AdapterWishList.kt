@@ -19,7 +19,7 @@ import com.bumptech.glide.request.target.Target
 
 class AdapterWishList(
     val context:Context,
-    var productList: List<ModelProduct>,
+    var productList: List<ModelProduct>
 ) : RecyclerView.Adapter<AdapterWishList.ViewHolder>() {
     // create an inner class with name ViewHolder
     // It takes a view argument, in which pass the generated class of single_item.xml
@@ -116,4 +116,5 @@ class AdapterWishList(
     fun setSettingClickListener(listener: ((ModelProduct) -> Unit)) {
         itemSettingClick = listener
     }
+
 }
