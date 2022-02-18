@@ -40,5 +40,6 @@ data class ProductDetail (
 	@SerializedName("isCouponAvailable") val isCouponAvailable : Boolean,
 	@SerializedName("coupon") val coupon : String,
 	@SerializedName("is_in_wishlist") val is_in_wishlist : Boolean,
+	@SerializedName("is_in_cart") val is_in_cart : Boolean,
 	@SerializedName("reviews") val reviews : Reviews
 ): Serializable

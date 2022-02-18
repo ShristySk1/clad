@@ -18,7 +18,6 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
     private val listResponse = MutableLiveData<Resource<JsonObject>>()
     private val removeResponse = MutableLiveData<Resource<JsonObject>>()
     private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
-
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")

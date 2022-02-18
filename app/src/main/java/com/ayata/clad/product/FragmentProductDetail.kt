@@ -100,8 +100,9 @@ class FragmentProductDetail : Fragment(),AdapterColor.OnItemClickListener {
         binding.description.text=Html.fromHtml(productDetail.description)
         binding.detail2.name.text=productDetail.name
         isProductWishList=productDetail.is_in_wishlist
+        isProductInCart=productDetail.is_in_cart
         setWishlist(isProductWishList)
-        setCart(false)
+        setCart(isProductInCart)
     }
 
     private fun setUpViewModel(){

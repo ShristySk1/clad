@@ -75,11 +75,7 @@ internal class AdapterFilterContent(
             ) {
                 with(item) {
                     binding.title.text = item.title
-                    if (item.isSelected) {
-                        binding.checkBox.isChecked = true
-                    } else {
-                        binding.checkBox.isChecked = false
-                    }
+                    binding.checkBox.isChecked = item.isSelected
                     itemView.setOnClickListener {
                         itemFilterContentClick?.let { function ->
                             function(item)
@@ -98,11 +94,7 @@ internal class AdapterFilterContent(
             ) {
                 with(item) {
                     binding.title.text = item.title
-                    if (item.isSelected) {
-                        binding.checkBox.isChecked = true
-                    } else {
-                        binding.checkBox.isChecked = false
-                    }
+                    binding.checkBox.isChecked = item.isSelected
                     itemView.setOnClickListener {
                         itemFilterContentClick?.let { function ->
                             function(item)
@@ -116,8 +108,7 @@ internal class AdapterFilterContent(
     }
 
     private var itemFilterContentSingleClick: ((MyFilterContentViewItem.SingleChoice) -> Unit)? = null
-    private var itemFilterContentMultipleClick: ((MyFilterContentViewItem.MultipleChoice) -> Unit)? =
-        null
+    private var itemFilterContentMultipleClick: ((MyFilterContentViewItem.MultipleChoice) -> Unit)? = null
 
     fun setCircleClickListener(listener: ((MyFilterContentViewItem.SingleChoice) -> Unit)) {
         itemFilterContentSingleClick = listener

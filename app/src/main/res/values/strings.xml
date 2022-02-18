@@ -67,4 +67,9 @@
 
     <string name="npr_case">npr</string>
 
+<!--    wishlist-->
+    <string name="wl_case1">Add to Bag</string>
+    <string name="wl_case2">Remove from wishlist</string>
+    <string name="wl_case3">Remove from Bag</string>
+
 </resources>

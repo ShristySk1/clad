@@ -24,6 +24,7 @@ import com.ayata.clad.home.model.*
 import com.ayata.clad.home.response.Brand
 import com.ayata.clad.home.response.HomeResponse
 import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.home.response.Sliders
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
@@ -70,7 +71,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private var listNewSubscription=ArrayList<ModelNewSubscription>()
 
     private lateinit var adapterBanner: AdapterBanner
-    private var listBanner=ArrayList<String>()
+    private var listBanner=ArrayList<Sliders>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -198,7 +199,6 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 
 
         //banner
-        prepareBanner()
         adapterBanner= AdapterBanner(requireContext(),listBanner,this)
         binding.imageSlider.setSliderAdapter(adapterBanner)
         binding.imageSlider.setIndicatorAnimation(IndicatorAnimationType.WORM)
@@ -206,12 +206,21 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         binding.imageSlider.startAutoCycle()
     }
 
-    private fun prepareBanner(){
+    private fun prepareBanner(listGiven: List<Sliders>?){
         listBanner.clear()
-        listBanner.add("https://www.thoughtco.com/thmb/C7RiS4QG5TXcBG2d_Sh9i4hFpg0=/3620x2036/smart/filters:no_upscale()/close-up-of-clothes-hanging-in-row-739240657-5a78b11f8e1b6e003715c0ec.jpg")
-        listBanner.add("https://st.depositphotos.com/1003633/2284/i/600/depositphotos_22848360-stock-photo-fashion-clothes-hang-on-a.jpg")
-        listBanner.add("https://cdn.stocksnap.io/img-thumbs/280h/white-sneakers_EA7TDORJBT.jpg")
-//        binding.imageSlider.startAutoCycle()
+//        listBanner.add("https://www.thoughtco.com/thmb/C7RiS4QG5TXcBG2d_Sh9i4hFpg0=/3620x2036/smart/filters:no_upscale()/close-up-of-clothes-hanging-in-row-739240657-5a78b11f8e1b6e003715c0ec.jpg")
+//        listBanner.add("https://st.depositphotos.com/1003633/2284/i/600/depositphotos_22848360-stock-photo-fashion-clothes-hang-on-a.jpg")
+//        listBanner.add("https://cdn.stocksnap.io/img-thumbs/280h/white-sneakers_EA7TDORJBT.jpg")
+
+        if(!listGiven.isNullOrEmpty()){
+            listBanner.addAll(listGiven)
+        }
+        if(listBanner.isNullOrEmpty()){
+            binding.imageSlider.visibility=View.GONE
+        }else{
+            binding.imageSlider.visibility=View.VISIBLE
+        }
+        adapterBanner.notifyDataSetChanged()
     }
 
     private fun prepareDataForNewSubscription() {
@@ -494,6 +503,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
                                     prepareDataForJustDropped(detail.just_dropped)
                                     prepareDataForMostPopular(detail.most_popular)
                                     prepareDataForPopularMonth(detail.most_popular)
+                                    prepareBanner(detail.sliders)
                                 }
                             }catch (e:Exception){
                                 Log.d(TAG, "prepareAPI: ${e.message}")
@@ -513,9 +523,9 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             })
     }
 
-    override fun onBannerClicked(data: String) {
+    override fun onBannerClicked(data: Sliders) {
         val bundle=Bundle()
-        bundle.putString(Constants.FILTER_HOME,"Discounted Items")
+        bundle.putString(Constants.FILTER_HOME,data.title)
         val fragmentViewAllProduct=FragmentViewAllProduct()
         fragmentViewAllProduct.arguments=bundle
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)

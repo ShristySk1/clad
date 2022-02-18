@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
@@ -31,6 +33,7 @@ import com.ayata.clad.wishlist.viewmodel.WishListViewModel
 import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import kotlin.math.log
 
 
 class FragmentWishlist : Fragment() {
@@ -51,6 +54,7 @@ class FragmentWishlist : Fragment() {
         binding = FragmentWishlistBinding.inflate(inflater, container, false)
         setUpViewModel()
         initAppbar()
+        initRefreshLayout()
         getWishListAPI()
         setUpFilterListener()
         setUpRecyclerProductList()
@@ -62,18 +66,41 @@ class FragmentWishlist : Fragment() {
             WishListViewModelFactory(ApiRepository(ApiService.getInstance()))).get(WishListViewModel::class.java)
     }
 
+    private fun initRefreshLayout(){
+        //refresh layout on swipe
+        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            getWishListAPI()
+            binding.swipeRefreshLayout.isRefreshing = false
+        })
+        //Adding ScrollListener to activate swipe refresh layout
+        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
+
+        // Adding ScrollListener to getting whether we're on First Item position or not
+        binding.rvWishList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                binding.swipeRefreshLayout.isEnabled = !recyclerView.canScrollVertically(-1) && dy < 0
+            }
+        })
+        binding.rvRecommendation.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                binding.swipeRefreshLayout.isEnabled = true
+            }
+        })
+
+    }
+
     private fun setUpView(){
         if (myWishList.isEmpty()) {
-            binding.textView12.visibility=View.GONE
-            binding.btnFilter.visibility=View.GONE
-            binding.rvWishList.visibility = View.GONE
+            binding.layoutFilled.visibility=View.GONE
             binding.llEmpty.visibility = View.VISIBLE
             setUpRecyclerRecommendation()
         } else {
-            binding.textView12.visibility=View.VISIBLE
-            binding.btnFilter.visibility=View.VISIBLE
+            binding.layoutFilled.visibility=View.VISIBLE
             binding.llEmpty.visibility = View.GONE
-            binding.rvWishList.visibility = View.VISIBLE
         }
     }
 
@@ -158,7 +185,7 @@ class FragmentWishlist : Fragment() {
                 "com",
                 "8523",
                 "123",
-                false
+                true,true
             )
         )
         myWishList.add(
@@ -169,10 +196,16 @@ class FragmentWishlist : Fragment() {
                 "com",
                 "4500",
                 "123",
-                false
+                true,true
             )
         )
-        myWishList.add(ModelProduct(1, "", "ss", "com", "7800","123", false))
+        myWishList.add(ModelProduct(1, "", "ss", "com", "7800","123", true,false))
+        myWishList.add(ModelProduct(1, "", "ss", "com", "7800","123", true,true))
+        myWishList.add(ModelProduct(1, "", "ss", "com", "7800","123", true,false))
+        myWishList.add(ModelProduct(1, "", "ss", "com", "7800","123", true,true))
+        myWishList.add(ModelProduct(1, "", "ss", "com", "7800","123", true,true))
+        myWishList.add(ModelProduct(1, "", "ss", "com", "7800","123", true))
+
         adapterWishList=AdapterWishList(requireContext(),
             myWishList
         ).also {
@@ -181,16 +214,22 @@ class FragmentWishlist : Fragment() {
                 parentFragmentManager.beginTransaction().replace(
                     R.id.main_fragment,
                     FragmentProductDetail()
-                )
-                    .addToBackStack(null).commit()
+                ).addToBackStack(null).commit()
             }
-        }.also {
-            it.setSettingClickListener {
-                val list = listOf(
-                    MyFilterContentViewItem.MultipleChoice("Add to Bag", false),
-                    MyFilterContentViewItem.MultipleChoice("Remove from wishlist", false)
-                )
-                showDialogMultipleChoice("Options", list)
+        }.also { it ->
+            it.setSettingClickListener {product->
+                val isWish=product.isWishList
+                val isCart=product.isCart
+                val list=ArrayList<MyFilterContentViewItem.MultipleChoice>()
+                if(product.isCart){
+                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case3), isCart))
+                }else{
+                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case1), isCart))
+                }
+                if(isWish){
+                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case2), isWish))
+                }
+                showDialogMultipleChoice("Options",list,product)
             }
         }
 
@@ -201,19 +240,32 @@ class FragmentWishlist : Fragment() {
             val itemDecoration = ItemOffsetDecoration(context, R.dimen.item_offset)
             addItemDecoration(itemDecoration)
         }
+
     }
 
-    private fun showDialogMultipleChoice(title: String, listContent: List<MyFilterContentViewItem.MultipleChoice>) {
+    private fun showDialogMultipleChoice(title: String,
+                                         listContent: List<MyFilterContentViewItem.MultipleChoice>,product:ModelProduct) {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(dialogBinding.root)
-        val list = listContent
-        val adapterfilterContent = AdapterFilterContent(
-            context, list
+        val adapterFilterContent = AdapterFilterContent(
+            context, listContent
         ).also { adapter ->
-            adapter.setCircleClickListener { data ->
-                for (item in list) {
-                    item.isSelected = item.equals(data)
+            adapter.setFilterContentMultipleClickListener { data ->
+                for (item in listContent) {
+                    if(item.title.contains(getString(R.string.wl_case1),true)){
+                        //add to bag
+                        addToCartAPI(product)
+                    }else if(item.title.contains(getString(R.string.wl_case2),true)){
+                        //remove wishlist
+                        removeWishListAPI(product)
+                    }else if(item.title.contains(getString(R.string.wl_case3),true)){
+                        //remove from bag
+//                        removeFromCartAPI(product)
+                    }
+                    if(item == data){
+                        item.isSelected=true
+                    }
                 }
                 adapter.notifyDataSetChanged()
             }
@@ -221,7 +273,7 @@ class FragmentWishlist : Fragment() {
         dialogBinding.title.text = title
         dialogBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = adapterfilterContent
+            adapter = adapterFilterContent
         }
 
         dialogBinding.btnClose.setOnClickListener {
@@ -264,8 +316,8 @@ class FragmentWishlist : Fragment() {
         snackbar.show()
     }
 
-    private fun addToCartAPI(){
-        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(),1)
+    private fun addToCartAPI(product: ModelProduct){
+        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(),product.id)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner,{
             when (it.status) {
                 Status.SUCCESS -> {
@@ -273,6 +325,12 @@ class FragmentWishlist : Fragment() {
                     val jsonObject=it.data
                     if(jsonObject!=null){
                         showSnackBar("Product added to cart")
+                        for(item in myWishList){
+                            if(item.id==product.id){
+                                item.isCart=true
+                            }
+                        }
+                        adapterWishList.notifyDataSetChanged()
                         try{
 
                         }catch (e:Exception){
@@ -292,8 +350,8 @@ class FragmentWishlist : Fragment() {
         })
     }
 
-    private fun removeWishListAPI(){
-        viewModel.removeFromWishAPI(PreferenceHandler.getToken(context).toString(),1)
+    private fun removeWishListAPI(product: ModelProduct){
+        viewModel.removeFromWishAPI(PreferenceHandler.getToken(context).toString(),product.id)
         viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner,{
             when (it.status) {
                 Status.SUCCESS -> {
@@ -301,6 +359,12 @@ class FragmentWishlist : Fragment() {
                     val jsonObject=it.data
                     if(jsonObject!=null){
                         showSnackBar(msg="Product removed from wishlist")
+                        for(item in myWishList){
+                            if(item.id==product.id){
+                                myWishList.remove(item)
+                            }
+                        }
+                        adapterWishList.notifyDataSetChanged()
                         try{
 
                         }catch (e:Exception){
@@ -356,11 +420,13 @@ class FragmentWishlist : Fragment() {
 
     private fun setShimmerLayout(isVisible:Boolean){
         if(isVisible){
-            binding.layoutMain.visibility=View.GONE
+            binding.layoutFilled.visibility=View.GONE
+            binding.llEmpty.visibility=View.GONE
             binding.shimmerFrameLayout.visibility=View.VISIBLE
             binding.shimmerFrameLayout.startShimmer()
         }else{
-            binding.layoutMain.visibility=View.VISIBLE
+            binding.layoutFilled.visibility=View.VISIBLE
+            binding.llEmpty.visibility=View.GONE
             binding.shimmerFrameLayout.visibility=View.GONE
             binding.shimmerFrameLayout.stopShimmer()
         }
