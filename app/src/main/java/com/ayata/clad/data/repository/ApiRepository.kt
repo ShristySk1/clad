@@ -17,10 +17,15 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun cartListApi(token:String)=retrofitService.cartListAPI(token)
     suspend fun addToCartApi(token:String,jsonObject: JsonObject)=retrofitService.addToCartAPI(token,jsonObject)
     suspend fun removeFromCartAPI(token:String,jsonObject: JsonObject)=retrofitService.removeFromCartAPI(token,jsonObject)
+    suspend fun saveSizeAPI(token:String,jsonObject: JsonObject)=retrofitService.saveSizeAPI(token,jsonObject)
+    suspend fun saveQuantityAPI(token:String,jsonObject: JsonObject)=retrofitService.saveQuantityAPI(token,jsonObject)
     suspend fun profileApi(token:String)=retrofitService.profileAPI(token)
     suspend fun orderListApi(token:String)=retrofitService.orderListAPI(token)
     suspend fun orderDetailApi(token:String,id:Int)=retrofitService.orderDetailAPI(token,id)
     suspend fun productListApi(token:String)=retrofitService.productListAPI(token)
     suspend fun productDetailApi(token:String,id:Int)=retrofitService.productDetailAPI(token,id)
+    suspend fun productAllApi(token:String,offset:Int,filter:String)=retrofitService.productAllAPI(token,offset,filter)
+    suspend fun brandListApi(token:String,offset:Int)=retrofitService.brandListAPI(token,offset)
+
 
 }

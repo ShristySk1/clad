@@ -80,6 +80,14 @@ interface ApiService {
     @POST("remove-from-cart/")
     suspend fun removeFromCartAPI( @Header("Authorization") token: String,@Body jsonObject: JsonObject): Response<JsonObject>
 
+    //not made
+    @POST("size/")
+    suspend fun saveSizeAPI( @Header("Authorization") token: String,@Body jsonObject: JsonObject): Response<JsonObject>
+
+    //not made
+    @POST("quantity/")
+    suspend fun saveQuantityAPI( @Header("Authorization") token: String,@Body jsonObject: JsonObject): Response<JsonObject>
+
 
     //user profile
     @GET("account/profile/")
@@ -98,5 +106,14 @@ interface ApiService {
     @GET("product/details/")
     suspend fun productDetailAPI( @Header("Authorization") token: String,@Query("id")id:Int): Response<JsonObject>
 
+    //view all-- pagination
+    //not made
+    @GET("brand-list/")
+    suspend fun brandListAPI( @Header("Authorization") token: String,@Query("offset")offset:Int): Response<JsonObject>
+
+    //not made
+    @GET("products-list/")
+    suspend fun productAllAPI( @Header("Authorization") token: String,
+                               @Query("offset")offset:Int,@Query("filter")filter:String): Response<JsonObject>
 
 }

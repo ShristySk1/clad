@@ -19,6 +19,7 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogFilterBinding
+import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentWishlistBinding
 import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
@@ -27,7 +28,12 @@ import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.product.ModelRecommendedProduct
 import com.ayata.clad.productlist.ItemOffsetDecoration
+import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
+import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
+import com.ayata.clad.shopping_bag.model.ModelCheckout
+import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.wishlist.adapter.AdapterDialogOption
 import com.ayata.clad.wishlist.adapter.AdapterWishList
 import com.ayata.clad.wishlist.viewmodel.WishListViewModel
 import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
@@ -45,6 +51,10 @@ class FragmentWishlist : Fragment() {
     private lateinit var adapterWishList: AdapterWishList
 
     private lateinit var viewModel:WishListViewModel
+
+    //size dialog
+    private lateinit var adapterCircleSize: AdapterCircleText
+    private var listSize=ArrayList<ModelCircleText>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -219,17 +229,25 @@ class FragmentWishlist : Fragment() {
         }.also { it ->
             it.setSettingClickListener {product->
                 val isWish=product.isWishList
-                val isCart=product.isCart
-                val list=ArrayList<MyFilterContentViewItem.MultipleChoice>()
-                if(product.isCart){
-                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case3), isCart))
-                }else{
-                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case1), isCart))
+//                val list=ArrayList<MyFilterContentViewItem.MultipleChoice>()
+//                if(product.isCart){
+//                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case3), isCart))
+//                }else{
+//                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case1), isCart))
+//                }
+//                if(isWish){
+//                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case2), isWish))
+//                }
+                val list=ArrayList<String>()
+                if(!product.isCart){
+                    list.add(getString(R.string.wl_case1))
                 }
+                list.add(getString(R.string.wl_case3))
                 if(isWish){
-                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case2), isWish))
+                    list.add(getString(R.string.wl_case2))
                 }
-                showDialogMultipleChoice("Options",list,product)
+//                showDialogMultipleChoice("Options",list,product)
+                showDialogWishlist(product,list)
             }
         }
 
@@ -241,8 +259,10 @@ class FragmentWishlist : Fragment() {
             addItemDecoration(itemDecoration)
         }
 
+        setUpView()
     }
 
+    //not used
     private fun showDialogMultipleChoice(title: String,
                                          listContent: List<MyFilterContentViewItem.MultipleChoice>,product:ModelProduct) {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
@@ -253,15 +273,19 @@ class FragmentWishlist : Fragment() {
         ).also { adapter ->
             adapter.setFilterContentMultipleClickListener { data ->
                 for (item in listContent) {
-                    if(item.title.contains(getString(R.string.wl_case1),true)){
-                        //add to bag
-                        addToCartAPI(product)
-                    }else if(item.title.contains(getString(R.string.wl_case2),true)){
-                        //remove wishlist
-                        removeWishListAPI(product)
-                    }else if(item.title.contains(getString(R.string.wl_case3),true)){
-                        //remove from bag
-//                        removeFromCartAPI(product)
+                    when {
+                        item.title.contains(getString(R.string.wl_case1),true) -> {
+                            //add to bag
+                            addToCartAPI(product)
+                        }
+                        item.title.contains(getString(R.string.wl_case2),true) -> {
+                            //remove wishlist
+                            removeWishListAPI(product)
+                        }
+                        item.title.contains(getString(R.string.wl_case3),true) -> {
+                            //change size
+                            showDialogSize(product)
+                        }
                     }
                     if(item == data){
                         item.isSelected=true
@@ -385,13 +409,13 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun getWishListAPI(){
+//        myWishList.clear()
         setShimmerLayout(true)
         viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
         viewModel.getWishListAPI().observe(viewLifecycleOwner,{
             when (it.status) {
                 Status.SUCCESS -> {
                     setShimmerLayout(false)
-//                    myWishList.clear()
                     Log.d(TAG, "getWishListAPI: ${it.data}")
                     val jsonObject=it.data
                     if(jsonObject!=null){
@@ -430,5 +454,120 @@ class FragmentWishlist : Fragment() {
             binding.shimmerFrameLayout.visibility=View.GONE
             binding.shimmerFrameLayout.stopShimmer()
         }
+    }
+
+    private fun showDialogSize(product:ModelProduct){
+
+        val dialogBinding= DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
+        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(dialogBinding.root)
+
+        dialogBinding.title.text="Size"
+        var sizeSelected=""
+        adapterCircleSize= AdapterCircleText(context,listSize).also { adapter ->
+            adapter.setCircleClickListener { listItem->
+                for(item in listSize){
+                    item.isSelected = item.equals(listItem)
+                }
+                sizeSelected=listItem.title
+                adapterCircleSize.notifyDataSetChanged()
+            }
+        }
+        prepareListSize()
+
+        dialogBinding.recyclerView.apply {
+            layoutManager= GridLayoutManager(context,5)
+            adapter=adapterCircleSize
+        }
+
+        dialogBinding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        dialogBinding.btnSave.setOnClickListener {
+            saveSizeAPI(product,sizeSelected)
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun prepareListSize(){
+        listSize.clear()
+        listSize.add(ModelCircleText("s",true))
+        listSize.add(ModelCircleText("m",false))
+        listSize.add(ModelCircleText("l",false))
+        listSize.add(ModelCircleText("xl",false))
+        listSize.add(ModelCircleText("xxl",false))
+        adapterCircleSize.notifyDataSetChanged()
+    }
+
+    private fun showDialogWishlist(product:ModelProduct,listDialog:ArrayList<String>){
+
+        val dialogBinding= DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
+        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(dialogBinding.root)
+
+        dialogBinding.title.text="Options"
+        val adapterOption= AdapterDialogOption(context,listDialog).also { adapter ->
+            adapter.setOptionClickListener { item->
+                //click
+                when {
+                    item.contains(getString(R.string.wl_case1),true) -> {
+                        //add to bag
+                        addToCartAPI(product)
+                    }
+                    item.contains(getString(R.string.wl_case2),true) -> {
+                        //remove wishlist
+                        removeWishListAPI(product)
+                    }
+                    item.contains(getString(R.string.wl_case3),true) -> {
+                        //change size
+                        showDialogSize(product)
+                        bottomSheetDialog.dismiss()
+                    }
+                }
+            }
+        }
+
+        dialogBinding.recyclerView.apply {
+            layoutManager= LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+            adapter=adapterOption
+        }
+
+        dialogBinding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        dialogBinding.btnSave.visibility=View.GONE
+
+        bottomSheetDialog.show()
+    }
+
+    private fun saveSizeAPI(product:ModelProduct,sizeSelected:String){
+        viewModel.saveSizeAPI(PreferenceHandler.getToken(context).toString(),product.id,sizeSelected)
+        viewModel.getSizeAPI().observe(viewLifecycleOwner,{
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "saveSizeAPI: ${it.data}")
+                    val jsonObject=it.data
+                    if(jsonObject!=null){
+                        showSnackBar("Size Updated")
+                        try{
+
+                        }catch (e:Exception){
+                            Log.d(TAG, "saveSizeAPI:Error ${e.message}")
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "saveSizeAPI:Error ${it.message}")
+                }
+            }
+        })
     }
 }

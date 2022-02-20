@@ -70,6 +70,7 @@
 <!--    wishlist-->
     <string name="wl_case1">Add to Bag</string>
     <string name="wl_case2">Remove from wishlist</string>
-    <string name="wl_case3">Remove from Bag</string>
+    <string name="wl_case3">Change Size</string>
+    <string name="save">Save</string>
 
 </resources>

@@ -18,6 +18,8 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
     private val listResponse = MutableLiveData<Resource<JsonObject>>()
     private val removeResponse = MutableLiveData<Resource<JsonObject>>()
     private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
+    private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
+
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
@@ -95,6 +97,32 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     fun getAddToCartAPI(): LiveData<Resource<JsonObject>> {
         return addCartResponse
+    }
+
+    fun saveSizeAPI(token:String,id: Int,size:String) {
+        sizeResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val jsonObject=JsonObject()
+            jsonObject.addProperty("product_id",id)
+            jsonObject.addProperty("size",id)
+            val response = mainRepository.saveSizeAPI("${Constants.Bearer} $token",jsonObject)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("saveSizeAPI", "success: "+response.body())
+                    sizeResponse.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("saveSizeAPI", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    sizeResponse.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+
+    }
+
+    fun getSizeAPI(): LiveData<Resource<JsonObject>> {
+        return sizeResponse
     }
 
 

@@ -1,4 +1,4 @@
-package com.ayata.clad.productlist.viewmodel
+package com.ayata.clad.view_all.viewmodel
 
 import android.provider.SyncStateContract
 import android.util.Log
@@ -12,7 +12,7 @@ import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import retrofit2.http.Query
 
-class ProductListViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
+class BrandAllViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
 
     val errorMessage = MutableLiveData<String>()
 
@@ -24,17 +24,17 @@ class ProductListViewModel constructor(private val mainRepository: ApiRepository
     }
     val loading = MutableLiveData<Boolean>()
 
-    fun productListApi(token:String) {
+    fun brandListApi(token:String,offset:Int) {
         listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.productListApi("${Constants.Bearer} $token")
+            val response = mainRepository.brandListApi("${Constants.Bearer} $token",offset)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("productListApi", "success: "+response.body())
+                    Log.d("brandListApi", "success: "+response.body())
                     listResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
-                    Log.e("productListApi", "error: $response")
+                    Log.e("brandListApi", "error: $response")
                     onError("Error : ${response.message()} ")
                     listResponse.postValue(Resource.error(response.message(), null))
                 }
@@ -43,7 +43,7 @@ class ProductListViewModel constructor(private val mainRepository: ApiRepository
 
     }
 
-    fun getProductListAPI(): LiveData<Resource<JsonObject>> {
+    fun getBrandListAPI(): LiveData<Resource<JsonObject>> {
         return listResponse
     }
 

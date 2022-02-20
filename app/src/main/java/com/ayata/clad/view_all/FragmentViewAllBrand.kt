@@ -7,24 +7,37 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentViewAllBrandBinding
 import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.productlist.viewmodel.ProductListViewModel
+import com.ayata.clad.productlist.viewmodel.ProductListViewModelFactory
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.view_all.adapter.AdapterViewAllBrand
 import com.ayata.clad.view_all.adapter.AdapterViewAllProduct
 import com.ayata.clad.view_all.model.ModelViewAllProduct
+import com.ayata.clad.view_all.viewmodel.BrandAllViewModel
+import com.ayata.clad.view_all.viewmodel.BrandAllViewModelFactory
 
 
 class FragmentViewAllBrand : Fragment(),AdapterViewAllBrand.OnItemClickListener {
-
+    companion object{
+        private const val TAG="FragmentViewAllBrand"
+    }
     private lateinit var binding:FragmentViewAllBrandBinding
     private lateinit var adapterViewAllBrand: AdapterViewAllBrand
     private var listBrand=ArrayList<ModelPopularBrands?>()
     var isLoading = false
+    private lateinit var viewModel: BrandAllViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,10 +46,17 @@ class FragmentViewAllBrand : Fragment(),AdapterViewAllBrand.OnItemClickListener 
         // Inflate the layout for this fragment
         binding= FragmentViewAllBrandBinding.inflate(inflater, container, false)
         initAppbar()
+        initViewModel()
         populateData()
         initRecycler()
         initScrollListener()
+        getBrandListAPI(0)
         return binding.root
+    }
+
+    private fun initViewModel(){
+        viewModel=ViewModelProvider(this,
+            BrandAllViewModelFactory(ApiRepository(ApiService.getInstance())))[BrandAllViewModel::class.java]
     }
 
     private fun initAppbar(){
@@ -131,6 +151,34 @@ class FragmentViewAllBrand : Fragment(),AdapterViewAllBrand.OnItemClickListener 
         fragmentViewAllProduct.arguments=bundle
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
             .addToBackStack(null).commit()
+    }
+
+    private fun getBrandListAPI(offset:Int){
+//        listBrand.clear()
+        viewModel.brandListApi(PreferenceHandler.getToken(context).toString(),offset)
+        viewModel.getBrandListAPI().observe(viewLifecycleOwner,{
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "getBrandListAPI: ${it.data}")
+                    val jsonObject=it.data
+                    if(jsonObject!=null){
+                        try{
+
+                        }catch (e:Exception){
+                            Log.d(TAG, "getBrandListAPI:Error ${e.message}")
+                        }
+                    }
+                    adapterViewAllBrand.notifyDataSetChanged()
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "getBrandListAPI:Error ${it.message}")
+                }
+            }
+        })
     }
 
 }

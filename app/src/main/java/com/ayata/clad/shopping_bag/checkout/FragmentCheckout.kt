@@ -1,7 +1,9 @@
 package com.ayata.clad.shopping_bag.checkout
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +11,16 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.core.text.bold
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentCartCheckoutBinding
 import com.ayata.clad.shop.model.ModelShop
@@ -22,21 +30,31 @@ import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
+import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
+import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 
 class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
 
     private lateinit var binding: FragmentCartCheckoutBinding
+    private lateinit var viewModel: CheckoutViewModel
 
     private lateinit var adapterCheckout: AdapterCheckout
     private var listCheckout=ArrayList<ModelCheckout>()
+    private lateinit var layoutManagerCheckout: LinearLayoutManager
 
     private lateinit var adapterCircleSize: AdapterCircleText
     private var listSize=ArrayList<ModelCircleText>()
 
     private lateinit var adapterCircleQty: AdapterCircleText
     private var listQty=ArrayList<ModelCircleText>()
+
+    companion object{
+        private const val TAG="FragmentCheckout"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,12 +63,22 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
         // Inflate the layout for this fragment
         binding= FragmentCartCheckoutBinding.inflate(inflater, container, false)
 
+        setUpViewModel()
 //        (parentFragment as FragmentShoppingBag).checkoutPage()
         initAppbar()
         initView()
+        setShimmerLayout(false)
         initRecycler()
-        initEmpty()
+        setUpView()
+        initRefreshLayout()
+        getCartAPI()
         return binding.root
+    }
+
+    private fun setUpViewModel(){
+        viewModel= ViewModelProvider(this,
+            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance()))
+        )[CheckoutViewModel::class.java]
     }
 
     override fun onResume() {
@@ -67,12 +95,34 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
         )
     }
 
-    private fun initEmpty(){
-        binding.layoutEmpty.visibility=View.GONE
-        binding.layoutMain.visibility=View.VISIBLE
+    private fun initRefreshLayout(){
+        //refresh layout on swipe
+        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            getCartAPI()
+            binding.swipeRefreshLayout.isRefreshing = false
+        })
+        //Adding ScrollListener to activate swipe refresh layout
+        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
 
-        binding.btnBrowse.setOnClickListener {
-            (activity as MainActivity).openFragmentShop()
+        // Adding ScrollListener to getting whether we're on First Item position or not
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                binding.swipeRefreshLayout.isEnabled = layoutManagerCheckout.findFirstVisibleItemPosition()==0
+            }
+        })
+
+    }
+
+    private fun setUpView(){
+        if(listCheckout.isEmpty()){
+            binding.layoutEmpty.visibility=View.VISIBLE
+            binding.layoutMain.visibility=View.GONE
+        }else{
+            binding.layoutEmpty.visibility=View.GONE
+            binding.layoutMain.visibility=View.VISIBLE
         }
     }
 
@@ -83,6 +133,10 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
 //            fragment_shopping
             parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentShipping())
                 .addToBackStack("checkout").commit()
+        }
+
+        binding.btnBrowse.setOnClickListener {
+            (activity as MainActivity).openFragmentShop()
         }
 
         binding.checkBoxAll.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -101,10 +155,11 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
 
     private fun initRecycler(){
 
+        layoutManagerCheckout=LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
         adapterCheckout= AdapterCheckout(requireContext(),listCheckout,this)
         binding.recyclerView.apply {
             adapter=adapterCheckout
-            layoutManager=LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+            layoutManager=layoutManagerCheckout
         }
         prepareList()
 
@@ -116,9 +171,14 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
             "https://freepngimg.com/thumb/categories/627.png"))
         listCheckout.add(ModelCheckout("Nike Air Jordan",784579,9000.0,180.0,"A",1,false,
             "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png"))
+        listCheckout.add(ModelCheckout("Nike Air Jordan",784577,8790.0,80.0,"A",2,true,
+            "https://freepngimg.com/thumb/categories/627.png"))
+        listCheckout.add(ModelCheckout("Nike Air Jordan",784599,8790.0,80.0,"A",2,true,
+            "https://freepngimg.com/thumb/categories/627.png"))
 
         adapterCheckout.notifyDataSetChanged()
         calculatePrice()
+
     }
 
     override fun onSizeClicked(data: ModelCheckout,position:Int) {
@@ -202,6 +262,11 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
             bottomSheetDialog.dismiss()
         }
 
+        dialogBinding.btnSave.setOnClickListener {
+            saveSizeAPI(data,data.size)
+            bottomSheetDialog.dismiss()
+        }
+
         bottomSheetDialog.show()
     }
 
@@ -238,6 +303,11 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
             bottomSheetDialog.dismiss()
         }
 
+        dialogBinding.btnSave.setOnClickListener {
+            saveQuantityAPI(data,data.qty.toString())
+            bottomSheetDialog.dismiss()
+        }
+
         bottomSheetDialog.show()
     }
 
@@ -260,4 +330,115 @@ class FragmentCheckout : Fragment() ,AdapterCheckout.OnItemClickListener{
         adapterCircleQty.notifyDataSetChanged()
     }
 
+    private fun setShimmerLayout(isVisible:Boolean){
+        if(isVisible){
+            binding.layoutMain.visibility=View.GONE
+            binding.layoutEmpty.visibility=View.GONE
+            binding.shimmerFrameLayout.visibility=View.VISIBLE
+            binding.shimmerFrameLayout.startShimmer()
+        }else{
+            binding.layoutMain.visibility=View.VISIBLE
+            binding.layoutEmpty.visibility=View.GONE
+            binding.shimmerFrameLayout.visibility=View.GONE
+            binding.shimmerFrameLayout.stopShimmer()
+        }
+    }
+
+    private fun getCartAPI(){
+//        listCheckout.clear()
+        setShimmerLayout(true)
+        viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
+        viewModel.getCartListAPI().observe(viewLifecycleOwner,{
+            when (it.status) {
+                Status.SUCCESS -> {
+                    setShimmerLayout(false)
+                    setUpView()
+                    Log.d(TAG, "getCartAPI: ${it.data}")
+                    val jsonObject=it.data
+                    if(jsonObject!=null){
+                        try{
+                            val message=jsonObject.get("message").asString
+                            if(message.contains("empty.",true)){
+//                                setUpView()
+                            }
+                        }catch (e:Exception){
+                            Log.d(TAG, "getCartAPI:Error ${e.message}")
+                        }
+                    }
+                    adapterCheckout.notifyDataSetChanged()
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    setShimmerLayout(false)
+//                    listCheckout.clear()
+//                    setUpView()
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "getCartAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun saveSizeAPI(product:ModelCheckout,sizeSelected:String){
+        viewModel.saveSizeAPI(PreferenceHandler.getToken(context).toString(),product.itemId,sizeSelected)
+        viewModel.getSizeAPI().observe(viewLifecycleOwner,{
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "saveSizeAPI: ${it.data}")
+                    val jsonObject=it.data
+                    if(jsonObject!=null){
+                        showSnackBar("Size Updated")
+                        try{
+
+                        }catch (e:Exception){
+                            Log.d(TAG, "saveSizeAPI:Error ${e.message}")
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "saveSizeAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun saveQuantityAPI(product:ModelCheckout,quantitySelected:String){
+        viewModel.saveQuantityAPI(PreferenceHandler.getToken(context).toString(),product.itemId,quantitySelected)
+        viewModel.getQuantityAPI().observe(viewLifecycleOwner,{
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "saveQuantityAPI: ${it.data}")
+                    val jsonObject=it.data
+                    if(jsonObject!=null){
+                        showSnackBar("Quantity Updated")
+                        try{
+
+                        }catch (e:Exception){
+                            Log.d(TAG, "saveQuantityAPI:Error ${e.message}")
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "saveQuantityAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun showSnackBar(msg:String){
+        val snackbar = Snackbar
+            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
+        snackbar.setActionTextColor(Color.WHITE)
+        snackbar.show()
+    }
 }

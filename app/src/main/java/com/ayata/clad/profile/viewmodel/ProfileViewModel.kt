@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import retrofit2.http.Query
@@ -27,7 +28,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository)  :
     fun profileDetailAPI(token:String) {
         profileResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.profileApi("Bearer $token")
+            val response = mainRepository.profileApi("${Constants.Bearer} $token")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("profileDetailAPI", "success: "+response.body())
@@ -50,7 +51,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository)  :
     fun orderListAPI(token:String) {
         orderResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.orderListApi("Bearer $token")
+            val response = mainRepository.orderListApi("${Constants.Bearer} $token")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("orderListAPI", "success: "+response.body())
@@ -73,7 +74,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository)  :
     fun orderDetailAPI(token:String,id:Int) {
         orderDetailResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.orderDetailApi("Bearer $token",id)
+            val response = mainRepository.orderDetailApi("${Constants.Bearer} $token",id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("orderDetailAPI", "success: "+response.body())
