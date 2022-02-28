@@ -4,11 +4,12 @@ import kotlin.math.log
 
 class ModelMostPopular {
 
-    constructor(imageUrl: String, title: String, description:String, price:String,logoUrl:String) {
+    constructor(imageUrl: String, title: String, description:String, priceNPR:String,priceUSD: String,logoUrl:String) {
         this.imageUrl = imageUrl
         this.title = title
         this.description=description
-        this.price=price
+        this.priceNPR=priceNPR
+        this.priceUSD=priceUSD
         this.logoUrl= logoUrl
     }
 
@@ -16,6 +17,7 @@ class ModelMostPopular {
     var description:String=""
     var imageUrl: String=""
     var logoUrl:String=""
-    var price:String=""
+    var priceNPR:String=""
+    var priceUSD:String=""
 
 }

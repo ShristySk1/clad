@@ -27,18 +27,18 @@ class FragmentMyOrder : Fragment() {
     }
 
     private fun setUpRecyclerView() {
-        val myAdapter = AdapterOrders(listOf())
+        val myAdapter = AdapterOrders(requireContext(),listOf())
         binding.rvOrders.apply {
             layoutManager =
                 LinearLayoutManager(requireContext())
             adapter = myAdapter
             myAdapter.items = arrayListOf(
                 MyOrderRecyclerViewItem.Title("April 12, 2021", "Order ID: Q935-Z324"),
-                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", ""),
+                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", "","7855","900"),
                 MyOrderRecyclerViewItem.Divider(),
                 MyOrderRecyclerViewItem.Title("April 12, 2021", "Order ID: Q935-Z324"),
-                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", ""),
-                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", ""),
+                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", "","10000","800"),
+                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", "","8900","600"),
             )
         }
 

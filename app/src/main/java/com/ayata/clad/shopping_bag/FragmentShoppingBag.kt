@@ -7,22 +7,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.ViewModelProvider
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
-import com.ayata.clad.databinding.DialogShoppingSizeBinding
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentShoppingBagBinding
-import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
-import com.ayata.clad.shopping_bag.model.ModelCircleText
-import com.ayata.clad.shopping_bag.payment.FragmentPayment
-import com.ayata.clad.shopping_bag.shipping.FragmentShipping
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModel
+import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModelFactory
 
+
+//not used
 class FragmentShoppingBag : Fragment() {
 
     private lateinit var binding: FragmentShoppingBagBinding
-
+    private lateinit var viewModel: CategoryViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +30,7 @@ class FragmentShoppingBag : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding= FragmentShoppingBagBinding.inflate(inflater, container, false)
+        setUpViewModel()
         checkoutPage()
         initAppbar()
         initView()
@@ -45,6 +46,10 @@ class FragmentShoppingBag : Fragment() {
         return binding.root
     }
 
+    private fun setUpViewModel(){
+        viewModel=ViewModelProvider(this,
+            CategoryViewModelFactory(ApiRepository(ApiService.getInstance())))[CategoryViewModel::class.java]
+    }
     private fun initAppbar(){
         (activity as MainActivity).showBottomNavigation(true)
         (activity as MainActivity).showToolbar(true)

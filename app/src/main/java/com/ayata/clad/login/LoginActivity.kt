@@ -13,7 +13,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setStatusBarLight(R.color.ColorWhite)
+        setStatusBarLight(R.color.colorWhite)
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
             .replace(R.id.fragments_passwords, FragmentLogin()).commit()

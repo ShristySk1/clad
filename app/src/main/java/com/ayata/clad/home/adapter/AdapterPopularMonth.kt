@@ -16,11 +16,13 @@ import androidx.core.text.color
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelPopularMonth
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.shop.model.ModelShop
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.thrift.model.ModelThrift
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.TextFormatter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -31,7 +33,7 @@ import org.w3c.dom.Text
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class AdapterPopularMonth(private var context: Context?, private var listItems:List<ModelPopularMonth>,
+internal class AdapterPopularMonth(private var context: Context?, private var listItems:List<ProductDetail>,
                                    private val onItemClickListener: OnItemClickListener
 )
     : RecyclerView.Adapter<AdapterPopularMonth.MyViewHolder>(){
@@ -42,29 +44,34 @@ internal class AdapterPopularMonth(private var context: Context?, private var li
             val name=itemView.findViewById<TextView>(R.id.name)
             val price=itemView.findViewById<TextView>(R.id.price)
             val image=itemView.findViewById<ImageView>(R.id.image)
-            val cardView=itemView.findViewById<CardView>(R.id.cardView)
+//            val cardView=itemView.findViewById<CardView>(R.id.cardView)
             val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
 
             fun clickView(){
-                cardView.setOnClickListener {
+                itemView.setOnClickListener {
                     onItemClickListener.onPopularMonthClicked(listItems[adapterPosition],adapterPosition)
                 }
             }
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view= LayoutInflater.from(context).inflate(R.layout.recycler_home_popular_this_month,parent,false)
+        val view= LayoutInflater.from(context).inflate(R.layout.recycler_home_recommended,parent,false)
         return MyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
 
-        holder.name.text=item.title
-        holder.price.text=item.price
+        holder.name.text=item.name
+
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.price.text="${context!!.getString(R.string.rs)} ${item.price}"
+        }else{
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.price}"
+        }
 
         holder.progressBar.visibility = View.VISIBLE
-        Glide.with(context!!).load(item.imageUrl)
+        Glide.with(context!!).load(item.image_url)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -100,7 +107,7 @@ internal class AdapterPopularMonth(private var context: Context?, private var li
     }
 
     interface OnItemClickListener{
-        fun onPopularMonthClicked(data:ModelPopularMonth,position:Int)
+        fun onPopularMonthClicked(data:ProductDetail,position:Int)
     }
 
 }

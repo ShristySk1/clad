@@ -9,19 +9,17 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.Nullable
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.home.model.ModelStories
-import com.ayata.clad.shop.model.ModelShop
+import com.ayata.clad.home.model.ModelStory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.circularreveal.cardview.CircularRevealCardView
-import com.mikhaellopez.circularimageview.CircularImageView
 
-internal  class AdapterStories(private var context:Context?, private var listItems:List<ModelStories>
+internal  class AdapterStories(private var context:Context?, private var listItems:List<ModelStory>
     ,private var onItemClickListener: OnItemClickListener):RecyclerView.Adapter<AdapterStories.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -34,11 +32,11 @@ internal  class AdapterStories(private var context:Context?, private var listIte
        val image=itemView.findViewById<ImageView>(R.id.imageView)
        val title=itemView.findViewById<TextView>(R.id.title)
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
-       val cardViewImage=itemView.findViewById<CircularRevealCardView>(R.id.cardView_image)
+       val cardViewImage=itemView.findViewById<CardView>(R.id.cardView_image)
 
        fun clickView(){
            cardViewImage.setOnClickListener {
-               onItemClickListener.onStoryClick(listItems[adapterPosition])
+               onItemClickListener.onStoryClick(listItems[adapterPosition],adapterPosition)
            }
        }
 
@@ -49,7 +47,7 @@ internal  class AdapterStories(private var context:Context?, private var listIte
         val item=listItems[position]
         holder.title.text=item.title
         holder.progressBar.visibility = View.VISIBLE
-        Glide.with(context!!).asDrawable().load(item.imageurl)
+        Glide.with(context!!).asDrawable().load(item.imageUrl)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -82,7 +80,7 @@ internal  class AdapterStories(private var context:Context?, private var listIte
     }
 
     interface OnItemClickListener{
-        fun onStoryClick(data: ModelStories)
+        fun onStoryClick(data: ModelStory,position: Int)
     }
 
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".login.FragmentLogin"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,6 +31,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:tint="@color/black"
                     android:src="@drawable/ic_close" />
             </RelativeLayout>
 
@@ -76,21 +77,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="@color/ColorWhite"
+                    android:background="@color/colorWhite"
                     app:ccp_autoDetectCountry="true"
                     app:ccp_autoDetectLanguage="true"
                     app:ccp_countryAutoDetectionPref="SIM_ONLY"
                     app:ccp_defaultNameCode="NP"
-                    app:ccp_textSize="16sp" />
+                    app:ccp_textSize="16sp"
+                    app:ccpDialog_textColor="@color/colorBlack"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textLayout_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    app:boxBackgroundColor="@color/black"
+                    app:boxBackgroundColor="@color/colorBlack"
                     app:boxBackgroundMode="filled"
-                    app:boxStrokeColor="@color/ColorWhite"
+                    app:boxStrokeColor="@color/colorWhite"
                     app:boxStrokeWidth="0dp"
                     app:hintEnabled="false">
 
@@ -100,12 +102,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autofillHints="phone"
-                        android:background="@android:color/white"
+                        android:background="@color/colorWhite"
                         android:gravity="top"
                         android:hint="98XXXXXXXX"
                         android:inputType="number"
                         android:maxEms="1"
                         android:maxLength="10"
+                        android:textColor="@color/colorBlack"
                         android:textSize="18sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -123,6 +126,7 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/ripple_on_button_drawable"
                 android:text="@string/str_btnnext"
+                android:textColor="@color/colorWhite"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:backgroundTint="@null"

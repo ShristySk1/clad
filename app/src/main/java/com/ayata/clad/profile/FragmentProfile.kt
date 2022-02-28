@@ -1,18 +1,33 @@
 package com.ayata.clad.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentProfileBinding
+import com.ayata.clad.profile.account.AccountViewModel
 import com.ayata.clad.profile.account.FragmentAccount
+import com.ayata.clad.profile.edit.response.Details
+import com.ayata.clad.profile.edit.response.UserProfileResponse
 import com.ayata.clad.profile.giftcard.FragmentGiftCard
 import com.ayata.clad.profile.myorder.FragmentMyOrder
+import com.ayata.clad.profile.viewmodel.ProfileViewModel
+import com.ayata.clad.profile.viewmodel.ProfileViewModelFactory
+import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 
 class FragmentProfile : Fragment() {
 
@@ -20,6 +35,10 @@ class FragmentProfile : Fragment() {
     private lateinit var listFragment: ArrayList<Fragment>
     private lateinit var adapterProfile: AdapterProfileViewPager
     private lateinit var titles: ArrayList<String>
+    lateinit var bundle: Bundle
+
+    private lateinit var viewModel: ProfileViewModel
+    private lateinit var accountiewModel: AccountViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,17 +47,87 @@ class FragmentProfile : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentProfileBinding.inflate(inflater, container, false)
-        setTabLayout(listOf(FragmentAccount(), FragmentMyOrder(), FragmentGiftCard()), arrayListOf("Accounts","Orders","Gift Card"))
+        setUpViewModel()
+        setTabLayout(
+            listOf(FragmentAccount(), FragmentMyOrder(), FragmentGiftCard()),
+            arrayListOf("Accounts", "Orders", "Gift Card")
+        )
         initView()
         initAppbar()
 
         return binding.root
     }
 
-    private fun initAppbar(){
+    private fun setUpViewModel() {
+        viewModel =
+            ViewModelProvider(
+                this,
+                ProfileViewModelFactory(ApiRepository(ApiService.getInstance()))
+            )
+                .get(ProfileViewModel::class.java)
+        accountiewModel = ViewModelProviders.of(requireActivity()).get(AccountViewModel::class.java)
+
+        setPreviousData()
+    }
+
+    private fun setPreviousData() {
+        viewModel.profileDetailAPI(PreferenceHandler.getToken(context)!!)
+        viewModel.getProfileAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    binding.spinKit.visibility = View.GONE
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val profileResponse =
+                                Gson().fromJson<UserProfileResponse>(
+                                    jsonObject,
+                                    UserProfileResponse::class.java
+                                )
+                            if (profileResponse.details != null) {
+                                val detail = profileResponse.details
+                                setDataToView(detail)
+
+                            }
+                        } catch (e: Exception) {
+                            Log.d("", "prepareAPI: ${e.message}")
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                    binding.spinKit.visibility = View.VISIBLE
+
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    binding.spinKit.visibility = View.GONE
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d("", "home: ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun setDataToView(detail: Details) {
+        accountiewModel.setAccountDetail(detail)
+//        bundle = Bundle()
+//        bundle.putSerializable(Constants.EDIT_PROFILE, detail)
+        binding.accEmail.setText(detail.email)
+        binding.accName.setText(detail.fullName)
+        val initials = detail.fullName
+            .split(' ')
+            .mapNotNull { it.firstOrNull()?.toString() }
+            .reduce { acc, s -> acc + s }
+        binding.profileNamePlaceholder.text = initials
+
+    }
+
+    private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar1(getString(R.string.profile),
+        (activity as MainActivity).setToolbar1(
+            getString(R.string.profile),
             isSearch = false,
             isProfile = false,
             isClose = true
@@ -46,16 +135,13 @@ class FragmentProfile : Fragment() {
     }
 
     private fun initView() {
-
-        val initials = "Ronesh Shrestha"
-            .split(' ')
-            .mapNotNull { it.firstOrNull()?.toString() }
-            .reduce { acc, s -> acc + s }
-        binding.profileNamePlaceholder.text = initials
-
-
-
+//        val initials = "Ronesh Shrestha"
+//            .split(' ')
+//            .mapNotNull { it.firstOrNull()?.toString() }
+//            .reduce { acc, s -> acc + s }
+//        binding.profileNamePlaceholder.text = initials
     }
+
     private fun setTabLayout(list: List<Fragment>, myTitles: ArrayList<String>) {
         listFragment = ArrayList<Fragment>()
         getDataFromApi()

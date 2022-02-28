@@ -2,16 +2,18 @@ package com.ayata.clad.home.model
 
 class ModelJustDropped {
 
-    constructor(imageurl: String, title: String, description:String,logoUrl:String) {
-        this.imageurl = imageurl
+    constructor(imageUrl: String, title: String, priceNPR:String,priceUSD:String,logoUrl:String) {
+        this.imageUrl = imageUrl
         this.title = title
-        this.description=description
+        this.priceNPR=priceNPR
+        this.priceUSD=priceUSD
         this.logoUrl=logoUrl
     }
 
     var title: String = ""
-    var description:String=""
-    var imageurl: String=""
+    var priceNPR: String=""
+    var priceUSD:String=""
+    var imageUrl: String=""
     var logoUrl:String=""
 
 }

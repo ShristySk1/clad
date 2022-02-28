@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".profile.FragmentProfile"
-    android:background="@color/white">
+    android:background="@color/colorWhite"
+    tools:context=".profile.FragmentProfile">
 
     <RelativeLayout
         android:id="@+id/ll_top"
@@ -40,9 +40,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/background_circle_with_border"
-                    android:backgroundTint="@color/colorGraycircle"
+                    android:backgroundTint="@color/colorGrayCircle"
                     android:gravity="center"
-                    android:text="RS"
+                    android:text=""
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textColor="@color/colorGrayText"
@@ -57,9 +57,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@+id/acc_image"
-            android:text="Ronesh Shrestha"
+            android:text="XXX XXX"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <TextView
@@ -69,9 +69,19 @@
             android:layout_below="@id/acc_name"
             android:layout_centerHorizontal="true"
             android:layout_toEndOf="@id/acc_image"
-            android:text="ronesh@ayata.com.np"
+            android:text="xxx"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textStyle="italic" />
+
+        <ProgressBar
+            android:id="@+id/spinKit"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/acc_name"
+            />
     </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout
@@ -79,16 +89,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:tabGravity="start"
-        android:paddingStart="6dp"
         android:background="@drawable/tab_background_selector"
+        android:paddingStart="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_top"
-        app:tabIndicatorColor="@color/black"
+        app:tabGravity="start"
+        app:tabIndicatorColor="@color/colorBlack"
         app:tabIndicatorFullWidth="false"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/black"
+        app:tabSelectedTextColor="@color/colorBlack"
         app:tabTextAppearance="@style/TabLayoutTextStyleProfile"
         app:tabTextColor="#BDBDBD" />
 
@@ -100,36 +110,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/textVersion"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:layout_marginBottom="15dp"-->
-<!--        android:text="App version 1.4"-->
-<!--        android:textAlignment="center"-->
-<!--        android:textStyle="normal"-->
-<!--        android:textColor="@color/colorGrayText"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/button"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/button"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/button" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/textVersion"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_marginBottom="15dp"-->
+    <!--        android:text="App version 1.4"-->
+    <!--        android:textAlignment="center"-->
+    <!--        android:textStyle="normal"-->
+    <!--        android:textColor="@color/colorGrayText"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/button"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/button"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/button" />-->
 
-<!--    <Button-->
-<!--        android:id="@+id/button"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@drawable/ripple_5dp_black"-->
-<!--        android:layout_marginStart="16dp"-->
-<!--        android:layout_marginTop="16dp"-->
-<!--        android:layout_marginEnd="16dp"-->
-<!--        android:layout_marginBottom="24dp"-->
-<!--        android:drawableEnd="@drawable/ic_arrow_right"-->
-<!--        android:text="LOG OUT"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textAlignment="textStart"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.5"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.0" />-->
+    <!--    <Button-->
+    <!--        android:id="@+id/button"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="@drawable/ripple_5dp_black"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:layout_marginBottom="24dp"-->
+    <!--        android:drawableEnd="@drawable/ic_arrow_right"-->
+    <!--        android:text="LOG OUT"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textAlignment="textStart"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.5"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintVertical_bias="0.0" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

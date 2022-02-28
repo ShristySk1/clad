@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentOrderDetailBinding
+import com.ayata.clad.utils.PreferenceHandler
 
 class FragmentOrderDetail : Fragment() {
     private lateinit var list_orderTrack: ArrayList<ModelOrderTrack>
@@ -25,6 +26,12 @@ class FragmentOrderDetail : Fragment() {
         binding.recyclerOrderTracker.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = AdapterOrderTrack(requireContext(), list_orderTrack)
+        }
+
+        if(PreferenceHandler.getCurrency(context).equals("npr",true)){
+           binding.include.price.text=getString(R.string.rs)+" 7850"
+        }else{
+            binding.include.price.text=getString(R.string.usd)+" 120"
         }
         return binding.root
     }
@@ -58,7 +65,7 @@ class FragmentOrderDetail : Fragment() {
         descriptions.reverse()
         val colorInComplete: Int = R.color.colorGray
         val colorCompleted: Int = R.color.colorGray
-        val colorCurrent: Int = R.color.black
+        val colorCurrent: Int = R.color.colorBlack
         var setNone = false
         for (i in titles.indices) {
             if (titles[i].toLowerCase().trim { it <= ' ' } != conditionalStatus.toLowerCase()

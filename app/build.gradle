@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+
 }
 
 android {
@@ -80,7 +81,7 @@ dependencies {
     //shimmer effect
     implementation 'com.facebook.shimmer:shimmer:0.5.0@aar'
 
-    //viewmodel
+    //view model
     def lifecycle_version = "2.2.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 
@@ -89,5 +90,27 @@ dependencies {
 
     //dataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    //story view
+    implementation 'com.github.OMARIHAMZA:StoryView:1.0.2-alpha'
+    implementation 'com.github.shts:StoriesProgressView:3.0.0'
+
+    //ticket view
+    implementation 'com.vipulasri:ticketview:1.1.2'
+
+    //slider image
+    implementation 'com.github.smarteist:autoimageslider:1.4.0'
+    //product image slider
+    implementation 'com.veinhorn.scrollgalleryview:library:1.2.7'
+//    implementation 'com.veinhorn.scrollgalleryview:picasso-loader:1.2.4'
+
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //test
+    implementation 'com.github.mahdimoqadasi:ThumbIndicator:1.2.0'
+
+
+
 
 }

@@ -2,6 +2,7 @@ package com.ayata.clad.product
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,15 +12,25 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentProductDetailBinding
+import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.product.adapter.AdapterColor
+import com.ayata.clad.product.adapter.AdapterRecommendation
+import com.ayata.clad.product.viewmodel.ProductViewModel
+import com.ayata.clad.product.viewmodel.ProductViewModelFactory
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PercentageCropImageView
-import com.ayata.clad.utils.TopRightCropTransformation
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.copyToClipboard
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -29,59 +40,154 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
 
 
-class FragmentProductDetail : Fragment() {
-    val TAG = "FragmentProductDetail"
+class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
+    private val TAG = "FragmentProductDetail"
     private lateinit var adapterCircleText: AdapterCircleText
     private lateinit var binding: FragmentProductDetailBinding
     private var listText = ArrayList<ModelCircleText>()
-    private var isProductLiked: Boolean = false
+    private var isProductWishList: Boolean = false
+    private var isProductInCart: Boolean = false
+
+    private lateinit var viewModel: ProductViewModel
+    private lateinit var productDetail: ProductDetail
+    var galleryBundle: Bundle? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProductDetailBinding.inflate(inflater, container, false)
+        setUpViewModel()
         initView()
+        getBundle()
         setUpFullScreen()
         setUpRecyclerColor()
         setUpRecyclerSize()
         setUpTabChoose()
         tapToCopyListener()
         productLikedListener()
-        binding.detail2.ivClose.setOnClickListener {
-            binding.appBar.setExpanded(true)
-            binding.detail2.nestedScroll.scrollTo(0, 0)
-        }
         setUpRecyclerRecommendation()
+        binding.imageView3.setOnClickListener {
+            goToGalleryView()
+            true
+        }
+
         return binding.root
     }
 
+    private fun goToGalleryView() {
+        val fragment = FragmentProductDetailFull2()
+        fragment.arguments = galleryBundle
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).addToBackStack(null)
+            .commit()
+    }
+    private fun getBundle() {
+        val bundle = arguments
+        if (bundle != null) {
+            val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL)
+            if (data != null) {
+                productDetail = data as ProductDetail
+                setProductData()
+            }
+            galleryBundle = bundle
+
+        }
+    }
+
+    private fun setProductData() {
+        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
+            binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
+            binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.old_price}"
+            binding.detail2.price.text = getString(R.string.rs) + " ${productDetail.price}"
+            binding.detail2.payPrice.text = getString(R.string.rs) + " 4500"
+        } else {
+            binding.price.text = getString(R.string.usd) + " ${productDetail.price}"
+            binding.oldPrice.text = getString(R.string.usd) + " ${productDetail.old_price}"
+            binding.detail2.price.text = getString(R.string.usd) + " ${productDetail.price}"
+            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
+        }
+        binding.name.text = productDetail.name
+        binding.storeName.text = productDetail.owner
+        binding.description.text = Html.fromHtml(productDetail.description)
+        binding.detail2.name.text = productDetail.name
+        isProductWishList = productDetail.is_in_wishlist
+        isProductInCart = productDetail.is_in_cart
+//        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
+        setWishlist(isProductWishList)
+        setCart(isProductInCart)
+    }
+
+    private fun setUpViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ProductViewModelFactory(ApiRepository(ApiService.getInstance()))
+        )[ProductViewModel::class.java]
+    }
+
     private fun productLikedListener() {
-        binding.frame.setOnClickListener {
-            if (isProductLiked) {
-                isProductLiked = false
-                val snackbar = Snackbar
-                    .make(binding.root, "Product removed from wishlist", Snackbar.LENGTH_SHORT)
-//                .setAction("RETRY") { }
-                snackbar.setActionTextColor(Color.WHITE)
-                snackbar.show()
-                binding.ivHeart.setImageResource(R.drawable.ic_heart_outline)
-            } else {
-                isProductLiked = true
-                val snackbar = Snackbar
-                    .make(binding.root, "Product added to wishlist", Snackbar.LENGTH_SHORT)
-//                .setAction("RETRY") { }
-                snackbar.setActionTextColor(Color.WHITE)
-                snackbar.show()
-                binding.ivHeart.setImageResource(R.drawable.ic_heart_filled)
+        binding.cardWish.setOnClickListener {
+            if (this::productDetail.isInitialized) {
+                if (isProductWishList) {
+                    removeWishListAPI()
+                } else {
+                    addToWishListAPI()
+                }
+//                setWishlist()
+//                isProductWishList=(!isProductWishList)
+            }
+
+        }
+        binding.cardCart.setOnClickListener {
+            if (this::productDetail.isInitialized) {
+                if (isProductInCart) {
+                    removeCartAPI()
+                } else {
+                    addToCartAPI()
+                }
+//                setCart()
+//                isProductInCart=(!isProductInCart)
+            }
+
+        }
+
+        binding.detail2.ivCart.setOnClickListener {
+            if (this::productDetail.isInitialized) {
+                if (isProductInCart) {
+                    removeCartAPI()
+                } else {
+                    addToCartAPI()
+                }
+//                setCart()
+//                isProductInCart=(!isProductInCart)
             }
         }
-        binding.frame2.setOnClickListener {
-            val snackbar = Snackbar
-                .make(binding.root, "Product added to cart", Snackbar.LENGTH_SHORT)
-//                .setAction("RETRY") { }
-            snackbar.setActionTextColor(Color.WHITE)
-            snackbar.show()
+    }
+
+    private fun showSnackBar(msg: String) {
+        val snackbar = Snackbar
+            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
+        snackbar.setActionTextColor(Color.WHITE)
+        snackbar.show()
+    }
+
+    private fun setWishlist(isWishList: Boolean) {
+        //from api
+        if (isWishList) {
+            binding.ivHeart.setImageResource(R.drawable.ic_heart_filled)
+        } else {
+            binding.ivHeart.setImageResource(R.drawable.ic_heart_outline)
+        }
+    }
+
+    private fun setCart(isCart: Boolean) {
+        //from api
+        if (isCart) {
+            binding.imageCart.setImageResource(R.drawable.ic_bag_filled)
+            binding.detail2.ivCart.setImageResource(R.drawable.ic_bag_filled)
+        } else {
+            binding.imageCart.setImageResource(R.drawable.ic_cart)
+            binding.detail2.ivCart.setImageResource(R.drawable.ic_cart)
         }
     }
 
@@ -90,7 +196,7 @@ class FragmentProductDetail : Fragment() {
             .detail2.tvTapToCopy.setOnClickListener {
                 val text =
                     requireContext().copyToClipboard(binding.detail2.tvTextToCopy.text.toString())
-                Log.d(TAG, "tapToCopyListener: " + text);
+                Log.d(TAG, "tapToCopyListener: $text")
                 val toast = Toast.makeText(
                     requireContext(),
                     "Copied to Clipboard!", Toast.LENGTH_SHORT
@@ -102,7 +208,7 @@ class FragmentProductDetail : Fragment() {
             .detail2.tvTextToCopy.setOnClickListener {
                 val text =
                     requireContext().copyToClipboard(binding.detail2.tvTextToCopy.text.toString())
-                Log.d(TAG, "tapToCopyListener: " + text);
+                Log.d(TAG, "tapToCopyListener: $text")
                 val toast = Toast.makeText(
                     requireContext(),
                     "Copied to Clipboard!", Toast.LENGTH_SHORT
@@ -117,6 +223,7 @@ class FragmentProductDetail : Fragment() {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = AdapterRecommendation(
+                requireContext(),
                 prepareDataForRecommended(mutableListOf()).toList()
             ).also {
                 it.setProductClickListener { recommendedProduct ->
@@ -136,7 +243,7 @@ class FragmentProductDetail : Fragment() {
                 "https://freepngimg.com/thumb/categories/627.png",
                 "Nike ISPA Overreact Sail Multi", "Nike Company",
                 "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg",
-                "Rs 3561"
+                "3561", "555"
             )
         )
         listRecommended.add(
@@ -145,7 +252,7 @@ class FragmentProductDetail : Fragment() {
                 "adidas Yeezy Boost 700 MNVN Bone",
                 "Lowest Ask",
                 "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",
-                ""
+                "7589", "550"
             )
         )
         listRecommended.add(
@@ -154,7 +261,7 @@ class FragmentProductDetail : Fragment() {
                 "Jordan 11 Retro Low White Concord (W) ",
                 "Lowest Ask",
                 "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",
-                ""
+                "4555", "458"
             )
         )
         return listRecommended
@@ -164,16 +271,28 @@ class FragmentProductDetail : Fragment() {
     private fun initView() {
         (activity as MainActivity).showToolbar(false)
         (activity as MainActivity).showBottomNavigation(false)
-        val product = ModelProduct(1, "", "ss", "com", "$123", false)
 
         setProductImage(binding.imageView3)
         binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStackImmediate()
+            (activity as MainActivity).onBackPressed()
         }
 
         binding.btnShare.setOnClickListener {
             //share
         }
+
+        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
+            binding.price.text = getString(R.string.rs) + " 5000"
+            binding.oldPrice.text = getString(R.string.rs) + " 5500"
+            binding.detail2.price.text = getString(R.string.rs) + " 5000"
+            binding.detail2.payPrice.text = getString(R.string.rs) + " 4500"
+        } else {
+            binding.price.text = getString(R.string.usd) + " 100"
+            binding.oldPrice.text = getString(R.string.usd) + " 120"
+            binding.detail2.price.text = getString(R.string.usd) + " 100"
+            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
+        }
+
 
     }
 
@@ -185,7 +304,7 @@ class FragmentProductDetail : Fragment() {
 //            .into(binding.imageView3)
 
 
-        imageView.setCropYCenterOffsetPct(0f);
+        imageView.cropYCenterOffsetPct = 0f
 ////        If you wish to have a bottom crop, call:
 //        imageView.setCropYCenterOffsetPct(1.0f);
 ////        If you wish to have a crop 1/3 of the way down, call:
@@ -216,8 +335,9 @@ class FragmentProductDetail : Fragment() {
                 listOf(
                     R.color.color1,
                     R.color.color2,
-                    R.color.color3
-                )
+                    R.color.color3,
+                    R.color.color4
+                ), this@FragmentProductDetail
             )
         }
     }
@@ -263,4 +383,155 @@ class FragmentProductDetail : Fragment() {
         listText.add(ModelCircleText("xl", false))
         adapterCircleText.notifyDataSetChanged()
     }
+
+    override fun onColorClicked(color: Int, position: Int) {
+        //change image
+        val url = when (position) {
+            2 -> {
+                "https://pa.namshicdn.com/product/A6/20076W/1-zoom-desktop.jpg"
+            }
+            1 -> {
+                "https://m.media-amazon.com/images/I/71hNVecVSrL._AC_UX342_.jpg"
+            }
+            3 -> {
+                R.drawable.example_img
+            }
+            else -> {
+                ""
+            }
+        }
+        Glide.with(requireContext())
+            .load(url)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .error(R.drawable.splashimage)
+            .into(binding.imageView3)
+        binding.imageView3.cropYCenterOffsetPct = 0f
+    }
+
+    private fun removeWishListAPI() {
+        viewModel.removeFromWishAPI(
+            PreferenceHandler.getToken(context).toString(),
+            productDetail.id
+        )
+        viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "removeWishListAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        isProductWishList = false
+                        setWishlist(false)
+                        showSnackBar(msg = "Product removed from wishlist")
+                        try {
+
+                        } catch (e: Exception) {
+                            Log.d(TAG, "removeWishListAPI:Error ${e.message}")
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun addToWishListAPI() {
+        viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), productDetail.id)
+        viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "addToWishListAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        showSnackBar("Product added to wishlist")
+                        isProductWishList = true
+                        setWishlist(true)
+                        try {
+
+                        } catch (e: Exception) {
+                            Log.d(TAG, "addToWishListAPI:Error ${e.message}")
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "addToWishListAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun removeCartAPI() {
+        viewModel.removeFromCartAPI(
+            PreferenceHandler.getToken(context).toString(),
+            productDetail.id
+        )
+        viewModel.getRemoveFromCartAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "removeCartAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        isProductInCart = false
+                        setCart(false)
+                        showSnackBar("Product removed from cart")
+                        try {
+
+                        } catch (e: Exception) {
+                            Log.d(TAG, "removeCartAPI:Error ${e.message}")
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "removeCartAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun addToCartAPI() {
+        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), productDetail.id)
+        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "addToCartAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        isProductInCart = true
+                        setCart(true)
+                        showSnackBar("Product added to cart")
+                        try {
+
+                        } catch (e: Exception) {
+                            Log.d(TAG, "addToCartAPI:Error ${e.message}")
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
 }

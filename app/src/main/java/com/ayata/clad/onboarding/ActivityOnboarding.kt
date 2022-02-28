@@ -3,15 +3,29 @@ package com.ayata.clad.onboarding
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.color
 import androidx.viewpager2.widget.ViewPager2
+import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.ActivityOnboardingBinding
 import com.ayata.clad.login.LoginActivity
+import com.ayata.clad.login.TAG
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class ActivityOnboarding : AppCompatActivity(), AdapaterActivityOnboarding.setOnItemClickListener {
@@ -58,6 +72,5 @@ class ActivityOnboarding : AppCompatActivity(), AdapaterActivityOnboarding.setOn
     override fun onItemClick(position: Int) {
 
     }
-
 
 }

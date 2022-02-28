@@ -21,7 +21,7 @@
                 android:scaleType="centerCrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_launcher_background"
+                android:src="@drawable/ic_clad_logo_grey"
                 android:background="?attr/selectableItemBackground"/>
 
             <ImageView
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="XXXXXXXXXXXX"
-                android:textColor="@color/black"
+                android:textColor="@color/colorBlack"
                 android:textStyle="normal"
                 android:textSize="14sp"/>
             <TextView
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="270dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher_background" />
+            android:src="@drawable/ic_clad_logo_grey" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -104,7 +104,7 @@
         android:layout_below="@id/layout_image_big"
         android:layout_marginHorizontal="15dp"
         android:layout_marginVertical="15dp"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         />
 
     <View
@@ -112,14 +112,14 @@
         android:layout_below="@id/text_description"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorGraycircle" />
+        android:background="@color/colorGrayCircle" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView_float"
         android:layout_alignBottom="@id/layout_image_big"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#80FFFFFF"
+        app:cardBackgroundColor="@color/thrift_color1"
         app:cardCornerRadius="30dp"
         android:layout_margin="15dp"
         app:cardElevation="0dp">
@@ -135,7 +135,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/colorWhite"
                 app:cardCornerRadius="20dp"
                 android:layout_margin="8dp"
                 app:cardElevation="0dp"
@@ -161,7 +161,7 @@
                         android:text="12K"
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="10dp"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/colorBlack"/>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -190,7 +190,7 @@
                     android:layout_height="wrap_content"
                     android:text="150"
                     android:layout_marginEnd="10dp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/colorBlack"/>
 
             </LinearLayout>
 
@@ -218,6 +218,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:tint="@color/colorBlack"
                 android:src="@drawable/ic_bookmark_filled"
                 android:layout_margin="4dp"
                 android:padding="2dp"

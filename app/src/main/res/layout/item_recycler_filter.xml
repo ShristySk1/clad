@@ -29,7 +29,7 @@
 
     <ImageView
         android:layout_width="15dp"
-        android:tint="@color/black"
+        android:tint="@color/colorBlack"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_arrow_right_angle"
         android:layout_height="15dp"/>

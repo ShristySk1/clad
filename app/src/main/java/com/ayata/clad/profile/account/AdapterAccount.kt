@@ -1,6 +1,7 @@
 package com.ayata.clad.profile.account
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +61,7 @@ class AdapterAccount(context: Context, list: ArrayList<ModelAccount>) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (list[position].viewType === VIEW_TYPE_ONE) {
+        if (list[position].viewType == VIEW_TYPE_ONE) {
             (holder as View1ViewHolder).bind(position)
         } else {
             (holder as View2ViewHolder).bind(position)

@@ -5,20 +5,60 @@
     android:layout_marginVertical="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/imageLayout"-->
+<!--        android:layout_width="80dp"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--        android:layout_centerHorizontal="true">-->
+
+<!--        <com.google.android.material.circularreveal.cardview.CircularRevealCardView-->
+<!--            android:id="@+id/cardView_image"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="6dp"-->
+<!--            app:cardElevation="4dp"-->
+<!--            app:cardCornerRadius="40dp"-->
+<!--            android:foreground="?attr/selectableItemBackground">-->
+
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/imageView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:src="@drawable/block0"-->
+<!--                    android:scaleType="centerCrop"/>-->
+
+<!--                <ProgressBar-->
+<!--                    android:id="@+id/progressBar"-->
+<!--                    android:layout_width="20dp"-->
+<!--                    android:layout_height="20dp"-->
+<!--                    android:layout_centerInParent="true"-->
+<!--                    android:progressTint="@color/black"-->
+<!--                    />-->
+
+<!--            </RelativeLayout>-->
+
+<!--        </com.google.android.material.circularreveal.cardview.CircularRevealCardView>-->
+<!--    </RelativeLayout>-->
+
     <RelativeLayout
         android:id="@+id/imageLayout"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="120dp"
         android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true">
 
-        <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardView_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="6dp"
+            android:layout_margin="5dp"
             app:cardElevation="4dp"
-            app:cardCornerRadius="40dp"
+            app:cardCornerRadius="8dp"
             android:foreground="?attr/selectableItemBackground">
 
             <RelativeLayout
@@ -30,31 +70,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/block0"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:id="@+id/overlay"
+                    android:background="@color/overlay_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
                 <ProgressBar
                     android:id="@+id/progressBar"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_centerInParent="true"
-                    android:progressTint="@color/black"
+                    android:progressTint="@color/colorBlack"
                     />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginHorizontal="7dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:textAlignment="textStart"
+                    android:text="New In"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
 
             </RelativeLayout>
 
-        </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
-
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_centerHorizontal="true"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/imageLayout"
-        android:textAlignment="center"
-        android:text="New In"
-        android:textSize="13sp"
-        android:textColor="@color/black" />
 
 </RelativeLayout>

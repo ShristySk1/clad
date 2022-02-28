@@ -17,11 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelPopularMonth
 import com.ayata.clad.home.model.ModelRecommended
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.shop.model.ModelShop
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.thrift.model.ModelThrift
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.TextFormatter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -32,7 +34,7 @@ import org.w3c.dom.Text
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class AdapterRecommended(private var context: Context?, private var listItems:List<ModelRecommended>,
+internal class AdapterRecommended(private var context: Context?, private var listItems:List<ProductDetail>,
                                   private val onItemClickListener: OnItemClickListener
 )
     : RecyclerView.Adapter<AdapterRecommended.MyViewHolder>(){
@@ -41,14 +43,12 @@ internal class AdapterRecommended(private var context: Context?, private var lis
         internal inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
             val name=itemView.findViewById<TextView>(R.id.name)
-            val desp=itemView.findViewById<TextView>(R.id.desp)
             val price=itemView.findViewById<TextView>(R.id.price)
             val image=itemView.findViewById<ImageView>(R.id.image)
-            val cardView=itemView.findViewById<CardView>(R.id.cardView)
             val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
 
             fun clickView(){
-                cardView.setOnClickListener {
+                itemView.setOnClickListener {
                     onItemClickListener.onRecommendedClicked(listItems[adapterPosition],adapterPosition)
                 }
             }
@@ -62,12 +62,14 @@ internal class AdapterRecommended(private var context: Context?, private var lis
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
 
-        holder.name.text=item.title
-        holder.price.text=item.price
-        holder.desp.text=item.description
-
+        holder.name.text=item.name
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.price.text="${context!!.getString(R.string.rs)} ${item.price}"
+        }else{
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.price}"
+        }
         holder.progressBar.visibility = View.VISIBLE
-        Glide.with(context!!).load(item.imageUrl)
+        Glide.with(context!!).load(item.image_url)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -103,7 +105,7 @@ internal class AdapterRecommended(private var context: Context?, private var lis
     }
 
     interface OnItemClickListener{
-        fun onRecommendedClicked(data:ModelRecommended,position:Int)
+        fun onRecommendedClicked(data:ProductDetail,position:Int)
     }
 
 }

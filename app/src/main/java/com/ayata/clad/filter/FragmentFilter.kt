@@ -51,7 +51,7 @@ class FragmentFilter : Fragment() {
                     MyFilterRecyclerViewItem.Title(4, "Size", "US 10 / US 10.5 / US 11"),
                     MyFilterRecyclerViewItem.Color(
                         7, "Color", listOf(
-                            MyColor("Black", R.color.black),
+                            MyColor("Black", R.color.colorBlack),
                             MyColor("Blue", R.color.blue_btn_bg_color),
                             MyColor("Gray", R.color.colorGray)
                         )
@@ -65,8 +65,8 @@ class FragmentFilter : Fragment() {
                     1 -> {//Sort by
                         val list = listOf(
                             MyFilterContentViewItem.SingleChoice("Recommended", true),
-                            MyFilterContentViewItem.SingleChoice("Price (low - high)", false),
-                            MyFilterContentViewItem.SingleChoice("Price (high - low)", false),
+                            MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false),
+                            MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false),
                         )
 //                        val list = listOf(
 //                            MyFilterContentViewItem.MultipleChoice("Recommended", true),

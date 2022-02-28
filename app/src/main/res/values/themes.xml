@@ -2,15 +2,15 @@
     <!-- Base application theme. -->
     <style name="Theme.Clad" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/colorBlack</item>
+        <item name="colorPrimaryVariant">@color/colorBlack</item>
+        <item name="colorOnPrimary">@color/colorWhite</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/black</item>
+        <item name="colorSecondary">@color/colorBlack</item>
         <item name="colorSecondaryVariant">#447BFB</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/colorBlack</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/white</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/colorWhite</item>
         <!-- Customize your theme here. -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
@@ -20,7 +20,7 @@
     </style>
 
     <style name="buttonStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">15sp</item>
         <item name="background">@drawable/background_curve_black</item>
     </style>
@@ -28,29 +28,29 @@
 
     <style name="NavBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorPrimary">@color/colorBlack</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
         <item name="colorAccent">#c4c4c4</item>
     </style>
 
 
     <style name="normalText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="normalBoldText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="bigText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="biggerText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -60,26 +60,26 @@
         <item name="android:textSize">13sp</item>
     </style>
     <style name="smallBlackText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">13sp</item>
     </style>
 
     <style name="largeText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
 
     </style>
 
     <style name="largerText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
 
     </style>
 
     <style name="largestText">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">48sp</item>
         <item name="android:textStyle">bold</item>
 
@@ -89,7 +89,7 @@
     <!--    product detail-->
     <style name="ratingTheme" parent="Theme.Clad">
         <item name="colorControlNormal">@color/colorGrayText</item>
-        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlActivated">@color/colorBlack</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -107,7 +107,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.DayNight.NoActionBar"></style>
+    <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.DayNight.NoActionBar"/>
 
     <style name="TabLayoutTextStyle">
         <item name="android:textSize">14sp</item>
@@ -119,7 +119,7 @@
         <item name="textAllCaps">true</item>
     </style>
     <style name="SelectableItemTheme">
-        <item name="colorControlHighlight">@color/colorGraycircle</item>
+        <item name="colorControlHighlight">@color/colorGrayCircle</item>
     </style>
 
     <style name="CustomSelectableItemBackground">

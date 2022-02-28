@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Clad</string>
+    <string name="app_name">CLAD</string>
 
     <string name="clad_shopping_service_url">https://www.google.com/</string>
     <string name="clad_privacy_notice_url">https://www.google.com/</string>
@@ -28,19 +28,19 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-<!--    order placed text-->
+    <!--    order placed text-->
     <string name="opf_text1">THANK YOU FOR\nYOUR ORDER</string>
     <string name="opf_text2">Estimated Delivery</string>
     <string name="opf_text3">We’ve emailed you a confirmation and we’ll notify you when your order has shipped.</string>
     <string name="opf_text4">VIEW ORDER DETAILS</string>
 
-<!--    shopping bag empty-->
+    <!--    shopping bag empty-->
     <string name="sbe_text1">YOUR BAG IS EMPTY</string>
     <string name="sbe_text2">Add items to your shopping mart</string>
     <string name="sbe_text3">BROWSE THE SHOP</string>
 
 
-<!--    home fragment-->
+    <!--    home fragment-->
     <string name="hf_text1">Popular This Month</string>
     <string name="view_all">View All</string>
     <string name="hf_text2">Recommended</string>
@@ -59,8 +59,18 @@
     <string name="refine_filter">Refine Filter</string>
 
 
-
     <string name="randomText">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English.</string>
+    <string name="clad">Clad</string>
 
+    <string name="rs">Rs.</string>
+    <string name="usd">$</string>
+
+    <string name="npr_case">npr</string>
+
+    <!--    wishlist-->
+    <string name="wl_case1">Add to Bag</string>
+    <string name="wl_case2">Remove from wishlist</string>
+    <string name="wl_case3">Change Size</string>
+    <string name="save">Save</string>
 
 </resources>

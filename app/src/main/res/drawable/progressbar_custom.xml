@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background" android:bottom="-4dp" android:left="-4dp" android:right="-4dp" android:top="2dp">
         <shape android:shape="rectangle">
-            <stroke android:width="3dp" android:color="@color/colorGray" />
+            <stroke android:width="3dp" android:color="@color/divider2" />
             <solid android:color="#00000000" />
         </shape>
     </item>
@@ -11,8 +11,8 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <solid android:color="@color/black" />
-                <stroke android:width="2px" android:color="@color/black"/>
+                <solid android:color="@color/colorBlack" />
+                <stroke android:width="2px" android:color="@color/colorBlack"/>
             </shape>
         </clip>
     </item>

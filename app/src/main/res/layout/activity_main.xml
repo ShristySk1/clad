@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <include
         android:id="@+id/appbar"
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/colorWhite"
         android:minHeight="?actionBarSize"
         android:theme="@style/NavBarTheme"
         app:menu="@menu/dashboard_navigation_item"

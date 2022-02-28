@@ -10,19 +10,19 @@
     <color name="green">#7CFF00</color>
     <color name="red">#FF1100</color>
 
+
+<!--    change for dark theme-->
 <!--color onboarding-->
-    <color name="ColorBlack">#000000</color>
-    <color name="ColorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
 
 <!--GRAY-->
-<!--    <color name="ColorGrayText">#9912121D</color>-->
     <color name="colorGray">#FFC4C4C4</color>
     <color name="colorGrayText">#7E808E</color>
     <color name="colorGrayText2">#979797</color>
-<!--    <color name="colorGrayText">#7E808E</color>-->
 
 <!-- cross with drawable-->
-    <color name="colorGraycircle">#12121D0D</color>
+    <color name="colorGrayCircle">#12121D0D</color>
 
     <color name="colorRed">#FF1100</color>
 
@@ -42,9 +42,22 @@
     <color name="color1">#F3EDE3</color>
     <color name="color2">#AEDED2</color>
     <color name="color3">#DEB9AE</color>
+    <color name="color4">#8F756D</color>
 <!--    divider-->
     <color name="colorDivider">#EDEEF0</color>
-    
+
     <color name="colorCouponBorder">#FF406F</color>
     <color name="colorCoupon">#FEEAEE</color>
+
+    <color name="overlay_color">#34000000</color>
+    <color name="brand_background">#0D12121D</color>
+    <color name="home_product_background">#12121D0D</color>
+
+    <color name="tab_unselect">#12121D0D</color>
+    <color name="divider2">#FFC4C4C4</color>
+    <color name="order_background">#FBFBFB</color>
+    <color name="gift_card_background">#4CAF50</color>
+    <color name="thrift_color1">#80FFFFFF</color>
+
+    <color name="shimmer_color">#D1D1D1</color>
 </resources>

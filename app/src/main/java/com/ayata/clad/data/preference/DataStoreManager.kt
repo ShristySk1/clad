@@ -35,7 +35,8 @@ class DataStoreManager(private val context: Context) {
 
     suspend fun saveToken(token: String) {
         context.dataStore.edit {
-            it[TOKEN] = "Bearer $token"
+//            it[TOKEN] = "Bearer $token"
+            it[TOKEN] = token
         }
     }
 

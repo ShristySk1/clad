@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/colorWhite"
     android:fitsSystemWindows="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".product.FragmentProductDetail">
 
     <LinearLayout
         android:id="@+id/linearLayout"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_outline_bottom"
@@ -22,30 +21,32 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/name"
             style="@style/bigText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
             android:text="CLASSIC RETRO\nCOTTON JACKET" />
 
         <TextView
+            android:id="@+id/price"
             style="@style/bigText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            android:text="Rs. 2300"
-            android:textAlignment="textEnd" />
+            android:textAlignment="textEnd"
+            android:text="Rs. 2300" />
 
         <ImageView
-            android:id="@+id/ivClose"
+            android:id="@+id/ivCart"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/ripple_circle_transparent_background"
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
-            android:src="@drawable/ic_close" />
+            android:tint="@color/colorBlack"
+            android:src="@drawable/ic_cart" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -72,7 +73,7 @@
                 android:paddingBottom="16dp">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/payPrice"
                     style="@style/largeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,12 +89,11 @@
                     android:layout_marginTop="24dp"
                     android:paddingRight="100dp"
                     android:text="Apply the coupon during checkout. Orders above Rs. 1999 (only on first purchase). T&amp;C apply."
-                    app:layout_constraintStart_toStartOf="@+id/textView10"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintStart_toStartOf="@+id/payPrice"
+                    app:layout_constraintTop_toBottomOf="@+id/payPrice" />
 
                 <TextView
                     android:id="@+id/tv_text_to_copy"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -248,11 +248,9 @@
                     android:layout_height="wrap_content"
                     android:isIndicator="true"
                     android:numStars="5"
-                    android:progressDrawable="@drawable/custom_rating_star"
+                    android:progressDrawable="@drawable/custom_rating_star_theme"
                     android:rating="4.5"
                     android:stepSize="0.5"
-
-
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
@@ -275,7 +273,6 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/background_outline_bottom"
                 android:orientation="vertical"
-
                 android:paddingBottom="52dp">
 
                 <TextView
@@ -293,11 +290,11 @@
                     android:background="@drawable/tab_background_selector_product"
                     android:clickable="false"
                     app:tabGravity="fill"
-                    app:tabIndicatorColor="@color/black"
+                    app:tabIndicatorColor="@color/colorBlack"
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="top"
                     app:tabIndicatorHeight="3dp"
-                    app:tabSelectedTextColor="@color/black"
+                    app:tabSelectedTextColor="@color/colorBlack"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
                     app:tabTextColor="#BDBDBD">
 
@@ -336,11 +333,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/tab_background_selector_product"
-                    app:tabIndicatorColor="@color/black"
+                    app:tabIndicatorColor="@color/colorBlack"
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="top"
                     app:tabIndicatorHeight="3dp"
-                    app:tabSelectedTextColor="@color/black"
+                    app:tabSelectedTextColor="@color/colorBlack"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
                     app:tabTextColor="#BDBDBD">
 
@@ -380,7 +377,7 @@
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:layout_below="@+id/layout_texts"
+                    android:layout_below="@id/layout_texts"
                     android:layout_marginTop="20dp"
                     android:indeterminate="false"
                     android:progress="80"
@@ -396,7 +393,6 @@
                         style="@style/smallBlackText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-
                         android:layout_weight="1"
                         android:text="Uncomfortable"
                         android:textAlignment="textStart" />
@@ -413,10 +409,8 @@
                     <TextView
                         style="@style/smallBlackText"
                         android:layout_width="0dp"
-
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-
                         android:text="Comfortable"
                         android:textAlignment="textEnd" />
                 </LinearLayout>

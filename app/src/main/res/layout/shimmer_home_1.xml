@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginBottom="8dp">
+
+            <View
+                android:layout_width="@dimen/sl_size5"
+                android:layout_height="@dimen/sl_size6"
+                android:layout_margin="5dp"
+                android:background="@color/shimmer_color" />
+
+            <View
+                android:layout_width="@dimen/sl_size5"
+                android:layout_height="@dimen/sl_size6"
+                android:layout_margin="5dp"
+                android:background="@color/shimmer_color" />
+
+            <View
+                android:layout_width="@dimen/sl_size5"
+                android:layout_height="@dimen/sl_size6"
+                android:layout_margin="5dp"
+                android:background="@color/shimmer_color" />
+
+            <View
+                android:layout_width="@dimen/sl_size5"
+                android:layout_height="@dimen/sl_size6"
+                android:layout_margin="5dp"
+                android:background="@color/shimmer_color" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/layout2"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/layout1"
+            android:layout_marginHorizontal="8dp"
+            android:background="@color/shimmer_color" />
+
+        <LinearLayout
+            android:id="@+id/layout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout2"
+            android:orientation="vertical">
+
+            <include layout="@layout/shimmer_home_2" />
+
+            <include layout="@layout/shimmer_home_2" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                android:layout_marginVertical="@dimen/sl_marginV1">
+
+                <View
+                    android:layout_width="@dimen/sl_size1"
+                    android:layout_height="@dimen/sl_size2"
+                    android:background="@color/shimmer_color" />
+
+                <View
+                    android:layout_width="@dimen/sl_size3"
+                    android:layout_height="@dimen/sl_size4"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/sl_marginT1"
+                    android:background="@color/shimmer_color" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="200dp"
+                    android:layout_height="230dp"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@color/shimmer_color" />
+
+                <View
+                    android:layout_width="200dp"
+                    android:layout_height="230dp"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@color/shimmer_color" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/home_marginHorizontal"
+                android:layout_marginTop="@dimen/sl_marginV1"
+                android:layout_marginBottom="10dp">
+
+                <View
+                    android:layout_width="@dimen/sl_size1"
+                    android:layout_height="@dimen/sl_size2"
+                    android:background="@color/shimmer_color" />
+
+                <View
+                    android:layout_width="@dimen/sl_size3"
+                    android:layout_height="@dimen/sl_size4"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/sl_marginT1"
+                    android:background="@color/shimmer_color" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                android:background="@color/shimmer_color" />
+
+            <include layout="@layout/shimmer_home_2" />
+
+            <include layout="@layout/shimmer_home_2" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</ScrollView>

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -21,7 +23,7 @@ import com.bumptech.glide.request.target.Target
 import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class AdapterJustDropped(private var context:Context?,
-                                  private var listItems:List<ModelJustDropped>,
+                                  private var listItems:List<ProductDetail>,
                                   private val onItemClickListener: OnItemClickListener)
     :RecyclerView.Adapter<AdapterJustDropped.MyViewHolder>(){
 
@@ -35,7 +37,7 @@ internal class AdapterJustDropped(private var context:Context?,
        val image=itemView.findViewById<ImageView>(R.id.image)
        val logo=itemView.findViewById<ImageView>(R.id.image_logo)
        val title=itemView.findViewById<TextView>(R.id.name)
-       val description=itemView.findViewById<TextView>(R.id.ask_text)
+       val description=itemView.findViewById<TextView>(R.id.price)
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
        fun clickView(){
            itemView.setOnClickListener {
@@ -47,12 +49,16 @@ internal class AdapterJustDropped(private var context:Context?,
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
-        holder.title.text=item.title
-        holder.description.text=item.description
+        holder.title.text=item.name
+        if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            holder.description.text="${context!!.getString(R.string.rs)} ${item.price}"
+        }else{
+            holder.description.text="${context!!.getString(R.string.usd)} ${item.price}"
+        }
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.imageurl)
+            .load(item.image_url)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -78,7 +84,7 @@ internal class AdapterJustDropped(private var context:Context?,
             .error(R.drawable.shoes)
             .into(holder.image)
 
-        Glide.with(context!!).asBitmap().load(item.logoUrl).error(R.drawable.ic_hanger)
+        Glide.with(context!!).asBitmap().load(item.owner).error(R.drawable.ic_clad_logo_grey)
             .into(holder.logo)
 
         holder.clickView()
@@ -89,7 +95,7 @@ internal class AdapterJustDropped(private var context:Context?,
     }
 
     interface OnItemClickListener{
-        fun onJustDroppedClicked(data: ModelJustDropped, position:Int)
+        fun onJustDroppedClicked(data: ProductDetail, position:Int)
     }
 
 }

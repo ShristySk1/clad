@@ -11,12 +11,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ayata.clad.databinding.ActivityMainBinding
+import com.ayata.clad.databinding.FragmentCartCheckoutBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.preorder.FragmentPreorder
+import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.profile.FragmentProfile
+import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.FragmentShoppingBag
-import com.ayata.clad.thrift.FragmentThrift
+import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
+import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.FragmentWishlist
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -36,9 +42,26 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.main_fragment, FragmentHome())
                 .commit()
         }
-        setStatusBarLight(R.color.white)
+        setStatusBarLight(R.color.colorWhite)
         setToolbar()
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val extras = intent.extras
+        if (extras != null) {
+            val value = extras.getBoolean(Constants.FROM_STORY,false)
+            if(value){
+                fromStory()
+            }
+        }
+    }
+
+    private fun fromStory(){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment, FragmentProductDetail())
+            .commit()
     }
 
     fun showBottomNavigation(show: Boolean) {
@@ -59,12 +82,17 @@ class MainActivity : AppCompatActivity() {
                 decorView.systemUiVisibility = 0
             }
         }
-        setStatusBarLight(R.color.white)
+        setStatusBarLight(R.color.colorWhite)
     }
+
 
     private fun setToolbar() {
         binding.appbar.btnSearch.setOnClickListener {
-            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, FragmentSearch())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.appbar.btnClear.setOnClickListener {
@@ -98,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setToolbar1(title: String, isSearch: Boolean, isProfile: Boolean, isClose: Boolean) {
+    fun setToolbar1(title: String, isSearch: Boolean, isProfile: Boolean, isClose: Boolean, isLogo:Boolean=false) {
         exitFullScreen()
         binding.appbar.appbar1.visibility = View.VISIBLE
         binding.appbar.appbar2.visibility = View.GONE
@@ -121,6 +149,12 @@ class MainActivity : AppCompatActivity() {
             binding.appbar.btnCloseProfile.visibility = View.VISIBLE
         } else {
             binding.appbar.btnCloseProfile.visibility = View.GONE
+        }
+
+        if (isLogo) {
+            binding.appbar.layoutLogo.visibility = View.VISIBLE
+        } else {
+            binding.appbar.layoutLogo.visibility = View.GONE
         }
     }
 
@@ -160,12 +194,19 @@ class MainActivity : AppCompatActivity() {
             binding.appbar.btnClear.visibility = View.GONE
         }
 
+        if(textDescription.isEmpty()||textDescription.isBlank()){
+            binding.appbar.description.visibility=View.GONE
+        }else{
+            binding.appbar.description.visibility=View.VISIBLE
+        }
+
         binding.appbar.title.text = textTitle
         binding.appbar.description.text = textDescription
 
     }
 
     fun showToolbar(show: Boolean) {
+        exitFullScreen()
         if (show) {
             binding.appbar.root.visibility = View.VISIBLE
         } else {
@@ -177,6 +218,9 @@ class MainActivity : AppCompatActivity() {
         val window: Window = this.window
         var flags = window.decorView.systemUiVisibility // get current flag
         flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // add LIGHT_STATUS_BAR to flag
+        if(PreferenceHandler.isThemeDark(this)){
+            flags=flags xor  View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
         window.decorView.systemUiVisibility = flags
         window.statusBarColor = ContextCompat.getColor(this, color)
     }
@@ -198,8 +242,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home -> selectedFragment = FragmentHome()
                 R.id.nav_hanger -> selectedFragment = FragmentShop()
                 R.id.nav_favorite -> selectedFragment = FragmentWishlist()
-                R.id.nav_cart -> selectedFragment = FragmentShoppingBag()
-                R.id.nav_rader -> selectedFragment = FragmentThrift()
+                R.id.nav_cart -> selectedFragment = FragmentCheckout()
+                R.id.nav_rader -> selectedFragment = FragmentPreorder()
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, selectedFragment!!)
@@ -236,4 +280,11 @@ class MainActivity : AppCompatActivity() {
         binding.mainFragment.removeAllViews()
     }
 
+    override fun recreate() {
+        super.recreate()
+        finish()
+        overridePendingTransition(0,0)
+        startActivity(intent)
+        overridePendingTransition(0,0)
+    }
 }

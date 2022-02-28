@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".login.FragmentVerification"
-    android:background="@color/white">
+    android:background="@color/colorWhite">
 
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/spin_kit"
@@ -54,7 +54,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-
+                            android:tint="@color/black"
                             android:src="@drawable/ic_close" />
                     </RelativeLayout>
 
@@ -84,9 +84,11 @@
                     <TextView
                         android:id="@+id/btnresend"
                         android:layout_width="wrap_content"
-
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="-5dp"
+                        android:padding="5dp"
+                        android:background="?attr/selectableItemBackground"
                         android:text="@string/str_foresend"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/textView2"
@@ -108,7 +110,6 @@
                         app:OtpHideLineWhenFilled="true"
                         app:OtpItemCount="4"
                         app:OtpItemSpacing="6dp"
-
                         app:OtpLineColor="@android:color/transparent"
                         app:OtpState_filled="true"
                         app:OtpViewType="line"
@@ -118,6 +119,7 @@
 
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/text_timer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

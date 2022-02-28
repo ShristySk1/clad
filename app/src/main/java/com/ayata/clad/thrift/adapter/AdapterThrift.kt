@@ -69,7 +69,8 @@ internal class AdapterThrift(private var context: Context?, private var listItem
                 layoutLike.setOnClickListener {
                     var isLike = listItems[adapterPosition].isLiked
                     isLike = if(isLike){
-                        Glide.with(context!!).load(R.drawable.ic_heart_outline).into(imageLike)
+                        imageLike.setImageResource(R.drawable.ic_heart_outline)
+                        imageLike.drawable.setTint(ContextCompat.getColor(context!!,R.color.colorBlack))
                         false
                     }else{
                         Glide.with(context!!).load(R.drawable.ic_heart_filled).into(imageLike)
@@ -114,7 +115,6 @@ internal class AdapterThrift(private var context: Context?, private var listItem
         }
         Glide.with(context!!).asDrawable()
             .load("https://i.pinimg.com/originals/e7/16/9c/e7169c1ffa2da5bfece0ad37c6c850e6.png")
-//            .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.logo_brand_example)
             .into(holder.imageLogo)
 
@@ -163,7 +163,9 @@ internal class AdapterThrift(private var context: Context?, private var listItem
         if(item.isLiked){
             Glide.with(context!!).load(R.drawable.ic_heart_filled).into(holder.imageLike)
         }else{
-            Glide.with(context!!).load(R.drawable.ic_heart_outline).into(holder.imageLike)
+//            Glide.with(context!!).asDrawable().load(R.drawable.ic_heart_outline).into(holder.imageLike)
+            holder.imageLike.setImageResource(R.drawable.ic_heart_outline)
+            holder.imageLike.drawable.setTint(ContextCompat.getColor(context!!,R.color.colorBlack))
         }
 
         holder.clickView()

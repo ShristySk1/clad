@@ -61,36 +61,18 @@ class FragmentLogin : Fragment() {
         activityFragmentLoginBinding.btnnext.setOnClickListener {
             if(CheckForNetwork().haveNetworkConnection(requireContext())){
                 Log.d(TAG, "onCreateView: connected")
+                if (validatePhone()) {
+                    countrycode = activityFragmentLoginBinding.countryCodePicker.fullNumber
+                    Log.d(TAG, "onCreateView: $phone  +$countrycode")
+                    activityFragmentLoginBinding.spinKit.visibility = View.VISIBLE
+                    //phone api call
+                    phoneApi(phone)
+                }
             }else{
                 Log.d(TAG, "onCreateView: not connected")
+                Toast.makeText(context,"Check Your Internet Connection",Toast.LENGTH_SHORT).show()
             }
-            if (validatePhone()) {
-                countrycode = activityFragmentLoginBinding.countryCodePicker.fullNumber
-                Log.d(TAG, "onCreateView: $phone  +$countrycode")
-                activityFragmentLoginBinding.spinKit.visibility = View.VISIBLE
-                //phone api call
-//                phoneApi(phone)
-                Handler(Looper.getMainLooper()).postDelayed(
-                    {
-                        // This method will be executed once the timer is over
-                        activityFragmentLoginBinding.spinKit.visibility = View.GONE
-                        val dataStoreManager= DataStoreManager(requireContext())
-                        GlobalScope.launch(Dispatchers.IO) {
-                            dataStoreManager.savePhoneNumber(phone)
-                            parentFragmentManager.beginTransaction()
-                                .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
-                                .replace(R.id.fragments_passwords, FragmentVerification())
-                                .addToBackStack(null).commit()
-                        }
-//                        PreferenceHandler.savePhoneNumber(requireContext(), phone)
-//                        parentFragmentManager.beginTransaction()
-//                            .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
-//                            .replace(R.id.fragments_passwords, FragmentVerification())
-//                            .addToBackStack(null).commit()
-                    },
-                    1000 // value in milliseconds
-                )
-            }
+            
         }
 
 
@@ -157,27 +139,28 @@ class FragmentLogin : Fragment() {
     }
 
     private fun phoneApi(phone:String){
-
         loginViewModel.phoneAPI(phone)
         //observe
         loginViewModel.doPhone().observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
-//                    val token = it.data?.get("token").toString()
-//                    val userId = it.data?.get("user")?.asJsonObject?.get("id").toString()
-//                    Log.d("tokenget", "login: " + token)
+                    Log.d(TAG, "login: ${it.data}")
                     activityFragmentLoginBinding.spinKit.visibility = View.GONE
-//                    PreferenceHandler.savePhoneNumber(requireContext(), phone)
-                    parentFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.fragments_passwords, FragmentVerification())
-                        .addToBackStack(null).commit()
+                    val dataStoreManager= DataStoreManager(requireContext())
+                    GlobalScope.launch(Dispatchers.IO) {
+                        dataStoreManager.savePhoneNumber(phone)
+                        parentFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.fadein, R.anim.fadeout)
+                            .replace(R.id.fragments_passwords, FragmentVerification())
+                            .addToBackStack(null).commit()
+                    }
                 }
                 Status.LOADING -> {
                 }
                 Status.ERROR -> {
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "phoneApi: ${it.message}")
                     activityFragmentLoginBinding.spinKit.visibility = View.GONE
 
                 }

@@ -5,22 +5,21 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.home.response.Brand
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class AdapterPopularBrands(private var context:Context?,
-                                     private var listItems:List<ModelPopularBrands>,
-                                     private val onItemClickListener: OnItemClickListener)
+                                    private var listItems:List<Brand>,
+                                    private val onItemClickListener: OnItemClickListener)
     :RecyclerView.Adapter<AdapterPopularBrands.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -30,11 +29,11 @@ internal class AdapterPopularBrands(private var context:Context?,
 
    internal inner class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
 
-       val image=itemView.findViewById<CircularImageView>(R.id.imageView)
-       val title=itemView.findViewById<TextView>(R.id.title)
-       val description=itemView.findViewById<TextView>(R.id.desp)
+//       val image=itemView.findViewById<CircularImageView>(R.id.imageView)
+       val image=itemView.findViewById<ImageView>(R.id.imageView)
+//       val title=itemView.findViewById<TextView>(R.id.title)
+//       val description=itemView.findViewById<TextView>(R.id.desp)
        val progressBar=itemView.findViewById<ProgressBar>(R.id.progressBar)
-       val layoutImage=itemView.findViewById<View>(R.id.imageLayout)
        fun clickView(){
            itemView.setOnClickListener {
                onItemClickListener.onPopularBrandsClicked(listItems[adapterPosition],adapterPosition)
@@ -45,12 +44,12 @@ internal class AdapterPopularBrands(private var context:Context?,
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
-        holder.title.text=item.title
-        holder.description.text=item.description
+//        holder.title.text=item.title
+//        holder.description.text=item.description
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.imageurl)
+            .load(item.icon_url)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -84,7 +83,7 @@ internal class AdapterPopularBrands(private var context:Context?,
     }
 
     interface OnItemClickListener{
-        fun onPopularBrandsClicked(data: ModelPopularBrands, position:Int)
+        fun onPopularBrandsClicked(data: Brand, position:Int)
     }
 
 }

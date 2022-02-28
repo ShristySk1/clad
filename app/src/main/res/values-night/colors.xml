@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="green">#7CFF00</color>
+    <color name="red">#FF1100</color>
+
+<!--    change for light theme-->
+<!--color onboarding-->
+    <color name="colorBlack">#FFFFFF</color>
+    <color name="colorWhite">#000000</color>
+
+<!--GRAY-->
+    <color name="colorGray">#FFC4C4C4</color>
+    <color name="colorGrayText">#7E808E</color>
+    <color name="colorGrayText2">#979797</color>
+
+<!-- cross with drawable-->
+    <color name="colorGrayCircle">#EDEDED</color>
+
+    <color name="colorRed">#FF1100</color>
+
+<!--    dashboard main -->
+    <color name="colorHomeBack1">#F5EDE7</color>
+    <color name="colorHomeBack2">#D9A98B</color>
+
+
+    <color name="colorCircleUnselect">#4AECEDEF</color>
+    <color name="colorGrayTextShopping">#7E808E</color>
+    <color name="colorGrayCheckout">#F5F5F5</color>
+
+<!--    rating-->
+    <color name="colorRating">#000</color>
+
+<!--    product detail-->
+    <color name="color1">#F3EDE3</color>
+    <color name="color2">#AEDED2</color>
+    <color name="color3">#DEB9AE</color>
+<!--    divider-->
+    <color name="colorDivider">#92BABABA</color>
+    
+    <color name="colorCouponBorder">#FF406F</color>
+    <color name="colorCoupon">#FEEAEE</color>
+
+    <color name="overlay_color">#34000000</color>
+    <color name="brand_background">#DDDDDD</color>
+    <color name="home_product_background">#EFEFEF</color>
+
+    <color name="tab_unselect">#92BABABA</color>
+    <color name="divider2">#92BABABA</color>
+    <color name="order_background">#000000</color>
+    <color name="gift_card_background">#FFFFFF</color>
+    <color name="thrift_color1">#72000000</color>
+
+    <color name="shimmer_color">#D1D1D1</color>
+
+</resources>

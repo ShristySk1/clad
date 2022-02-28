@@ -1,5 +1,6 @@
 package com.ayata.clad.profile.myorder
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +11,9 @@ import com.ayata.clad.databinding.ItemRecyclerProfileOrdersTypeLineBinding
 import com.ayata.clad.databinding.ItemRecyclerProfileOrdersTypeProductBinding
 import com.ayata.clad.profile.ModelOrder
 import com.ayata.clad.profile.MyOrderRecyclerViewItem
+import com.ayata.clad.utils.PreferenceHandler
 
-class AdapterOrders(data: List<ModelOrder>) :
+class AdapterOrders(val context:Context,data: List<ModelOrder>) :
     RecyclerView.Adapter<AdapterOrders.HomeRecyclerViewHolder>() {
     var items = listOf<MyOrderRecyclerViewItem>()
         set(value) {
@@ -22,21 +24,21 @@ class AdapterOrders(data: List<ModelOrder>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecyclerViewHolder {
 
         return when (viewType) {
-            R.layout.item_recycler_profile_orders_type_date -> HomeRecyclerViewHolder.TitleViewHolder(
+            R.layout.item_recycler_profile_orders_type_date -> HomeRecyclerViewHolder.TitleViewHolder(context,
                 ItemRecyclerProfileOrdersTypeDateBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            R.layout.item_recycler_profile_orders_type_product -> HomeRecyclerViewHolder.ProductViewHolder(
+            R.layout.item_recycler_profile_orders_type_product -> HomeRecyclerViewHolder.ProductViewHolder(context,
                 ItemRecyclerProfileOrdersTypeProductBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            R.layout.item_recycler_profile_orders_type_line -> HomeRecyclerViewHolder.DividerViewHolder(
+            R.layout.item_recycler_profile_orders_type_line -> HomeRecyclerViewHolder.DividerViewHolder(context,
                 ItemRecyclerProfileOrdersTypeLineBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -62,13 +64,14 @@ class AdapterOrders(data: List<ModelOrder>) :
             is MyOrderRecyclerViewItem.Title -> R.layout.item_recycler_profile_orders_type_date
             is MyOrderRecyclerViewItem.Product -> R.layout.item_recycler_profile_orders_type_product
             is MyOrderRecyclerViewItem.Divider -> R.layout.item_recycler_profile_orders_type_line
+            else->R.layout.item_recycler_profile_orders_type_line
         }
     }
 
     sealed class HomeRecyclerViewHolder(binding: ViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        class TitleViewHolder(private val binding: ItemRecyclerProfileOrdersTypeDateBinding) :
+        class TitleViewHolder(val context: Context,private val binding: ItemRecyclerProfileOrdersTypeDateBinding) :
             HomeRecyclerViewHolder(binding) {
             fun bind(item: MyOrderRecyclerViewItem.Title) {
                 with(item) {
@@ -78,16 +81,20 @@ class AdapterOrders(data: List<ModelOrder>) :
         }
 
 
-        class ProductViewHolder(private val binding: ItemRecyclerProfileOrdersTypeProductBinding) :
+        class ProductViewHolder(val context: Context,private val binding: ItemRecyclerProfileOrdersTypeProductBinding) :
             HomeRecyclerViewHolder(binding) {
             fun bind(item: MyOrderRecyclerViewItem.Product) {
                 with(item){
-
+                    if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+                        binding.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+                    }else{
+                        binding.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+                    }
                 }
             }
         }
 
-        class DividerViewHolder(private val binding: ItemRecyclerProfileOrdersTypeLineBinding) :
+        class DividerViewHolder(val context: Context,private val binding: ItemRecyclerProfileOrdersTypeLineBinding) :
             HomeRecyclerViewHolder(binding) {
             fun bind(item: MyOrderRecyclerViewItem.Divider) {
                 with(item){
