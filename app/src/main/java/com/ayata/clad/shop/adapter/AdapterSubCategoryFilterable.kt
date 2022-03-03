@@ -10,6 +10,7 @@ import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.shop.model.ModelShop
+import com.ayata.clad.shop.response.ChildCategory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -17,19 +18,19 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import java.util.*
 
-internal class AdapterSubCategoryFilterable(private var context: Context?, private var listItems:List<ModelShop>,
+internal class AdapterSubCategoryFilterable(private var context: Context?, private var listItems:List<ChildCategory>,
                                             private val onSearchClickListener: OnSearchClickListener
 )
     : RecyclerView.Adapter<AdapterSubCategoryFilterable.MyViewHolder>(),Filterable {
 
-    var filterList: ArrayList<ModelShop>
+    var filterList: ArrayList<ChildCategory>
 
     init {
-        filterList = listItems as ArrayList<ModelShop>
+        filterList = listItems as ArrayList<ChildCategory>
     }
 
     fun setData(list:List<ModelShop>){
-        filterList= list as ArrayList<ModelShop>
+        filterList= list as ArrayList<ChildCategory>
     }
 
         internal inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -55,7 +56,7 @@ internal class AdapterSubCategoryFilterable(private var context: Context?, priva
         val item=filterList[position]
 
         holder.comment.text=item.comment
-        holder.title.text=item.name
+        holder.title.text=item.title
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).asDrawable()
             .load(item.image)
@@ -102,11 +103,11 @@ internal class AdapterSubCategoryFilterable(private var context: Context?, priva
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 filterList = if (charSearch.isEmpty()) {
-                    listItems as ArrayList<ModelShop>
+                    listItems as ArrayList<ChildCategory>
                 } else {
-                    val resultList = ArrayList<ModelShop>()
+                    val resultList = ArrayList<ChildCategory>()
                     for (row in listItems) {
-                        if (row.name!!.contains(charSearch,true)) {
+                        if (row.title!!.contains(charSearch,true)) {
                             resultList.add(row)
                         }
                     }
@@ -119,7 +120,7 @@ internal class AdapterSubCategoryFilterable(private var context: Context?, priva
 
             @Suppress("UNCHECKED_CAST")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                filterList = results?.values as ArrayList<ModelShop>
+                filterList = results?.values as ArrayList<ChildCategory>
                 notifyDataSetChanged()
             }
 
@@ -127,7 +128,7 @@ internal class AdapterSubCategoryFilterable(private var context: Context?, priva
     }
 
     interface OnSearchClickListener{
-        fun onSearchClick(data:ModelShop)
+        fun onSearchClick(data:ChildCategory)
     }
 
 }

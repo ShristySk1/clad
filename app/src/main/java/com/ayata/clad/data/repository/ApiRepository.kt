@@ -1,6 +1,5 @@
 package com.ayata.clad.data.repository
 
-import androidx.annotation.IdRes
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.profile.edit.response.Details
 import com.google.gson.JsonObject
@@ -12,6 +11,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun otpVerification(jsonObject: JsonObject) = retrofitService.otpVerification(jsonObject)
     suspend fun dashboardAPI()=retrofitService.dashboardAPI()
     suspend fun categoryListAPI()=retrofitService.categoryListAPI()
+    suspend fun categoryProductListAPI(categoryId: Int,page:Int) =retrofitService.categoryProductListAPI(categoryId,page)
     suspend fun wishListApi(token:String)=retrofitService.wishListAPI(token)
     suspend fun addToWishApi(token:String,jsonObject: JsonObject)=retrofitService.addToWishAPI(token,jsonObject)
     suspend fun removeFromWishAPI(token:String,jsonObject: JsonObject)=retrofitService.removeFromWishAPI(token,jsonObject)
@@ -26,8 +26,8 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun orderDetailApi(token:String,id:Int)=retrofitService.orderDetailAPI(token,id)
     suspend fun productListApi(token:String)=retrofitService.productListAPI(token)
     suspend fun productDetailApi(token:String,id:Int)=retrofitService.productDetailAPI(token,id)
-    suspend fun productAllApi(page:Int,filter:String)=retrofitService.productAllAPI(page,filter)
-    suspend fun brandListApi(page:Int,filter:String)=retrofitService.productAllAPI(page,filter)
+    suspend fun productAllApi(token:String,page:Int,filter:String)=retrofitService.productAllAPI(token,page,filter)
+    suspend fun brandListApi(token:String,page:Int,filter:String)=retrofitService.productAllAPI(token, page,filter)
 
 
 }

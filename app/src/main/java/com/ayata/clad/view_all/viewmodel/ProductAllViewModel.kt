@@ -30,12 +30,12 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
         Log.d("initcalled", ": calledinit ");
     }
 
-    fun productListApi(filter: String) {
+    fun productListApi(filter: String,token: String) {
         if (shouldFetchAgain) {
             listResponse.postValue(Resource.loading(null))
             job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                 val response =
-                    mainRepository.productAllApi( currentPage, filter)
+                    mainRepository.productAllApi("${Constants.Bearer} $token", currentPage, filter)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         currentPage++

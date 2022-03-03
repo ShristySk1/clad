@@ -11,6 +11,7 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerWishlistBinding
 import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.wishlist.response.get.Wishlist
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -19,17 +20,17 @@ import com.bumptech.glide.request.target.Target
 
 class AdapterWishList(
     val context:Context,
-    var productList: List<ModelProduct>
+    var productList: List<Wishlist>
 ) : RecyclerView.Adapter<AdapterWishList.ViewHolder>() {
     // create an inner class with name ViewHolder
     // It takes a view argument, in which pass the generated class of single_item.xml
     // ie SingleItemBinding and in the RecyclerView.ViewHolder(binding.root) pass it like this
     inner class ViewHolder(val binding: ItemRecyclerWishlistBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun clickView(item: ModelProduct) {
+        fun clickView(item: Wishlist) {
             binding.progressBar.visibility = View.VISIBLE
             Glide.with(binding.image.context)
-                .load(item.image)
+                .load(item.product.image_url)
                 .listener(object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
                         @Nullable e: GlideException?,
@@ -55,9 +56,11 @@ class AdapterWishList(
                 .error(R.drawable.shoes)
                 .into(binding.image)
             if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
-                binding.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+                //npr
+                binding.price.text="${context!!.getString(R.string.rs)} ${item.product.price}"
             }else{
-                binding.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+                //usd
+                binding.price.text="${context!!.getString(R.string.usd)} ${item.product.price}"
             }
 
             binding.image.setOnClickListener {
@@ -73,8 +76,8 @@ class AdapterWishList(
                     function(item)
                 }
             }
-            binding.name.text=item.name
-            binding.company.text=item.company
+            binding.name.text=item.product.name
+            binding.company.text=item.product.owner
         }
     }
 
@@ -109,13 +112,13 @@ class AdapterWishList(
         return productList.size
     }
 
-    private var itemProductClick: ((ModelProduct) -> Unit)? = null
-    fun setProductClickListener(listener: ((ModelProduct) -> Unit)) {
+    private var itemProductClick: ((Wishlist) -> Unit)? = null
+    fun setProductClickListener(listener: ((Wishlist) -> Unit)) {
         itemProductClick = listener
     }
 
-    private var itemSettingClick: ((ModelProduct) -> Unit)? = null
-    fun setSettingClickListener(listener: ((ModelProduct) -> Unit)) {
+    private var itemSettingClick: ((Wishlist) -> Unit)? = null
+    fun setSettingClickListener(listener: ((Wishlist) -> Unit)) {
         itemSettingClick = listener
     }
 

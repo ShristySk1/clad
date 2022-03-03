@@ -85,6 +85,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun getBundle() {
         val bundle = arguments
         if (bundle != null) {
+            Log.d(TAG, "getBundle: ");
             val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL)
             if (data != null) {
                 productDetail = data as ProductDetail
@@ -92,10 +93,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
             galleryBundle = bundle
 
+        }else{
+            Log.d(TAG, "getBundle:null ");
         }
     }
 
     private fun setProductData() {
+        Log.d(TAG, "setProductData: ");
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
             binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
             binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.old_price}"

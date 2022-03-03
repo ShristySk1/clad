@@ -19,6 +19,7 @@ import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentViewAllBrandBinding
 import com.ayata.clad.home.response.Brand
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.view_all.adapter.AdapterViewAllBrand
 import com.ayata.clad.view_all.viewmodel.BrandAllViewModel
 import com.ayata.clad.view_all.viewmodel.BrandAllViewModelFactory
@@ -163,7 +164,7 @@ class FragmentViewAllBrand : Fragment(), AdapterViewAllBrand.OnItemClickListener
 
     private fun getBrandListAPI(boolean: Boolean) {
         isFirstTime = boolean
-        viewModel.brandListApi("Brand")
+        viewModel.brandListApi("Brand",PreferenceHandler.getToken(requireContext())!!)
         viewModel.getBrandListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {

@@ -57,8 +57,11 @@ interface ApiService {
     @GET("home/")
     suspend fun dashboardAPI(): Response<JsonObject>
 
+    //category
     @GET("category-list/")
     suspend fun categoryListAPI(): Response<JsonObject>
+    @GET("category-products/")
+    suspend fun categoryProductListAPI(@Query("category_id")categoryId:Int,@Query("page")page:Int): Response<JsonObject>
 
     //user wishlist
     @GET("wishlist/")
@@ -109,12 +112,10 @@ interface ApiService {
     suspend fun productDetailAPI( @Header("Authorization") token: String,@Query("id")id:Int): Response<JsonObject>
 
     //view all-- pagination
-    //not made
-    @GET("brand-list/")
-    suspend fun brandListAPI( @Header("Authorization") token: String,@Query("offset")offset:Int): Response<JsonObject>
+//    @GET("brand-list/")
+//    suspend fun brandListAPI( @Header("Authorization") token: String,@Query("offset")offset:Int): Response<JsonObject>
 
-    //made
     @GET("products/all/")
-    suspend fun productAllAPI(@Query("page")offset:Int,@Query("title")filter:String): Response<JsonObject>
+    suspend fun productAllAPI( @Header("Authorization") token: String,@Query("page")offset:Int,@Query("title")filter:String): Response<JsonObject>
 
 }

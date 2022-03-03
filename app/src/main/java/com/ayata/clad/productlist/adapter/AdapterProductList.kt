@@ -8,29 +8,29 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerProductlistBinding
-import com.ayata.clad.product.ModelProduct
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import java.util.ArrayList
 
 class AdapterProductList(var context: Context?,
-    var productList: List<ModelProduct>,
+                         var productList: List<ProductDetail>,
 ) : RecyclerView.Adapter<AdapterProductList.ViewHolder>(),Filterable {
 
-    var filterList: ArrayList<ModelProduct>
+    var filterList: ArrayList<ProductDetail>
 
     init {
-        filterList = productList as ArrayList<ModelProduct>
+        filterList = productList as ArrayList<ProductDetail>
     }
 
-    fun setData(list:List<ModelProduct>){
-        filterList= list as ArrayList<ModelProduct>
+    fun setData(list:List<ProductDetail>){
+        filterList= list as ArrayList<ProductDetail>
     }
 
 
     inner class ViewHolder(val binding: ItemRecyclerProductlistBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun clickView(item: ModelProduct) {
+        fun clickView(item: ProductDetail) {
             itemView.setOnClickListener {
                 itemProductClick?.let { function ->
                     function(item)
@@ -38,17 +38,19 @@ class AdapterProductList(var context: Context?,
             }
         }
 
-        fun setValues(item: ModelProduct){
-            binding.company.text=item.company
-            Glide.with(context!!).asBitmap().load(item.image)
+        fun setValues(item: ProductDetail){
+            binding.company.text=item.owner
+            Glide.with(context!!).asBitmap().load(item.image_url)
                 .error(R.drawable.shoes)
                 .placeholder(R.drawable.shoes)
                 .into(binding.image)
             binding.name.text=item.name
             if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
-                binding.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+                //nrp
+                binding.price.text="${context!!.getString(R.string.rs)} ${item.price}"
             }else{
-                binding.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+                //usd
+                binding.price.text="${context!!.getString(R.string.usd)} ${item.price}"
             }
 
         }
@@ -80,8 +82,8 @@ class AdapterProductList(var context: Context?,
         return filterList.size
     }
 
-    private var itemProductClick: ((ModelProduct) -> Unit)? = null
-    fun setProductClickListener(listener: ((ModelProduct) -> Unit)) {
+    private var itemProductClick: ((ProductDetail) -> Unit)? = null
+    fun setProductClickListener(listener: ((ProductDetail) -> Unit)) {
         itemProductClick = listener
     }
 
@@ -90,9 +92,9 @@ class AdapterProductList(var context: Context?,
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 filterList = if (charSearch.isEmpty()) {
-                    productList as ArrayList<ModelProduct>
+                    productList as ArrayList<ProductDetail>
                 } else {
-                    val resultList = ArrayList<ModelProduct>()
+                    val resultList = ArrayList<ProductDetail>()
                     for (row in productList) {
                         if (row.name.contains(charSearch,true)) {
                             resultList.add(row)
@@ -107,7 +109,7 @@ class AdapterProductList(var context: Context?,
 
             @Suppress("UNCHECKED_CAST")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                filterList = results?.values as ArrayList<ModelProduct>
+                filterList = results?.values as ArrayList<ProductDetail>
                 notifyDataSetChanged()
             }
 

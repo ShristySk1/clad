@@ -6,12 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 
 class BrandAllViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
     val errorMessage = MutableLiveData<String>()
+    var currentPage = 1
 
     private val listResponse = MutableLiveData<Resource<JsonObject>>()
 
@@ -21,12 +23,13 @@ class BrandAllViewModel constructor(private val mainRepository: ApiRepository) :
     }
     val loading = MutableLiveData<Boolean>()
 
-    fun brandListApi(filter: String) {
+    fun brandListApi(filter: String,token:String="") {
         listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.brandListApi(1, filter)
+            val response = mainRepository.brandListApi("${Constants.Bearer} $token",currentPage, filter)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
+                    currentPage++
                     Log.d("brandListApi", "success: " + response.body())
                     listResponse.postValue(Resource.success(response.body()))
                     loading.value = false

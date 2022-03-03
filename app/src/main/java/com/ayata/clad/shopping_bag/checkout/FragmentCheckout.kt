@@ -29,8 +29,6 @@ import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.shopping_bag.response.checkout.Cart
 import com.ayata.clad.shopping_bag.response.checkout.CheckoutResponse
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
-import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModel
-import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModelFactory
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
@@ -49,6 +47,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private lateinit var adapterCircleSize: AdapterCircleText
     private var listSize = ArrayList<ModelCircleText>()
+    private lateinit var apiCartList: List<Cart>
 
     private lateinit var adapterCircleQty: AdapterCircleText
     private var listQty = ArrayList<ModelCircleText>()
@@ -172,6 +171,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     }
 
     private fun prepareList(res: List<Cart>) {
+        apiCartList=res
 //        listCheckout.clear()
 //        listCheckout.add(ModelCheckout("Nike Air Jordan",784569,8790.0,80.0,"A",2,true,
 //            "https://freepngimg.com/thumb/categories/627.png"))
@@ -183,21 +183,23 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //            "https://freepngimg.com/thumb/categories/627.png"))
         listCheckout.clear()
         for (item in res) {
+            Log.d(TAG, "prepareList: loop");
             listCheckout.add(
                 ModelCheckout(
                     item.product.name,
                     item.product.id,
+                    item.product.variant[0].price,
                     item.product.price,
-                    item.product.price,
-                    "A",
-                    2,
+                    item.product.variant[0].size,
+                    1,
                     false,
                     item.product.imageUrl
                 )
             )
         }
-        setUpView()
         adapterCheckout.notifyDataSetChanged()
+        setUpView()
+        Log.d(TAG, "prepareList: "+listCheckout.size);
         calculatePrice()
 
     }
@@ -272,7 +274,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                 adapterCheckout.notifyItemChanged(position)
             }
         }
-        prepareListSize()
+        prepareListSize(data)
 
         dialogBinding.recyclerView.apply {
             layoutManager = GridLayoutManager(context, 5)
@@ -332,13 +334,20 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         bottomSheetDialog.show()
     }
 
-    private fun prepareListSize() {
+    private fun prepareListSize(data: ModelCheckout) {
         listSize.clear()
-        listSize.add(ModelCircleText("s", true))
-        listSize.add(ModelCircleText("m", false))
-        listSize.add(ModelCircleText("l", false))
-        listSize.add(ModelCircleText("xl", false))
-        listSize.add(ModelCircleText("xxl", false))
+        for(cart in apiCartList){
+            if(data.itemId==cart.product.id){
+                for(v in cart.product.variant){
+                    listSize.add(ModelCircleText(v.size,false))
+                }
+            }
+        }
+//        listSize.add(ModelCircleText("s", true))
+//        listSize.add(ModelCircleText("m", false))
+//        listSize.add(ModelCircleText("l", false))
+//        listSize.add(ModelCircleText("xl", false))
+//        listSize.add(ModelCircleText("xxl", false))
         adapterCircleSize.notifyDataSetChanged()
     }
 
@@ -401,7 +410,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
                                 }
                             } catch (e: Exception) {
-                                Log.d(TAG, "getWishListAPI:Error ${e.message}")
+                                Log.d(TAG, "getWishListAPI:Error2 ${e.message}")
                             }
                         }
                     }

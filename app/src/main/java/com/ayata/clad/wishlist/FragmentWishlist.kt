@@ -23,6 +23,7 @@ import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentWishlistBinding
 import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
+import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.product.ModelRecommendedProduct
@@ -48,7 +49,7 @@ class FragmentWishlist : Fragment() {
     }
 
     private lateinit var binding: FragmentWishlistBinding
-    private var myWishList = ArrayList<ModelProduct>()
+    private var myWishList = ArrayList<Wishlist>()
     private lateinit var adapterWishList: AdapterWishList
 
     private lateinit var viewModel: WishListViewModel
@@ -199,14 +200,19 @@ class FragmentWishlist : Fragment() {
         ).also {
             it.setProductClickListener { recommendedProduct ->
                 //wishlist
+                Log.d("testmyfilter", "setUpRecyclerRecommendation: $recommendedProduct")
+                val bundle=Bundle()
+                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,recommendedProduct.product)
+                val fragmentProductDetail=FragmentProductDetail()
+                fragmentProductDetail.arguments=bundle
                 parentFragmentManager.beginTransaction().replace(
                     R.id.main_fragment,
-                    FragmentProductDetail()
+                    fragmentProductDetail
                 ).addToBackStack(null).commit()
             }
         }.also { it ->
             it.setSettingClickListener { product ->
-                val isWish = product.isWishList
+                val isWish = product.product.is_in_wishlist
 //                val list=ArrayList<MyFilterContentViewItem.MultipleChoice>()
 //                if(product.isCart){
 //                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case3), isCart))
@@ -217,7 +223,7 @@ class FragmentWishlist : Fragment() {
 //                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case2), isWish))
 //                }
                 val list = ArrayList<String>()
-                if (!product.isCart) {
+                if (!product.product.is_in_cart) {
                     list.add(getString(R.string.wl_case1))
                 }
                 list.add(getString(R.string.wl_case3))
@@ -243,7 +249,7 @@ class FragmentWishlist : Fragment() {
     //not used
     private fun showDialogMultipleChoice(
         title: String,
-        listContent: List<MyFilterContentViewItem.MultipleChoice>, product: ModelProduct
+        listContent: List<MyFilterContentViewItem.MultipleChoice>, product: Wishlist
     ) {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
@@ -323,7 +329,7 @@ class FragmentWishlist : Fragment() {
         snackbar.show()
     }
 
-    private fun addToCartAPI(product: ModelProduct) {
+    private fun addToCartAPI(product: Wishlist) {
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), product.id)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -334,7 +340,7 @@ class FragmentWishlist : Fragment() {
                         showSnackBar("Product added to cart")
                         for (item in myWishList) {
                             if (item.id == product.id) {
-                                item.isCart = true
+                                item.product.is_in_cart = true
                             }
                         }
                         adapterWishList.notifyDataSetChanged()
@@ -357,10 +363,10 @@ class FragmentWishlist : Fragment() {
         })
     }
 
-    private fun removeWishListAPI(product: ModelProduct) {
+    private fun removeWishListAPI(product: Wishlist) {
         viewModel.removeFromWishAPI(
             PreferenceHandler.getToken(context).toString(),
-            product.modelSpecificId!!
+            product.id!!
         )
         viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -370,7 +376,7 @@ class FragmentWishlist : Fragment() {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         showSnackBar(msg = "Product removed from wishlist")
-                        var remove: ModelProduct? = null;
+                        var remove: Wishlist? = null;
                         var position: Int? = null
                         try {
                             for ((index, item) in myWishList.withIndex()) {
@@ -463,19 +469,7 @@ class FragmentWishlist : Fragment() {
 
     private fun setDataToView(wishlist: List<Wishlist>) {
         for (wish in wishlist) {
-            myWishList.add(
-                ModelProduct(
-                    wish.product.id,
-                    wish.product.imageUrl,
-                    wish.product.name,
-                    wish.product.vendor,
-                    wish.product.price.toString(),
-                    "123",
-                    true,
-                    false,
-                    wish.id
-                )
-            )
+            myWishList.addAll(wishlist)
         }
         adapterWishList.notifyDataSetChanged()
         setUpView()
@@ -495,7 +489,7 @@ class FragmentWishlist : Fragment() {
         }
     }
 
-    private fun showDialogSize(product: ModelProduct) {
+    private fun showDialogSize(product: Wishlist) {
 
         val dialogBinding = DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
@@ -524,7 +518,8 @@ class FragmentWishlist : Fragment() {
         }
 
         dialogBinding.btnSave.setOnClickListener {
-            saveSizeAPI(product, sizeSelected)
+            //TODO API SIZE
+//            saveSizeAPI(product, sizeSelected)
             bottomSheetDialog.dismiss()
         }
 
@@ -541,7 +536,7 @@ class FragmentWishlist : Fragment() {
         adapterCircleSize.notifyDataSetChanged()
     }
 
-    private fun showDialogWishlist(product: ModelProduct, listDialog: ArrayList<String>) {
+    private fun showDialogWishlist(product: Wishlist, listDialog: ArrayList<String>) {
 
         val dialogBinding = DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())

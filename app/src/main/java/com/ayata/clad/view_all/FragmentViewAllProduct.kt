@@ -19,6 +19,7 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentViewAllProductBinding
+import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.utils.Constants
@@ -157,16 +158,22 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
     override fun onProductClickListener(data: ProductDetail) {
+
+        Log.d("testmyfilter", "setUpRecyclerRecommendation: $data")
+        val bundle=Bundle()
+        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,data)
+        val fragmentProductDetail=FragmentProductDetail()
+        fragmentProductDetail.arguments=bundle
         parentFragmentManager.beginTransaction().replace(
             R.id.main_fragment,
-            FragmentProductDetail()
+          fragmentProductDetail
         ).addToBackStack(null).commit()
     }
     override fun onWishListClicked(data: ProductDetail, position: Int) {
         val isOnWishList = listItem[position]!!.is_in_wishlist
 //        api call
         if (isOnWishList) {
-            removeWishListAPI(data, position)
+//            removeWishListAPI(data, position)
         } else {
             addToWishListAPI(data, position)
         }
@@ -177,7 +184,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
 
     private fun getProductListAPI(filter: String, firsttime: Boolean) {
         isFirstTime = firsttime
-        viewModel.productListApi(filter)
+        viewModel.productListApi(filter,PreferenceHandler.getToken(requireContext())!!)
         viewModel.getProductListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
