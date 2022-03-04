@@ -47,10 +47,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private var listText = ArrayList<ModelCircleText>()
     private var isProductWishList: Boolean = false
     private var isProductInCart: Boolean = false
-
     private lateinit var viewModel: ProductViewModel
     private lateinit var productDetail: ProductDetail
     var galleryBundle: Bundle? = null
+
+    var dynamicProductId = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,9 +80,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun goToGalleryView() {
         val fragment = FragmentProductDetailFull2()
         fragment.arguments = galleryBundle
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).addToBackStack(null)
+        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
+            .addToBackStack(null)
             .commit()
     }
+
     private fun getBundle() {
         val bundle = arguments
         if (bundle != null) {
@@ -93,12 +96,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
             galleryBundle = bundle
 
-        }else{
+        } else {
             Log.d(TAG, "getBundle:null ");
         }
     }
 
     private fun setProductData() {
+        dynamicProductId = productDetail?.variants[0]?.id?:0
         Log.d(TAG, "setProductData: ");
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
             binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
@@ -133,7 +137,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.cardWish.setOnClickListener {
             if (this::productDetail.isInitialized) {
                 if (isProductWishList) {
-                    removeWishListAPI()
+//                    removeWishListAPI()
                 } else {
                     addToWishListAPI()
                 }
@@ -145,7 +149,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.cardCart.setOnClickListener {
             if (this::productDetail.isInitialized) {
                 if (isProductInCart) {
-                    removeCartAPI()
+                    showSnackBar("Product already added in cart")
                 } else {
                     addToCartAPI()
                 }
@@ -158,7 +162,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.detail2.ivCart.setOnClickListener {
             if (this::productDetail.isInitialized) {
                 if (isProductInCart) {
-                    removeCartAPI()
+                    showSnackBar("Product already added in cart")
                 } else {
                     addToCartAPI()
                 }
@@ -332,16 +336,21 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             flexWrap = FlexWrap.WRAP
             flexDirection = FlexDirection.ROW
         }
+        val listModelColor = ArrayList<ModelColor>()
+        productDetail.variants.forEach {
+            listModelColor.add(
+                ModelColor(
+                    it.color?.hex_value ?: "#ffffff",
+                    it.image_url ?: "",
+                    it.id ?: 0
+                )
+            )
+        }
         binding.rvColor.apply {
             layoutManager =
                 flexboxLayoutManager
             adapter = AdapterColor(
-                listOf(
-                    R.color.color1,
-                    R.color.color2,
-                    R.color.color3,
-                    R.color.color4
-                ), this@FragmentProductDetail
+                listModelColor, this@FragmentProductDetail
             )
         }
     }
@@ -362,11 +371,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             adapter.setCircleClickListener { data ->
                 for (item in listText) {
                     item.isSelected = item.equals(data)
+                    if (item.isSelected) {
+                        dynamicProductId = data.productId
+                    }
                     adapterCircleText.notifyDataSetChanged()
                     Log.d(TAG, "setUpRecyclerSize: " + item.title);
-
                 }
-
             }
         }
         prepareListSize()
@@ -380,32 +390,39 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun prepareListSize() {
         listText.clear()
-        listText.add(ModelCircleText("xs", false))
-        listText.add(ModelCircleText("s", true))
-        listText.add(ModelCircleText("m", false))
-        listText.add(ModelCircleText("l", false))
-        listText.add(ModelCircleText("xl", false))
+
+        productDetail.variants.forEach {
+            listText.add(ModelCircleText(it.id ?: 0, it.size ?: "", false))
+        }
+//        listText.add(ModelCircleText("s", true))
+//        listText.add(ModelCircleText("m", false))
+//        listText.add(ModelCircleText("l", false))
+//        listText.add(ModelCircleText("xl", false))
         adapterCircleText.notifyDataSetChanged()
     }
 
-    override fun onColorClicked(color: Int, position: Int) {
+    override fun onColorClicked(color: ModelColor, position: Int) {
         //change image
-        val url = when (position) {
-            2 -> {
-                "https://pa.namshicdn.com/product/A6/20076W/1-zoom-desktop.jpg"
-            }
-            1 -> {
-                "https://m.media-amazon.com/images/I/71hNVecVSrL._AC_UX342_.jpg"
-            }
-            3 -> {
-                R.drawable.example_img
-            }
-            else -> {
-                ""
-            }
-        }
+//        val url = when (position) {
+//            2 -> {
+//                dynamicProductId = 2
+//                "https://pa.namshicdn.com/product/A6/20076W/1-zoom-desktop.jpg"
+//            }
+//            1 -> {
+//                dynamicProductId = 1
+//                "https://m.media-amazon.com/images/I/71hNVecVSrL._AC_UX342_.jpg"
+//            }
+//            3 -> {
+//                dynamicProductId = 3
+//                R.drawable.example_img
+//            }
+//            else -> {
+//                ""
+//            }
+//        }
+        dynamicProductId = color.productId
         Glide.with(requireContext())
-            .load(url)
+            .load(color.imageUrl)
             .transition(DrawableTransitionOptions.withCrossFade())
             .error(R.drawable.splashimage)
             .into(binding.imageView3)
@@ -456,6 +473,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         showSnackBar("Product added to wishlist")
                         isProductWishList = true
                         setWishlist(true)
+                        MainActivity.NavCount.myWishlist= MainActivity.NavCount.myWishlist?.plus(1)
+
                         try {
 
                         } catch (e: Exception) {
@@ -509,33 +528,36 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun addToCartAPI() {
-        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), productDetail.id)
-        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "addToCartAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        isProductInCart = true
-                        setCart(true)
-                        showSnackBar("Product added to cart")
-                        try {
-
-                        } catch (e: Exception) {
-                            Log.d(TAG, "addToCartAPI:Error ${e.message}")
-                        }
-                    }
-
-                }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
-                }
-            }
-        })
+        Toast.makeText(requireContext(), dynamicProductId.toString(), Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "addToCartAPI: "+dynamicProductId);
+//        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicProductId)
+//        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
+//            when (it.status) {
+//                Status.SUCCESS -> {
+//                    Log.d(TAG, "addToCartAPI: ${it.data}")
+//                    val jsonObject = it.data
+//                    if (jsonObject != null) {
+//                        isProductInCart = true
+//                        setCart(true)
+//                        showSnackBar("Product added to cart")
+//                        MainActivity.NavCount.myBoolean= MainActivity.NavCount.myBoolean?.plus(1)
+//                        try {
+//
+//                        } catch (e: Exception) {
+//                            Log.d(TAG, "addToCartAPI:Error ${e.message}")
+//                        }
+//                    }
+//
+//                }
+//                Status.LOADING -> {
+//                }
+//                Status.ERROR -> {
+//                    //Handle Error
+//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
+//                }
+//            }
+//        })
     }
 
 }

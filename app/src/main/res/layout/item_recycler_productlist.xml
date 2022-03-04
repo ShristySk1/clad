@@ -12,7 +12,7 @@
         android:layout_height="@dimen/p_height"
         style="@style/CustomSelectableItemBackground"
         android:background="@drawable/background_gray"
-        android:scaleType="centerInside"
+        android:scaleType="centerCrop"
         android:src="@drawable/shoes" />
 
     <TextView

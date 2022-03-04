@@ -11,12 +11,11 @@
         android:layout_height="@dimen/p_height">
         <ImageView
             android:id="@+id/image"
-            android:padding="15dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             style="@style/CustomSelectableItemBackground"
             android:background="@drawable/background_gray"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:src="@drawable/shoes" />
 
         <ProgressBar

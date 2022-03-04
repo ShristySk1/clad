@@ -290,6 +290,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
                             listItem.get(position)!!.is_in_wishlist = true;
                             adapterRecycler.notifyItemChanged(position)
                             showSnackBar("Product added to wishlist")
+                            MainActivity.NavCount.myWishlist= MainActivity.NavCount.myWishlist?.plus(1)
 
                         } catch (e: Exception) {
                             Log.d(TAG, "addToWishListAPI:Error ${e.message}")

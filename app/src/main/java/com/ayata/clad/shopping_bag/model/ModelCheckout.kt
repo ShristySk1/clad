@@ -3,7 +3,7 @@ package com.ayata.clad.shopping_bag.model
 class ModelCheckout {
 
     constructor(name:String,itemId:Int,priceNPR:Double,priceUSD:Double,size:String,qty:Int,
-                isSelected:Boolean,image:String){
+                isSelected:Boolean,image:String,cartId:Int){
         this.name=name
         this.isSelected=isSelected
         this.itemId=itemId
@@ -12,6 +12,7 @@ class ModelCheckout {
         this.priceUSD=priceUSD
         this.size=size
         this.qty=qty
+        this.cartId=cartId
     }
 
 
@@ -23,5 +24,6 @@ class ModelCheckout {
     var size:String=""
     var qty:Int=0
     var image:String=""
+    var cartId:Int=0
 
 }

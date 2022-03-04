@@ -27,7 +27,7 @@
                     android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/image_shoe" />
 
                 <CheckBox
@@ -37,8 +37,7 @@
                     android:layout_margin="6dp"
                     android:background="@drawable/custom_checkbox"
                     android:button="@android:color/transparent"
-                    android:text=""
-                    />
+                    android:text="" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -60,42 +59,64 @@
 
             <TextView
                 android:id="@+id/name"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/itemId"
                 android:maxLines="2"
-                android:text="Nike Air Jordan"
+                android:text="Nike Air Jordandddddddd"
                 android:textColor="@color/colorBlack"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/itemId"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/name"
+                android:layout_alignParentEnd="true"
                 android:text="Item Id: 788455"
                 android:textColor="@color/colorGrayTextShopping"
-                android:textSize="14sp"
+                android:textSize="10sp"
                 android:textStyle="normal" />
+
+            <TextView
+                android:id="@id/color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/name"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@id/ivColor"
+                android:text="Black"
+                android:textColor="@color/colorGrayTextShopping"
+                android:textSize="11sp"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:id="@+id/ivColor"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_below="@id/name"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/background_circle_with_border"
+                android:tint="@color/black" />
 
             <LinearLayout
                 android:id="@+id/layout3"
+                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/price"
-                android:layout_below="@id/itemId"
+                android:layout_below="@id/color"
                 android:layout_marginVertical="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/layout_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_5dp"
-                    android:backgroundTint="@color/colorGrayCheckout"
                     android:clickable="true"
                     android:focusable="true"
+                    android:background="@drawable/background_outline_bottom2"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="6dp"
@@ -108,15 +129,15 @@
                         android:minWidth="35dp"
                         android:text="Size: A"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:layout_marginStart="8dp"
-                        android:tint="@color/black"
-                        android:src="@drawable/ic_arrow_down_angle" />
+                        android:src="@drawable/ic_arrow_down_angle"
+                        android:tint="@color/black" />
 
                 </LinearLayout>
 
@@ -132,7 +153,8 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="6dp"
-                    android:paddingVertical="4dp">
+                    android:paddingVertical="4dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/quantity"
@@ -148,21 +170,93 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:layout_marginStart="8dp"
-                        android:tint="@color/black"
-                        android:src="@drawable/ic_arrow_down_angle" />
+                        android:src="@drawable/ic_arrow_down_angle"
+                        android:tint="@color/black" />
 
                 </LinearLayout>
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/tv_text_to_copy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/background_outlin_dotted"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="CLAD300"
+                    android:textSize="8sp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                     />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/layout3"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginBottom="4dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:paddingRight="12dp"
+                android:layout_alignTop="@id/layout3"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="6dp"
+                    android:id="@+id/ivAdd"
+                    android:foreground="@drawable/background_ripple"
+                    android:src="@drawable/ic_add"
+                    android:background="@drawable/background_circle" />
+                <TextView
+                    android:id="@+id/number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:minWidth="30dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorBlack"
+                    android:layout_weight="1"
+                    android:text="4"/>
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="6dp"
+                    android:foreground="@drawable/background_ripple"
+                    android:id="@+id/ivRemove"
+                    android:background="@drawable/background_circle"
+                    android:src="@drawable/ic_minus" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/price"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:text="Rs. 7800"
+                android:layout_above="@id/stock"
                 android:textColor="@color/colorBlack"
-                android:textSize="18sp"
+                android:textSize="15sp"
+                android:layout_marginBottom="4dp"
                 android:textStyle="bold" />
+            <TextView
+                android:id="@+id/stock"
+                android:textStyle="italic"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:backgroundTint="#2F61BD08"
+                android:background="@drawable/background_curve_black"
+                android:text="In stock"
+                android:textColor="#4CAF50"
+                android:textSize="10sp"
+                android:layout_height="wrap_content"/>
 
         </RelativeLayout>
 

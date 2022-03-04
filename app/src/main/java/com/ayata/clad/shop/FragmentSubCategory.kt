@@ -50,7 +50,7 @@ companion object{
     }
 
     private fun initAppbar() {
-        (activity as MainActivity).showBottomNavigation(false)
+        (activity as MainActivity).showBottomNavigation(true)
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar2(
             isClose = false, isBack = true, isFilter = false, isClear = false,

@@ -6,7 +6,7 @@ import java.io.Serializable
 
 data class Color (
 
-	@SerializedName("id") val id : Int,
-	@SerializedName("hex_value") val hex_value : String,
-	@SerializedName("name") val name : String
+	@SerializedName("id") val id : Int?,
+	@SerializedName("hex_value") val hex_value : String="",
+	@SerializedName("name") val name : String?
 ): Serializable

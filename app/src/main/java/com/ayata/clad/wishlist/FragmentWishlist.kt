@@ -67,9 +67,10 @@ class FragmentWishlist : Fragment() {
         setUpViewModel()
         initAppbar()
         initRefreshLayout()
-        getWishListAPI()
         setUpFilterListener()
         setUpRecyclerProductList()
+        getWishListAPI()
+
         return binding.root
     }
 
@@ -109,6 +110,8 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun setUpView() {
+        Log.d(TAG, "setUpView: " + myWishList.size);
+
         if (myWishList.isEmpty()) {
             binding.layoutFilled.visibility = View.GONE
             binding.llEmpty.visibility = View.VISIBLE
@@ -201,10 +204,10 @@ class FragmentWishlist : Fragment() {
             it.setProductClickListener { recommendedProduct ->
                 //wishlist
                 Log.d("testmyfilter", "setUpRecyclerRecommendation: $recommendedProduct")
-                val bundle=Bundle()
-                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,recommendedProduct.product)
-                val fragmentProductDetail=FragmentProductDetail()
-                fragmentProductDetail.arguments=bundle
+                val bundle = Bundle()
+                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, recommendedProduct.product)
+                val fragmentProductDetail = FragmentProductDetail()
+                fragmentProductDetail.arguments = bundle
                 parentFragmentManager.beginTransaction().replace(
                     R.id.main_fragment,
                     fragmentProductDetail
@@ -223,15 +226,19 @@ class FragmentWishlist : Fragment() {
 //                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case2), isWish))
 //                }
                 val list = ArrayList<String>()
-                if (!product.product.is_in_cart) {
-                    list.add(getString(R.string.wl_case1))
-                }
+//                if (!product.product.is_in_cart) {
+//                    list.add(getString(R.string.wl_case1))
+//                }
                 list.add(getString(R.string.wl_case3))
-                if (isWish) {
-                    list.add(getString(R.string.wl_case2))
-                }
+//                if (isWish) {
+                list.add(getString(R.string.wl_case2))
+//                }
 //                showDialogMultipleChoice("Options",list,product)
                 showDialogWishlist(product, list)
+            }
+        }.also {
+            it.setBagClickListener {
+                addToCartAPI(it)
             }
         }
 
@@ -338,6 +345,7 @@ class FragmentWishlist : Fragment() {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         showSnackBar("Product added to cart")
+                        MainActivity.NavCount.myBoolean= MainActivity.NavCount.myBoolean?.plus(1)
                         for (item in myWishList) {
                             if (item.id == product.id) {
                                 item.product.is_in_cart = true
@@ -350,12 +358,15 @@ class FragmentWishlist : Fragment() {
                             Log.d(TAG, "addToCartAPI:Error ${e.message}")
                         }
                     }
+                    binding.spinKit.visibility=View.GONE
 
                 }
                 Status.LOADING -> {
+                    binding.spinKit.visibility=View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
+                    binding.spinKit.visibility=View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToCartAPI:Error ${it.message}")
                 }
@@ -413,13 +424,11 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun getWishListAPI() {
-        myWishList.clear()
         setShimmerLayout(true)
         viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
         viewModel.getWishListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    myWishList.clear()
                     setShimmerLayout(false)
                     Log.d(TAG, "getWishListAPI: ${it.data}")
                     val jsonObject = it.data
@@ -441,7 +450,7 @@ class FragmentWishlist : Fragment() {
                                 if (wishListResponse.wishlist != null) {
                                     if (wishListResponse.wishlist.size > 0) {
                                         val wishlist = wishListResponse.wishlist
-                                        Log.d(TAG, "getWishListAPI: " + wishlist.toString());
+                                        Log.d(TAG, "getWishListAPI: " + wishlist.size);
                                         setDataToView(wishlist)
                                     } else {
                                         setUpView()
@@ -468,9 +477,9 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun setDataToView(wishlist: List<Wishlist>) {
-        for (wish in wishlist) {
-            myWishList.addAll(wishlist)
-        }
+        myWishList.clear()
+        myWishList.addAll(wishlist)
+        Log.d(TAG, "setUpView upper: " + wishlist.size);
         adapterWishList.notifyDataSetChanged()
         setUpView()
     }
@@ -528,11 +537,11 @@ class FragmentWishlist : Fragment() {
 
     private fun prepareListSize() {
         listSize.clear()
-        listSize.add(ModelCircleText("s", true))
-        listSize.add(ModelCircleText("m", false))
-        listSize.add(ModelCircleText("l", false))
-        listSize.add(ModelCircleText("xl", false))
-        listSize.add(ModelCircleText("xxl", false))
+//        listSize.add(ModelCircleText("s", true))
+//        listSize.add(ModelCircleText("m", false))
+//        listSize.add(ModelCircleText("l", false))
+//        listSize.add(ModelCircleText("xl", false))
+//        listSize.add(ModelCircleText("xxl", false))
         adapterCircleSize.notifyDataSetChanged()
     }
 

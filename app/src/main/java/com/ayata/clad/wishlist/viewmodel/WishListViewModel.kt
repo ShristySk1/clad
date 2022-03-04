@@ -79,6 +79,8 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("product_id",id)
+            jsonObject.addProperty("quantity",1)
+
             val response = mainRepository.addToCartApi("${Constants.Bearer} $token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

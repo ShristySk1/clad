@@ -76,6 +76,11 @@ class AdapterWishList(
                     function(item)
                 }
             }
+            binding.imageView4.setOnClickListener {
+                itemBagClick?.let { function ->
+                    function(item)
+                }
+            }
             binding.name.text=item.product.name
             binding.company.text=item.product.owner
         }
@@ -120,6 +125,10 @@ class AdapterWishList(
     private var itemSettingClick: ((Wishlist) -> Unit)? = null
     fun setSettingClickListener(listener: ((Wishlist) -> Unit)) {
         itemSettingClick = listener
+    }
+    private var itemBagClick: ((Wishlist) -> Unit)? = null
+    fun setBagClickListener(listener: ((Wishlist) -> Unit)) {
+        itemBagClick = listener
     }
 
 }

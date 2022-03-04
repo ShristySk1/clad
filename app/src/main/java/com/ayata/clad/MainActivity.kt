@@ -10,8 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.ActivityMainBinding
-import com.ayata.clad.databinding.FragmentCartCheckoutBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.preorder.FragmentPreorder
@@ -19,16 +22,28 @@ import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
-import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
+import com.ayata.clad.shopping_bag.response.checkout.CheckoutResponse
+import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
+import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.FragmentWishlist
+import com.ayata.clad.wishlist.response.get.GetWishListResponse
+import com.ayata.clad.wishlist.viewmodel.WishListViewModel
+import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
+import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var badge: BadgeDrawable
+    private lateinit var badge_wishlist:BadgeDrawable
+    lateinit var viewModelCart: CheckoutViewModel
+    lateinit var viewModelWishlist:WishListViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -44,21 +59,164 @@ class MainActivity : AppCompatActivity() {
         }
         setStatusBarLight(R.color.colorWhite)
         setToolbar()
+        setUpViewModel()
+        setBadge()
 
+    }
+    private fun setUpViewModel() {
+//        viewModelCart = ViewModelProvider(this).get(CheckoutViewModel::class.java)
+        viewModelCart = ViewModelProvider(
+            this,
+            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance()))
+        )[CheckoutViewModel::class.java]
+        viewModelWishlist = ViewModelProvider(
+            this,
+            WishListViewModelFactory(ApiRepository(ApiService.getInstance()))
+        ).get(WishListViewModel::class.java)
+    }
+
+    private fun setBadge() {
+        badge = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_cart)
+        badge_wishlist= binding.bottomNavigationView.getOrCreateBadge(R.id.nav_favorite)
+
+        NavCount.addMyBooleanListener(object :
+            NavCountChangeListener {
+            override fun onCartCountChange(count: Int?) {
+                if (count != null) {
+                    if (count != 0) {
+                        badge.isVisible = true
+                        badge.number = count
+                        Log.d(TAG, "setBadge: badgedone")
+                    } else {
+                        badge.isVisible = false
+                        badge.clearNumber()
+                    }
+                }
+            }
+
+            override fun onWishListCountChange(count: Int?) {
+                if (count != null) {
+                    if (count != 0) {
+                        badge_wishlist.isVisible = true
+                        badge_wishlist.number = count
+                        Log.d(TAG, "setBadge: badgedone")
+                    } else {
+                        badge_wishlist.isVisible = false
+                        badge_wishlist.clearNumber()
+                    }
+                }
+            }
+        })
+        //call cart
+        getCartAPI()
+        getWishListAPI()
+    }
+
+    private fun getCartAPI() {
+        viewModelCart.cartListAPI(PreferenceHandler.getToken(this).toString())
+        viewModelCart.getCartListAPI().observe(this, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val message = jsonObject.get("message").asString
+                            if (message.contains("empty.", true)) {
+                                //empty
+                                NavCount.myBoolean=0
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "getCartAPI:Error ${e.message}")
+                            try {
+                                val checkoutResponse =
+                                    Gson().fromJson<CheckoutResponse>(
+                                        jsonObject,
+                                        CheckoutResponse::class.java
+                                    )
+                                if (checkoutResponse.cart != null) {
+                                    if (checkoutResponse.cart.size > 0) {
+                                        val cartlist = checkoutResponse.cart
+                                        //set cart number
+                                        NavCount.myBoolean=cartlist.size
+                                    } else {
+                                        //empty
+                                        NavCount.myBoolean=0
+                                    }
+
+                                }
+                            } catch (e: Exception) {
+                            }
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    Log.d(TAG, "getCartAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
+    private fun getWishListAPI() {
+        viewModelWishlist.wishListAPI(PreferenceHandler.getToken(this).toString())
+        viewModelWishlist.getWishListAPI().observe(this, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val message = jsonObject.get("message").asString
+                            if (message.contains("Your wishlist is empty.", true)) {
+                                //empty
+                                NavCount.myWishlist=0
+                            }
+
+                        } catch (e: Exception) {
+                            try {
+                                val wishListResponse =
+                                    Gson().fromJson<GetWishListResponse>(
+                                        jsonObject,
+                                        GetWishListResponse::class.java
+                                    )
+                                if (wishListResponse.wishlist != null) {
+                                    if (wishListResponse.wishlist.size > 0) {
+                                        val wishlist = wishListResponse.wishlist
+                                       //set count
+                                        NavCount.myWishlist=wishlist.size
+                                    } else {
+                                        //empty
+                                        NavCount.myWishlist=0
+                                    }
+
+                                }
+                            } catch (e: Exception) {
+                            }
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Log.d(TAG, "getWishListAPI:Error ${it.message}")
+                }
+            }
+        })
     }
 
     override fun onStart() {
         super.onStart()
         val extras = intent.extras
         if (extras != null) {
-            val value = extras.getBoolean(Constants.FROM_STORY,false)
-            if(value){
+            val value = extras.getBoolean(Constants.FROM_STORY, false)
+            if (value) {
                 fromStory()
             }
         }
     }
 
-    private fun fromStory(){
+    private fun fromStory() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment, FragmentProductDetail())
             .commit()
@@ -126,7 +284,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setToolbar1(title: String, isSearch: Boolean, isProfile: Boolean, isClose: Boolean, isLogo:Boolean=false) {
+    fun setToolbar1(
+        title: String,
+        isSearch: Boolean,
+        isProfile: Boolean,
+        isClose: Boolean,
+        isLogo: Boolean = false
+    ) {
         exitFullScreen()
         binding.appbar.appbar1.visibility = View.VISIBLE
         binding.appbar.appbar2.visibility = View.GONE
@@ -194,10 +358,10 @@ class MainActivity : AppCompatActivity() {
             binding.appbar.btnClear.visibility = View.GONE
         }
 
-        if(textDescription.isEmpty()||textDescription.isBlank()){
-            binding.appbar.description.visibility=View.GONE
-        }else{
-            binding.appbar.description.visibility=View.VISIBLE
+        if (textDescription.isEmpty() || textDescription.isBlank()) {
+            binding.appbar.description.visibility = View.GONE
+        } else {
+            binding.appbar.description.visibility = View.VISIBLE
         }
 
         binding.appbar.title.text = textTitle
@@ -218,8 +382,8 @@ class MainActivity : AppCompatActivity() {
         val window: Window = this.window
         var flags = window.decorView.systemUiVisibility // get current flag
         flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // add LIGHT_STATUS_BAR to flag
-        if(PreferenceHandler.isThemeDark(this)){
-            flags=flags xor  View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        if (PreferenceHandler.isThemeDark(this)) {
+            flags = flags xor View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
         window.decorView.systemUiVisibility = flags
         window.statusBarColor = ContextCompat.getColor(this, color)
@@ -268,23 +432,58 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun openFragmentShop(){
-        binding.bottomNavigationView.selectedItemId=R.id.nav_hanger
+    fun openFragmentShop() {
+        binding.bottomNavigationView.selectedItemId = R.id.nav_hanger
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment,FragmentShop())
+            .replace(R.id.main_fragment, FragmentShop())
             .addToBackStack(null)
             .commit()
     }
 
-    fun removeAllFragment(){
+    fun removeAllFragment() {
         binding.mainFragment.removeAllViews()
     }
 
     override fun recreate() {
         super.recreate()
         finish()
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
         startActivity(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
     }
+
+    interface NavCountChangeListener {
+        fun onCartCountChange(count: Int?)
+        fun onWishListCountChange(count: Int?)
+
+    }
+
+    object NavCount {
+        private var myCartCount: Int? = null
+        private var myWishListCount: Int? = null
+
+        private val listeners: MutableList<NavCountChangeListener> = ArrayList()
+        var myBoolean: Int?
+            get() = myCartCount
+            set(value) {
+                myCartCount = value
+                println("testtttttttttttttttt" + myCartCount)
+                for (l in listeners) {
+                    l.onCartCountChange(myCartCount)
+                }
+            }
+        var myWishlist: Int?
+            get() = myWishListCount
+            set(value) {
+                myWishListCount = value
+                println("testtttttttttttttttt" + myWishListCount)
+                for (l in listeners) {
+                    l.onWishListCountChange(myWishListCount)
+                }
+            }
+        fun addMyBooleanListener(l: NavCountChangeListener) {
+            listeners.add(l)
+        }
+    }
+
 }

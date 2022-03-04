@@ -1,24 +1,30 @@
 package com.ayata.clad.product.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.databinding.ItemRecyclerColorChooseBinding
+import com.ayata.clad.product.ModelColor
 
 class AdapterColor(
-    var colorList: List<Int>,var onItemClickListener: OnItemClickListener
+    var colorList: List<ModelColor>, var onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<AdapterColor.ViewHolder>() {
 
     // create an inner class with name ViewHolder
     // It takes a view argument, in which pass the generated class of single_item.xml
     // ie SingleItemBinding and in the RecyclerView.ViewHolder(binding.root) pass it like this
-    inner class ViewHolder(val binding: ItemRecyclerColorChooseBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: ItemRecyclerColorChooseBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     // inside the onCreateViewHolder inflate the view of SingleItemBinding
     // and return new ViewHolder object containing this layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemRecyclerColorChooseBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemRecyclerColorChooseBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
 
         return ViewHolder(binding)
     }
@@ -30,13 +36,13 @@ class AdapterColor(
     // to keep it simple we are
     // not setting any image data to view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(holder){
-            with(colorList[position]){
+        with(holder) {
+            with(colorList[position]) {
                 binding.color.apply {
-                    setColorFilter(ContextCompat.getColor(context, colorList[position]))
+                    setColorFilter(Color.parseColor(colorList[position].colorHex))
                 }
                 binding.root.setOnClickListener {
-                    onItemClickListener.onColorClicked(colorList[position],position)
+                    onItemClickListener.onColorClicked(colorList[position], position)
                 }
             }
         }
@@ -47,7 +53,7 @@ class AdapterColor(
         return colorList.size
     }
 
-    interface OnItemClickListener{
-        fun onColorClicked(color:Int,position:Int)
+    interface OnItemClickListener {
+        fun onColorClicked(color: ModelColor, position: Int)
     }
 }
