@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -102,6 +102,12 @@ dependencies {
     implementation 'com.github.smarteist:autoimageslider:1.4.0'
     //product image slider
     implementation 'com.github.mahdimoqadasi:ThumbIndicator:1.2.0'
+
+    //firebase authentication
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation platform('com.google.firebase:firebase-bom:29.0.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
 
 

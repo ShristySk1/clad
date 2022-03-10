@@ -75,7 +75,7 @@ class FragmentVerification : Fragment() {
     private fun setupViewModel() {
         loginViewModel = ViewModelProviders.of(
             this,
-            LoginViewModelFactory(ApiRepository(ApiService.getInstance()))
+            LoginViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         ).get(LoginViewModel::class.java)
 
     }

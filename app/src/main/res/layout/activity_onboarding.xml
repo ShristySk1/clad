@@ -15,17 +15,17 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="20dp"
-       android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="@+id/btnonboard"
-        app:layout_constraintStart_toStartOf="@+id/btnonboard"
-        app:layout_constraintTop_toBottomOf="@+id/btnonboard"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/btnongoogle"
+        app:layout_constraintStart_toStartOf="@+id/btnongoogle"
+        app:layout_constraintTop_toBottomOf="@+id/btnongoogle"
         app:tabBackground="@drawable/tab_pager_selector"
         app:tabGravity="center"
-        app:tabIndicatorHeight="0dp"/>
+        android:layout_marginTop="8dp"
+        app:tabIndicatorHeight="0dp" />
 
 
 
@@ -35,14 +35,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/onboard_item_ho_margin"
-        android:layout_marginBottom="115dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/str_btnshop"
+        android:textAllCaps="false"
+        app:backgroundTint="@null"
+        android:textSize="16sp"
+        android:background="@drawable/ripple_on_button_drawable"
+        app:layout_constraintBottom_toTopOf="@id/btnongoogle"
+        tools:layout_editor_absoluteX="20dp" />
+    <Button
+        android:id="@+id/btnongoogle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/onboard_item_ho_margin"
+        android:layout_marginBottom="70dp"
+        android:text="Sign up with Google"
         android:textAllCaps="false"
         app:backgroundTint="@null"
         android:textSize="16sp"
         android:background="@drawable/ripple_on_button_drawable"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="20dp" />
-
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

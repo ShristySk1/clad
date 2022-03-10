@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/onboard_item_ho_margin"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="220dp"
         android:fontFamily="@font/sf_pro_text_regular"
         android:text="@string/str_ontitle"
         android:textColor="@color/colorBlack"

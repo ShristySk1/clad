@@ -60,4 +60,8 @@
     <color name="thrift_color1">#80FFFFFF</color>
 
     <color name="shimmer_color">#D1D1D1</color>
+    <color name="colorGreenLight">#2F61BD08</color>
+    <color name="colorGreenDark">#4CAF50</color>
+    <color name="colorYellowLight">#2FFF9A03</color>
+    <color name="colorYellowDark">#BD770E</color>
 </resources>

@@ -17,6 +17,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
     private val listResponse = MutableLiveData<Resource<JsonObject>>()
     private val removeWishResponse = MutableLiveData<Resource<JsonObject>>()
     private val addWishResponse = MutableLiveData<Resource<JsonObject>>()
+
     var currentPage = 1
     var job: Job? = null
     private var shouldFetchAgain: Boolean
@@ -30,7 +31,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
         Log.d("initcalled", ": calledinit ");
     }
 
-    fun productListApi(filter: String,token: String) {
+    fun productListApi(filter: String, token: String) {
         if (shouldFetchAgain) {
             listResponse.postValue(Resource.loading(null))
             job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -42,12 +43,12 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
                         Log.d("productListApi", "success: " + response.body())
                         listResponse.postValue(Resource.success(response.body()))
                         loading.value = false
-                        shouldFetchAgain=false
+                        shouldFetchAgain = false
                     } else {
                         Log.e("productListApi", "error: $response")
                         onError("Error : ${response.message()} ")
                         listResponse.postValue(Resource.error(response.message(), null))
-                        shouldFetchAgain=false
+                        shouldFetchAgain = false
                     }
                 }
             }
@@ -88,7 +89,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
         addWishResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject = JsonObject()
-            jsonObject.addProperty("product_id", id)
+            jsonObject.addProperty("variant_id", id)
             val response = mainRepository.addToWishApi("${Constants.Bearer} $token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -104,6 +105,8 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
         }
 
     }
+
+
 
     fun getAddToWishAPI(): LiveData<Resource<JsonObject>> {
         return addWishResponse

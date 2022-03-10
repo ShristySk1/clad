@@ -52,7 +52,7 @@ class FragmentProfileEdit : Fragment() {
         viewModel =
             ViewModelProvider(
                 this,
-                ProfileViewModelFactory(ApiRepository(ApiService.getInstance()))
+                ProfileViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
             )
                 .get(ProfileViewModel::class.java)
 
@@ -232,6 +232,7 @@ class FragmentProfileEdit : Fragment() {
         accountViewmodel.getAccountDetails().observe(viewLifecycleOwner, {
             setDataToView(it)
         })
+
 
     }
 }

@@ -77,7 +77,7 @@ class FragmentWishlist : Fragment() {
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
-            WishListViewModelFactory(ApiRepository(ApiService.getInstance()))
+            WishListViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         ).get(WishListViewModel::class.java)
     }
 
@@ -337,8 +337,9 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun addToCartAPI(product: Wishlist) {
-        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), product.id)
-        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
+        Log.d(TAG, "addToCartAPI: "+product);
+        viewModel.wishListToCart(PreferenceHandler.getToken(context).toString(), product.wishlist_id)
+        viewModel.getWishAPIToCart().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "addToCartAPI: ${it.data}")
@@ -346,17 +347,16 @@ class FragmentWishlist : Fragment() {
                     if (jsonObject != null) {
                         showSnackBar("Product added to cart")
                         MainActivity.NavCount.myBoolean= MainActivity.NavCount.myBoolean?.plus(1)
+                        var pos=0
                         for (item in myWishList) {
-                            if (item.id == product.id) {
-                                item.product.is_in_cart = true
+                            if (item.wishlist_id == product.wishlist_id) {
+//                                item.product.is_in_cart = true
+                                pos=myWishList.indexOf(item)
                             }
                         }
-                        adapterWishList.notifyDataSetChanged()
-                        try {
-
-                        } catch (e: Exception) {
-                            Log.d(TAG, "addToCartAPI:Error ${e.message}")
-                        }
+                        myWishList.removeAt(pos)
+                        adapterWishList.notifyItemChanged(pos)
+                        MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.minus(1)
                     }
                     binding.spinKit.visibility=View.GONE
 
@@ -377,7 +377,7 @@ class FragmentWishlist : Fragment() {
     private fun removeWishListAPI(product: Wishlist) {
         viewModel.removeFromWishAPI(
             PreferenceHandler.getToken(context).toString(),
-            product.id!!
+            product.wishlist_id!!
         )
         viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -391,7 +391,7 @@ class FragmentWishlist : Fragment() {
                         var position: Int? = null
                         try {
                             for ((index, item) in myWishList.withIndex()) {
-                                if (item.id == product.id) {
+                                if (item.wishlist_id == product.wishlist_id) {
                                     remove = item
                                     position = index
                                 }
@@ -436,6 +436,7 @@ class FragmentWishlist : Fragment() {
                         try {
                             val message = jsonObject.get("message").asString
                             if (message.contains("Your wishlist is empty.", true)) {
+                                MainActivity.NavCount.myWishlist = 0
                                 setUpView()
                             }
 
@@ -451,8 +452,10 @@ class FragmentWishlist : Fragment() {
                                     if (wishListResponse.wishlist.size > 0) {
                                         val wishlist = wishListResponse.wishlist
                                         Log.d(TAG, "getWishListAPI: " + wishlist.size);
+                                        MainActivity.NavCount.myWishlist = wishlist.size
                                         setDataToView(wishlist)
                                     } else {
+                                        MainActivity.NavCount.myWishlist = 0
                                         setUpView()
                                     }
 

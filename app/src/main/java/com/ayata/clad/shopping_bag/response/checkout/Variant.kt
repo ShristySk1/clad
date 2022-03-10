@@ -5,27 +5,28 @@ import com.google.gson.annotations.SerializedName
 
 data class Variant(
     @SerializedName("color_hex")
-    val colorHex: String?,
+    val colorHex: String,
     @SerializedName("color_name")
-    val colorName: String?,
+    val colorName: String,
     @SerializedName("discount_amount")
-    val discountAmount: Double?,
+    val discountAmount: Double,
     @SerializedName("discount_dollar")
-    val discountDollar: Double?,
+    val discountDollar: Double,
     @SerializedName("discount_percent")
-    val discountPercent: Double?,
+    val discountPercent: Double,
     @SerializedName("dollar_price")
-    val dollarPrice: Double?,
+    val dollarPrice: Double,
     @SerializedName("grand_total")
-    val grandTotal: Double?,
-    val id: Int?,
+    val grandTotal: Double,
     @SerializedName("image_url")
-    val imageUrl: String?,
+    val imageUrl: String,
     @SerializedName("old_price")
-    val oldPrice: Double?,
-    val price: Double?,
-    val quantity: String?,
-    val size: String?,
+    val oldPrice: Double,
+    val price: Double,
+    val quantity: Int,
+    val size: String,
+    @SerializedName("variant_id")
+    val variantId: Int,
     @SerializedName("vat_amount")
-    val vatAmount: Double?
+    val vatAmount: Double
 )

@@ -82,7 +82,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     private fun initViewModel() {
         viewModel = ViewModelProvider(
             this,
-            ProductAllViewModelFactory(ApiRepository(ApiService.getInstance()))
+            ProductAllViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ProductAllViewModel::class.java]
     }
 
@@ -137,6 +137,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
             }
         })
     }
+
     fun showProgress() {
         isLoading = true
         if (isFirstTime) {
@@ -145,6 +146,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
             binding.loadMoreProgress.visibility = View.VISIBLE
         }
     }
+
     fun hideProgress() {
         isLoading = false
         if (isFirstTime) {
@@ -153,168 +155,173 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
             binding.loadMoreProgress.visibility = View.GONE
         }
     }
+
     private fun setUpEmptyView(message: String) {
 
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
+
     override fun onProductClickListener(data: ProductDetail) {
 
         Log.d("testmyfilter", "setUpRecyclerRecommendation: $data")
-        val bundle=Bundle()
-        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,data)
-        val fragmentProductDetail=FragmentProductDetail()
-        fragmentProductDetail.arguments=bundle
+        val bundle = Bundle()
+        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
+        val fragmentProductDetail = FragmentProductDetail()
+        fragmentProductDetail.arguments = bundle
         parentFragmentManager.beginTransaction().replace(
             R.id.main_fragment,
-          fragmentProductDetail
+            fragmentProductDetail
         ).addToBackStack(null).commit()
     }
+
     override fun onWishListClicked(data: ProductDetail, position: Int) {
         val isOnWishList = listItem[position]!!.is_in_wishlist
 //        api call
         if (isOnWishList) {
 //            removeWishListAPI(data, position)
         } else {
-            addToWishListAPI(data, position)
-        }
 
+            if (PreferenceHandler.getToken(context) != "")
+                addToWishListAPI(data, position) else (activity as MainActivity).showDialogLogin()
+        }
     }
 
 
 
-    private fun getProductListAPI(filter: String, firsttime: Boolean) {
-        isFirstTime = firsttime
-        viewModel.productListApi(filter,PreferenceHandler.getToken(requireContext())!!)
-        viewModel.getProductListAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "getProductListAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
+private fun getProductListAPI(filter: String, firsttime: Boolean) {
+    isFirstTime = firsttime
+    viewModel.productListApi(filter, PreferenceHandler.getToken(requireContext())!!)
+    viewModel.getProductListAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+                Log.d(TAG, "getProductListAPI: ${it.data}")
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        //object
                         try {
-                            //object
-                            try {
-                                val message = jsonObject.get("message").asString
-                                if (message.contains("Your product is empty.", true)) {
-                                    setUpEmptyView(message)
-                                }
-                            } catch (e: Exception) {
-                                Log.d(TAG, "getWishListAPI:Error ${e.message}")
-                                try {
-                                    val gson = Gson()
-                                    val type: Type =
-                                        object : TypeToken<List<ProductDetail?>?>() {}.type
-                                    val productList: List<ProductDetail> =
-                                        gson.fromJson(jsonObject.get("products"), type)
-                                    if (productList != null) {
-                                        if (productList.size > 0) {
-                                            val oldCount = listItem.size
-                                            binding.recyclerView.post {
-                                                listItem.addAll(productList)
-                                                adapterRecycler.updateList(
-                                                    listItem,
-                                                    oldCount,
-                                                    listItem.size
-                                                )
-                                            }
-
-                                        } else {
-                                            setUpEmptyView("empty product")
-                                        }
-
-                                    }
-                                } catch (e: Exception) {
-                                    setUpEmptyView(e.message.toString())
-
-                                }
+                            val message = jsonObject.get("message").asString
+                            if (message.contains("Your product is empty.", true)) {
+                                setUpEmptyView(message)
                             }
                         } catch (e: Exception) {
-                            Log.d(TAG, "getProductListAPI:Error ${e.message}")
+                            Log.d(TAG, "getWishListAPI:Error ${e.message}")
+                            try {
+                                val gson = Gson()
+                                val type: Type =
+                                    object : TypeToken<List<ProductDetail?>?>() {}.type
+                                val productList: List<ProductDetail> =
+                                    gson.fromJson(jsonObject.get("products"), type)
+                                if (productList != null) {
+                                    if (productList.size > 0) {
+                                        val oldCount = listItem.size
+                                        binding.recyclerView.post {
+                                            listItem.addAll(productList)
+                                            adapterRecycler.updateList(
+                                                listItem,
+                                                oldCount,
+                                                listItem.size
+                                            )
+                                        }
+
+                                    } else {
+                                        setUpEmptyView("empty product")
+                                    }
+
+                                }
+                            } catch (e: Exception) {
+                                setUpEmptyView(e.message.toString())
+
+                            }
                         }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "getProductListAPI:Error ${e.message}")
                     }
-                    hideProgress()
                 }
-                Status.LOADING -> {
-                    showProgress()
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    hideProgress()
-                }
+                hideProgress()
             }
-        })
-    }
+            Status.LOADING -> {
+                showProgress()
+            }
+            Status.ERROR -> {
+                //Handle Error
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                hideProgress()
+            }
+        }
+    })
+}
 
-    private fun removeWishListAPI(productDetail: ProductDetail, position: Int) {
-        viewModel.removeFromWishAPI(
-            PreferenceHandler.getToken(context).toString(),
-            productDetail.id
-        )
-        viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "removeWishListAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        try {
-                            listItem.get(position)!!.is_in_wishlist = false;
-                            adapterRecycler.notifyItemChanged(position)
-                            showSnackBar(msg = "Product removed from wishlist")
-                        } catch (e: Exception) {
-                            Log.d(TAG, "removeWishListAPI:Error ${e.message}")
-                        }
+private fun removeWishListAPI(productDetail: ProductDetail, position: Int) {
+    viewModel.removeFromWishAPI(
+        PreferenceHandler.getToken(context).toString(),
+        productDetail.id
+    )
+    viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+                Log.d(TAG, "removeWishListAPI: ${it.data}")
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        listItem.get(position)!!.is_in_wishlist = false;
+                        adapterRecycler.notifyItemChanged(position)
+                        showSnackBar(msg = "Product removed from wishlist")
+                    } catch (e: Exception) {
+                        Log.d(TAG, "removeWishListAPI:Error ${e.message}")
                     }
+                }
 
-                }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
-                }
             }
-        })
-    }
+            Status.LOADING -> {
+            }
+            Status.ERROR -> {
+                //Handle Error
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+            }
+        }
+    })
+}
 
-    private fun addToWishListAPI(productDetail: ProductDetail, position: Int) {
-        viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), productDetail.id)
-        viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "addToWishListAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        try {
-                            listItem.get(position)!!.is_in_wishlist = true;
-                            adapterRecycler.notifyItemChanged(position)
-                            showSnackBar("Product added to wishlist")
-                            MainActivity.NavCount.myWishlist= MainActivity.NavCount.myWishlist?.plus(1)
+private fun addToWishListAPI(productDetail: ProductDetail, position: Int) {
+    viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), productDetail?.variants[0]?.id?:0)
+    viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+                Log.d(TAG, "addToWishListAPI: ${it.data}")
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        listItem.get(position)!!.is_in_wishlist = true;
+                        adapterRecycler.notifyItemChanged(position)
+                        showSnackBar(jsonObject.get("message").toString())
+                        MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.plus(1)
 
-                        } catch (e: Exception) {
-                            Log.d(TAG, "addToWishListAPI:Error ${e.message}")
-                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "addToWishListAPI:Error ${e.message}")
+                        Toast.makeText(context,e.message,Toast.LENGTH_SHORT).show()
                     }
+                }
 
-                }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "addToWishListAPI:Error ${it.message}")
-                }
             }
-        })
-    }
+            Status.LOADING -> {
+            }
+            Status.ERROR -> {
+                //Handle Error
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                Log.d(TAG, "addToWishListAPI:Error ${it.message}")
+            }
+        }
+    })
+}
 
-    private fun showSnackBar(msg: String) {
-        val snackBar = Snackbar
-            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
-        snackBar.setActionTextColor(Color.WHITE)
-        snackBar.show()
-    }
+private fun showSnackBar(msg: String) {
+    val snackBar = Snackbar
+        .make(binding.root, msg, Snackbar.LENGTH_SHORT)
+    snackBar.setActionTextColor(Color.WHITE)
+    snackBar.show()
+}
 
 
 }

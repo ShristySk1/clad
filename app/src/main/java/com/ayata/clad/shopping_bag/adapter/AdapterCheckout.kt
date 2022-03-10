@@ -1,6 +1,7 @@
 package com.ayata.clad.shopping_bag.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.shopping_bag.model.ModelCheckout
@@ -26,6 +28,8 @@ internal class AdapterCheckout(
     private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<AdapterCheckout.MyViewHolder>() {
 
+
+    private val STOCKLIMIT: Int=6
 
     internal inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -43,6 +47,10 @@ internal class AdapterCheckout(
         val add = itemView.findViewById<ImageView>(R.id.ivAdd)
         val remove = itemView.findViewById<ImageView>(R.id.ivRemove)
         val number = itemView.findViewById<TextView>(R.id.number)
+        val color = itemView.findViewById<TextView>(R.id.color)
+        val colorHexImage = itemView.findViewById<ImageView>(R.id.ivColor)
+        val brand = itemView.findViewById<TextView>(R.id.tvBrandName)
+        val stock = itemView.findViewById<TextView>(R.id.stock)
 
 
         fun clickView() {
@@ -96,11 +104,19 @@ internal class AdapterCheckout(
         } else {
             holder.price.text = "${context!!.getString(R.string.usd)} ${item.priceUSD}"
         }
-        holder.size.text = "Size: " + item.size.toUpperCase()
+        if (item.size.isNotEmpty()) {
+            holder.size.text = "Size: " + item.size.toUpperCase()
+            holder.layoutSize.visibility = View.VISIBLE
+        } else {
+            holder.layoutSize.visibility = View.GONE
+        }
         holder.quantity.text = "QTY: " + item.qty
         holder.itemId.text = "Item ID: " + item.itemId
         holder.checkBox.isChecked = item.isSelected
-        holder.number.text=(item.qty.toString())
+        holder.number.text = (item.qty.toString())
+        holder.color.text = item.color + ","
+        holder.colorHexImage.apply { setColorFilter(Color.parseColor(item.colorHex)) }
+        holder.brand.text = "Brand: ${item.brand}"
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).asDrawable()
             .load(item.image)
@@ -129,9 +145,31 @@ internal class AdapterCheckout(
 //            .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.shoes)
             .into(holder.image)
+        //stock calculate
+        val stock = item.stock
+        val myQuantity = item.qty
+        var textToDisplay = ""
+        if (myQuantity > stock) {
+            textToDisplay = "Out of Stock"
+        } else if (myQuantity <= stock) {
+            if ((stock - myQuantity) < STOCKLIMIT) {
+                changeColor(holder.stock,R.color.colorYellowLight,R.color.colorYellowDark)
+                textToDisplay = "${stock-myQuantity} item(s) remaining"
+            } else {
+                textToDisplay = "In stock"
+                changeColor(holder.stock,R.color.colorGreenLight,R.color.colorGreenDark)
+            }
 
+        }
+        holder.stock.setText(textToDisplay)
+        //click
         holder.clickView()
 
+    }
+
+    private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int) {
+        stock.setTextColor(ContextCompat.getColor(context!!, colorDark));
+        stock.background.setTint(ContextCompat.getColor(context!!, colorLight));
     }
 
     override fun getItemCount(): Int {

@@ -136,7 +136,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     }
 
     private fun setUpViewModel(){
-        viewModel=ViewModelProvider(this,HomeViewModelFactory(ApiRepository(ApiService.getInstance())))
+        viewModel=ViewModelProvider(this,HomeViewModelFactory(ApiRepository(ApiService.getInstance(requireContext()))))
             .get(HomeViewModel::class.java)
     }
 

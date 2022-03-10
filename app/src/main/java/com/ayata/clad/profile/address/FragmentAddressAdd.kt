@@ -1,12 +1,11 @@
 package com.ayata.clad.profile.address
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.ayata.clad.MainActivity
-import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentAddressAddBinding
 import com.google.android.material.textfield.TextInputLayout
 
@@ -31,6 +30,9 @@ class FragmentAddressAdd : Fragment() {
             validateTextField(binding.textInputPhone)
             validateTextField(binding.textInputState)
             validateTextField(binding.textInputZip)
+
+            //save api
+//            saveAddressApi()
             requireActivity().supportFragmentManager.popBackStackImmediate()
         }
         return binding.root

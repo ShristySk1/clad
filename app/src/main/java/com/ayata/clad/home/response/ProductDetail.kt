@@ -6,7 +6,7 @@ import java.io.Serializable
 
 data class ProductDetail (
 
-    @SerializedName("id") val id : Int,
+    @SerializedName("product_id") val id : Int,
     @SerializedName("name") val name : String,
     @SerializedName("slug") val slug : String,
     @SerializedName("categories") val categories : List<Categories>,
@@ -23,7 +23,7 @@ data class ProductDetail (
     @SerializedName("reference_code") val reference_code : String,
     @SerializedName("barcode") val barcode : String,
     @SerializedName("brand") val brand : Brand,
-    @SerializedName("owner") val owner : String,
+    @SerializedName("vendor") val owner : String,
     @SerializedName("store") val store : String,
     @SerializedName("product_address") val product_address : String,
     @SerializedName("seo_title") val seo_title : String,

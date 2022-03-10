@@ -27,7 +27,7 @@ import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.shopping_bag.response.checkout.Cart
-import com.ayata.clad.shopping_bag.response.checkout.CheckoutResponse
+import com.ayata.clad.shopping_bag.response.checkout.CartResponse
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
@@ -78,7 +78,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
-            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance()))
+            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[CheckoutViewModel::class.java]
     }
 
@@ -122,7 +122,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private fun setUpView() {
         if (listCheckout.isEmpty()) {
-            MainActivity.NavCount.myBoolean=0
+            MainActivity.NavCount.myBoolean = 0
             binding.layoutEmpty.visibility = View.VISIBLE
             binding.layoutMain.visibility = View.GONE
         } else {
@@ -190,15 +190,19 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             Log.d(TAG, "prepareList: loop");
             listCheckout.add(
                 ModelCheckout(
-                    item.product?.name ?: "",
-                    item.product?.id ?: 0,
-                    item?.product?.variant?.get(0)?.price ?: 0.0,
-                    item.product?.price ?: 0.0,
-                    item?.product?.variant?.get(0)?.size ?: "null",
-                    1,
+                    item.productDetails?.name ?: "",
+                    item.selected?.variantId ?: 0,
+                    item?.selected?.vTotal ?: 0.0,
+                    item.selected?.vDollarTotal ?: 0.0,
+                    item?.selected?.size ?: "",
+                    item.selected.quantity,
                     false,
-                    item.product?.imageUrl ?: "",
-                    item.id ?: 0
+                    item.selected?.imageUrl ?: "",
+                    item.cartId ?: 0,
+                    item.selected.colorName,
+                    item.selected.colorHex,
+                    item.productDetails.brand.name,
+                    item.selected.sku
                 )
             )
         }
@@ -234,7 +238,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     }
 
     override fun onRemove(data: ModelCheckout) {
-        removeFromCartAPI(data.cartId)
+        minusFromCartAPI(data.cartId)
     }
 
     private fun isCheckAll() {
@@ -349,11 +353,14 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private fun prepareListSize(data: ModelCheckout) {
         listSize.clear()
         for (cart in apiCartList) {
-            if (data.itemId == cart.product!!.id) {
-                for (v in cart?.product?.variant!!) {
-                    listSize.add(ModelCircleText(v.id ?: 0, v.size ?: "", false))
+            for (v in cart.productDetails.variants) {
+                if (data.itemId == v.variantId) {
+//                    for (v in cart?.product?.variant!!) {
+                    listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false))
+                    //}
                 }
             }
+
         }
 //        listSize.add(ModelCircleText("s", true))
 //        listSize.add(ModelCircleText("m", false))
@@ -408,14 +415,14 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
                             try {
                                 val checkoutResponse =
-                                    Gson().fromJson<CheckoutResponse>(
+                                    Gson().fromJson<CartResponse>(
                                         jsonObject,
-                                        CheckoutResponse::class.java
+                                        CartResponse::class.java
                                     )
                                 if (checkoutResponse.cart != null) {
                                     if (checkoutResponse.cart.size > 0) {
                                         val cartlist = checkoutResponse.cart
-                                        MainActivity.NavCount.myBoolean= cartlist.size
+                                        MainActivity.NavCount.myBoolean = cartlist.size
                                         prepareList(cartlist)
                                     } else {
                                         setUpView()
@@ -521,6 +528,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         showSnackBar("Product increased to cart")
+                        updateCartAtPosition(0)
 //                        for (item in myWishList) {
 //                            if (item.id == product.id) {
 //                                item.product.is_in_cart = true
@@ -547,6 +555,11 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                 }
             }
         })
+    }
+
+    private fun updateCartAtPosition(i: Int) {
+        listCheckout[i].qty++
+        adapterCheckout.notifyItemChanged(i)
     }
 
     private fun removeFromCartAPI(id: Int) {
@@ -597,4 +610,54 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             }
         })
     }
+
+    private fun minusFromCartAPI(id: Int) {
+        viewModel.minusFromCartAPI(
+            PreferenceHandler.getToken(context).toString(),
+            id
+        )
+        viewModel.getMinusFromCartAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+//                    binding.spinKit.visibility = View.GONE
+                    Log.d(TAG, "removeWishListAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        showSnackBar(msg = "Product decreased from cart")
+//                        var remove: Wishlist? = null;
+//                        var position: Int? = null
+//                        try {
+//                            for ((index, item) in myWishList.withIndex()) {
+//                                if (item.id == product.id) {
+//                                    remove = item
+//                                    position = index
+//                                }
+//                            }
+//                            remove?.let {
+//                                myWishList.remove(remove)
+//                            }
+//                            setUpView()
+//                            position?.let {
+//                                adapterWishList.notifyItemRemoved(position)
+//                            }
+//
+//                        } catch (e: Exception) {
+//                            Log.d(FragmentWishlist.TAG, "removeWishListAPI:Error ${e.message}")
+//                        }
+                    }
+
+                }
+                Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+//                    binding.spinKit.visibility = View.GONE
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
 }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "886011284473",
+    "project_id": "clad-e6d70",
+    "storage_bucket": "clad-e6d70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886011284473:android:77c7b24f56351ff027cb28",
+        "android_client_info": {
+          "package_name": "com.ayata.clad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "886011284473-m6m5645ju9v0geh81vpi54u517gi93vt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ayata.clad",
+            "certificate_hash": "fb7543c90e74a34f9003a645bff0ff7f4a9d1d81"
+          }
+        },
+        {
+          "client_id": "886011284473-bb0c1cfjkaq8rt2grjlktlhsrq6kvde6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzalVoUFxoDJu-oFjRCRm1uh8Kuo8hqJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "886011284473-bb0c1cfjkaq8rt2grjlktlhsrq6kvde6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -81,7 +81,7 @@ class FragmentProductList : Fragment() {
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
-            ProductListViewModelFactory(ApiRepository(ApiService.getInstance()))
+            ProductListViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ProductListViewModel::class.java]
     }
 

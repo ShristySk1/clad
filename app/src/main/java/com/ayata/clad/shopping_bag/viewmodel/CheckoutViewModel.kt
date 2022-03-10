@@ -17,6 +17,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
 
     private val cartResponse = MutableLiveData<Resource<JsonObject>>()
     private val removeCartResponse = MutableLiveData<Resource<JsonObject>>()
+    private val minusCartResponse = MutableLiveData<Resource<JsonObject>>()
     private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
     private val quantityResponse = MutableLiveData<Resource<JsonObject>>()
@@ -55,7 +56,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
         removeCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
-            jsonObject.addProperty("product_id",id)
+            jsonObject.addProperty("cart_id",id)
             val response = mainRepository.removeFromCartAPI("${Constants.Bearer} $token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
@@ -75,12 +76,36 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
     fun getRemoveFromCartAPI(): LiveData<Resource<JsonObject>> {
         return removeCartResponse
     }
+    fun minusFromCartAPI(token:String,id: Int) {
+        minusCartResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val jsonObject=JsonObject()
+            jsonObject.addProperty("cart_id",id)
+            val response = mainRepository.minusFromCartAPI("${Constants.Bearer} $token",jsonObject)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("removeFromCartAPI", "success: "+response.body())
+                    minusCartResponse.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("removeFromCartAPI", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    minusCartResponse.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+
+    }
+
+    fun getMinusFromCartAPI(): LiveData<Resource<JsonObject>> {
+        return minusCartResponse
+    }
 
     fun addToCartAPI(token:String,id:Int) {
         addCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
-            jsonObject.addProperty("product_id",id)
+            jsonObject.addProperty("variant_id",id)
             jsonObject.addProperty("quantity",1)
 
             val response = mainRepository.addToCartApi("${Constants.Bearer} $token",jsonObject)

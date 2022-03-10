@@ -63,7 +63,7 @@ class FragmentViewAllBrand : Fragment(), AdapterViewAllBrand.OnItemClickListener
     private fun initViewModel() {
         viewModel = ViewModelProvider(
             this,
-            BrandAllViewModelFactory(ApiRepository(ApiService.getInstance()))
+            BrandAllViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[BrandAllViewModel::class.java]
     }
 

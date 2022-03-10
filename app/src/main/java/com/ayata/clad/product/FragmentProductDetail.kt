@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentProductDetailBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
@@ -37,6 +39,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -51,7 +54,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var productDetail: ProductDetail
     var galleryBundle: Bundle? = null
 
-    var dynamicProductId = 0
+//    var dynamicProductId = 0
+    var dynamicVarientId = 0
+    var choosenSizePosition = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,8 +107,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun setProductData() {
-        dynamicProductId = productDetail?.variants[0]?.id?:0
-        Log.d(TAG, "setProductData: ");
+        dynamicVarientId = productDetail?.variants[0]?.id ?: 0
+        choosenSizePosition = 0
+        Log.d(TAG, "setProductData: " + dynamicVarientId);
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
             binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
             binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.old_price}"
@@ -121,7 +127,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.detail2.name.text = productDetail.name
         isProductWishList = productDetail.is_in_wishlist
         isProductInCart = productDetail.is_in_cart
-//        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
+        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         setWishlist(isProductWishList)
         setCart(isProductInCart)
     }
@@ -129,7 +135,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
-            ProductViewModelFactory(ApiRepository(ApiService.getInstance()))
+            ProductViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ProductViewModel::class.java]
     }
 
@@ -139,7 +145,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 if (isProductWishList) {
 //                    removeWishListAPI()
                 } else {
-                    addToWishListAPI()
+                    if (PreferenceHandler.getToken(context) != "")
+                        addToWishListAPI() else (activity as MainActivity).showDialogLogin()
                 }
 //                setWishlist()
 //                isProductWishList=(!isProductWishList)
@@ -151,7 +158,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 if (isProductInCart) {
                     showSnackBar("Product already added in cart")
                 } else {
-                    addToCartAPI()
+                    if (PreferenceHandler.getToken(context) != "")
+                        addToCartAPI() else (activity as MainActivity).showDialogLogin()
+//                    addToCartAPI()
                 }
 //                setCart()
 //                isProductInCart=(!isProductInCart)
@@ -164,7 +173,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 if (isProductInCart) {
                     showSnackBar("Product already added in cart")
                 } else {
-                    addToCartAPI()
+                    if (PreferenceHandler.getToken(context) != "")
+                        addToCartAPI() else (activity as MainActivity).showDialogLogin()
                 }
 //                setCart()
 //                isProductInCart=(!isProductInCart)
@@ -340,7 +350,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         productDetail.variants.forEach {
             listModelColor.add(
                 ModelColor(
-                    it.color?.hex_value ?: "#ffffff",
+                    it.hex_value ?: "#ffffff",
                     it.image_url ?: "",
                     it.id ?: 0
                 )
@@ -372,7 +382,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 for (item in listText) {
                     item.isSelected = item.equals(data)
                     if (item.isSelected) {
-                        dynamicProductId = data.productId
+                        dynamicVarientId = data.productId
                     }
                     adapterCircleText.notifyDataSetChanged()
                     Log.d(TAG, "setUpRecyclerSize: " + item.title);
@@ -391,8 +401,19 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun prepareListSize() {
         listText.clear()
 
-        productDetail.variants.forEach {
-            listText.add(ModelCircleText(it.id ?: 0, it.size ?: "", false))
+        val filteredSizes = productDetail.variants.filter {
+            //size according to color
+            it.id == dynamicVarientId
+        }
+        filteredSizes.forEach {
+            if (it.size != null) {
+                binding.detail2.constraintLayout2.visibility = View.VISIBLE
+                listText.add(ModelCircleText(it.id ?: 0, it.size ?: "", false))
+
+            } else {
+                //disable size layout
+                binding.detail2.constraintLayout2.visibility = View.GONE
+            }
         }
 //        listText.add(ModelCircleText("s", true))
 //        listText.add(ModelCircleText("m", false))
@@ -420,7 +441,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //                ""
 //            }
 //        }
-        dynamicProductId = color.productId
+        dynamicVarientId = color.productId
         Glide.with(requireContext())
             .load(color.imageUrl)
             .transition(DrawableTransitionOptions.withCrossFade())
@@ -463,7 +484,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun addToWishListAPI() {
-        viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), productDetail.id)
+        viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -473,7 +494,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         showSnackBar("Product added to wishlist")
                         isProductWishList = true
                         setWishlist(true)
-                        MainActivity.NavCount.myWishlist= MainActivity.NavCount.myWishlist?.plus(1)
+                        MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.plus(1)
 
                         try {
 
@@ -494,42 +515,14 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         })
     }
 
-    private fun removeCartAPI() {
-        viewModel.removeFromCartAPI(
-            PreferenceHandler.getToken(context).toString(),
-            productDetail.id
-        )
-        viewModel.getRemoveFromCartAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "removeCartAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        isProductInCart = false
-                        setCart(false)
-                        showSnackBar("Product removed from cart")
-                        try {
-
-                        } catch (e: Exception) {
-                            Log.d(TAG, "removeCartAPI:Error ${e.message}")
-                        }
-                    }
-
-                }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeCartAPI:Error ${it.message}")
-                }
-            }
-        })
-    }
 
     private fun addToCartAPI() {
-        Toast.makeText(requireContext(), dynamicProductId.toString(), Toast.LENGTH_SHORT).show()
-        Log.d(TAG, "addToCartAPI: "+dynamicProductId);
+//        Toast.makeText(requireContext(), dynamicProductId.toString(), Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "addToCartAPI: " + dynamicVarientId);
+//check if size available
+
+        //pop up for size
+        showDialogSize()
 //        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicProductId)
 //        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
 //            when (it.status) {
@@ -560,4 +553,78 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        })
     }
 
+    private fun showDialogSize() {
+
+//        lateinit var adapterCircleSize: AdapterCircleText
+//        var listSize = java.util.ArrayList<ModelCircleText>()
+        if(binding.detail2.constraintLayout2.isVisible) {
+            val dialogBinding =
+                DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
+            val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+            bottomSheetDialog.setContentView(dialogBinding.root)
+            dialogBinding.title.text = "Size"
+            dialogBinding.btnSave.text="Add to Cart"
+            adapterCircleText = AdapterCircleText(context, listText).also { adapter ->
+                adapter.setCircleClickListener { data ->
+                    for (item in listText) {
+                        item.isSelected = item.equals(data)
+                        if (item.isSelected) {
+                            dynamicVarientId = data.productId
+                        }
+                        adapterCircleText.notifyDataSetChanged()
+                        Log.d(TAG, "setUpRecyclerSize: " + item.title);
+                    }
+                }
+            }
+
+            dialogBinding.recyclerView.apply {
+                layoutManager = GridLayoutManager(context, 5)
+                adapter = adapterCircleText
+            }
+
+            dialogBinding.btnClose.setOnClickListener {
+                bottomSheetDialog.dismiss()
+            }
+
+            dialogBinding.btnSave.setOnClickListener {
+//            saveSizeAPI(data, data.size)
+                addCart()
+                bottomSheetDialog.dismiss()
+            }
+            bottomSheetDialog.show()
+        }else{
+            addCart()
+        }
+    }
+
+    private fun addCart() {
+        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
+        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "addToCartAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        isProductInCart = true
+                        setCart(true)
+                        showSnackBar("Product added to cart")
+                        MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
+                        try {
+
+                        } catch (e: Exception) {
+                            Log.d(TAG, "addToCartAPI:Error ${e.message}")
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
 }

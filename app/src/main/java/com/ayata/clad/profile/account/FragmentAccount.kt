@@ -9,34 +9,34 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
-import com.ayata.clad.data.preference.DataStoreManager
-import com.ayata.clad.databinding.ActivityOnboardingBinding
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentAccountBinding
 import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
+import com.ayata.clad.login.viewmodel.LoginViewModel
+import com.ayata.clad.login.viewmodel.LoginViewModelFactory
 import com.ayata.clad.onboarding.ActivityOnboarding
-import com.ayata.clad.profile.address.FragmentAddressAdd
 import com.ayata.clad.profile.address.FragmentAddressDetail
 import com.ayata.clad.profile.edit.FragmentProfileEdit
-import com.ayata.clad.profile.edit.response.Details
-import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FragmentAccount : Fragment() {
     lateinit var binding: FragmentAccountBinding
     val TAG = "FragmentAccount"
+    private lateinit var loginViewModel: LoginViewModel
 
-    private var prevTheme:String=""
+    private var prevTheme: String = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,29 +44,59 @@ class FragmentAccount : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentAccountBinding.inflate(inflater, container, false)
-        prevTheme = if(PreferenceHandler.isThemeDark(context)){
+        prevTheme = if (PreferenceHandler.isThemeDark(context)) {
             "dark"
-        }else{
+        } else {
             "light"
         }
         initView()
+        setupViewModel()
         setUpRecyclerView()
         return binding.root
     }
 
+    private fun setupViewModel() {
+        loginViewModel = ViewModelProviders.of(
+            this,
+            LoginViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        ).get(LoginViewModel::class.java)
+
+    }
+
     private fun initView() {
         binding.btnLogOut.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
-                DataStoreManager(requireContext()).logout()
-                startActivity(Intent(context, ActivityOnboarding::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-            }
+            //api logout
+            PreferenceHandler.getToken(context)?.let { it1 -> loginViewModel.logout(it1) }
+            loginViewModel.dologout().observe(viewLifecycleOwner, {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        binding.defaultProgress.visibility = View.GONE
+                        Log.d(TAG, "login: ${it.data}")
+
+                            PreferenceHandler.logout(requireContext())
+                            startActivity(
+                                Intent(context, ActivityOnboarding::class.java)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            )
+                    }
+                    Status.LOADING -> {
+                        binding.defaultProgress.visibility = View.VISIBLE
+                    }
+                    Status.ERROR -> {
+                        //Handle Error
+                        binding.defaultProgress.visibility = View.GONE
+                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+
+                    }
+                }
+            })
+
         }
 
     }
 
-    private val listAccount=ArrayList<ModelAccount>()
-    private fun prepareListAccount(){
+    private val listAccount = ArrayList<ModelAccount>()
+    private fun prepareListAccount() {
         listAccount.clear()
         listAccount.add(ModelAccount(0, 2, "PERSONAL INFORMATION"))
         listAccount.add(ModelAccount(1, 2, "ADDRESS BOOK"))
@@ -97,22 +127,35 @@ class FragmentAccount : Fragment() {
 
     private fun setUpRecyclerView() {
         prepareListAccount()
-        val adapterAccount= AdapterAccount(
+        val adapterAccount = AdapterAccount(
             requireContext(),
             listAccount
         ).also {
-            it.setAccountClickListener { model->
+            it.setAccountClickListener { model ->
                 Log.d(TAG, "setUpRecyclerView: " + model.textData)
                 when (model.position) {
                     0 -> {//PERSONAL INFORMATION
-                        val fragmentProfileEdit=FragmentProfileEdit()
-//                        fragmentProfileEdit.arguments=arguments
-                        requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(R.id.main_fragment,fragmentProfileEdit).addToBackStack(null).commit()
+                        if (PreferenceHandler.getToken(requireContext()) != "") {
+                            //check if we got our data
+                            val fragmentProfileEdit = FragmentProfileEdit()
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment, fragmentProfileEdit)
+                                .addToBackStack(null)
+                                .commit()
+                        } else {
+                            (activity as MainActivity).showDialogLogin()
+                        }
+
                     }
                     1 -> {//ADDRESS BOOK
-                        requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(R.id.main_fragment,FragmentAddressDetail()).addToBackStack(null).commit()
+                        if (PreferenceHandler.getToken(requireContext()) != "") {
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment, FragmentAddressDetail())
+                                .addToBackStack(null).commit()
+                        } else {
+                            (activity as MainActivity).showDialogLogin()
+                        }
+
                     }
                     3 -> {//COUNTRY & LANGUAGE
                     }
@@ -122,11 +165,11 @@ class FragmentAccount : Fragment() {
                     }
                     7 -> {//PRIVACY POLICY
                     }
-                    8->{
+                    8 -> {
                         //theme
                         showDialogTheme()
                     }
-                    9->{
+                    9 -> {
                         showDialogCurrency()
                     }
                     10 -> {//Return policy
@@ -141,7 +184,7 @@ class FragmentAccount : Fragment() {
                 LinearLayoutManager(requireContext())
             adapter = adapterAccount
         }
-        Log.d(TAG, "setUpRecyclerView: "+listAccount.size+"---"+adapterAccount.list.size)
+        Log.d(TAG, "setUpRecyclerView: " + listAccount.size + "---" + adapterAccount.list.size)
     }
 
     private fun showDialogTheme(
@@ -149,15 +192,17 @@ class FragmentAccount : Fragment() {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(dialogBinding.root)
-        val list= listOf<MyFilterContentViewItem.SingleChoice>(MyFilterContentViewItem.SingleChoice("Light Theme", false),
-                MyFilterContentViewItem.SingleChoice("Dark Theme", false))
+        val list = listOf<MyFilterContentViewItem.SingleChoice>(
+            MyFilterContentViewItem.SingleChoice("Light Theme", false),
+            MyFilterContentViewItem.SingleChoice("Dark Theme", false)
+        )
 
-        if(PreferenceHandler.isThemeDark(context)){
-            list[1].isSelected=true
-            list[0].isSelected=false
-        }else{
-            list[0].isSelected=true
-            list[1].isSelected=false
+        if (PreferenceHandler.isThemeDark(context)) {
+            list[1].isSelected = true
+            list[0].isSelected = false
+        } else {
+            list[0].isSelected = true
+            list[1].isSelected = false
         }
 
         val adapterFilterContent = AdapterFilterContent(
@@ -168,12 +213,12 @@ class FragmentAccount : Fragment() {
                     item.isSelected = item == data
                 }
                 adapter.notifyDataSetChanged()
-                if(!data.title.contains(prevTheme,true)) {
+                if (!data.title.contains(prevTheme, true)) {
                     if (data.title.contains("dark", true)) {
                         PreferenceHandler.setTheme(context, true)
                         prevTheme = "dark"
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    }else{
+                    } else {
                         PreferenceHandler.setTheme(context, false)
                         prevTheme = "light"
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -193,10 +238,11 @@ class FragmentAccount : Fragment() {
         bottomSheetDialog.show()
     }
 
-    private fun initAppbar(){
+    private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar1(getString(R.string.profile),
+        (activity as MainActivity).setToolbar1(
+            getString(R.string.profile),
             isSearch = false,
             isProfile = false,
             isClose = true
@@ -208,16 +254,17 @@ class FragmentAccount : Fragment() {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(dialogBinding.root)
-        val list= listOf<MyFilterContentViewItem.SingleChoice>(
+        val list = listOf<MyFilterContentViewItem.SingleChoice>(
             MyFilterContentViewItem.SingleChoice("Nepali (NPR)", false),
-            MyFilterContentViewItem.SingleChoice("Dollar (USD)", false))
+            MyFilterContentViewItem.SingleChoice("Dollar (USD)", false)
+        )
 
-        if(PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case),true)){
-            list[0].isSelected=true
-            list[1].isSelected=false
-        }else{
-            list[1].isSelected=true
-            list[0].isSelected=false
+        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
+            list[0].isSelected = true
+            list[1].isSelected = false
+        } else {
+            list[1].isSelected = true
+            list[0].isSelected = false
         }
 
         val adapterFilterContent = AdapterFilterContent(
@@ -230,7 +277,7 @@ class FragmentAccount : Fragment() {
                 adapter.notifyDataSetChanged()
                 if (data.title.contains("npr", true)) {
                     PreferenceHandler.setCurrency(context, "npr")
-                }else{
+                } else {
                     PreferenceHandler.setCurrency(context, "usd")
                 }
             }

@@ -28,10 +28,10 @@ class SplashActivity : AppCompatActivity() {
 
     private var goTo:Int=0
     override fun onCreate(savedInstanceState: Bundle?) {
+        setAppMode()
         super.onCreate(savedInstanceState)
         binding= ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setAppMode()
         listDrawable.shuffle()
         setImageLoop()
         setUpFullScreen()

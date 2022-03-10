@@ -73,7 +73,29 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
     fun getRemoveFromWishAPI(): LiveData<Resource<JsonObject>> {
         return removeResponse
     }
+    private val wishListToCart = MutableLiveData<Resource<JsonObject>>()
+    fun wishListToCart(token: String, id: Int) {
+        wishListToCart.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.wishlistToCart("${Constants.Bearer} $token", id)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("addToWishAPI", "success: " + response.body())
+                    wishListToCart.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("addToWishAPI", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    wishListToCart.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
 
+    }
+
+    fun getWishAPIToCart(): LiveData<Resource<JsonObject>> {
+        return wishListToCart
+    }
     fun addToCartAPI(token:String,id:Int) {
         addCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {

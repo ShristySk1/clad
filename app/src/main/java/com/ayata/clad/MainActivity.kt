@@ -15,6 +15,7 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.ActivityMainBinding
+import com.ayata.clad.databinding.DialogLoginBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.preorder.FragmentPreorder
@@ -23,7 +24,8 @@ import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
-import com.ayata.clad.shopping_bag.response.checkout.CheckoutResponse
+import com.ayata.clad.shopping_bag.response.checkout.Cart
+import com.ayata.clad.shopping_bag.response.checkout.CartResponse
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.Constants
@@ -34,6 +36,7 @@ import com.ayata.clad.wishlist.viewmodel.WishListViewModel
 import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import java.util.*
 
@@ -41,9 +44,9 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var badge: BadgeDrawable
-    private lateinit var badge_wishlist:BadgeDrawable
+    private lateinit var badge_wishlist: BadgeDrawable
     lateinit var viewModelCart: CheckoutViewModel
-    lateinit var viewModelWishlist:WishListViewModel
+    lateinit var viewModelWishlist: WishListViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -60,25 +63,28 @@ class MainActivity : AppCompatActivity() {
         setStatusBarLight(R.color.colorWhite)
         setToolbar()
         setUpViewModel()
+
         setBadge()
 
     }
+
     private fun setUpViewModel() {
 //        viewModelCart = ViewModelProvider(this).get(CheckoutViewModel::class.java)
         viewModelCart = ViewModelProvider(
             this,
-            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance()))
+            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(this)))
         )[CheckoutViewModel::class.java]
         viewModelWishlist = ViewModelProvider(
             this,
-            WishListViewModelFactory(ApiRepository(ApiService.getInstance()))
+            WishListViewModelFactory(ApiRepository(ApiService.getInstance(this)))
         ).get(WishListViewModel::class.java)
     }
 
     private fun setBadge() {
         badge = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_cart)
-        badge_wishlist= binding.bottomNavigationView.getOrCreateBadge(R.id.nav_favorite)
-
+        badge_wishlist = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_favorite)
+        badge.isVisible = false
+        badge_wishlist.isVisible = false
         NavCount.addMyBooleanListener(object :
             NavCountChangeListener {
             override fun onCartCountChange(count: Int?) {
@@ -123,24 +129,24 @@ class MainActivity : AppCompatActivity() {
                             val message = jsonObject.get("message").asString
                             if (message.contains("empty.", true)) {
                                 //empty
-                                NavCount.myBoolean=0
+                                NavCount.myBoolean = 0
                             }
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
                             try {
                                 val checkoutResponse =
-                                    Gson().fromJson<CheckoutResponse>(
+                                    Gson().fromJson<CartResponse>(
                                         jsonObject,
-                                        CheckoutResponse::class.java
+                                        CartResponse::class.java
                                     )
                                 if (checkoutResponse.cart != null) {
                                     if (checkoutResponse.cart.size > 0) {
                                         val cartlist = checkoutResponse.cart
                                         //set cart number
-                                        NavCount.myBoolean=cartlist.size
+                                        NavCount.myBoolean = cartlist.size
                                     } else {
                                         //empty
-                                        NavCount.myBoolean=0
+                                        NavCount.myBoolean = 0
                                     }
 
                                 }
@@ -169,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                             val message = jsonObject.get("message").asString
                             if (message.contains("Your wishlist is empty.", true)) {
                                 //empty
-                                NavCount.myWishlist=0
+                                NavCount.myWishlist = 0
                             }
 
                         } catch (e: Exception) {
@@ -182,11 +188,11 @@ class MainActivity : AppCompatActivity() {
                                 if (wishListResponse.wishlist != null) {
                                     if (wishListResponse.wishlist.size > 0) {
                                         val wishlist = wishListResponse.wishlist
-                                       //set count
-                                        NavCount.myWishlist=wishlist.size
+                                        //set count
+                                        NavCount.myWishlist = wishlist.size
                                     } else {
                                         //empty
-                                        NavCount.myWishlist=0
+                                        NavCount.myWishlist = 0
                                     }
 
                                 }
@@ -277,10 +283,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.appbar.btnProfile.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentProfile())
-                .addToBackStack(null)
-                .commit()
+//            if (PreferenceHandler.getToken(this) != "") {
+//                supportFragmentManager.beginTransaction()
+//                    .replace(R.id.main_fragment, FragmentProfile())
+//                    .addToBackStack(null)
+//                    .commit()
+//            } else {
+//                showDialogLogin()
+//            }
+                            supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, FragmentProfile())
+                    .addToBackStack(null)
+                    .commit()
         }
     }
 
@@ -402,16 +416,33 @@ class MainActivity : AppCompatActivity() {
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem: MenuItem ->
             var selectedFragment: Fragment? = null
+            var changeFragment = true
             when (menuItem.itemId) {
                 R.id.nav_home -> selectedFragment = FragmentHome()
                 R.id.nav_hanger -> selectedFragment = FragmentShop()
-                R.id.nav_favorite -> selectedFragment = FragmentWishlist()
-                R.id.nav_cart -> selectedFragment = FragmentCheckout()
+                R.id.nav_favorite -> {
+                    if (PreferenceHandler.getToken(this) != "") {
+                        selectedFragment = FragmentWishlist()
+                    } else {
+                        changeFragment = false
+                        showDialogLogin()
+                    }
+                }
+                R.id.nav_cart -> {
+                    if (PreferenceHandler.getToken(this) != "") {
+                        selectedFragment = FragmentCheckout()
+                    } else {
+                        changeFragment = false
+                        showDialogLogin()
+                    }
+                }
                 R.id.nav_rader -> selectedFragment = FragmentPreorder()
             }
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, selectedFragment!!)
-                .commit()
+            if (changeFragment) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, selectedFragment!!)
+                    .commit()
+            }
             true
         }
 
@@ -481,9 +512,25 @@ class MainActivity : AppCompatActivity() {
                     l.onWishListCountChange(myWishListCount)
                 }
             }
+
         fun addMyBooleanListener(l: NavCountChangeListener) {
             listeners.add(l)
         }
     }
+
+    fun showDialogLogin() {
+        val dialogBinding = DialogLoginBinding.inflate(LayoutInflater.from(this))
+        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(dialogBinding.root)
+        dialogBinding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        dialogBinding.btnSave.setOnClickListener {
+            //google login
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
+    }
+
 
 }

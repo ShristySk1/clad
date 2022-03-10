@@ -133,7 +133,7 @@ class FragmentLogin : Fragment() {
     private fun setupViewModel() {
         loginViewModel = ViewModelProviders.of(
             this,
-            LoginViewModelFactory(ApiRepository(ApiService.getInstance()))
+            LoginViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         ).get(LoginViewModel::class.java)
 
     }
@@ -141,7 +141,7 @@ class FragmentLogin : Fragment() {
     private fun phoneApi(phone:String){
         loginViewModel.phoneAPI(phone)
         //observe
-        loginViewModel.doPhone().observe(this, Observer {
+        loginViewModel.doPhone().observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "login: ${it.data}")

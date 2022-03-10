@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/btnClose"
+        android:layout_alignTop="@id/btnClose"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textStyle="bold"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:id="@+id/btnClose"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_close"
+        android:tint="@color/colorBlack"
+        android:background="@drawable/ripple_5dp"
+        android:backgroundTint="@color/colorWhite"
+        android:layout_alignParentEnd="true"
+        android:padding="5dp"/>
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_below="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/ripple_5dp_black"
+        android:drawableEnd="@drawable/ic_arrow_right"
+        android:text="Login with Google"
+        android:textAlignment="textStart" />
+
+</RelativeLayout>

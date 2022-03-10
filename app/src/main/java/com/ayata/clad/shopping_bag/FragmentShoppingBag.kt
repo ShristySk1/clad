@@ -48,7 +48,7 @@ class FragmentShoppingBag : Fragment() {
 
     private fun setUpViewModel(){
         viewModel=ViewModelProvider(this,
-            CategoryViewModelFactory(ApiRepository(ApiService.getInstance())))[CategoryViewModel::class.java]
+            CategoryViewModelFactory(ApiRepository(ApiService.getInstance(requireContext()))))[CategoryViewModel::class.java]
     }
     private fun initAppbar(){
         (activity as MainActivity).showBottomNavigation(true)
@@ -89,5 +89,6 @@ class FragmentShoppingBag : Fragment() {
         binding.textLeft.typeface= Typeface.DEFAULT_BOLD
         binding.progressBar.progress=50
     }
+
 
 }

@@ -25,10 +25,10 @@ class FragmentAddressDetail : Fragment(),AdapterAddress.OnItemClickListener {
     ): View? {
         // Inflate the layout for this fragment
         binding= FragmentAddressDetailBinding.inflate(inflater, container, false)
-
         initAppbar()
         initRecycler()
-        binding.addNewBtn.setOnClickListener {
+//        getAddressApi()
+        binding.llAddAddress.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment,FragmentAddressAdd()).addToBackStack(null).commit()
         }
@@ -56,16 +56,18 @@ class FragmentAddressDetail : Fragment(),AdapterAddress.OnItemClickListener {
         prepareListAddress()
         if(listAddress.size>=2){
             binding.addNewBtn.visibility=View.GONE
+            binding.llAddAddress.visibility=View.GONE
         }else{
-            binding.addNewBtn.visibility=View.VISIBLE
+            binding.addNewBtn.visibility=View.GONE
+            binding.llAddAddress.visibility=View.VISIBLE
         }
     }
 
     private fun prepareListAddress(){
 
         listAddress.clear()
-        listAddress.add(ModelShippingAddress("Home","New Baneshwor - 10,\nKathmandu, Nepal",true))
-        listAddress.add(ModelShippingAddress("Office","Kuleshwor - 12,\nLalitpur, Nepal",false))
+//        listAddress.add(ModelShippingAddress("Home","New Baneshwor - 10,\nKathmandu, Nepal",true))
+//        listAddress.add(ModelShippingAddress("Office","Kuleshwor - 12,\nLalitpur, Nepal",false))
 
         adapterAddress.notifyDataSetChanged()
     }

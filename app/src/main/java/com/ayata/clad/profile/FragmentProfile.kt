@@ -23,8 +23,8 @@ import com.ayata.clad.profile.giftcard.FragmentGiftCard
 import com.ayata.clad.profile.myorder.FragmentMyOrder
 import com.ayata.clad.profile.viewmodel.ProfileViewModel
 import com.ayata.clad.profile.viewmodel.ProfileViewModelFactory
-import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
@@ -62,66 +62,82 @@ class FragmentProfile : Fragment() {
         viewModel =
             ViewModelProvider(
                 this,
-                ProfileViewModelFactory(ApiRepository(ApiService.getInstance()))
+                ProfileViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
             )
                 .get(ProfileViewModel::class.java)
         accountiewModel = ViewModelProviders.of(requireActivity()).get(AccountViewModel::class.java)
 
-        setPreviousData()
+//        setPreviousData()
+        setProfile()
     }
 
-    private fun setPreviousData() {
-        viewModel.profileDetailAPI(PreferenceHandler.getToken(context)!!)
-        viewModel.getProfileAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        try {
-                            val profileResponse =
-                                Gson().fromJson<UserProfileResponse>(
-                                    jsonObject,
-                                    UserProfileResponse::class.java
-                                )
-                            if (profileResponse.details != null) {
-                                val detail = profileResponse.details
-                                setDataToView(detail)
-
-                            }
-                        } catch (e: Exception) {
-                            Log.d("", "prepareAPI: ${e.message}")
-                        }
-                    }
-
-                }
-                Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
-
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    binding.spinKit.visibility = View.GONE
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d("", "home: ${it.message}")
-                }
-            }
-        })
-    }
-
-    private fun setDataToView(detail: Details) {
+    private fun setProfile() {
+        binding.accName.text = PreferenceHandler.getUsername(requireContext())
+        binding.accEmail.text = PreferenceHandler.getEmail(requireContext())
+        Glide.with(requireContext()).asBitmap()
+            .load(PreferenceHandler.getImageDecoded(requireContext()))
+            .into(binding.ivProfileImage)
+        val detail:Details=Details("",PreferenceHandler.getEmail(requireContext())?:"",PreferenceHandler.getUsername(requireContext())?:"","")
         accountiewModel.setAccountDetail(detail)
-//        bundle = Bundle()
-//        bundle.putSerializable(Constants.EDIT_PROFILE, detail)
-        binding.accEmail.setText(detail.email)
-        binding.accName.setText(detail.fullName)
-        val initials = detail.fullName
-            .split(' ')
-            .mapNotNull { it.firstOrNull()?.toString() }
-            .reduce { acc, s -> acc + s }
-        binding.profileNamePlaceholder.text = initials
-
     }
+
+//    private fun setPreviousData() {
+//        viewModel.profileDetailAPI(PreferenceHandler.getToken(context)!!)
+//        viewModel.getProfileAPI().observe(viewLifecycleOwner, {
+//            when (it.status) {
+//                Status.SUCCESS -> {
+//                    binding.spinKit.visibility = View.GONE
+//                    val jsonObject = it.data
+//                    if (jsonObject != null) {
+//                        try {
+//                            val profileResponse =
+//                                Gson().fromJson<UserProfileResponse>(
+//                                    jsonObject,
+//                                    UserProfileResponse::class.java
+//                                )
+//                            if (profileResponse.details != null) {
+//                                val detail = profileResponse.details
+//                                setDataToView(detail)
+//
+//                            }
+//                        } catch (e: Exception) {
+//                            Log.d("", "prepareAPI: ${e.message}")
+//                        }
+//                    }
+//
+//                }
+//                Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+//
+//                }
+//                Status.ERROR -> {
+//                    //Handle Error
+//                    binding.spinKit.visibility = View.GONE
+//                    if (it.message.equals("Unauthorized")) {
+//
+//                    } else {
+//                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//
+//                    }
+//                    Log.d("", "home: ${it.message}")
+//                }
+//            }
+//        })
+//    }
+//
+//    private fun setDataToView(detail: Details) {
+//        accountiewModel.setAccountDetail(detail)
+////        bundle = Bundle()
+////        bundle.putSerializable(Constants.EDIT_PROFILE, detail)
+//        binding.accEmail.setText(detail.email)
+//        binding.accName.setText(detail.fullName)
+//        val initials = detail.fullName
+//            .split(' ')
+//            .mapNotNull { it.firstOrNull()?.toString() }
+//            .reduce { acc, s -> acc + s }
+//        binding.profileNamePlaceholder.text = initials
+//
+//    }
 
     private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(false)
@@ -140,6 +156,8 @@ class FragmentProfile : Fragment() {
 //            .mapNotNull { it.firstOrNull()?.toString() }
 //            .reduce { acc, s -> acc + s }
 //        binding.profileNamePlaceholder.text = initials
+        binding.viewPager.setUserInputEnabled(false);
+
     }
 
     private fun setTabLayout(list: List<Fragment>, myTitles: ArrayList<String>) {
@@ -156,8 +174,34 @@ class FragmentProfile : Fragment() {
             binding.tabLayout, binding.viewPager,
             TabLayoutMediator.TabConfigurationStrategy { tab: TabLayout.Tab, position: Int ->
                 tab.text = titles[position]
+                if (position != 0) {
+                    if (PreferenceHandler.getToken(requireContext()) != "") {
+                        tab.view.isEnabled = true
+                    } else {
+                        tab.view.isEnabled = false
+                    }
+                }
             }
         ).attach()
+//        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+//            override fun onTabSelected(tab: TabLayout.Tab?) {
+//                if ((tab?.view?.isEnabled)!!) {
+//                    //needs login
+//                    binding.viewPager.currentItem = tab.position
+//                }else{
+//
+//                }
+//            }
+//
+//            override fun onTabUnselected(tab: TabLayout.Tab?) {
+//
+//            }
+//
+//            override fun onTabReselected(tab: TabLayout.Tab?) {
+//
+//            }
+//
+//        })
     }
 
     private fun getDataFromApi() {

@@ -54,7 +54,6 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentShopBinding.inflate(inflater, container, false)
-
         initAppbar()
         setUpViewModel()
         initSearchView()
@@ -67,7 +66,7 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
-            CategoryViewModelFactory(ApiRepository(ApiService.getInstance()))
+            CategoryViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[CategoryViewModel::class.java]
     }
 

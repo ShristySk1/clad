@@ -9,7 +9,6 @@ import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerWishlistBinding
-import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.response.get.Wishlist
 import com.bumptech.glide.Glide
@@ -19,7 +18,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
 class AdapterWishList(
-    val context:Context,
+    val context: Context,
     var productList: List<Wishlist>
 ) : RecyclerView.Adapter<AdapterWishList.ViewHolder>() {
     // create an inner class with name ViewHolder
@@ -55,12 +54,14 @@ class AdapterWishList(
                 })
                 .error(R.drawable.shoes)
                 .into(binding.image)
-            if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            if (PreferenceHandler.getCurrency(context)
+                    .equals(context!!.getString(R.string.npr_case), true)
+            ) {
                 //npr
-                binding.price.text="${context!!.getString(R.string.rs)} ${item.product.price}"
-            }else{
+                binding.price.text = "${context!!.getString(R.string.rs)} ${item.product.price}"
+            } else {
                 //usd
-                binding.price.text="${context!!.getString(R.string.usd)} ${item.product.price}"
+                binding.price.text = "${context!!.getString(R.string.usd)} ${item.product.price}"
             }
 
             binding.image.setOnClickListener {
@@ -76,13 +77,19 @@ class AdapterWishList(
                     function(item)
                 }
             }
+//            if (item.product.is_in_cart) {
+//
+//            } else {
+//
+//            }
             binding.imageView4.setOnClickListener {
                 itemBagClick?.let { function ->
                     function(item)
                 }
             }
-            binding.name.text=item.product.name
-            binding.company.text=item.product.owner
+            binding.name.text = item.product.name
+            binding.company.text = item.product.owner
+
         }
     }
 
@@ -126,6 +133,7 @@ class AdapterWishList(
     fun setSettingClickListener(listener: ((Wishlist) -> Unit)) {
         itemSettingClick = listener
     }
+
     private var itemBagClick: ((Wishlist) -> Unit)? = null
     fun setBagClickListener(listener: ((Wishlist) -> Unit)) {
         itemBagClick = listener
