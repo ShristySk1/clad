@@ -6,10 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.utils.PreferenceHandler
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
-import java.lang.Exception
 
 class LoginViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
@@ -68,10 +66,11 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository) : Vi
         }
 
     }
+
     fun login(token: String) {
-        try {
-            loginGoogleResponse.postValue(Resource.loading(null))
-            job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        loginGoogleResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
                 val response = mainRepository.login(token)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
@@ -84,19 +83,21 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository) : Vi
                         loginGoogleResponse.postValue(Resource.error(response.message(), null))
                     }
                 }
+            } catch (e: Exception) {
+                Log.d("test;logim", "login: " + e.message);
+                loginGoogleResponse.postValue(Resource.error(e.message ?: "", null))
             }
-        }catch (e:Exception){
-            loginGoogleResponse.postValue(Resource.error(e.message?:"", null))
         }
 
 
     }
+
     fun doLogin(): LiveData<Resource<JsonObject>> {
         return loginGoogleResponse
     }
 
     //logout
-    fun logout(token:String) {
+    fun logout(token: String) {
         logoutResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.logout(token)
@@ -140,9 +141,11 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository) : Vi
     fun doPhone(): LiveData<Resource<JsonObject>> {
         return loginResponse
     }
+
     fun dologout(): LiveData<Resource<JsonObject>> {
         return logoutResponse
     }
+
     fun doOTPCheck(): LiveData<Resource<JsonObject>> {
         return loginResponse
     }

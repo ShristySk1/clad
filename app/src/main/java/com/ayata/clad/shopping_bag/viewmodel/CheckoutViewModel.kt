@@ -104,11 +104,8 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
     fun addToCartAPI(token:String,id:Int) {
         addCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            jsonObject.addProperty("variant_id",id)
-            jsonObject.addProperty("quantity",1)
 
-            val response = mainRepository.addToCartApi("${Constants.Bearer} $token",jsonObject)
+            val response = mainRepository.addToCartApi("${Constants.Bearer} $token",id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("addToCartAPI", "success: "+response.body())

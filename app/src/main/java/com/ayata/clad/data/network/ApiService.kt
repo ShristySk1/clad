@@ -32,9 +32,9 @@ interface ApiService {
                 val client: OkHttpClient =
                     OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
 //                        .addInterceptor(NetworkConnectionInterceptor(WeakReference(context)))
-                        .connectTimeout(25, TimeUnit.SECONDS)
-                        .readTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS).build()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS).build()
                 val retrofit = Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .client(client)
@@ -64,7 +64,7 @@ interface ApiService {
     suspend fun loginGoogle(@Field("auth_token")auth_token: String):Response<JsonObject>
     //dashboard
     @GET("home/")
-    suspend fun dashboardAPI(): Response<JsonObject>
+    suspend fun dashboardAPI(@Header("Authorization") token: String): Response<JsonObject>
 
     //category
     @GET("category-list/")
@@ -105,9 +105,10 @@ interface ApiService {
     suspend fun cartListAPI(@Header("Authorization") token: String): Response<JsonObject>
 
     @POST("add-to-cart/")
+    @FormUrlEncoded
     suspend fun addToCartAPI(
         @Header("Authorization") token: String,
-        @Body jsonObject: JsonObject
+        @Field("variant_id")variant_id: Int
     ): Response<JsonObject>
 
     @POST("remove-from-cart/")

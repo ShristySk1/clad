@@ -1,5 +1,6 @@
 package com.ayata.clad.home.viewmodel
 
+import android.util.JsonToken
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,10 +23,10 @@ class HomeViewModel constructor(private val mainRepository: ApiRepository)  : Vi
     }
     private val loading = MutableLiveData<Boolean>()
 
-    fun dashboardAPI() {
+    fun dashboardAPI(token: String) {
         homeResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.dashboardAPI()
+            val response = mainRepository.dashboardAPI(token)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("homeResponse", "success: "+response.body())

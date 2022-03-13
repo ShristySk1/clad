@@ -28,6 +28,7 @@ import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.shopping_bag.response.checkout.Cart
 import com.ayata.clad.shopping_bag.response.checkout.CartResponse
+import com.ayata.clad.shopping_bag.response.checkout.Selected
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
@@ -35,6 +36,10 @@ import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
+import java.util.*
+
 
 class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
@@ -233,12 +238,12 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         calculatePrice()
     }
 
-    override fun onAddClick(data: ModelCheckout) {
-        addToCartAPI(data.itemId)
+    override fun onAddClick(data: ModelCheckout, position: Int) {
+        addToCartAPI(data.itemId,position,data)
     }
 
-    override fun onRemove(data: ModelCheckout) {
-        minusFromCartAPI(data.cartId)
+    override fun onRemove(data: ModelCheckout, position: Int) {
+        minusFromCartAPI(data.cartId,position)
     }
 
     private fun isCheckAll() {
@@ -356,7 +361,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             for (v in cart.productDetails.variants) {
                 if (data.itemId == v.variantId) {
 //                    for (v in cart?.product?.variant!!) {
-                    listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false))
+                    listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false,"",""))
                     //}
                 }
             }
@@ -519,7 +524,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         snackbar.show()
     }
 
-    private fun addToCartAPI(id: Int) {
+    private fun addToCartAPI(id: Int,position: Int,old:ModelCheckout) {
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -527,23 +532,36 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     Log.d(TAG, "addToCartAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
-                        showSnackBar("Product increased to cart")
-                        updateCartAtPosition(0)
-//                        for (item in myWishList) {
-//                            if (item.id == product.id) {
-//                                item.product.is_in_cart = true
-//                            }
-//                        }
-//                        adapterWishList.notifyDataSetChanged()
-//                        try {
-//
-//                        } catch (e: Exception) {
-//                            Log.d(FragmentWishlist.TAG, "addToCartAPI:Error ${e.message}")
-//                        }
+                        try {
+                            val message = jsonObject.get("message").asString
+                            if (message.contains("empty.", true)) {
+
+                                setUpView()
+                            }else{
+                              val d=  jsonObject.get("details").asJsonArray
+                                val gson = Gson()
+
+                                val userListType: Type =
+                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
+
+                                val cartArray: ArrayList<Cart> =
+                                    gson.fromJson(d, userListType)
+                                if (cartArray != null) {
+                                    //update cart
+                                    updateCartAtPosition(cartArray[0].selected,position)
+
+                                }
+
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "getCartAPI:Error ${e.message}")
+                        }
+                    }
+
                     }
 //                    binding.spinKit.visibility=View.GONE
 
-                }
+
                 Status.LOADING -> {
 //                    binding.spinKit.visibility=View.VISIBLE
                 }
@@ -557,8 +575,13 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         })
     }
 
-    private fun updateCartAtPosition(i: Int) {
-        listCheckout[i].qty++
+    private fun updateCartAtPosition(seleted: Selected, i: Int) {
+        listCheckout[i].apply {
+            qty=seleted.quantity
+            priceNPR=seleted.vTotal
+            priceUSD=seleted.vDollarTotal
+        }
+        Log.d(TAG, "updateCartAtPosition: "+listCheckout[i]);
         adapterCheckout.notifyItemChanged(i)
     }
 
@@ -611,7 +634,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         })
     }
 
-    private fun minusFromCartAPI(id: Int) {
+    private fun minusFromCartAPI(id: Int,position: Int) {
         viewModel.minusFromCartAPI(
             PreferenceHandler.getToken(context).toString(),
             id
@@ -623,27 +646,30 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     Log.d(TAG, "removeWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
-                        showSnackBar(msg = "Product decreased from cart")
-//                        var remove: Wishlist? = null;
-//                        var position: Int? = null
-//                        try {
-//                            for ((index, item) in myWishList.withIndex()) {
-//                                if (item.id == product.id) {
-//                                    remove = item
-//                                    position = index
-//                                }
-//                            }
-//                            remove?.let {
-//                                myWishList.remove(remove)
-//                            }
-//                            setUpView()
-//                            position?.let {
-//                                adapterWishList.notifyItemRemoved(position)
-//                            }
-//
-//                        } catch (e: Exception) {
-//                            Log.d(FragmentWishlist.TAG, "removeWishListAPI:Error ${e.message}")
-//                        }
+                        try {
+                            val message = jsonObject.get("message").asString
+                            if (message.contains("empty.", true)) {
+
+                                setUpView()
+                            }else{
+                                val d=  jsonObject.get("details").asJsonArray
+                                val gson = Gson()
+
+                                val userListType: Type =
+                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
+
+                                val cartArray: ArrayList<Cart> =
+                                    gson.fromJson(d, userListType)
+                                if (cartArray != null) {
+                                    //update cart
+                                    updateCartAtPosition(cartArray[0].selected,position)
+
+                                }
+
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "getCartAPI:Error ${e.message}")
+                        }
                     }
 
                 }

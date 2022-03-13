@@ -25,6 +25,7 @@ import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentProductDetailBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.home.response.Variants
 import com.ayata.clad.product.adapter.AdapterColor
 import com.ayata.clad.product.adapter.AdapterRecommendation
 import com.ayata.clad.product.viewmodel.ProductViewModel
@@ -41,6 +42,8 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
@@ -54,9 +57,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var productDetail: ProductDetail
     var galleryBundle: Bundle? = null
 
-//    var dynamicProductId = 0
+    //    var dynamicProductId = 0
     var dynamicVarientId = 0
     var choosenSizePosition = 0
+
+    //for color and size
+    lateinit var myMaps: MutableMap<String, MutableList<Variants>>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +74,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         initView()
         getBundle()
         setUpFullScreen()
-        setUpRecyclerColor()
-        setUpRecyclerSize()
+
+
         setUpTabChoose()
         tapToCopyListener()
         productLikedListener()
@@ -107,7 +113,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun setProductData() {
-        dynamicVarientId = productDetail?.variants[0]?.id ?: 0
+//        dynamicVarientId = productDetail?.variants[0]?.id ?: 0
         choosenSizePosition = 0
         Log.d(TAG, "setProductData: " + dynamicVarientId);
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
@@ -127,9 +133,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.detail2.name.text = productDetail.name
         isProductWishList = productDetail.is_in_wishlist
         isProductInCart = productDetail.is_in_cart
-        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
+//        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         setWishlist(isProductWishList)
         setCart(isProductInCart)
+        val colorsize = setHashMapColorSize()
+        setUpRecyclerColor(colorsize.keys)
     }
 
     private fun setUpViewModel() {
@@ -341,21 +349,23 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         }
     }
 
-    private fun setUpRecyclerColor() {
+    private fun setUpRecyclerColor(keys: MutableSet<String>) {
         val flexboxLayoutManager = FlexboxLayoutManager(context).apply {
             flexWrap = FlexWrap.WRAP
             flexDirection = FlexDirection.ROW
         }
         val listModelColor = ArrayList<ModelColor>()
-        productDetail.variants.forEach {
+        for (key in keys) {
             listModelColor.add(
                 ModelColor(
-                    it.hex_value ?: "#ffffff",
-                    it.image_url ?: "",
-                    it.id ?: 0
+                    key,
+                    getImageUrlFromColorKey(key) ?: "",
+                    0//not necessary
                 )
             )
         }
+
+
         binding.rvColor.apply {
             layoutManager =
                 flexboxLayoutManager
@@ -363,6 +373,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 listModelColor, this@FragmentProductDetail
             )
         }
+        setUpRecyclerSize()
+
     }
 
     private fun setUpFullScreen() {
@@ -379,6 +391,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun setUpRecyclerSize() {
         adapterCircleText = AdapterCircleText(context, listText).also { adapter ->
             adapter.setCircleClickListener { data ->
+                //change price according to size
+                changePrice(data)
                 for (item in listText) {
                     item.isSelected = item.equals(data)
                     if (item.isSelected) {
@@ -389,65 +403,75 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
             }
         }
-        prepareListSize()
+
 
         binding.detail2.rvSize.apply {
             layoutManager = GridLayoutManager(context, 5)
             adapter = adapterCircleText
         }
 
+        //click color by default
+        binding.rvColor.post {
+            binding.rvColor.findViewHolderForAdapterPosition(0)?.itemView?.performClick();
+        }
+
     }
 
-    private fun prepareListSize() {
-        listText.clear()
+    private fun changePrice(data: ModelCircleText) {
 
-        val filteredSizes = productDetail.variants.filter {
-            //size according to color
-            it.id == dynamicVarientId
+        Log.d(TAG, "changePrice:up " + data.toString());
+        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
+            Log.d(TAG, "changePrice: " + data.toString());
+            binding.price.text = getString(R.string.rs) + " ${data.priceNpr}"
+            binding.oldPrice.text =
+                getString(R.string.rs) + " ${productDetail.old_price}"//dont know
+            binding.detail2.price.text = getString(R.string.rs) + " ${data.priceNpr}"
+        } else {
+            binding.price.text = getString(R.string.usd) + " ${data.priceDollar}"
+            binding.oldPrice.text =
+                getString(R.string.usd) + " ${productDetail.old_price}"//dont know
+            binding.detail2.price.text = getString(R.string.usd) + " ${data.priceDollar}"
+            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
         }
-        filteredSizes.forEach {
-            if (it.size != null) {
-                binding.detail2.constraintLayout2.visibility = View.VISIBLE
-                listText.add(ModelCircleText(it.id ?: 0, it.size ?: "", false))
+    }
 
+    private fun prepareListSize(colorHex: String) {
+        listText.clear()
+        val filteredVariants = getValueFromHashKey(colorHex) ?: ArrayList<Variants>()
+        for (v in filteredVariants) {
+            if (v.size != null) {
+                binding.detail2.constraintLayout2.visibility = View.VISIBLE
+                listText.add(
+                    ModelCircleText(
+                        v.id ?: 0,
+                        v.size ?: "",
+                        false,
+                        v.grand_total.toString(),
+                        v.dollar_price.toString()
+                    )
+                )
             } else {
                 //disable size layout
                 binding.detail2.constraintLayout2.visibility = View.GONE
             }
         }
-//        listText.add(ModelCircleText("s", true))
-//        listText.add(ModelCircleText("m", false))
-//        listText.add(ModelCircleText("l", false))
-//        listText.add(ModelCircleText("xl", false))
         adapterCircleText.notifyDataSetChanged()
+        binding.detail2.rvSize.post {
+            binding.detail2.rvSize.findViewHolderForAdapterPosition(0)?.itemView?.performClick();
+        }
+
     }
 
     override fun onColorClicked(color: ModelColor, position: Int) {
-        //change image
-//        val url = when (position) {
-//            2 -> {
-//                dynamicProductId = 2
-//                "https://pa.namshicdn.com/product/A6/20076W/1-zoom-desktop.jpg"
-//            }
-//            1 -> {
-//                dynamicProductId = 1
-//                "https://m.media-amazon.com/images/I/71hNVecVSrL._AC_UX342_.jpg"
-//            }
-//            3 -> {
-//                dynamicProductId = 3
-//                R.drawable.example_img
-//            }
-//            else -> {
-//                ""
-//            }
-//        }
-        dynamicVarientId = color.productId
         Glide.with(requireContext())
             .load(color.imageUrl)
             .transition(DrawableTransitionOptions.withCrossFade())
             .error(R.drawable.splashimage)
             .into(binding.imageView3)
         binding.imageView3.cropYCenterOffsetPct = 0f
+        Log.d("testcolorclick", "onColorClicked: " + position);
+        //reset data
+        prepareListSize(color.colorHex)
     }
 
     private fun removeWishListAPI() {
@@ -484,6 +508,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun addToWishListAPI() {
+        Log.d(TAG, "addToWishListAPI: " + dynamicVarientId);
         viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -520,7 +545,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        Toast.makeText(requireContext(), dynamicProductId.toString(), Toast.LENGTH_SHORT).show()
         Log.d(TAG, "addToCartAPI: " + dynamicVarientId);
 //check if size available
-
         //pop up for size
         showDialogSize()
 //        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicProductId)
@@ -554,16 +578,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun showDialogSize() {
-
-//        lateinit var adapterCircleSize: AdapterCircleText
-//        var listSize = java.util.ArrayList<ModelCircleText>()
-        if(binding.detail2.constraintLayout2.isVisible) {
+        if (binding.detail2.constraintLayout2.isVisible) {
             val dialogBinding =
                 DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
             val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
             bottomSheetDialog.setContentView(dialogBinding.root)
             dialogBinding.title.text = "Size"
-            dialogBinding.btnSave.text="Add to Cart"
+            dialogBinding.btnSave.text = "Add to Cart"
             adapterCircleText = AdapterCircleText(context, listText).also { adapter ->
                 adapter.setCircleClickListener { data ->
                     for (item in listText) {
@@ -592,7 +613,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 bottomSheetDialog.dismiss()
             }
             bottomSheetDialog.show()
-        }else{
+        } else {
             addCart()
         }
     }
@@ -627,4 +648,37 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
         })
     }
+
+    fun setHashMapColorSize(): MutableMap<String, MutableList<Variants>> {
+        //set color according to hex value
+        myMaps = HashMap()
+        for (item in productDetail.variants) {
+            if (!myMaps.containsKey(item.hex_value)) {
+                myMaps[item.hex_value] = ArrayList()
+            }
+            myMaps[item.hex_value]!!.add(item)
+        }
+
+        return myMaps
+    }
+
+    fun getValueFromHashKey(key: String): MutableList<Variants>? {
+        myMaps.keys.forEach {
+            if (key == it) {
+                return myMaps[key]
+            }
+        }
+        return null
+    }
+
+    fun getImageUrlFromColorKey(key: String): String? {
+        myMaps.keys.forEach {
+            if (key == it) {
+                Log.d(TAG, "getImageUrlFromColorKey: " + myMaps[key]?.get(0).toString());
+                return myMaps[key]?.get(0)?.image_url
+            }
+        }
+        return ""
+    }
+
 }

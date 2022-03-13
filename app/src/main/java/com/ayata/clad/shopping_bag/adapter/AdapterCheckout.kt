@@ -79,10 +79,10 @@ internal class AdapterCheckout(
             }
 
             add.setOnClickListener {
-                onItemClickListener.onAddClick(listItems[adapterPosition])
+                onItemClickListener.onAddClick(listItems[adapterPosition],adapterPosition)
             }
             remove.setOnClickListener {
-                onItemClickListener.onRemove(listItems[adapterPosition])
+                onItemClickListener.onRemove(listItems[adapterPosition],adapterPosition)
 
             }
         }
@@ -180,8 +180,8 @@ internal class AdapterCheckout(
         fun onSizeClicked(data: ModelCheckout, position: Int)
         fun onQuantityClicked(data: ModelCheckout, position: Int)
         fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean, position: Int)
-        fun onAddClick(data: ModelCheckout)
-        fun onRemove(data: ModelCheckout)
+        fun onAddClick(data: ModelCheckout,position: Int)
+        fun onRemove(data: ModelCheckout,position: Int)
     }
 
 }

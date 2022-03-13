@@ -30,6 +30,7 @@ import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.story.StoryActivity
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.view_all.FragmentViewAllBrand
 import com.ayata.clad.view_all.FragmentViewAllProduct
 import com.google.gson.Gson
@@ -486,7 +487,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
 //            }
 //        }
 //
-        viewModel.dashboardAPI()
+        viewModel.dashboardAPI(Constants.Bearer+" "+PreferenceHandler.getToken(requireContext())?:"")
             viewModel.getDashboardAPI().observe(viewLifecycleOwner,{
                 when (it.status) {
                     Status.SUCCESS -> {

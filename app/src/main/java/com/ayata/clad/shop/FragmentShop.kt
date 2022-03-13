@@ -27,6 +27,7 @@ import com.ayata.clad.shop.response.CategoryResponse
 import com.ayata.clad.shop.response.SubCategory
 import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModelFactory
+import com.ayata.clad.utils.MyLayoutInflater
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 
@@ -269,7 +270,18 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
             it.category.toLowerCase() == category.toLowerCase()
         }.single()
         val listSpecificSubCat = getSpecificCat.subCategory
-        shopRecyclerList.addAll(listSpecificSubCat)
+        if (listSpecificSubCat.size == 0) {
+            //empty list
+            MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Empty!","No products available")
+        } else {
+            if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+                MyLayoutInflater().onDelete(
+                    binding.root,
+                    binding.root.findViewById(R.id.layout_root)
+                )
+            }
+                shopRecyclerList.addAll(listSpecificSubCat)
+        }
 //        adapterShopFilterable.setData(shopRecyclerList)
         adapterShopFilterable.notifyDataSetChanged()
 
@@ -292,6 +304,12 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         viewModel.getCategoryListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+                        MyLayoutInflater().onDelete(
+                            binding.root,
+                            binding.root.findViewById(R.id.layout_root)
+                        )
+                    }
                     setShimmerLayout(false)
                     Log.d(TAG, "getCartAPI: ${it.data}")
                     val jsonObject = it.data
@@ -333,12 +351,16 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
                     setShimmerLayout(false)
 //                    listCheckout.clear()
 //                    setUpView()
+
+                    MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Error!",it.message.toString())
+
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "getCartAPI:Error ${it.message}")
                 }
             }
         })
     }
+
     private fun setShimmerLayout(isVisible: Boolean) {
         if (isVisible) {
             binding.shimmerFrameLayout.visibility = View.VISIBLE

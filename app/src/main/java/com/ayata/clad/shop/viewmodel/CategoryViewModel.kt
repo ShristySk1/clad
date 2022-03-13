@@ -27,18 +27,24 @@ class CategoryViewModel constructor(private val mainRepository: ApiRepository) :
     fun categoryListAPI() {
         categoryResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.categoryListAPI()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("categoryListAPI", "success: " + response.body())
-                    categoryResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("categoryListAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    categoryResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.categoryListAPI()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("categoryListAPI", "success: " + response.body())
+                        categoryResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("categoryListAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        categoryResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                categoryResponse.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
 
     }
