@@ -29,7 +29,7 @@ class AdapterWishList(
         fun clickView(item: Wishlist) {
             binding.progressBar.visibility = View.VISIBLE
             Glide.with(binding.image.context)
-                .load(item.product.image_url)
+                .load(item.product.imageUrl[0])
                 .listener(object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
                         @Nullable e: GlideException?,
@@ -88,7 +88,7 @@ class AdapterWishList(
                 }
             }
             binding.name.text = item.product.name
-            binding.company.text = item.product.owner
+            binding.company.text = item.product.vendor
 
         }
     }

@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.ayata.clad.R
-import com.ayata.clad.home.response.Sliders
+import com.ayata.clad.home.response.Slider
 import com.bumptech.glide.Glide
 import com.smarteist.autoimageslider.SliderViewAdapter
 
 
-internal class AdapterBanner(private val context:Context,private val listItems:ArrayList<Sliders>,
-    private val onItemClickListener: OnItemClickListener) : SliderViewAdapter<AdapterBanner.MyViewHolder>() {
+internal class AdapterBanner(private val context:Context, private val listItems:ArrayList<Slider>,
+                             private val onItemClickListener: OnItemClickListener) : SliderViewAdapter<AdapterBanner.MyViewHolder>() {
 
 
     internal inner class MyViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -24,7 +24,7 @@ internal class AdapterBanner(private val context:Context,private val listItems:A
 //            this.itemView = itemView
         }
 
-        fun clickView(data: Sliders){
+        fun clickView(data: Slider){
             itemView.setOnClickListener {
                 onItemClickListener.onBannerClicked(data)
             }
@@ -44,7 +44,7 @@ internal class AdapterBanner(private val context:Context,private val listItems:A
     override fun onBindViewHolder(viewHolder: MyViewHolder?, position: Int) {
         val item=listItems[position]
         Glide.with(context)
-            .load(item.image_url)
+            .load(item.imageUrl)
             .fitCenter()
             .error(R.drawable.ic_clad_logo_grey)
             .into(viewHolder!!.imageView)
@@ -52,7 +52,7 @@ internal class AdapterBanner(private val context:Context,private val listItems:A
     }
 
     interface OnItemClickListener{
-        fun onBannerClicked(data:Sliders)
+        fun onBannerClicked(data:Slider)
     }
 
 }

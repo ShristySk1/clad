@@ -42,7 +42,6 @@ class FragmentShoppingBag : Fragment() {
                     .replace(R.id.fragment_shopping, FragmentCheckout()).commit()
             }
         }
-
         return binding.root
     }
 

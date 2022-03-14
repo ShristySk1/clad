@@ -9,14 +9,9 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.Nullable
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.home.model.ModelPopularBrands
 import com.ayata.clad.home.response.Brand
-import com.ayata.clad.home.response.ProductDetail
-import com.ayata.clad.utils.PreferenceHandler
-import com.ayata.clad.view_all.model.ModelViewAllProduct
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -106,7 +101,7 @@ internal class AdapterViewAllBrand(var context: Context?,
 
         viewHolder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.icon_url)
+            .load(item.iconUrl)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,

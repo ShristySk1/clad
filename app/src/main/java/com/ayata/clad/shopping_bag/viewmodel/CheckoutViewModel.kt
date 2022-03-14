@@ -1,6 +1,5 @@
 package com.ayata.clad.shopping_bag.viewmodel
 
-import android.provider.SyncStateContract
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +10,7 @@ import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 
-class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
+class CheckoutViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
     private val errorMessage = MutableLiveData<String>()
 
@@ -21,7 +20,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
     private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
     private val quantityResponse = MutableLiveData<Resource<JsonObject>>()
-
+    private val cartSelectResponse = MutableLiveData<Resource<JsonObject>>()
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -29,13 +28,13 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
     }
     private val loading = MutableLiveData<Boolean>()
 
-    fun cartListAPI(token:String) {
+    fun cartListAPI(token: String) {
         cartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.cartListApi("${Constants.Bearer} $token")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("cartListAPI", "success: "+response.body())
+                    Log.d("cartListAPI", "success: " + response.body())
                     cartResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -52,15 +51,16 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
         return cartResponse
     }
 
-    fun removeFromCartAPI(token:String,id: Int) {
+    fun removeFromCartAPI(token: String, id: Int) {
         removeCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            jsonObject.addProperty("cart_id",id)
-            val response = mainRepository.removeFromCartAPI("${Constants.Bearer} $token",jsonObject)
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("cart_id", id)
+            val response =
+                mainRepository.removeFromCartAPI("${Constants.Bearer} $token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("removeFromCartAPI", "success: "+response.body())
+                    Log.d("removeFromCartAPI", "success: " + response.body())
                     removeCartResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -76,15 +76,16 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
     fun getRemoveFromCartAPI(): LiveData<Resource<JsonObject>> {
         return removeCartResponse
     }
-    fun minusFromCartAPI(token:String,id: Int) {
+
+    fun minusFromCartAPI(token: String, id: Int) {
         minusCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            jsonObject.addProperty("cart_id",id)
-            val response = mainRepository.minusFromCartAPI("${Constants.Bearer} $token",jsonObject)
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("cart_id", id)
+            val response = mainRepository.minusFromCartAPI("${Constants.Bearer} $token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("removeFromCartAPI", "success: "+response.body())
+                    Log.d("removeFromCartAPI", "success: " + response.body())
                     minusCartResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -101,14 +102,35 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
         return minusCartResponse
     }
 
-    fun addToCartAPI(token:String,id:Int) {
-        addCartResponse.postValue(Resource.loading(null))
+    fun selectCartApi(token: String, id: Int) {
+        cartSelectResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-
-            val response = mainRepository.addToCartApi("${Constants.Bearer} $token",id)
+            val response = mainRepository.cartsSeletApi("${Constants.Bearer} $token", id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("addToCartAPI", "success: "+response.body())
+                    Log.d("removeFromCartAPI", "success: " + response.body())
+                    cartSelectResponse.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("removeFromCartAPI", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    cartSelectResponse.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+    }
+    fun getSelectCartAPI(): LiveData<Resource<JsonObject>> {
+        return cartSelectResponse
+    }
+
+    fun addToCartAPI(token: String, id: Int) {
+        addCartResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+Log.d("getcartid", "addToCartAPI: "+id);
+            val response = mainRepository.addToCartApi("${Constants.Bearer} $token", id)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("addToCartAPIsuccess", "success: " + response.body())
                     addCartResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -124,17 +146,20 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
     fun getAddToCartAPI(): LiveData<Resource<JsonObject>> {
         return addCartResponse
     }
+    fun resetAddCartLiveData(){
+        addCartResponse.value=null
+    }
 
-    fun saveSizeAPI(token:String,id: Int,size:String) {
+    fun saveSizeAPI(token: String, id: Int, size: String) {
         sizeResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            jsonObject.addProperty("product_id",id)
-            jsonObject.addProperty("size",id)
-            val response = mainRepository.saveSizeAPI("${Constants.Bearer} $token",jsonObject)
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("product_id", id)
+            jsonObject.addProperty("size", id)
+            val response = mainRepository.saveSizeAPI("${Constants.Bearer} $token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("saveSizeAPI", "success: "+response.body())
+                    Log.d("saveSizeAPI", "success: " + response.body())
                     sizeResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -151,16 +176,16 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
         return sizeResponse
     }
 
-    fun saveQuantityAPI(token:String,id: Int,quantity:String) {
+    fun saveQuantityAPI(token: String, id: Int, quantity: String) {
         quantityResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            jsonObject.addProperty("product_id",id)
-            jsonObject.addProperty("quantity",id)
-            val response = mainRepository.saveSizeAPI("${Constants.Bearer} $token",jsonObject)
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("product_id", id)
+            jsonObject.addProperty("quantity", id)
+            val response = mainRepository.saveSizeAPI("${Constants.Bearer} $token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("saveQuantityAPI", "success: "+response.body())
+                    Log.d("saveQuantityAPI", "success: " + response.body())
                     quantityResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -178,7 +203,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository)  
     }
 
     private fun onError(message: String) {
-        errorMessage.postValue( message)
+        errorMessage.postValue(message)
         loading.postValue(false)
     }
 

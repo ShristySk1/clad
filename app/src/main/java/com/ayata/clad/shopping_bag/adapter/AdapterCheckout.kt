@@ -3,6 +3,7 @@ package com.ayata.clad.shopping_bag.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,6 +80,7 @@ internal class AdapterCheckout(
             }
 
             add.setOnClickListener {
+                Log.d("tetstdata", "clickView: ");
                 onItemClickListener.onAddClick(listItems[adapterPosition],adapterPosition)
             }
             remove.setOnClickListener {
@@ -118,6 +120,7 @@ internal class AdapterCheckout(
         holder.colorHexImage.apply { setColorFilter(Color.parseColor(item.colorHex)) }
         holder.brand.text = "Brand: ${item.brand}"
         holder.progressBar.visibility = View.VISIBLE
+        Log.d("testimage", "onBindViewHolder: "+item.image);
         Glide.with(context!!).asDrawable()
             .load(item.image)
             .listener(object : RequestListener<Drawable?> {

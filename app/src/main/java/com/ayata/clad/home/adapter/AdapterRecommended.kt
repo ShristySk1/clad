@@ -2,37 +2,21 @@ package com.ayata.clad.home.adapter
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.text.Html
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.Nullable
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.text.bold
-import androidx.core.text.color
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.home.model.ModelPopularMonth
-import com.ayata.clad.home.model.ModelRecommended
 import com.ayata.clad.home.response.ProductDetail
-import com.ayata.clad.shop.model.ModelShop
-import com.ayata.clad.shopping_bag.model.ModelCheckout
-import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
-import com.ayata.clad.shopping_bag.model.ModelShippingAddress
-import com.ayata.clad.thrift.model.ModelThrift
 import com.ayata.clad.utils.PreferenceHandler
-import com.ayata.clad.utils.TextFormatter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import org.w3c.dom.Text
 import java.util.*
-import kotlin.collections.ArrayList
 
 internal class AdapterRecommended(private var context: Context?, private var listItems:List<ProductDetail>,
                                   private val onItemClickListener: OnItemClickListener
@@ -69,7 +53,7 @@ internal class AdapterRecommended(private var context: Context?, private var lis
             holder.price.text="${context!!.getString(R.string.usd)} ${item.price}"
         }
         holder.progressBar.visibility = View.VISIBLE
-        Glide.with(context!!).load(item.image_url)
+        Glide.with(context!!).load(item.imageUrl[0])
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,

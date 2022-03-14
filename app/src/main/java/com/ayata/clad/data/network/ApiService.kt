@@ -1,7 +1,7 @@
 package com.ayata.clad.data.network
 
 import android.content.Context
-import com.ayata.clad.data.network.interceptor.NetworkConnectionInterceptor
+import com.ayata.clad.profile.address.response.ShippingAddressResponse
 import com.ayata.clad.profile.edit.response.Details
 import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
@@ -10,7 +10,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 
@@ -61,7 +60,8 @@ interface ApiService {
     //google login
     @POST("oauth/google/")
     @FormUrlEncoded
-    suspend fun loginGoogle(@Field("auth_token")auth_token: String):Response<JsonObject>
+    suspend fun loginGoogle(@Field("auth_token") auth_token: String): Response<JsonObject>
+
     //dashboard
     @GET("home/")
     suspend fun dashboardAPI(@Header("Authorization") token: String): Response<JsonObject>
@@ -90,7 +90,7 @@ interface ApiService {
     @FormUrlEncoded
     suspend fun wishListToCartAPI(
         @Header("Authorization") token: String,
-        @Field("wishlist_id") id:Int
+        @Field("wishlist_id") id: Int
     ): Response<JsonObject>
 
     @POST("remove-wishlist-item/")
@@ -108,7 +108,7 @@ interface ApiService {
     @FormUrlEncoded
     suspend fun addToCartAPI(
         @Header("Authorization") token: String,
-        @Field("variant_id")variant_id: Int
+        @Field("variant_id") variant_id: Int
     ): Response<JsonObject>
 
     @POST("remove-from-cart/")
@@ -116,10 +116,19 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body jsonObject: JsonObject
     ): Response<JsonObject>
+
     @POST("decrease-cart/")
     suspend fun minusFromCartAPI(
         @Header("Authorization") token: String,
         @Body jsonObject: JsonObject
+    ): Response<JsonObject>
+
+    //cart select
+    @POST("select-cart/")
+    @FormUrlEncoded
+    suspend fun selectCart(
+        @Header("Authorization") token: String,
+        @Field("cart_id")cartId:Int
     ): Response<JsonObject>
 
     //not made
@@ -180,4 +189,10 @@ interface ApiService {
     //logout
     @POST("account/logout/")
     suspend fun logout(@Header("Authorization") token: String): Response<JsonObject>
+
+    //address
+    @GET("account/user/shipping-address/")
+    suspend fun getShippingAddress(@Header("Authorization") token: String): Response<ShippingAddressResponse>
+    @POST("account/user/shipping-address/")
+    suspend fun addShippingAddress(@Header("Authorization") token: String,@Body json:JsonObject): Response<JsonObject>
 }

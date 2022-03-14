@@ -112,7 +112,7 @@ internal class AdapterViewAllProduct2(var context: Context?,
     private fun populateItemRows(viewHolder: ItemViewHolder, position: Int) {
         val item = itemList!![position]
         viewHolder.textName.text = item!!.name
-        viewHolder.textCompany.text = item!!.owner
+        viewHolder.textCompany.text = item!!.vendor
         if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
             viewHolder.textPrice.text="${context!!.getString(R.string.rs)} ${item.price}"
         }else{
@@ -121,7 +121,7 @@ internal class AdapterViewAllProduct2(var context: Context?,
 
         viewHolder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.image_url)
+            .load(item.imageUrl[0])
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -147,7 +147,7 @@ internal class AdapterViewAllProduct2(var context: Context?,
             .error(R.drawable.shoes)
             .into(viewHolder.image)
 
-        if(item.is_in_wishlist){
+        if(item.isInWishlist){
             Glide.with(context!!).load(R.drawable.ic_heart_filled).into(viewHolder.imageWish)
         }else{
             viewHolder.imageWish.setImageResource(R.drawable.ic_heart_outline)

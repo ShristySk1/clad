@@ -3,6 +3,8 @@ package com.ayata.clad.home.response
 
 import com.google.gson.annotations.SerializedName
 
-data class HomeResponse(
-    val details: Details
+data class Tag(
+    val description: String,
+    val id: Int,
+    val title: String
 )

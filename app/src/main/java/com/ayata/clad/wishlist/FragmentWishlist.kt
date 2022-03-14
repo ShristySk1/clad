@@ -215,7 +215,7 @@ class FragmentWishlist : Fragment() {
             }
         }.also { it ->
             it.setSettingClickListener { product ->
-                val isWish = product.product.is_in_wishlist
+                val isWish = product.product.isInWishlist
 //                val list=ArrayList<MyFilterContentViewItem.MultipleChoice>()
 //                if(product.isCart){
 //                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case3), isCart))

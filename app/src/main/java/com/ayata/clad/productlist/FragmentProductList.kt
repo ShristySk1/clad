@@ -32,7 +32,6 @@ import com.ayata.clad.productlist.viewmodel.ProductListViewModel
 import com.ayata.clad.productlist.viewmodel.ProductListViewModelFactory
 import com.ayata.clad.shop.FragmentSubCategory
 import com.ayata.clad.shop.response.ChildCategory
-import com.ayata.clad.view_all.FragmentViewAllProduct
 import com.google.gson.Gson
 
 
@@ -224,7 +223,7 @@ class FragmentProductList : Fragment() {
 
                                 }
                             } catch (e: Exception) {
-                                Log.d(TAG, "getproductlistAPI:Error ${e.message}")
+                                Log.d(TAG, "getproductlistAPI:Error2 ${e.message}")
                             }
                         }
                     }

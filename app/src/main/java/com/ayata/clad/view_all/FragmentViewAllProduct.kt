@@ -175,7 +175,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     }
 
     override fun onWishListClicked(data: ProductDetail, position: Int) {
-        val isOnWishList = listItem[position]!!.is_in_wishlist
+        val isOnWishList = listItem[position]!!.isInWishlist
 //        api call
         if (isOnWishList) {
 //            removeWishListAPI(data, position)
@@ -255,7 +255,7 @@ private fun getProductListAPI(filter: String, firsttime: Boolean) {
 private fun removeWishListAPI(productDetail: ProductDetail, position: Int) {
     viewModel.removeFromWishAPI(
         PreferenceHandler.getToken(context).toString(),
-        productDetail.id
+        productDetail.productId
     )
     viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
         when (it.status) {
@@ -264,7 +264,7 @@ private fun removeWishListAPI(productDetail: ProductDetail, position: Int) {
                 val jsonObject = it.data
                 if (jsonObject != null) {
                     try {
-                        listItem.get(position)!!.is_in_wishlist = false;
+                        listItem.get(position)!!.isInWishlist = false;
                         adapterRecycler.notifyItemChanged(position)
                         showSnackBar(msg = "Product removed from wishlist")
                     } catch (e: Exception) {
@@ -285,7 +285,7 @@ private fun removeWishListAPI(productDetail: ProductDetail, position: Int) {
 }
 
 private fun addToWishListAPI(productDetail: ProductDetail, position: Int) {
-    viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), productDetail?.variants[0]?.id?:0)
+    viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), productDetail?.variants[0]?.variantId?:0)
     viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
         when (it.status) {
             Status.SUCCESS -> {
@@ -293,7 +293,7 @@ private fun addToWishListAPI(productDetail: ProductDetail, position: Int) {
                 val jsonObject = it.data
                 if (jsonObject != null) {
                     try {
-                        listItem.get(position)!!.is_in_wishlist = true;
+                        listItem.get(position)!!.isInWishlist = true;
                         adapterRecycler.notifyItemChanged(position)
                         showSnackBar(jsonObject.get("message").toString())
                         MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.plus(1)

@@ -25,7 +25,7 @@ import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentProductDetailBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
-import com.ayata.clad.home.response.Variants
+import com.ayata.clad.home.response.Variant
 import com.ayata.clad.product.adapter.AdapterColor
 import com.ayata.clad.product.adapter.AdapterRecommendation
 import com.ayata.clad.product.viewmodel.ProductViewModel
@@ -62,7 +62,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     var choosenSizePosition = 0
 
     //for color and size
-    lateinit var myMaps: MutableMap<String, MutableList<Variants>>
+    lateinit var myMaps: MutableMap<String, MutableList<Variant>>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,8 +74,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         initView()
         getBundle()
         setUpFullScreen()
-
-
         setUpTabChoose()
         tapToCopyListener()
         productLikedListener()
@@ -113,26 +111,33 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun setProductData() {
-//        dynamicVarientId = productDetail?.variants[0]?.id ?: 0
         choosenSizePosition = 0
         Log.d(TAG, "setProductData: " + dynamicVarientId);
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
             binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
-            binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.old_price}"
+            binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.oldPrice}"
             binding.detail2.price.text = getString(R.string.rs) + " ${productDetail.price}"
-            binding.detail2.payPrice.text = getString(R.string.rs) + " 4500"
+
         } else {
             binding.price.text = getString(R.string.usd) + " ${productDetail.price}"
-            binding.oldPrice.text = getString(R.string.usd) + " ${productDetail.old_price}"
+            binding.oldPrice.text = getString(R.string.usd) + " ${productDetail.oldPrice}"
             binding.detail2.price.text = getString(R.string.usd) + " ${productDetail.price}"
-            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
+        }
+        if(productDetail.isCouponAvailable){
+            binding.detail2.constraintLayout.visibility=View.VISIBLE
+            binding.detail2.couponTitle.text =productDetail.coupon.title
+            binding.detail2.couponDesc.text =productDetail.coupon.description
+            binding.detail2.tvTextToCopy.text =productDetail.coupon.code//code
+
+        }else{
+            binding.detail2.constraintLayout.visibility=View.GONE
         }
         binding.name.text = productDetail.name
-        binding.storeName.text = productDetail.owner
+        binding.storeName.text = productDetail.vendor
         binding.description.text = Html.fromHtml(productDetail.description)
         binding.detail2.name.text = productDetail.name
-        isProductWishList = productDetail.is_in_wishlist
-        isProductInCart = productDetail.is_in_cart
+        isProductWishList = productDetail.isInWishlist
+        isProductInCart = productDetail.isInCart
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         setWishlist(isProductWishList)
         setCart(isProductInCart)
@@ -307,17 +312,17 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             //share
         }
 
-        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
-            binding.price.text = getString(R.string.rs) + " 5000"
-            binding.oldPrice.text = getString(R.string.rs) + " 5500"
-            binding.detail2.price.text = getString(R.string.rs) + " 5000"
-            binding.detail2.payPrice.text = getString(R.string.rs) + " 4500"
-        } else {
-            binding.price.text = getString(R.string.usd) + " 100"
-            binding.oldPrice.text = getString(R.string.usd) + " 120"
-            binding.detail2.price.text = getString(R.string.usd) + " 100"
-            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
-        }
+//        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
+//            binding.price.text = getString(R.string.rs) + " 5000"
+//            binding.oldPrice.text = getString(R.string.rs) + " 5500"
+//            binding.detail2.price.text = getString(R.string.rs) + " 5000"
+//            binding.detail2.payPrice.text = getString(R.string.rs) + " 4500"
+//        } else {
+//            binding.price.text = getString(R.string.usd) + " 100"
+//            binding.oldPrice.text = getString(R.string.usd) + " 120"
+//            binding.detail2.price.text = getString(R.string.usd) + " 100"
+//            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
+//        }
 
 
     }
@@ -424,30 +429,29 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             Log.d(TAG, "changePrice: " + data.toString());
             binding.price.text = getString(R.string.rs) + " ${data.priceNpr}"
             binding.oldPrice.text =
-                getString(R.string.rs) + " ${productDetail.old_price}"//dont know
+                getString(R.string.rs) + " ${productDetail.oldPrice}"//dont know
             binding.detail2.price.text = getString(R.string.rs) + " ${data.priceNpr}"
         } else {
             binding.price.text = getString(R.string.usd) + " ${data.priceDollar}"
             binding.oldPrice.text =
-                getString(R.string.usd) + " ${productDetail.old_price}"//dont know
+                getString(R.string.usd) + " ${productDetail.oldPrice}"//dont know
             binding.detail2.price.text = getString(R.string.usd) + " ${data.priceDollar}"
-            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
         }
     }
 
     private fun prepareListSize(colorHex: String) {
         listText.clear()
-        val filteredVariants = getValueFromHashKey(colorHex) ?: ArrayList<Variants>()
+        val filteredVariants = getValueFromHashKey(colorHex) ?: ArrayList<Variant>()
         for (v in filteredVariants) {
             if (v.size != null) {
                 binding.detail2.constraintLayout2.visibility = View.VISIBLE
                 listText.add(
                     ModelCircleText(
-                        v.id ?: 0,
+                        v.variantId ?: 0,
                         v.size ?: "",
                         false,
-                        v.grand_total.toString(),
-                        v.dollar_price.toString()
+                        v.price.toString(),
+                        v.dollarPrice.toString()
                     )
                 )
             } else {
@@ -477,7 +481,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun removeWishListAPI() {
         viewModel.removeFromWishAPI(
             PreferenceHandler.getToken(context).toString(),
-            productDetail.id
+            productDetail.productId
         )
         viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -544,37 +548,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun addToCartAPI() {
 //        Toast.makeText(requireContext(), dynamicProductId.toString(), Toast.LENGTH_SHORT).show()
         Log.d(TAG, "addToCartAPI: " + dynamicVarientId);
-//check if size available
-        //pop up for size
         showDialogSize()
-//        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicProductId)
-//        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
-//            when (it.status) {
-//                Status.SUCCESS -> {
-//                    Log.d(TAG, "addToCartAPI: ${it.data}")
-//                    val jsonObject = it.data
-//                    if (jsonObject != null) {
-//                        isProductInCart = true
-//                        setCart(true)
-//                        showSnackBar("Product added to cart")
-//                        MainActivity.NavCount.myBoolean= MainActivity.NavCount.myBoolean?.plus(1)
-//                        try {
-//
-//                        } catch (e: Exception) {
-//                            Log.d(TAG, "addToCartAPI:Error ${e.message}")
-//                        }
-//                    }
-//
-//                }
-//                Status.LOADING -> {
-//                }
-//                Status.ERROR -> {
-//                    //Handle Error
-//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-//                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
-//                }
-//            }
-//        })
     }
 
     private fun showDialogSize() {
@@ -649,20 +623,20 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         })
     }
 
-    fun setHashMapColorSize(): MutableMap<String, MutableList<Variants>> {
+    fun setHashMapColorSize(): MutableMap<String, MutableList<Variant>> {
         //set color according to hex value
         myMaps = HashMap()
         for (item in productDetail.variants) {
-            if (!myMaps.containsKey(item.hex_value)) {
-                myMaps[item.hex_value] = ArrayList()
+            if (!myMaps.containsKey(item.colorHex)) {
+                myMaps[item.colorHex] = ArrayList()
             }
-            myMaps[item.hex_value]!!.add(item)
+            myMaps[item.colorHex]!!.add(item)
         }
 
         return myMaps
     }
 
-    fun getValueFromHashKey(key: String): MutableList<Variants>? {
+    fun getValueFromHashKey(key: String): MutableList<Variant>? {
         myMaps.keys.forEach {
             if (key == it) {
                 return myMaps[key]
@@ -675,7 +649,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         myMaps.keys.forEach {
             if (key == it) {
                 Log.d(TAG, "getImageUrlFromColorKey: " + myMaps[key]?.get(0).toString());
-                return myMaps[key]?.get(0)?.image_url
+                return myMaps[key]?.get(0)?.imageUrl
             }
         }
         return ""

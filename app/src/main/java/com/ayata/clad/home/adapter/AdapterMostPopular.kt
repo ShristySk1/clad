@@ -11,9 +11,6 @@ import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.home.model.ModelJustDropped
-import com.ayata.clad.home.model.ModelMostPopular
-import com.ayata.clad.home.model.ModelPopularBrands
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
@@ -21,7 +18,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class AdapterMostPopular(private var context:Context?,
                                   private var listItems:List<ProductDetail>,
@@ -62,7 +58,7 @@ internal class AdapterMostPopular(private var context:Context?,
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.image_url)
+            .load(item.imageUrl[0])
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -88,7 +84,7 @@ internal class AdapterMostPopular(private var context:Context?,
             .error(R.drawable.shoes)
             .into(holder.image)
 
-        Glide.with(context!!).asBitmap().load(item.owner)
+        Glide.with(context!!).asBitmap().load(item.vendor)
             .error(R.drawable.ic_clad_logo_grey).into(holder.imageLogo)
 
         holder.clickView()

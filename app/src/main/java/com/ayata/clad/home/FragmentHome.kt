@@ -24,7 +24,7 @@ import com.ayata.clad.home.model.*
 import com.ayata.clad.home.response.Brand
 import com.ayata.clad.home.response.HomeResponse
 import com.ayata.clad.home.response.ProductDetail
-import com.ayata.clad.home.response.Sliders
+import com.ayata.clad.home.response.Slider
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
@@ -72,7 +72,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
     private var listNewSubscription=ArrayList<ModelNewSubscription>()
 
     private lateinit var adapterBanner: AdapterBanner
-    private var listBanner=ArrayList<Sliders>()
+    private var listBanner=ArrayList<Slider>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -207,7 +207,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
         binding.imageSlider.startAutoCycle()
     }
 
-    private fun prepareBanner(listGiven: List<Sliders>?){
+    private fun prepareBanner(listGiven: List<Slider>?){
         listBanner.clear()
 //        listBanner.add("https://www.thoughtco.com/thmb/C7RiS4QG5TXcBG2d_Sh9i4hFpg0=/3620x2036/smart/filters:no_upscale()/close-up-of-clothes-hanging-in-row-739240657-5a78b11f8e1b6e003715c0ec.jpg")
 //        listBanner.add("https://st.depositphotos.com/1003633/2284/i/600/depositphotos_22848360-stock-photo-fashion-clothes-hang-on-a.jpg")
@@ -501,13 +501,13 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
                                     val detail=homeResponse.details
                                     prepareDataForPopularBrands(detail.brands)
                                     prepareDataForRecommended(detail.recommended)
-                                    prepareDataForJustDropped(detail.just_dropped)
-                                    prepareDataForMostPopular(detail.most_popular)
-                                    prepareDataForPopularMonth(detail.most_popular)
+                                    prepareDataForJustDropped(detail.justDropped)
+                                    prepareDataForMostPopular(detail.mostPopular)
+                                    prepareDataForPopularMonth(detail.mostPopular)
                                     prepareBanner(detail.sliders)
                                 }
                             }catch (e:Exception){
-                                Log.d(TAG, "prepareAPI: ${e.message}")
+                                Log.d(TAG, "prepareAPI: ${e.toString()}")
                             }
                         }
 
@@ -524,7 +524,7 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
             })
     }
 
-    override fun onBannerClicked(data: Sliders) {
+    override fun onBannerClicked(data: Slider) {
 //        val bundle=Bundle()
 //        bundle.putString(Constants.FILTER_HOME,data.title)
 //        val fragmentViewAllProduct=FragmentViewAllProduct()

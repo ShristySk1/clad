@@ -73,7 +73,7 @@
                 android:paddingBottom="16dp">
 
                 <TextView
-                    android:id="@+id/payPrice"
+                    android:id="@+id/couponTitle"
                     style="@style/largeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,15 +82,15 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    android:id="@+id/couponDesc"
                     style="@style/normalText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:paddingRight="100dp"
                     android:text="Apply the coupon during checkout. Orders above Rs. 1999 (only on first purchase). T&amp;C apply."
-                    app:layout_constraintStart_toStartOf="@+id/payPrice"
-                    app:layout_constraintTop_toBottomOf="@+id/payPrice" />
+                    app:layout_constraintStart_toStartOf="@+id/couponTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/couponTitle" />
 
                 <TextView
                     android:id="@+id/tv_text_to_copy"
@@ -105,8 +105,8 @@
                     style="@style/CustomSelectableItemBackground"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/textView11"
-                    app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                    app:layout_constraintStart_toStartOf="@+id/couponDesc"
+                    app:layout_constraintTop_toBottomOf="@+id/couponDesc" />
 
                 <TextView
                     android:id="@+id/tv_tap_to_copy"

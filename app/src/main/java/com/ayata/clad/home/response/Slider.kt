@@ -3,9 +3,9 @@ package com.ayata.clad.home.response
 
 import com.google.gson.annotations.SerializedName
 
-data class Brand(
-    @SerializedName("icon_url")
-    val iconUrl: String,
+data class Slider(
     val id: Int,
-    val name: String
+    @SerializedName("image_url")
+    val imageUrl: String,
+    val title: String
 )

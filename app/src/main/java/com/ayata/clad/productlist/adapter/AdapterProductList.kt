@@ -39,8 +39,8 @@ class AdapterProductList(var context: Context?,
         }
 
         fun setValues(item: ProductDetail){
-            binding.company.text=item.owner
-            Glide.with(context!!).asBitmap().load(item.image_url)
+            binding.company.text=item.vendor
+            Glide.with(context!!).asBitmap().load(item.imageUrl[0])
                 .error(R.drawable.shoes)
                 .placeholder(R.drawable.shoes)
                 .into(binding.image)
