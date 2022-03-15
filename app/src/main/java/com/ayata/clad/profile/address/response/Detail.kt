@@ -2,6 +2,7 @@ package com.ayata.clad.profile.address.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Detail(
     val city: String,
@@ -13,4 +14,4 @@ data class Detail(
     val title: String,
     @SerializedName("zip_code")
     val zipCode: String
-)
+) : Serializable

@@ -34,8 +34,10 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun brandListApi(token:String,page:Int,filter:String)=retrofitService.productAllAPI(token, page,filter)
     suspend fun logout(token: String)=retrofitService.logout(token)
     //address
-    suspend fun addAddress(token: String,json:JsonObject)=retrofitService.addShippingAddress(token,json)
-    suspend fun getAddress(token: String)=retrofitService.getShippingAddress(token)
+    suspend fun addShippingAddress(token: String,json:JsonObject)=retrofitService.addShippingAddress(token,json)
+    suspend fun getShippingAddress(token: String)=retrofitService.getShippingAddress(token)
+    suspend fun addAddress(token: String,json:JsonObject)=retrofitService.addUserAddress(token,json)
+    suspend fun getAddress(token: String)=retrofitService.getUserAddress(token)
 
 
 }

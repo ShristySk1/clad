@@ -13,8 +13,12 @@ import kotlinx.coroutines.*
 class AddressViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
     private val errorMessage = MutableLiveData<String>()
-    private val addressResposne = MutableLiveData<Resource<ShippingAddressResponse>>()
-    private val addAddressResposne = MutableLiveData<Resource<JsonObject>>()
+    private val getShippingAddressResposne = MutableLiveData<Resource<ShippingAddressResponse>>()
+    private val addShippingAddressResposne = MutableLiveData<Resource<JsonObject>>()
+
+    //user address
+    private val getUserAddressResposne = MutableLiveData<Resource<ShippingAddressResponse>>()
+    private val addUserAddressResposne = MutableLiveData<Resource<JsonObject>>()
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -22,55 +26,105 @@ class AddressViewModel constructor(private val mainRepository: ApiRepository) : 
     }
     private val loading = MutableLiveData<Boolean>()
 
-    fun addAddress(token: String,jsonObject:JsonObject) {
-        addAddressResposne.postValue(Resource.loading(null))
+
+    //shipping
+    fun addShippingAddress(token: String,jsonObject:JsonObject) {
+        addShippingAddressResposne.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.addShippingAddress(token,jsonObject)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("phoneResponse", "resposne: " + response.body().toString())
+                        addShippingAddressResposne.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("phoneResponse", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        addShippingAddressResposne.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            }catch (e:Exception){
+                addShippingAddressResposne.postValue(Resource.error(e.message.toString(), null))
+
+            }
+
+        }
+
+    }
+    fun observeShippingAddAddress(): LiveData<Resource<JsonObject>> {
+        return addShippingAddressResposne
+    }
+    fun getShippingAddress(token: String) {
+        getShippingAddressResposne.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.getShippingAddress(token)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("phoneResponse", "login: " + response.body().toString())
+                    getShippingAddressResposne.postValue(Resource.success(response.body() as ShippingAddressResponse))
+                    loading.value = false
+                } else {
+                    Log.e("phoneResponse", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    getShippingAddressResposne.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+
+    }
+    fun observeShippingAddress(): LiveData<Resource<ShippingAddressResponse>> {
+        return getShippingAddressResposne
+    }
+
+    //user
+    fun addUserAddress(token: String,jsonObject:JsonObject) {
+        addUserAddressResposne.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
                 val response = mainRepository.addAddress(token,jsonObject)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("phoneResponse", "resposne: " + response.body().toString())
-                        addAddressResposne.postValue(Resource.success(response.body()))
+                        addUserAddressResposne.postValue(Resource.success(response.body()))
                         loading.value = false
                     } else {
                         Log.e("phoneResponse", "error: $response")
                         onError("Error : ${response.message()} ")
-                        addAddressResposne.postValue(Resource.error(response.message(), null))
+                        addUserAddressResposne.postValue(Resource.error(response.message(), null))
                     }
                 }
             }catch (e:Exception){
-                addAddressResposne.postValue(Resource.error(e.message.toString(), null))
+                addUserAddressResposne.postValue(Resource.error(e.message.toString(), null))
 
             }
 
         }
 
     }
-    fun observeAddAddress(): LiveData<Resource<JsonObject>> {
-        return addAddressResposne
+    fun observeUserAddAddress(): LiveData<Resource<JsonObject>> {
+        return addUserAddressResposne
     }
-
-    //get address
-    fun getAddress(token: String) {
-        addressResposne.postValue(Resource.loading(null))
+    fun getUserAddress(token: String) {
+        getUserAddressResposne.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.getAddress(token)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("phoneResponse", "login: " + response.body().toString())
-                    addressResposne.postValue(Resource.success(response.body() as ShippingAddressResponse))
+                    getUserAddressResposne.postValue(Resource.success(response.body() as ShippingAddressResponse))
                     loading.value = false
                 } else {
                     Log.e("phoneResponse", "error: $response")
                     onError("Error : ${response.message()} ")
-                    addressResposne.postValue(Resource.error(response.message(), null))
+                    getUserAddressResposne.postValue(Resource.error(response.message(), null))
                 }
             }
         }
 
     }
-    fun observeAddress(): LiveData<Resource<ShippingAddressResponse>> {
-        return addressResposne
+    fun observeUserAddress(): LiveData<Resource<ShippingAddressResponse>> {
+        return getUserAddressResposne
     }
     private fun onError(message: String) {
         errorMessage.postValue(message)

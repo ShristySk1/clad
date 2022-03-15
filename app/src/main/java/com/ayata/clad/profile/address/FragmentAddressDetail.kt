@@ -28,7 +28,7 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
     private lateinit var adapterAddress: AdapterAddress
     private var listAddress = ArrayList<ModelShippingAddress>()
     private lateinit var viewModel: AddressViewModel
-
+    private lateinit var userData: Detail
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,10 +43,14 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
         initAppbar()
         initRecycler()
         setUpViewModel()
-        viewModel.getAddress(Constants.Bearer + " " + PreferenceHandler.getToken(requireContext()))
+        viewModel.getUserAddress(Constants.Bearer + " " + PreferenceHandler.getToken(requireContext()))
         binding.llAddAddress.setOnClickListener {
+            val fragment = FragmentAddressAdd()
+            val bundle = Bundle()
+            bundle.putBoolean("ship",false)
+            fragment.arguments=bundle
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentAddressAdd()).addToBackStack(null).commit()
+                .replace(R.id.main_fragment,fragment).addToBackStack(null).commit()
         }
 
         return binding.root
@@ -57,7 +61,7 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
             this,
             AddressViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[AddressViewModel::class.java]
-        viewModel.observeAddress().observe(viewLifecycleOwner, {
+        viewModel.observeUserAddress().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.spinKit.visibility = View.GONE
@@ -107,8 +111,8 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
     }
 
     private fun prepareListAddress(details: List<Detail>) {
-
         listAddress.clear()
+        userData = details[0]
         for (detail in details) {
             listAddress.add(
                 ModelShippingAddress(
@@ -119,12 +123,20 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
             )
 //        listAddress.add(ModelShippingAddress("Office","Kuleshwor - 12,\nLalitpur, Nepal",false))
         }
+        if(details.size>=1){
+            binding.llAddAddress.visibility=View.GONE
+        }
         adapterAddress.notifyDataSetChanged()
     }
 
     override fun onEditClicked(data: ModelShippingAddress, position: Int) {
+        val fragment = FragmentAddressAdd()
+        val bundle = Bundle()
+        bundle.putBoolean("ship",false)
+        bundle.putSerializable("data", userData)
+        fragment.arguments=bundle
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment, FragmentAddressUpdate()).addToBackStack(null).commit()
+            .replace(R.id.main_fragment, fragment).addToBackStack(null).commit()
     }
 
 }

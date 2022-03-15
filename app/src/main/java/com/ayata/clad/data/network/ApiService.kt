@@ -190,9 +190,16 @@ interface ApiService {
     @POST("account/logout/")
     suspend fun logout(@Header("Authorization") token: String): Response<JsonObject>
 
-    //address
+    //address shipping
     @GET("account/user/shipping-address/")
     suspend fun getShippingAddress(@Header("Authorization") token: String): Response<ShippingAddressResponse>
     @POST("account/user/shipping-address/")
     suspend fun addShippingAddress(@Header("Authorization") token: String,@Body json:JsonObject): Response<JsonObject>
+
+    //address own
+    @GET("account/user/address/")
+    suspend fun getUserAddress(@Header("Authorization") token: String): Response<ShippingAddressResponse>
+    @POST("account/user/address/")
+    suspend fun addUserAddress(@Header("Authorization") token: String,@Body json:JsonObject): Response<JsonObject>
+
 }

@@ -88,8 +88,8 @@ private var updatePosition=-1
         viewModel.getSelectCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
-                    Log.d(TAG, "removeWishListAPI: ${it.data}")
+//                    binding.spinKit.select = View.GONE
+                    Log.d(TAG, "selectobserver: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -98,17 +98,26 @@ private var updatePosition=-1
 
                                 setUpView()
                             }else{
-                                val d=  jsonObject.get("details").asJsonArray
+                                val d=  jsonObject.get("cart")
+                                val p_npr=  jsonObject.get("cart_total_npr").asDouble
+                                val p_dollar=  jsonObject.get("cart_total_dollar").asDouble
                                 val gson = Gson()
 
+//                                val userListType: Type =
+//                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
+//
+//                                val cartArray: ArrayList<Cart> =
+//                                    gson.fromJson(d, userListType)
                                 val userListType: Type =
-                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
+                                    object : TypeToken<Cart>() {}.type
 
-                                val cartArray: ArrayList<Cart> =
+                                val cartArray:Cart =
                                     gson.fromJson(d, userListType)
                                 if (cartArray != null) {
+                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
+
                                     //update cart
-                                    updateCartAtPosition(cartArray[0].selected,cartArray[0].is_selected,updatePosition)
+//                                    updateCartAtPosition(cartArray[0].selected,cartArray[0].is_selected,updatePosition,p_npr,p_dollar)
 
                                 }
 
@@ -147,18 +156,17 @@ private var updatePosition=-1
 
                                 setUpView()
                             }else{
-                                val d=  jsonObject.get("details").asJsonArray
+                                val d=  jsonObject.get("details").asJsonObject
+                                val p_npr=  jsonObject.get("cart_total_npr").asDouble
+                                val p_dollar=  jsonObject.get("cart_total_dollar").asDouble
                                 val gson = Gson()
-
                                 val userListType: Type =
-                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
-
-                                val cartArray: ArrayList<Cart> =
+                                    object : TypeToken<Cart>() {}.type
+                                val cartArray: Cart =
                                     gson.fromJson(d, userListType)
                                 if (cartArray != null) {
                                     //update cart
-                                    updateCartAtPosition(cartArray[0].selected,cartArray[0].is_selected,updatePosition)
-
+                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
                                 }
 
                             }
@@ -197,6 +205,8 @@ private var updatePosition=-1
                                     setUpView()
                                 } else {
                                     val d = jsonObject.get("details").asJsonArray
+                                    val p_npr=  jsonObject.get("cart_total_npr").asDouble
+                                    val p_dollar=  jsonObject.get("cart_total_dollar").asDouble
                                     val gson = Gson()
 
                                     val userListType: Type =
@@ -211,7 +221,7 @@ private var updatePosition=-1
                                     updateCartAtPosition(
                                         cartArray[0].selected,
                                         cartArray[0].is_selected,
-                                        updatePosition
+                                        updatePosition,p_npr,p_dollar
                                     )
 
 //                                }
@@ -688,11 +698,13 @@ private var updatePosition=-1
     private fun addToCartAPI(id: Int,position: Int,old:ModelCheckout) {
         Log.d(TAG, "hitapicart: "+id);
 //        viewModel.resetAddCartLiveData()
-        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
         updatePosition=position
+        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
+
     }
 
     private fun updateCartAtPosition(seleted: Selected,isClick:Boolean, i: Int,totalPriceNpr:Double?=0.0,totalPriceDollar:Double?=0.0) {
+        Log.d(TAG, "updateCartAtPosition: "+updatePosition);
         if(updatePosition!=-1) {
             listCheckout[i].apply {
                 qty = seleted.quantity
@@ -762,20 +774,22 @@ private var updatePosition=-1
     }
 
     private fun minusFromCartAPI(id: Int,position: Int) {
+        updatePosition=position
         viewModel.minusFromCartAPI(
             PreferenceHandler.getToken(context).toString(),
             id
         )
-        updatePosition=position
+
 
     }
 
     private fun selectCartApi(cartId: Int,position: Int){
+        updatePosition=position
         viewModel.selectCartApi(
             PreferenceHandler.getToken(context).toString(),
             cartId
         )
-     updatePosition=position
+
     }
 
 }

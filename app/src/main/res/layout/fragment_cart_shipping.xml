@@ -6,7 +6,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".shopping_bag.shipping.FragmentShipping"
     android:background="@color/colorWhite">
-
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/colorRed" />
     <RelativeLayout
         android:id="@+id/layout_indicator"
         android:layout_width="match_parent"
@@ -80,8 +88,6 @@
        android:layout_below="@id/layout_indicator"
        android:gravity="center_vertical"
        android:layout_alignParentStart="true"
-       android:layout_alignBottom="@id/addNewBtn"
-       android:layout_toStartOf="@id/addNewBtn"
        android:layout_marginStart="15dp"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
@@ -107,14 +113,18 @@
         android:textColor="@color/colorBlack"
         android:textStyle="normal"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <include layout="@layout/recycler_shipping_address"
         android:layout_below="@id/title"
-        android:layout_above="@id/layout_bottom"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+        android:id="@+id/recyclerView"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+    <include layout="@layout/recycler_shipping_address"
+        android:layout_below="@id/recyclerView"
+        android:id="@+id/recyclerView2"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
     <LinearLayout
         android:id="@+id/layout_bottom"
         android:orientation="vertical"

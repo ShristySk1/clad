@@ -112,7 +112,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun setProductData() {
         choosenSizePosition = 0
-        Log.d(TAG, "setProductData: " + dynamicVarientId);
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
             binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
             binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.oldPrice}"
@@ -123,26 +122,25 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             binding.oldPrice.text = getString(R.string.usd) + " ${productDetail.oldPrice}"
             binding.detail2.price.text = getString(R.string.usd) + " ${productDetail.price}"
         }
-        if(productDetail.isCouponAvailable){
-            binding.detail2.constraintLayout.visibility=View.VISIBLE
-            binding.detail2.couponTitle.text =productDetail.coupon.title
-            binding.detail2.couponDesc.text =productDetail.coupon.description
-            binding.detail2.tvTextToCopy.text =productDetail.coupon.code//code
+        if (productDetail.isCouponAvailable) {
+            binding.detail2.constraintLayout.visibility = View.VISIBLE
+            binding.detail2.couponTitle.text = productDetail.coupon.title
+            binding.detail2.couponDesc.text = productDetail.coupon.description
+            binding.detail2.tvTextToCopy.text = productDetail.coupon.code//code
 
-        }else{
-            binding.detail2.constraintLayout.visibility=View.GONE
+        } else {
+            binding.detail2.constraintLayout.visibility = View.GONE
         }
         binding.name.text = productDetail.name
         binding.storeName.text = productDetail.vendor
         binding.description.text = Html.fromHtml(productDetail.description)
         binding.detail2.name.text = productDetail.name
-        isProductWishList = productDetail.isInWishlist
-        isProductInCart = productDetail.isInCart
+//        isProductWishList = productDetail.isInWishlist
+//        isProductInCart = productDetail.isInCart
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
-        setWishlist(isProductWishList)
-        setCart(isProductInCart)
         val colorsize = setHashMapColorSize()
         setUpRecyclerColor(colorsize.keys)
+//        setCurrentVariant()
     }
 
     private fun setUpViewModel() {
@@ -398,11 +396,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             adapter.setCircleClickListener { data ->
                 //change price according to size
                 changePrice(data)
+
                 for (item in listText) {
                     item.isSelected = item.equals(data)
                     if (item.isSelected) {
                         dynamicVarientId = data.productId
                     }
+                    setCurrentVariant()
                     adapterCircleText.notifyDataSetChanged()
                     Log.d(TAG, "setUpRecyclerSize: " + item.title);
                 }
@@ -653,6 +653,19 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
         }
         return ""
+    }
+
+    fun setCurrentVariant() {
+        if(dynamicVarientId!=0) {
+            Log.d("testvarientid", "setCurrentVariant: " + dynamicVarientId);
+            val myCurrentVarient = productDetail.variants.filter {
+                it.variantId == dynamicVarientId
+            }.single()
+            isProductInCart = myCurrentVarient.isInCart
+            isProductWishList = myCurrentVarient.isInWishlist
+            setWishlist(isProductWishList)
+            setCart(isProductInCart)
+        }
     }
 
 }

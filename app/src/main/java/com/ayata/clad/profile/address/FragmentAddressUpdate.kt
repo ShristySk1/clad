@@ -27,7 +27,6 @@ class FragmentAddressUpdate : Fragment() {
             validateTextField(binding.textInputTitle)
             validateTextField(binding.textInputAddress)
             validateTextField(binding.textInputCity)
-            validateTextField(binding.textInputLine)
             validateTextField(binding.textInputPhone)
             validateTextField(binding.textInputState)
             validateTextField(binding.textInputZip)
