@@ -304,12 +304,7 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         viewModel.getCategoryListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-                        MyLayoutInflater().onDelete(
-                            binding.root,
-                            binding.root.findViewById(R.id.layout_root)
-                        )
-                    }
+                    hideError()
                     setShimmerLayout(false)
                     Log.d(TAG, "getCartAPI: ${it.data}")
                     val jsonObject = it.data
@@ -350,15 +345,28 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
                     //Handle Error
                     setShimmerLayout(false)
 //                    listCheckout.clear()
-//                    setUpView()
-
-                    MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Error!",it.message.toString())
+                    showError(it.message.toString())
 
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "getCartAPI:Error ${it.message}")
                 }
             }
         })
+    }
+
+    private fun showError(it:String) {
+        binding.rootContainer.visibility=View.GONE
+        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Error!",it)
+
+    }
+    private fun hideError() {
+        binding.rootContainer.visibility=View.VISIBLE
+        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+            MyLayoutInflater().onDelete(
+                binding.root,
+                binding.root.findViewById(R.id.layout_root)
+            )
+        }
     }
 
     private fun setShimmerLayout(isVisible: Boolean) {

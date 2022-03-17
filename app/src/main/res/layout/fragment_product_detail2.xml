@@ -214,7 +214,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView20"
+                    android:id="@+id/tvRatingNumber"
                     style="@style/largestText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -224,14 +224,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
                 <TextView
-                    android:id="@+id/textView21"
+                    android:id="@+id/tvRecommended"
                     style="@style/largestText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="89%"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/textView20"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tvRatingNumber"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView20" />
+                    app:layout_constraintStart_toEndOf="@+id/tvRatingNumber" />
 
                 <TextView
                     android:id="@+id/textView22"
@@ -239,8 +239,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="of customers\nrecommend\nthis product"
-                    app:layout_constraintStart_toStartOf="@+id/textView21"
-                    app:layout_constraintTop_toBottomOf="@+id/textView21" />
+                    app:layout_constraintStart_toStartOf="@+id/tvRecommended"
+                    app:layout_constraintTop_toBottomOf="@+id/tvRecommended" />
 
                 <com.ayata.clad.utils.SvgRatingBar
                     android:id="@+id/ratingBar"
@@ -252,10 +252,10 @@
                     android:rating="4.5"
                     android:stepSize="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView20" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvRatingNumber" />
 
                 <TextView
-                    android:id="@+id/textView23"
+                    android:id="@+id/tvReviewNumber"
                     style="@style/normalText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -283,7 +283,7 @@
                     android:text="SIZE" />
 
                 <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tab"
+                    android:id="@+id/tabSize"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -328,7 +328,7 @@
                     android:text="WIDTH" />
 
                 <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tab2"
+                    android:id="@+id/tabWidth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -372,48 +372,41 @@
                     android:text="Comfort"
                     android:textAllCaps="true" />
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_below="@id/layout_texts"
-                    android:layout_marginTop="20dp"
-                    android:indeterminate="false"
-                    android:progress="80"
-                    android:progressDrawable="@drawable/progressbar_custom" />
-
-                <LinearLayout
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabComfort"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/tab_background_selector_product"
+                    app:tabIndicatorColor="@color/colorBlack"
+                    app:tabIndicatorFullWidth="false"
+                    app:tabIndicatorGravity="top"
+                    app:tabIndicatorHeight="3dp"
+                    app:tabSelectedTextColor="@color/colorBlack"
+                    app:tabTextAppearance="@style/TabLayoutTextStyle"
+                    app:tabTextColor="#BDBDBD">
 
-                    <TextView
-                        style="@style/smallBlackText"
-                        android:layout_width="0dp"
+                    <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Uncomfortable"
-                        android:textAlignment="textStart" />
 
-                    <TextView
-                        style="@style/smallBlackText"
-                        android:layout_width="0dp"
+                        android:text="Uncomfortable" />
+
+                    <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
 
-                        android:text="Perfect"
-                        android:textAlignment="center" />
+                        android:text="Perfect" />
 
-                    <TextView
-                        style="@style/smallBlackText"
-                        android:layout_width="0dp"
+                    <com.google.android.material.tabs.TabItem
+                        style="@style/smallText"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Comfortable"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
+
+                        android:text="Comfortable" />
+                </com.google.android.material.tabs.TabLayout>
 
                 <TextView
                     android:id="@+id/textView27"
@@ -425,7 +418,7 @@
                     android:textAllCaps="true" />
 
                 <ProgressBar
-                    android:id="@+id/progressBar2"
+                    android:id="@+id/progressBarQuality"
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"

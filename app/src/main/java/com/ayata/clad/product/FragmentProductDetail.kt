@@ -74,7 +74,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         initView()
         getBundle()
         setUpFullScreen()
-        setUpTabChoose()
         tapToCopyListener()
         productLikedListener()
         setUpRecyclerRecommendation()
@@ -138,10 +137,15 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        isProductWishList = productDetail.isInWishlist
 //        isProductInCart = productDetail.isInCart
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
+        //reviews
+        setUpTabChoose(productDetail.reviews.size,productDetail.reviews.width,productDetail.reviews.quality,productDetail.reviews.comfort)
+
+
         val colorsize = setHashMapColorSize()
         setUpRecyclerColor(colorsize.keys)
 //        setCurrentVariant()
     }
+
 
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
@@ -340,16 +344,42 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        imageView.setCropYCenterOffsetPct(0.33f);
     }
 
-    private fun setUpTabChoose() {
-        val tabStrip = binding.detail2.tab.getChildAt(0) as LinearLayout
+    private fun setUpTabChoose(size: String, width: String, quality: Double, comfort: String) {
+        //size
+        val tabStrip = binding.detail2.tabSize.getChildAt(0) as LinearLayout
         for (i in 0 until tabStrip.childCount) {
             tabStrip.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
+            if((binding.detail2.tabSize.getTabAt(i)?.text.toString())?.equals(size,ignoreCase = true)){
+                binding.detail2.tabSize.getTabAt(i)?.select()
+            }
         }
-        binding.detail2.tab.getTabAt(1)?.select()
-        val tabStrip2 = binding.detail2.tab2.getChildAt(0) as LinearLayout
+        //width
+        val tabStrip2 = binding.detail2.tabWidth.getChildAt(0) as LinearLayout
         for (i in 0 until tabStrip.childCount) {
             tabStrip2.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
+            if((binding.detail2.tabWidth.getTabAt(i)?.text.toString())?.equals(width,ignoreCase = true)){
+                binding.detail2.tabWidth.getTabAt(i)?.select()
+            }
         }
+        //comfort
+        val tabStrip3 = binding.detail2.tabComfort.getChildAt(0) as LinearLayout
+        for (i in 0 until tabStrip.childCount) {
+            tabStrip2.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
+            if((binding.detail2.tabComfort.getTabAt(i)?.text.toString())?.equals(comfort,ignoreCase = true)) {
+                binding.detail2.tabComfort.getTabAt(i)?.select()
+            }
+        }
+        //quality
+        binding.detail2.progressBarQuality.progress= Math.round(quality).toInt()
+        //total reviews
+        binding.detail2.tvReviewNumber.text=productDetail.reviews.totalReview.toString()+" REVIEWS"
+        //rating
+        binding.detail2.tvRatingNumber.text=productDetail.reviews.rating.toString()
+        binding.detail2.ratingBar.rating=productDetail.reviews.rating.toFloat()
+        binding.ratingBar1.rating=productDetail.reviews.rating.toFloat()
+        //recommended
+        binding.detail2.tvRecommended.text=productDetail.reviews.recommendedBy?.let {  it.equals("")?.let { "0" }+"%"}?:run { "0%" }
+
     }
 
     private fun setUpRecyclerColor(keys: MutableSet<String>) {
@@ -396,7 +426,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             adapter.setCircleClickListener { data ->
                 //change price according to size
                 changePrice(data)
-
                 for (item in listText) {
                     item.isSelected = item.equals(data)
                     if (item.isSelected) {
@@ -408,8 +437,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
             }
         }
-
-
         binding.detail2.rvSize.apply {
             layoutManager = GridLayoutManager(context, 5)
             adapter = adapterCircleText
@@ -442,6 +469,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun prepareListSize(colorHex: String) {
         listText.clear()
         val filteredVariants = getValueFromHashKey(colorHex) ?: ArrayList<Variant>()
+        Log.d(TAG, "prepareListSize: "+filteredVariants);
         for (v in filteredVariants) {
             if (v.size != null) {
                 binding.detail2.constraintLayout2.visibility = View.VISIBLE
@@ -456,13 +484,19 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 )
             } else {
                 //disable size layout
+                dynamicVarientId=productDetail.variants[0].variantId
                 binding.detail2.constraintLayout2.visibility = View.GONE
             }
         }
         adapterCircleText.notifyDataSetChanged()
+        Log.d("sizechecked", "prepareListSize: 1"+listText.get(0));
+
         binding.detail2.rvSize.post {
+
             binding.detail2.rvSize.findViewHolderForAdapterPosition(0)?.itemView?.performClick();
+            Log.d("sizechecked", "prepareListSize: 2"+listText);
         }
+
 
     }
 
@@ -552,6 +586,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun showDialogSize() {
+        Log.d("sizechecked", "prepareListSize: 3"+listText);
         if (binding.detail2.constraintLayout2.isVisible) {
             val dialogBinding =
                 DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
@@ -559,18 +594,18 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             bottomSheetDialog.setContentView(dialogBinding.root)
             dialogBinding.title.text = "Size"
             dialogBinding.btnSave.text = "Add to Cart"
-            adapterCircleText = AdapterCircleText(context, listText).also { adapter ->
-                adapter.setCircleClickListener { data ->
-                    for (item in listText) {
-                        item.isSelected = item.equals(data)
-                        if (item.isSelected) {
-                            dynamicVarientId = data.productId
-                        }
-                        adapterCircleText.notifyDataSetChanged()
-                        Log.d(TAG, "setUpRecyclerSize: " + item.title);
-                    }
-                }
-            }
+//            adapterCircleText = AdapterCircleText(context, listText).also { adapter ->
+//                adapter.setCircleClickListener { data ->
+//                    for (item in listText) {
+//                        item.isSelected = item.equals(data)
+//                        if (item.isSelected) {
+//                            dynamicVarientId = data.productId
+//                        }
+//                        adapterCircleText.notifyDataSetChanged()
+//                        Log.d(TAG, "setUpRecyclerSize: " + item.title);
+//                    }
+//                }
+//            }
 
             dialogBinding.recyclerView.apply {
                 layoutManager = GridLayoutManager(context, 5)
@@ -593,6 +628,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun addCart() {
+        Toast.makeText(context,dynamicVarientId.toString(),Toast.LENGTH_SHORT).show()
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -661,6 +697,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             val myCurrentVarient = productDetail.variants.filter {
                 it.variantId == dynamicVarientId
             }.single()
+
             isProductInCart = myCurrentVarient.isInCart
             isProductWishList = myCurrentVarient.isInWishlist
             setWishlist(isProductWishList)

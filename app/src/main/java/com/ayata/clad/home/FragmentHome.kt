@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,7 @@ import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.story.StoryActivity
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.view_all.FragmentViewAllBrand
 import com.ayata.clad.view_all.FragmentViewAllProduct
@@ -492,6 +494,12 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
                 when (it.status) {
                     Status.SUCCESS -> {
                         setShimmerLayout(false)
+                        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+                            MyLayoutInflater().onDelete(
+                                binding.root,
+                                binding.root.findViewById(R.id.layout_root)
+                            )
+                        }
                         Log.d(TAG, "home: ${it.data}")
                         val jsonObject=it.data
                         if(jsonObject!=null){
@@ -519,6 +527,8 @@ class FragmentHome : Fragment(),AdapterPopularMonth.OnItemClickListener,AdapterR
                         setShimmerLayout(false)
                         Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                         Log.d(TAG, "home: ${it.message}")
+                        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Error!",it.message.toString())
+
                     }
                 }
             })

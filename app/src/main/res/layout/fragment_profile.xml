@@ -28,13 +28,6 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/ivProfileImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_user" />
-
                 <TextView
                     android:id="@+id/profile_name_placeholder"
                     android:layout_width="match_parent"
@@ -47,6 +40,12 @@
                     android:textAllCaps="true"
                     android:textColor="@color/colorGrayText"
                     android:textSize="27sp" />
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/ivProfileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:civ_border="false"
+                    />
             </RelativeLayout>
         </RelativeLayout>
 

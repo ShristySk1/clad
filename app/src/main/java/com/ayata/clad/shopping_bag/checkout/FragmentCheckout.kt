@@ -56,7 +56,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private lateinit var adapterCircleQty: AdapterCircleText
     private var listQty = ArrayList<ModelCircleText>()
-private var updatePosition=-1
+    private var updatePosition = -1
+
     companion object {
         private const val TAG = "FragmentCheckout"
     }
@@ -80,8 +81,45 @@ private var updatePosition=-1
         setAddObserver()
         setMinusObserver()
         setSelectObserver()
+        setRemoveObserver()
 
         return binding.root
+    }
+
+    private fun setRemoveObserver() {
+        viewModel.getRemoveFromCartAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+//                    binding.spinKit.visibility = View.GONE
+                    Log.d(TAG, "removeWishListAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val message = jsonObject.get("message").asString
+                            Log.d(TAG, "setRemoveObserver: "+message);
+                            if (message.contains("removed", true)) {
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                updateCartAtPosition(updatePosition)
+                            } else {
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "getCartAPI:Error ${e.message}")
+
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+//                    binding.spinKit.visibility = View.GONE
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+                }
+            }
+        })
     }
 
     private fun setSelectObserver() {
@@ -93,37 +131,52 @@ private var updatePosition=-1
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-                            val message = jsonObject.get("message").asString
-                            if (message.contains("empty.", true)) {
 
-                                setUpView()
-                            }else{
-                                val d=  jsonObject.get("cart")
-                                val p_npr=  jsonObject.get("cart_total_npr").asDouble
-                                val p_dollar=  jsonObject.get("cart_total_dollar").asDouble
-                                val gson = Gson()
+                            val d = jsonObject.get("cart").asJsonArray
+                            val p_npr = jsonObject.get("cart_total_npr")?.let { it.asDouble }
+                            val p_dollar = jsonObject.get("cart_total_dollar")?.let { it.asDouble }
+                            val gson = Gson()
 
+                            val userListType: Type =
+                                object : TypeToken<ArrayList<Cart?>?>() {}.type
+
+                            val cartArray: ArrayList<Cart> =
+                                gson.fromJson(d, userListType)
 //                                val userListType: Type =
-//                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
+//                                    object : TypeToken<Cart>() {}.type
 //
-//                                val cartArray: ArrayList<Cart> =
+//                                val cartArray:Cart =
 //                                    gson.fromJson(d, userListType)
-                                val userListType: Type =
-                                    object : TypeToken<Cart>() {}.type
+                            if (cartArray != null) {
+//                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
 
-                                val cartArray:Cart =
-                                    gson.fromJson(d, userListType)
-                                if (cartArray != null) {
-                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
-
-                                    //update cart
-//                                    updateCartAtPosition(cartArray[0].selected,cartArray[0].is_selected,updatePosition,p_npr,p_dollar)
-
-                                }
+                                //update cart
+                                updateCartAtPosition(
+                                    cartArray[0].selected,
+                                    cartArray[0].is_selected,
+                                    updatePosition,
+                                    p_npr,
+                                    p_dollar
+                                )
 
                             }
+
+
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
+                            try {
+                                val message = jsonObject.get("message").asString
+                                if (message.contains("empty.", true)) {
+
+                                    setUpView()
+                                } else {
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+                                }
+                            } catch (e: Exception) {
+                                Log.d(TAG, "getCartAPI:Error ${e.message}")
+
+                            }
                         }
                     }
 
@@ -151,27 +204,43 @@ private var updatePosition=-1
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-                            val message = jsonObject.get("message").asString
-                            if (message.contains("empty.", true)) {
 
-                                setUpView()
-                            }else{
-                                val d=  jsonObject.get("details").asJsonObject
-                                val p_npr=  jsonObject.get("cart_total_npr").asDouble
-                                val p_dollar=  jsonObject.get("cart_total_dollar").asDouble
-                                val gson = Gson()
-                                val userListType: Type =
-                                    object : TypeToken<Cart>() {}.type
-                                val cartArray: Cart =
-                                    gson.fromJson(d, userListType)
-                                if (cartArray != null) {
-                                    //update cart
-                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
-                                }
+                            val d = jsonObject.get("cart").asJsonArray
+                            val p_npr = jsonObject.get("cart_total_npr")?.let { it.asDouble }
+                            val p_dollar = jsonObject.get("cart_total_dollar")?.let { it.asDouble }
+                            val gson = Gson()
 
+                            val userListType: Type =
+                                object : TypeToken<ArrayList<Cart?>?>() {}.type
+
+                            val cartArray: ArrayList<Cart> =
+                                gson.fromJson(d, userListType)
+                            if (cartArray != null) {
+                                //update cart
+                                updateCartAtPosition(
+                                    cartArray[0].selected,
+                                    cartArray[0].is_selected,
+                                    updatePosition,
+                                    p_npr,
+                                    p_dollar
+                                )
                             }
+
+
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
+                            try {
+                                val message = jsonObject.get("message").asString
+                                if (message.contains("empty.", true)) {
+
+                                    setUpView()
+                                } else {
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e: Exception) {
+                                Log.d(TAG, "getCartAPI:Error ${e.message}")
+
+                            }
                         }
                     }
 
@@ -191,7 +260,7 @@ private var updatePosition=-1
 
     private fun setAddObserver() {
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
-            if(it!=null) {
+            if (it != null) {
                 Log.d("testmystatus", "addToCartAPI: " + it.status);
                 when (it.status) {
                     Status.SUCCESS -> {
@@ -199,36 +268,42 @@ private var updatePosition=-1
                         val jsonObject = it.data
                         if (jsonObject != null) {
                             try {
-                                val message = jsonObject.get("message").asString
-                                if (message.contains("empty.", true)) {
+                                val d = jsonObject.get("cart").asJsonArray
+                                val p_npr = jsonObject.get("cart_total_npr")?.let { it.asDouble }
+                                val p_dollar =
+                                    jsonObject.get("cart_total_dollar")?.let { it.asDouble }
+                                val gson = Gson()
 
-                                    setUpView()
-                                } else {
-                                    val d = jsonObject.get("details").asJsonArray
-                                    val p_npr=  jsonObject.get("cart_total_npr").asDouble
-                                    val p_dollar=  jsonObject.get("cart_total_dollar").asDouble
-                                    val gson = Gson()
+                                val userListType: Type =
+                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
 
-                                    val userListType: Type =
-                                        object : TypeToken<ArrayList<Cart?>?>() {}.type
-
-                                    val cartArray: ArrayList<Cart> =
-                                        gson.fromJson(d, userListType)
+                                val cartArray: ArrayList<Cart> =
+                                    gson.fromJson(d, userListType)
 //                                if (cartArray != null) {
-                                    //update cart
-                                    Log.d("imhere", "addToCartAPI: ");
+                                //update cart
+                                Log.d("imhere", "addToCartAPI: ");
 
-                                    updateCartAtPosition(
-                                        cartArray[0].selected,
-                                        cartArray[0].is_selected,
-                                        updatePosition,p_npr,p_dollar
-                                    )
-
-//                                }
-
-                                }
+                                updateCartAtPosition(
+                                    cartArray[0].selected,
+                                    cartArray[0].is_selected,
+                                    updatePosition, p_npr, p_dollar
+                                )
                             } catch (e: Exception) {
                                 Log.d(TAG, "getCartAPI:Error ${e.message}")
+                                try {
+                                    val message = jsonObject.get("message").asString
+                                    if (message.contains("empty.", true)) {
+
+                                        setUpView()
+                                    } else {
+                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    }
+                                } catch (e: Exception) {
+                                    Log.d(TAG, "getCartAPI:Error ${e.message}")
+
+
+                                }
+
                             }
                         }
 
@@ -404,7 +479,7 @@ private var updatePosition=-1
 
     override fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean, position: Int) {
 //        Toast.makeText(requireContext(),"Checkbox $isChecked++++$position",Toast.LENGTH_SHORT).show()
-        selectCartApi(data.cartId,position)
+        selectCartApi(data.cartId, position)
 //        for (item in listCheckout) {
 //            if (item == data) {
 //                item.isSelected = isChecked
@@ -415,11 +490,17 @@ private var updatePosition=-1
     }
 
     override fun onAddClick(data: ModelCheckout, position: Int) {
-        addToCartAPI(data.itemId,position,data)
+        addToCartAPI(data.itemId, position, data)
     }
 
     override fun onRemove(data: ModelCheckout, position: Int) {
-        minusFromCartAPI(data.cartId,position)
+        minusFromCartAPI(data.cartId, position)
+    }
+
+    override fun onCompleteRemove(data: ModelCheckout, position: Int) {
+        //complete remove api
+        removeFromCartAPI(data.cartId, position)
+
     }
 
     private fun isCheckAll() {
@@ -532,7 +613,7 @@ private var updatePosition=-1
             for (v in cart.productDetails.variants) {
                 if (data.itemId == v.variantId) {
 //                    for (v in cart?.product?.variant!!) {
-                    listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false,"",""))
+                    listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false, "", ""))
                     //}
                 }
             }
@@ -599,7 +680,11 @@ private var updatePosition=-1
                                     if (checkoutResponse.cart.size > 0) {
                                         val cartlist = checkoutResponse.cart
                                         MainActivity.NavCount.myBoolean = cartlist.size
-                                        prepareList(cartlist,checkoutResponse.cartTotalNpr,checkoutResponse.cartTotalDollar)
+                                        prepareList(
+                                            cartlist,
+                                            checkoutResponse.cartTotalNpr,
+                                            checkoutResponse.cartTotalDollar
+                                        )
                                     } else {
                                         setUpView()
                                     }
@@ -695,17 +780,23 @@ private var updatePosition=-1
         snackbar.show()
     }
 
-    private fun addToCartAPI(id: Int,position: Int,old:ModelCheckout) {
-        Log.d(TAG, "hitapicart: "+id);
+    private fun addToCartAPI(id: Int, position: Int, old: ModelCheckout) {
+        Log.d(TAG, "hitapicart: " + id);
 //        viewModel.resetAddCartLiveData()
-        updatePosition=position
+        updatePosition = position
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
 
     }
 
-    private fun updateCartAtPosition(seleted: Selected,isClick:Boolean, i: Int,totalPriceNpr:Double?=0.0,totalPriceDollar:Double?=0.0) {
-        Log.d(TAG, "updateCartAtPosition: "+updatePosition);
-        if(updatePosition!=-1) {
+    private fun updateCartAtPosition(
+        seleted: Selected,
+        isClick: Boolean,
+        i: Int,
+        totalPriceNpr: Double? = 0.0,
+        totalPriceDollar: Double? = 0.0
+    ) {
+        Log.d(TAG, "updateCartAtPosition: " + updatePosition);
+        if (updatePosition != -1) {
             listCheckout[i].apply {
                 qty = seleted.quantity
                 priceNPR = seleted.vTotal
@@ -715,66 +806,42 @@ private var updatePosition=-1
             Log.d(TAG, "updateCartAtPosition: " + i);
             isCheckAll()
             calculatePrice()
-            binding.totalPrice.text = if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
-                "${getString(R.string.rs)} $totalPriceNpr"
-            } else {
-                "${getString(R.string.usd)} $totalPriceDollar"
-            }
+            binding.totalPrice.text =
+                if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
+                    "${getString(R.string.rs)} $totalPriceNpr"
+                } else {
+                    "${getString(R.string.usd)} $totalPriceDollar"
+                }
             adapterCheckout.notifyItemChanged(i)
         }
     }
 
-    private fun removeFromCartAPI(id: Int) {
-        viewModel.removeFromCartAPI(
-            PreferenceHandler.getToken(context).toString(),
-            id
-        )
-        viewModel.getRemoveFromCartAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
-                    Log.d(TAG, "removeWishListAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        showSnackBar(msg = "Product reduced from cart")
-//                        var remove: Wishlist? = null;
-//                        var position: Int? = null
-//                        try {
-//                            for ((index, item) in myWishList.withIndex()) {
-//                                if (item.id == product.id) {
-//                                    remove = item
-//                                    position = index
-//                                }
-//                            }
-//                            remove?.let {
-//                                myWishList.remove(remove)
-//                            }
-//                            setUpView()
-//                            position?.let {
-//                                adapterWishList.notifyItemRemoved(position)
-//                            }
-//
-//                        } catch (e: Exception) {
-//                            Log.d(FragmentWishlist.TAG, "removeWishListAPI:Error ${e.message}")
-//                        }
-                    }
-
-                }
-                Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
-                }
-                Status.ERROR -> {
-//                    binding.spinKit.visibility = View.GONE
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
-                }
+    private fun updateCartAtPosition(
+        position: Int,
+        totalPriceNpr: Double? = 0.0,
+        totalPriceDollar: Double? = 0.0
+    ) {
+        listCheckout.removeAt(position)
+        Log.d(TAG, "updateCartAtPosition: " + position);
+        isCheckAll()
+        calculatePrice()
+        checkIfCartEmpty()
+        binding.totalPrice.text =
+            if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
+                "${getString(R.string.rs)} $totalPriceNpr"
+            } else {
+                "${getString(R.string.usd)} $totalPriceDollar"
             }
-        })
+        adapterCheckout.notifyItemRemoved(position)
     }
 
-    private fun minusFromCartAPI(id: Int,position: Int) {
-        updatePosition=position
+    private fun checkIfCartEmpty() {
+       setUpView()
+    }
+
+
+    private fun minusFromCartAPI(id: Int, position: Int) {
+        updatePosition = position
         viewModel.minusFromCartAPI(
             PreferenceHandler.getToken(context).toString(),
             id
@@ -783,8 +850,19 @@ private var updatePosition=-1
 
     }
 
-    private fun selectCartApi(cartId: Int,position: Int){
-        updatePosition=position
+    private fun removeFromCartAPI(id: Int, position: Int) {
+        updatePosition = position
+        viewModel.removeFromCartAPI(
+            PreferenceHandler.getToken(context).toString(),
+            id
+        )
+
+
+    }
+
+
+    private fun selectCartApi(cartId: Int, position: Int) {
+        updatePosition = position
         viewModel.selectCartApi(
             PreferenceHandler.getToken(context).toString(),
             cartId

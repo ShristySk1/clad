@@ -26,18 +26,24 @@ class HomeViewModel constructor(private val mainRepository: ApiRepository)  : Vi
     fun dashboardAPI(token: String) {
         homeResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.dashboardAPI(token)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("homeResponse", "success: "+response.body())
-                    homeResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("homeResponse", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    homeResponse.postValue(Resource.error(response.message(), null))
+            try{
+                val response = mainRepository.dashboardAPI(token)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("homeResponse", "success: "+response.body())
+                        homeResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("homeResponse", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        homeResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                homeResponse.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
 
     }

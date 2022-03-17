@@ -2,6 +2,7 @@ package com.ayata.clad.shop.adapter
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.shop.model.ModelShop
 import com.ayata.clad.shop.response.ChildCategory
+import com.ayata.clad.utils.Constants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -58,33 +60,42 @@ internal class AdapterSubCategoryFilterable(private var context: Context?, priva
         holder.comment.text=item.comment
         holder.title.text=item.title
         holder.progressBar.visibility = View.VISIBLE
-        Glide.with(context!!).asDrawable()
-            .load(item.image)
-            .listener(object : RequestListener<Drawable?> {
-                override fun onLoadFailed(
-                    @Nullable e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    holder.progressBar.visibility = View.GONE
-                    return false
-                }
+        Log.d("myimage", "onBindViewHolder: "+item.image);
+        try {
+            Glide.with(context!!)
+                .load(item.image)
+                .fallback(Constants.ERROR_DRAWABLE)
+                .error(Constants.ERROR_DRAWABLE)
+                .listener(object : RequestListener<Drawable?> {
+                    override fun onLoadFailed(
+                        @Nullable e: GlideException?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        holder.progressBar.visibility = View.GONE
+                        return false
+                    }
 
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    holder.progressBar.visibility = View.GONE
-                    return false
-                }
-            })
-//            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.popularcard)
-            .into(holder.image)
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        holder.progressBar.visibility = View.GONE
+                        return false
+                    }
+                })
+                .into(holder.image)
+        }catch (e:Exception){
+            Glide.with(context!!)
+                .load(Constants.ERROR_DRAWABLE)
+                .into(holder.image)
+            holder.progressBar.visibility = View.GONE
+        }
+
         if(item.comment.isNullOrBlank() || item.comment.isNullOrEmpty()){
             holder.comment.visibility=View.GONE
         }else{

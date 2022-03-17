@@ -21,5 +21,8 @@ class ModelCircleText {
     var isSelected: Boolean = false
     var priceNpr: String = ""
     var priceDollar: String = ""
+    override fun toString(): String {
+        return "ModelCircleText(title='$title', productId=$productId, isSelected=$isSelected, priceNpr='$priceNpr', priceDollar='$priceDollar')"
+    }
 
 }

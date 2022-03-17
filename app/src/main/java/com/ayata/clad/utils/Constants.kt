@@ -1,6 +1,8 @@
 package com.ayata.clad.utils
 
- object Constants {
+import com.ayata.clad.R
+
+object Constants {
 
      const val EDIT_PROFILE: String="edit profile"
      const val PHONE = "phone"
@@ -8,4 +10,5 @@ package com.ayata.clad.utils
      const val FROM_STORY="from story"
 
      const val Bearer="Token"
+     const val ERROR_DRAWABLE= R.drawable.ic_clad_logo_grey
 }

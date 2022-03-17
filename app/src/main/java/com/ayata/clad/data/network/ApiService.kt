@@ -111,7 +111,7 @@ interface ApiService {
         @Field("variant_id") variant_id: Int
     ): Response<JsonObject>
 
-    @POST("remove-from-cart/")
+    @POST("remove-cart-item/")
     suspend fun removeFromCartAPI(
         @Header("Authorization") token: String,
         @Body jsonObject: JsonObject
@@ -128,8 +128,10 @@ interface ApiService {
     @FormUrlEncoded
     suspend fun selectCart(
         @Header("Authorization") token: String,
-        @Field("cart_id")cartId:Int
+        @Field("cart_id") cartId: Int
     ): Response<JsonObject>
+
+
 
     //not made
     @POST("size/")
@@ -175,10 +177,7 @@ interface ApiService {
         @Query("id") id: Int
     ): Response<JsonObject>
 
-    //view all-- pagination
-//    @GET("brand-list/")
-//    suspend fun brandListAPI( @Header("Authorization") token: String,@Query("offset")offset:Int): Response<JsonObject>
-
+    //view all pagination
     @GET("products/all/")
     suspend fun productAllAPI(
         @Header("Authorization") token: String,
@@ -193,13 +192,21 @@ interface ApiService {
     //address shipping
     @GET("account/user/shipping-address/")
     suspend fun getShippingAddress(@Header("Authorization") token: String): Response<ShippingAddressResponse>
+
     @POST("account/user/shipping-address/")
-    suspend fun addShippingAddress(@Header("Authorization") token: String,@Body json:JsonObject): Response<JsonObject>
+    suspend fun addShippingAddress(
+        @Header("Authorization") token: String,
+        @Body json: JsonObject
+    ): Response<JsonObject>
 
     //address own
     @GET("account/user/address/")
     suspend fun getUserAddress(@Header("Authorization") token: String): Response<ShippingAddressResponse>
+
     @POST("account/user/address/")
-    suspend fun addUserAddress(@Header("Authorization") token: String,@Body json:JsonObject): Response<JsonObject>
+    suspend fun addUserAddress(
+        @Header("Authorization") token: String,
+        @Body json: JsonObject
+    ): Response<JsonObject>
 
 }

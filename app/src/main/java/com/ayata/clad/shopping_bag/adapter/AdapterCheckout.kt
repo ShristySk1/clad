@@ -30,7 +30,7 @@ internal class AdapterCheckout(
 ) : RecyclerView.Adapter<AdapterCheckout.MyViewHolder>() {
 
 
-    private val STOCKLIMIT: Int=6
+    private val STOCKLIMIT: Int = 6
 
     internal inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -81,12 +81,9 @@ internal class AdapterCheckout(
 
             add.setOnClickListener {
                 Log.d("tetstdata", "clickView: ");
-                onItemClickListener.onAddClick(listItems[adapterPosition],adapterPosition)
+                onItemClickListener.onAddClick(listItems[adapterPosition], adapterPosition)
             }
-            remove.setOnClickListener {
-                onItemClickListener.onRemove(listItems[adapterPosition],adapterPosition)
 
-            }
         }
     }
 
@@ -120,7 +117,7 @@ internal class AdapterCheckout(
         holder.colorHexImage.apply { setColorFilter(Color.parseColor(item.colorHex)) }
         holder.brand.text = "Brand: ${item.brand}"
         holder.progressBar.visibility = View.VISIBLE
-        Log.d("testimage", "onBindViewHolder: "+item.image);
+        Log.d("testimage", "onBindViewHolder: " + item.image);
         Glide.with(context!!).asDrawable()
             .load(item.image)
             .listener(object : RequestListener<Drawable?> {
@@ -152,21 +149,33 @@ internal class AdapterCheckout(
         val stock = item.stock
         val myQuantity = item.qty
         var textToDisplay = ""
-        if (myQuantity > stock) {
+        if (myQuantity >= stock) {
             textToDisplay = "Out of Stock"
-        } else if (myQuantity <= stock) {
+            changeColor(holder.stock, R.color.colorRedLight, R.color.colorRedDark)
+        } else if (myQuantity < stock) {
             if ((stock - myQuantity) < STOCKLIMIT) {
-                changeColor(holder.stock,R.color.colorYellowLight,R.color.colorYellowDark)
-                textToDisplay = "${stock-myQuantity} item(s) remaining"
+                changeColor(holder.stock, R.color.colorYellowLight, R.color.colorYellowDark)
+                textToDisplay = "${stock - myQuantity} item(s) remaining"
             } else {
                 textToDisplay = "In stock"
-                changeColor(holder.stock,R.color.colorGreenLight,R.color.colorGreenDark)
+                changeColor(holder.stock, R.color.colorGreenLight, R.color.colorGreenDark)
             }
 
         }
         holder.stock.setText(textToDisplay)
         //click
         holder.clickView()
+        holder.remove.setOnClickListener {
+            if(position!=-1) {
+                if (item.qty == 1) {
+                    onItemClickListener.onCompleteRemove(listItems[position], position)
+                } else {
+                    onItemClickListener.onRemove(listItems[position], position)
+                }
+            }
+
+        }
+
 
     }
 
@@ -183,8 +192,9 @@ internal class AdapterCheckout(
         fun onSizeClicked(data: ModelCheckout, position: Int)
         fun onQuantityClicked(data: ModelCheckout, position: Int)
         fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean, position: Int)
-        fun onAddClick(data: ModelCheckout,position: Int)
-        fun onRemove(data: ModelCheckout,position: Int)
+        fun onAddClick(data: ModelCheckout, position: Int)
+        fun onRemove(data: ModelCheckout, position: Int)
+        fun onCompleteRemove(data: ModelCheckout, position: Int)
     }
 
 }

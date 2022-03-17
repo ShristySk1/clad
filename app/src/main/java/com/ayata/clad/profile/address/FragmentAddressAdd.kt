@@ -106,7 +106,7 @@ class FragmentAddressAdd : Fragment() {
                 }
             }
         })
-        viewModel.observeUserAddress().observe(viewLifecycleOwner, {
+        viewModel.observeUserAddAddress().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.spinKit.visibility = View.GONE
@@ -129,6 +129,7 @@ class FragmentAddressAdd : Fragment() {
                 }
             }
         })
+
     }
 
     private fun saveAddressShippingApi() {

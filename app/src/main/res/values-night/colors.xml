@@ -62,5 +62,7 @@
     <color name="colorGreenDark">#4CAF50</color>
     <color name="colorYellowLight">#2FFF9A03</color>
     <color name="colorYellowDark">#BD770E</color>
+    <color name="colorRedLight">#2fFF1100</color>
+    <color name="colorRedDark">#C82013</color>
 
 </resources>
