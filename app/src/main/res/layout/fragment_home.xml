@@ -19,6 +19,7 @@
             android:fillViewport="true">
 
             <RelativeLayout
+                android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -336,5 +337,15 @@
                 android:id="@+id/shimmerView"
                 layout="@layout/shimmer_home_1" />
         </com.facebook.shimmer.ShimmerFrameLayout>
+        <RelativeLayout
+            android:id="@+id/layoutError"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="match_parent">
+            <include
+                tools:visibility="visible"
+                android:id="@+id/error"
+                layout="@layout/layout_error" />
+        </RelativeLayout>
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

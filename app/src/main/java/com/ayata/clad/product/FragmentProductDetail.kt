@@ -489,7 +489,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
         }
         adapterCircleText.notifyDataSetChanged()
-        Log.d("sizechecked", "prepareListSize: 1"+listText.get(0));
+//        Log.d("sizechecked", "prepareListSize: 1"+listText.get(0));
 
         binding.detail2.rvSize.post {
 

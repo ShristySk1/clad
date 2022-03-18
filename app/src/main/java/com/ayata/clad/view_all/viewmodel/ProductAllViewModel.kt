@@ -18,41 +18,48 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
     private val removeWishResponse = MutableLiveData<Resource<JsonObject>>()
     private val addWishResponse = MutableLiveData<Resource<JsonObject>>()
 
-    var currentPage = 1
+//    var currentPage = 1
     var job: Job? = null
-    private var shouldFetchAgain: Boolean
+
+    //    private var shouldFetchAgain: Boolean
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
     val loading = MutableLiveData<Boolean>()
 
-    init {
-        shouldFetchAgain = true
-        Log.d("initcalled", ": calledinit ");
-    }
+//    init {
+//        shouldFetchAgain = true
+//        Log.d("initcalled", ": calledinit ");
+//    }
 
-    fun productListApi(filter: String, token: String) {
-        if (shouldFetchAgain) {
-            listResponse.postValue(Resource.loading(null))
-            job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+    fun productListApi(filter: String, token: String,currentPage:Int) {
+//        if (shouldFetchAgain) {
+        listResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
                 val response =
                     mainRepository.productAllApi("${Constants.Bearer} $token", currentPage, filter)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        currentPage++
+//                        currentPage++
                         Log.d("productListApi", "success: " + response.body())
                         listResponse.postValue(Resource.success(response.body()))
                         loading.value = false
-                        shouldFetchAgain = false
+//                        shouldFetchAgain = false
                     } else {
                         Log.e("productListApi", "error: $response")
                         onError("Error : ${response.message()} ")
                         listResponse.postValue(Resource.error(response.message(), null))
-                        shouldFetchAgain = false
+//                        shouldFetchAgain = false
                     }
                 }
+            } catch (e: Exception) {
+                listResponse.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
+//        }
     }
 
     fun getProductListAPI(): LiveData<Resource<JsonObject>> {
@@ -105,7 +112,6 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
         }
 
     }
-
 
 
     fun getAddToWishAPI(): LiveData<Resource<JsonObject>> {

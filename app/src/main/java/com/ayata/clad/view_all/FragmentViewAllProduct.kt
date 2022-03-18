@@ -49,6 +49,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     var isLastPage = false
     var isScrolling = false
     var isFirstTime = true
+    var currentPage=1
 
     private var listImage = arrayListOf<String>(
         "https://freepngimg.com/thumb/categories/627.png",
@@ -57,18 +58,20 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     )
 
     var title: String = ""
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentViewAllProductBinding.inflate(inflater, container, false)
-
         val bundle = arguments
         if (bundle != null) {
             title = bundle.getString(Constants.FILTER_HOME, "")
         }
-        initViewModel()
         initAppbar()
         initRecycler()
         listItem.clear()
@@ -131,6 +134,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
                 val shouldPaginate =
                     isNotLoadingAndIsNoLastPage && isAtLastItem && isNotAtBeginning && isTotalMoreThanVisible && isScrolling
                 if (shouldPaginate) {
+                    currentPage++;
                     getProductListAPI(title, false)
                     isScrolling = false
                 }
@@ -190,7 +194,6 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
 
 private fun getProductListAPI(filter: String, firsttime: Boolean) {
     isFirstTime = firsttime
-    viewModel.productListApi(filter, PreferenceHandler.getToken(requireContext())!!)
     viewModel.getProductListAPI().observe(viewLifecycleOwner, {
         when (it.status) {
             Status.SUCCESS -> {
@@ -214,6 +217,9 @@ private fun getProductListAPI(filter: String, firsttime: Boolean) {
                                     gson.fromJson(jsonObject.get("products"), type)
                                 if (productList != null) {
                                     if (productList.size > 0) {
+                                        if(isFirstTime){
+                                            listItem.clear()
+                                        }
                                         val oldCount = listItem.size
                                         binding.recyclerView.post {
                                             listItem.addAll(productList)
@@ -250,6 +256,7 @@ private fun getProductListAPI(filter: String, firsttime: Boolean) {
             }
         }
     })
+    viewModel.productListApi(filter, PreferenceHandler.getToken(requireContext())!!,currentPage)
 }
 
 private fun removeWishListAPI(productDetail: ProductDetail, position: Int) {

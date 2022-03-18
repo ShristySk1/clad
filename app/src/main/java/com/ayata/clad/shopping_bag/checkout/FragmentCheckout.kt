@@ -22,6 +22,7 @@ import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentCartCheckoutBinding
+import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterCheckout
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
@@ -39,6 +40,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
@@ -387,8 +389,13 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
         binding.btnCheckout.setOnClickListener {
 //            fragment_shopping
-            parentFragmentManager.beginTransaction().replace(R.id.main_fragment, FragmentShipping())
-                .addToBackStack("checkout").commit()
+           val frag= FragmentShipping()
+            val bundle:Bundle= Bundle()
+            val selectedCarts=listCheckout.filter { it.isSelected==true }
+            bundle.putSerializable("carts",selectedCarts as ArrayList)
+            frag.arguments=bundle
+            fragmentManager?.beginTransaction()?.replace(R.id.main_fragment,frag )
+                ?.addToBackStack("checkout")?.commit()
         }
 
         binding.btnBrowse.setOnClickListener {

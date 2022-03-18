@@ -250,9 +250,7 @@ class FragmentWishlist : Fragment() {
             addItemDecoration(itemDecoration)
         }
 
-
     }
-
     //not used
     private fun showDialogMultipleChoice(
         title: String,
@@ -355,7 +353,7 @@ class FragmentWishlist : Fragment() {
                             }
                         }
                         myWishList.removeAt(pos)
-                        adapterWishList.notifyItemChanged(pos)
+                        adapterWishList.notifyItemRemoved(pos)
                         MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.minus(1)
                     }
                     binding.spinKit.visibility=View.GONE

@@ -55,14 +55,14 @@ class FragmentAddressAdd : Fragment() {
     private fun getMyBundle() {
         Log.d("testbundle", "getMyBundle: ");
         if (arguments != null) {
-            val ship = requireArguments().getString("ship", "")
+            val ship = requireArguments().getBoolean("ship", false)
             val data = requireArguments().getSerializable("data")?.let { it as Detail }
             //set previous data
             Log.d("testbundle", "getMyBundle: " + data);
             if (data != null) {
                 setMyData(data)
             }
-            isShipApi = ship.equals("ship")
+            isShipApi = ship
             Log.d("tetst", "getMyBundle: " + isShipApi);
         }else{
             Log.d("testbundle", "getMyBundle: null");

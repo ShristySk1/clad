@@ -1,6 +1,8 @@
 package com.ayata.clad.shopping_bag.model
 
-class ModelCheckout {
+import java.io.Serializable
+
+class ModelCheckout:Serializable {
 
     constructor(name:String,itemId:Int,priceNPR:Double,priceUSD:Double,size:String,qty:Int,
                 isSelected:Boolean,image:String,cartId:Int,color:String,colorHex:String,brand:String,stock:Int){

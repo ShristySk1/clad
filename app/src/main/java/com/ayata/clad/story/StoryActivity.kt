@@ -15,6 +15,8 @@ import com.ayata.clad.MainActivity
 import com.ayata.clad.databinding.ActivityStoryBinding
 import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.model.ModelStory
+import com.ayata.clad.home.response.Content
+import com.ayata.clad.home.response.Story
 import com.ayata.clad.utils.Constants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -34,7 +36,7 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener,A
         const val TAG: String ="StoryActivityLog"
         //set these from prev fragment/activity
         var storyIndex=0
-        var listStory=ArrayList<ModelStory>()
+        var listStory=ArrayList<Story>()
     }
     var pressTime = 0L
     var limit = 500L
@@ -121,14 +123,14 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener,A
 
     }
 
-    private fun setStoryView(data: ModelStory){
+    private fun setStoryView(data: Story){
         prepareData()
         //set view
-        binding.textTitle.text=data.title
-        binding.textSubTitle.text=data.description
-        binding.placeholder.text=data.title.substring(0,1)
+        binding.textTitle.text=data.vendor
+        binding.textSubTitle.text=""
+        binding.placeholder.text=data.vendor.substring(0,1)
         binding.placeholder.visibility= View.VISIBLE
-        Glide.with(this).load(data.imageUrl)
+        Glide.with(this).load(data.contents[0].imageUrl)
             .listener(object :RequestListener<Drawable>{
                 override fun onLoadFailed(
                     e: GlideException?,
@@ -155,11 +157,14 @@ class StoryActivity : AppCompatActivity() ,StoriesProgressView.StoriesListener,A
 
         //set story
         listImageStory.clear()
-        listImageStory.addAll(data.storyList)
+        //filter images
+        data.contents.forEach {
+            listImageStory.add(it.imageUrl)
+        }
         // on below line we are setting the total count for our stories.
         binding.stories.setStoriesCount(listImageStory.size)
 
-        val timeTotal=timeEach*data.storyList.size
+        val timeTotal=timeEach*data.contents.size
         // on below line we are setting story duration for each story.
         binding.stories.setStoryDuration(timeTotal)
 

@@ -42,7 +42,7 @@ class TestFragment : Fragment() {
 //            showStories(listStory[0],0)
             StoryActivity.storyIndex=1
             StoryActivity.listStory.clear()
-            StoryActivity.listStory.addAll(listStory)
+//            StoryActivity.listStory.addAll(null)
             val i = Intent(requireContext(), StoryActivity::class.java)
             startActivity(i)
         }
@@ -91,33 +91,33 @@ class TestFragment : Fragment() {
     }
 
     private fun prepareStory() {
-        StoryActivity.listStory.clear()
-        val listString = arrayListOf<String>(
-            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
-            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
-            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
-        )
-        StoryActivity.listStory.add(ModelStory("", "Name 1", "Description 1", listString))
-
-        val list2 = arrayListOf<String>(
-            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
-            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
-        )
-        StoryActivity.listStory.add(ModelStory("", "Name 2", "Description 2", list2))
-
-        val list3=ArrayList<String>()
-        list3.add("https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg")
-        list3.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
-        StoryActivity.listStory.add(ModelStory("", "Name 3", "Description 3", list3))
-
-        val list4=ArrayList<String>()
-        list4.add(
-            0,
-            "https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"
-        )
-        list4.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
-
-        StoryActivity.listStory.add(ModelStory("", "Name 4", "Description 4", list4))
+//        StoryActivity.listStory.clear()
+//        val listString = arrayListOf<String>(
+//            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
+//            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
+//            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
+//        )
+//        StoryActivity.listStory.add(ModelStory("", "Name 1", "Description 1", listString))
+//
+//        val list2 = arrayListOf<String>(
+//            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
+//            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
+//        )
+//        StoryActivity.listStory.add(ModelStory("", "Name 2", "Description 2", list2))
+//
+//        val list3=ArrayList<String>()
+//        list3.add("https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg")
+//        list3.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
+//        StoryActivity.listStory.add(ModelStory("", "Name 3", "Description 3", list3))
+//
+//        val list4=ArrayList<String>()
+//        list4.add(
+//            0,
+//            "https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"
+//        )
+//        list4.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
+//
+//        StoryActivity.listStory.add(ModelStory("", "Name 4", "Description 4", list4))
     }
 
     private fun showStories(data: ModelStory, listPosition:Int) {

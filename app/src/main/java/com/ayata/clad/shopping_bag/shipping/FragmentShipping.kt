@@ -43,9 +43,11 @@ class FragmentShipping : Fragment(){
     //address2
     private lateinit var adapterShippingAddress2: AdapterShippingAddress
     private var listAddress2 = ArrayList<ModelShippingAddress>()
+    private var ADDRESSID=0
 
     private lateinit var viewModel: AddressViewModel
     private lateinit var shipData:Detail
+    private lateinit var homeData:Detail
     private var isFirstChecked=true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,16 +56,7 @@ class FragmentShipping : Fragment(){
             this,
             AddressViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[AddressViewModel::class.java]
-        viewModel.getUserAddress(
-            Constants.Bearer + " " + PreferenceHandler.getToken(
-                requireContext()
-            )
-        )
-        viewModel.getShippingAddress(
-            Constants.Bearer + " " + PreferenceHandler.getToken(
-                requireContext()
-            )
-        )
+
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,6 +111,16 @@ class FragmentShipping : Fragment(){
                 }
             }
         })
+        viewModel.getUserAddress(
+            Constants.Bearer + " " + PreferenceHandler.getToken(
+                requireContext()
+            )
+        )
+        viewModel.getShippingAddress(
+            Constants.Bearer + " " + PreferenceHandler.getToken(
+                requireContext()
+            )
+        )
     }
 
     private fun initAppbar() {
@@ -150,8 +153,13 @@ class FragmentShipping : Fragment(){
         }
 
         binding.btnProceed.setOnClickListener {
+            val frag= FragmentPayment()
+            val bundle:Bundle= Bundle()
+            bundle.putInt("address",ADDRESSID)
+            bundle.putSerializable("carts",arguments?.getSerializable("carts"))
+            frag.arguments=bundle
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentPayment())
+                .replace(R.id.main_fragment, frag)
                 .addToBackStack("shipping").commit()
         }
 
@@ -195,9 +203,11 @@ class FragmentShipping : Fragment(){
 
     private fun setCheckBox() {
         if( isFirstChecked){
+            ADDRESSID=homeData.id
             binding.recyclerView.checkBox.isChecked=true
             binding.recyclerView2.checkBox.isChecked=false
         }else{
+            ADDRESSID=shipData.id
             binding.recyclerView.checkBox.isChecked=false
             binding.recyclerView2.checkBox.isChecked=true
         }
@@ -207,6 +217,7 @@ class FragmentShipping : Fragment(){
     private fun prepareListAddress1(details: List<Detail>) {
         listAddress.clear()
         if(details.size>0) {
+            homeData=details[0]
             binding.recyclerView.editBtn.visibility=View.GONE
             binding.recyclerView.rootContainer.visibility=View.VISIBLE
             binding.recyclerView.titleAddress.text=details[0].title
@@ -224,7 +235,6 @@ class FragmentShipping : Fragment(){
             binding.recyclerView2.address.text=details[0].streetName
 //            binding.recyclerView2.checkBox.visibility=View.GONE
             binding.addNewBtn.visibility=View.GONE
-
         }else{
             binding.addNewBtn.visibility=View.VISIBLE
             binding.recyclerView.rootContainer.visibility=View.GONE

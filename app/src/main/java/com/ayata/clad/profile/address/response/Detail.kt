@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Detail(
+    val id:Int,
     val city: String,
     @SerializedName("contact_number")
     val contactNumber: String,
