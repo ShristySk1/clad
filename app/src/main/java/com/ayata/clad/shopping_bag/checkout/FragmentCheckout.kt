@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.text.bold
 import androidx.fragment.app.Fragment
@@ -33,6 +34,7 @@ import com.ayata.clad.shopping_bag.response.checkout.Selected
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
+import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -666,6 +668,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             when (it.status) {
                 Status.SUCCESS -> {
                     setShimmerLayout(false)
+                    hideError()
                     Log.d(TAG, "getCartAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -711,13 +714,27 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     setShimmerLayout(false)
 //                    listCheckout.clear()
 //                    setUpView()
+                    showError(it.message.toString())
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "getCartAPI:Error ${it.message}")
                 }
             }
         })
     }
+    private fun showError(it:String) {
+        binding.layoutMain.visibility=View.GONE
+        MyLayoutInflater().onAddField(requireContext(), binding.layoutContainer, R.layout.layout_error,R.drawable.ic_cart,"Error!",it)
 
+    }
+    private fun hideError() {
+        binding.layoutMain.visibility=View.VISIBLE
+        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+            MyLayoutInflater().onDelete(
+                binding.layoutContainer,
+                binding.root.findViewById(R.id.layout_root)
+            )
+        }
+    }
     private fun saveSizeAPI(product: ModelCheckout, sizeSelected: String) {
         viewModel.saveSizeAPI(
             PreferenceHandler.getToken(context).toString(),

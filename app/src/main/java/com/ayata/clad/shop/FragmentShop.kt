@@ -355,12 +355,12 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
     }
 
     private fun showError(it:String) {
-        binding.rootContainer.visibility=View.GONE
+//        binding.rootContainer.visibility=View.GONE
         MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Error!",it)
 
     }
     private fun hideError() {
-        binding.rootContainer.visibility=View.VISIBLE
+//        binding.rootContainer.visibility=View.VISIBLE
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
                 binding.root,

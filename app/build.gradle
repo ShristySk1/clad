@@ -85,6 +85,8 @@ dependencies {
     //view model
     def lifecycle_version = "2.2.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
@@ -114,6 +116,8 @@ dependencies {
     implementation('com.khalti:khalti-android:2.00.01') {
         transitive = true
     }
+    // Paging 3
+    implementation "androidx.paging:paging-runtime:3.0.0-alpha05"
 
 
 

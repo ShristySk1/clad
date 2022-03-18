@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +32,7 @@ import com.ayata.clad.product.adapter.AdapterRecommendation
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
+import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.adapter.AdapterDialogOption
 import com.ayata.clad.wishlist.adapter.AdapterWishList
@@ -428,6 +430,7 @@ class FragmentWishlist : Fragment() {
             when (it.status) {
                 Status.SUCCESS -> {
                     setShimmerLayout(false)
+                    hideError()
                     Log.d(TAG, "getWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -470,13 +473,27 @@ class FragmentWishlist : Fragment() {
                 Status.ERROR -> {
                     //Handle Error
                     setShimmerLayout(false)
+                    showError(it.message.toString())
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "getWishListAPI:Error ${it.message}")
                 }
             }
         })
     }
+    private fun showError(it:String) {
+        binding.layoutFilled.visibility=View.GONE
+        MyLayoutInflater().onAddField(requireContext(), binding.layoutContainer, R.layout.layout_error,R.drawable.ic_cart,"Error!",it)
 
+    }
+    private fun hideError() {
+        binding.layoutFilled.visibility=View.VISIBLE
+        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+            MyLayoutInflater().onDelete(
+                binding.layoutContainer,
+                binding.root.findViewById(R.id.layout_root)
+            )
+        }
+    }
     private fun setDataToView(wishlist: List<Wishlist>) {
         myWishList.clear()
         myWishList.addAll(wishlist)

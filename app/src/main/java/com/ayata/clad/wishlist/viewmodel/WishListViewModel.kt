@@ -29,18 +29,25 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
     fun wishListAPI(token:String) {
         listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.wishListApi("${Constants.Bearer} $token")
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("wishListAPI", "success: "+response.body())
-                    listResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("wishListAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    listResponse.postValue(Resource.error(response.message(), null))
+
+            try {
+                val response = mainRepository.wishListApi("${Constants.Bearer} $token")
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("wishListAPI", "success: "+response.body())
+                        listResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("wishListAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        listResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                listResponse.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
 
     }

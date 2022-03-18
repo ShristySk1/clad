@@ -22,8 +22,10 @@
         android:text="Error!" />
 
     <TextView
+        android:textAlignment="center"
+        android:paddingHorizontal="32dp"
         android:id="@+id/error_description"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="No Connectivity!" />
 </LinearLayout>

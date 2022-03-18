@@ -31,18 +31,24 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
     fun cartListAPI(token: String) {
         cartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.cartListApi("${Constants.Bearer} $token")
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("cartListAPI", "success: " + response.body())
-                    cartResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("cartListAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    cartResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.cartListApi("${Constants.Bearer} $token")
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("cartListAPI", "success: " + response.body())
+                        cartResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("cartListAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        cartResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                cartResponse.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
 
     }

@@ -1,6 +1,7 @@
 package com.ayata.clad.data.network
 
 import android.content.Context
+import com.ayata.clad.data.network.interceptor.NetworkConnectionInterceptor
 import com.ayata.clad.profile.address.response.ShippingAddressResponse
 import com.ayata.clad.profile.edit.response.Details
 import com.google.gson.JsonObject
@@ -10,6 +11,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 
@@ -30,7 +32,7 @@ interface ApiService {
             if (retrofitService == null) {
                 val client: OkHttpClient =
                     OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
-//                        .addInterceptor(NetworkConnectionInterceptor(WeakReference(context)))
+                        .addInterceptor(NetworkConnectionInterceptor(WeakReference(context)))
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
                         .writeTimeout(10, TimeUnit.SECONDS).build()

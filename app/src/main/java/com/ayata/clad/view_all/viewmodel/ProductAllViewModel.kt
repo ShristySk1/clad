@@ -1,11 +1,13 @@
 package com.ayata.clad.view_all.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -18,7 +20,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
     private val removeWishResponse = MutableLiveData<Resource<JsonObject>>()
     private val addWishResponse = MutableLiveData<Resource<JsonObject>>()
 
-//    var currentPage = 1
+    //    var currentPage = 1
     var job: Job? = null
 
     //    private var shouldFetchAgain: Boolean
@@ -32,7 +34,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
 //        Log.d("initcalled", ": calledinit ");
 //    }
 
-    fun productListApi(filter: String, token: String,currentPage:Int) {
+    fun productListApi(filter: String, token: String, currentPage: Int) {
 //        if (shouldFetchAgain) {
         listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -126,6 +128,27 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
     override fun onCleared() {
         super.onCleared()
         job?.cancel()
+    }
+
+    private val currentQuery = MutableLiveData(DEFAULT_QUERY)
+    private var auth=""
+
+    val productList: LiveData<PagingData<ProductDetail>> = currentQuery.switchMap { queryString ->
+        mainRepository.getViewAllResult(queryString, auth = auth).cachedIn(viewModelScope)
+    }
+
+    fun searchProductViewAll(query: String, autho: String) {
+        currentQuery.value = query
+        auth=autho
+    }
+//    fun fetchProductsViewAllLiveData(query: String, auth: String): LiveData<PagingData<ProductDetail>> {
+//        return mainRepository.getViewAllResult(query,auth)
+//            .cachedIn(viewModelScope)
+//    }
+
+    companion object {
+        private const val CURRENT_QUERY = "current_query"
+        private const val DEFAULT_QUERY = "Recommended"
     }
 
 }
