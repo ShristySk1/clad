@@ -42,6 +42,7 @@ class FragmentProductList : Fragment() {
     private var listProduct = ArrayList<ProductDetail>()
     private var appBarTitle: String = "";
     private var appBarDesc: String = "";
+    private var appBarCount:Int=0
 
 
     //paging
@@ -72,6 +73,7 @@ class FragmentProductList : Fragment() {
             val child =
                 requireArguments().getSerializable(FragmentSubCategory.CHILD_CATEGORY) as ChildCategory
             appBarTitle = child.title
+            appBarCount=child.product_count
             appBarDesc = requireArguments().getString(FragmentSubCategory.CATEGORY_TITLE, "")
             getCategoryProductListAPI(child.id,true)
         }
@@ -90,7 +92,7 @@ class FragmentProductList : Fragment() {
         (activity as MainActivity).setToolbar2(
             isClose = false, isBack = true, isFilter = true, isClear = false,
             textTitle = appBarDesc + "." + appBarTitle,
-            textDescription = "1000 results"
+            textDescription = "$appBarCount results"
         )
     }
 
@@ -220,7 +222,6 @@ class FragmentProductList : Fragment() {
                                     } else {
                                         setUpEmptyView()
                                     }
-
                                 }
                             } catch (e: Exception) {
                                 Log.d(TAG, "getproductlistAPI:Error2 ${e.message}")

@@ -9,62 +9,99 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView.OnEditorActionListener
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentSearchBinding
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.search.adapter.AdapterRecentSearch
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.view_all.adapter.AdapterViewAllProduct
 import com.ayata.clad.view_all.model.ModelViewAllProduct
+import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
 import com.google.android.material.snackbar.Snackbar
 
 
-class FragmentSearch : Fragment(),AdapterViewAllProduct.OnItemClickListener,AdapterRecentSearch.OnItemClickListener {
+class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
+    AdapterRecentSearch.OnItemClickListener, ProductDetailViewAllAdapter.onItemClickListener {
 
-    private lateinit var binding:FragmentSearchBinding
-    private var listItem=ArrayList<ModelViewAllProduct?>()
-    private lateinit var adapterRecycler:AdapterViewAllProduct
+    private lateinit var binding: FragmentSearchBinding
+    private var listItem = ArrayList<ModelViewAllProduct?>()
+    private lateinit var adapterRecycler: AdapterViewAllProduct
 
     private lateinit var adapterRecentSearch: AdapterRecentSearch
-    private var listRecent=ArrayList<String>()
+    private var listRecent = ArrayList<String>()
     var isLoading = false
+    private lateinit var viewModel: SearchViewModel
+    private lateinit var adapterPaging: ProductDetailViewAllAdapter
 
-    private var listImage= arrayListOf<String>("https://freepngimg.com/thumb/categories/627.png",
-    "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-    "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png")
 
-    var title:String=""
+    private var listImage = arrayListOf<String>(
+        "https://freepngimg.com/thumb/categories/627.png",
+        "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
+        "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png"
+    )
+
+    var title: String = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding= FragmentSearchBinding.inflate(inflater, container, false)
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        val bundle=arguments
-        if(bundle!=null){
-            title=bundle.getString(Constants.FILTER_HOME,"")
+        val bundle = arguments
+        if (bundle != null) {
+            title = bundle.getString(Constants.FILTER_HOME, "")
         }
         initAppbar()
         initRecycler()
-        populateData()
-        initScrollListener()
-
+        initViewModel()
+//        initScrollListener()
         initView()
+//        binding.etSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+//            var handled = false
+//            if (actionId == EditorInfo.IME_ACTION_DONE) {
+//                Log.d("testedittext", "onCreateView: ");
+//                getSearchProducts(binding.etSearch.text.toString())
+//                handled = true
+//            }
+//            handled
+//        })
+        binding.etSearch.on(EditorInfo.IME_ACTION_SEARCH, {getSearchProducts(binding.etSearch.text.toString())})
+
         return binding.root
     }
 
-    private fun initAppbar(){
+    private fun initViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            SearchViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        )[SearchViewModel::class.java]
+        viewModel.productList.observe(viewLifecycleOwner, {
+            adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
+        })
+    }
+
+    private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(false)
     }
 
-    private fun initView(){
+    private fun initView() {
         binding.btnBack.setOnClickListener {
             parentFragmentManager.popBackStackImmediate()
         }
@@ -73,46 +110,92 @@ class FragmentSearch : Fragment(),AdapterViewAllProduct.OnItemClickListener,Adap
             adapterRecentSearch.notifyDataSetChanged()
         }
 
-        binding.btnClose.visibility=View.GONE
+        binding.btnClose.visibility = View.GONE
         binding.btnClose.setOnClickListener {
             binding.textInputSearch.editText!!.text.clear()
-            binding.btnClose.visibility=View.GONE
+            binding.btnClose.visibility = View.GONE
         }
 
         binding.textInputSearch.editText!!.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable) {}
 
-            override fun beforeTextChanged(s: CharSequence, start: Int,
-                                           count: Int, after: Int) {
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
             }
-
-            override fun onTextChanged(s: CharSequence, start: Int,
-                                       before: Int, count: Int) {
-                binding.btnClose.visibility=View.VISIBLE
-                if(count==0){
-                    binding.btnClose.visibility=View.GONE
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+                binding.btnClose.visibility = View.VISIBLE
+                if (count == 0) {
+                    binding.btnClose.visibility = View.GONE
                 }
             }
         })
     }
+    fun EditText.on(actionId: Int, func: () -> Unit) {
+        setOnEditorActionListener { _, receivedActionId, _ ->
 
-    private fun initRecycler(){
-        adapterRecycler= AdapterViewAllProduct(context,listItem,this)
-        binding.recyclerView.apply {
-            layoutManager=GridLayoutManager(context,2)
-            adapter=adapterRecycler
+            if (actionId == receivedActionId) {
+                func()
+            }
+
+            true
+        }
+    }
+
+    private fun initRecycler() {
+//        adapterRecycler= AdapterViewAllProduct(context,listItem,this)
+//        binding.recyclerView.apply {
+//            layoutManager=GridLayoutManager(context,2)
+//            adapter=adapterRecycler
+//        }
+        adapterPaging = ProductDetailViewAllAdapter(this)
+        binding.apply {
+            recyclerView.apply {
+                layoutManager = GridLayoutManager(context, 2)
+
+                itemAnimator = null
+                setHasFixedSize(true)
+//                adapter = unsplashAdapter
+                adapter = adapterPaging
+            }
+        }
+        //load state
+        adapterPaging.addLoadStateListener { loadState ->
+            binding.apply {
+//                defaultProgress.isVisible = loadState.source.refresh is LoadState.Loading
+                recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
+//                textViewError.isVisible = loadState.source.refresh is LoadState.Error
+//                buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                //for empty view
+                if (loadState.source.refresh is LoadState.NotLoading
+                    && loadState.append.endOfPaginationReached
+                    && adapterPaging.itemCount < 1
+                ) {
+                    recyclerView.isVisible = false
+//                    textViewEmpty.isVisible = true
+
+                } else {
+//                    textViewEmpty.isVisible = false
+                }
+
+            }
         }
 
-        adapterRecentSearch= AdapterRecentSearch(requireContext(),listRecent,this)
+
+        adapterRecentSearch = AdapterRecentSearch(requireContext(), listRecent, this)
         binding.recyclerViewRecent.apply {
-            layoutManager=LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
-            adapter=adapterRecentSearch
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = adapterRecentSearch
         }
         populateRecentSearch()
     }
 
-    private fun populateRecentSearch(){
+    private fun populateRecentSearch() {
         listRecent.clear()
 
         listRecent.add("Shoes for men")
@@ -120,14 +203,15 @@ class FragmentSearch : Fragment(),AdapterViewAllProduct.OnItemClickListener,Adap
         adapterRecentSearch.notifyDataSetChanged()
     }
 
-    private fun populateData() {
-        listItem.clear()
-        var i = 0
-        while (i < 10) {
-            listItem.add(ModelViewAllProduct("Product $i","500.0","150","Company ABC",false,listImage.random()))
-            i++
-        }
+
+    private fun getSearchProducts(filter: String) {
+
+        viewModel.searchProduct(
+            filter,
+            Constants.Bearer + " " + PreferenceHandler.getToken(context)
+        )
     }
+
 
 
     private fun initScrollListener() {
@@ -141,7 +225,8 @@ class FragmentSearch : Fragment(),AdapterViewAllProduct.OnItemClickListener,Adap
                 val layoutManager = recyclerView.layoutManager as GridLayoutManager?
                 if (!isLoading) {
                     if (layoutManager != null &&
-                        layoutManager.findLastCompletelyVisibleItemPosition() == listItem.size - 1) {
+                        layoutManager.findLastCompletelyVisibleItemPosition() == listItem.size - 1
+                    ) {
                         //bottom of list!
                         loadMore()
                         isLoading = true
@@ -163,8 +248,12 @@ class FragmentSearch : Fragment(),AdapterViewAllProduct.OnItemClickListener,Adap
             val nextLimit = currentSize + 9
             Log.d("infinitescroll", "loadMore: $scrollPosition --$nextLimit")
             while (currentSize - 1 < nextLimit) {
-                listItem.add(ModelViewAllProduct("Product $currentSize","500.0","80",
-                    "Company ABC",false,listImage.random()))
+                listItem.add(
+                    ModelViewAllProduct(
+                        "Product $currentSize", "500.0", "80",
+                        "Company ABC", false, listImage.random()
+                    )
+                )
                 currentSize++
             }
             adapterRecycler.notifyDataSetChanged()
@@ -173,23 +262,25 @@ class FragmentSearch : Fragment(),AdapterViewAllProduct.OnItemClickListener,Adap
     }
 
     override fun onProductClickListener(data: ModelViewAllProduct) {
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
-            FragmentProductDetail()).addToBackStack(null).commit()
+        parentFragmentManager.beginTransaction().replace(
+            R.id.main_fragment,
+            FragmentProductDetail()
+        ).addToBackStack(null).commit()
     }
 
     override fun onWishListClicked(data: ModelViewAllProduct, position: Int) {
-        val isOnWishList=listItem[position]!!.isOnWishList
-        val snackBar = if(isOnWishList) {
+        val isOnWishList = listItem[position]!!.isOnWishList
+        val snackBar = if (isOnWishList) {
             Snackbar
                 .make(binding.root, "Product removed from wishlist", Snackbar.LENGTH_SHORT)
-        }else{
+        } else {
             Snackbar
                 .make(binding.root, "Product added to wishlist", Snackbar.LENGTH_SHORT)
         }
 //                .setAction("RETRY") { }
         snackBar.setActionTextColor(Color.WHITE)
         snackBar.show()
-        listItem[position]!!.isOnWishList=(!isOnWishList)
+        listItem[position]!!.isOnWishList = (!isOnWishList)
         adapterRecycler.notifyItemChanged(position)
     }
 
@@ -199,6 +290,14 @@ class FragmentSearch : Fragment(),AdapterViewAllProduct.OnItemClickListener,Adap
     }
 
     override fun onRecentSearchClicked(data: String, position: Int) {
+    }
+
+    override fun onItemClick(product: ProductDetail, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onWishListClick(product: ProductDetail, position: Int) {
+        TODO("Not yet implemented")
     }
 
 }

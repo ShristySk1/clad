@@ -35,5 +35,8 @@ class ModelCheckout:Serializable {
     var colorHex:String=""
     var brand:String=""
     var stock:Int=0
+    override fun toString(): String {
+        return "ModelCheckout(name='$name', isSelected=$isSelected, itemId=$itemId, cartId=$cartId)"
+    }
 
 }

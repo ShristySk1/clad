@@ -394,7 +394,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
            val frag= FragmentShipping()
             val bundle:Bundle= Bundle()
             val selectedCarts=listCheckout.filter { it.isSelected==true }
-            bundle.putSerializable("carts",selectedCarts as ArrayList)
+            Log.d("tetstcarts", "initView: "+selectedCarts);
+            bundle.putSerializable("carts",selectedCarts as ArrayList<ModelCheckout>)
             frag.arguments=bundle
             fragmentManager?.beginTransaction()?.replace(R.id.main_fragment,frag )
                 ?.addToBackStack("checkout")?.commit()

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +27,10 @@ import com.ayata.clad.profile.address.response.Detail
 import com.ayata.clad.profile.address.viewmodel.AddressViewModel
 import com.ayata.clad.profile.address.viewmodel.AddressViewModelFactory
 import com.ayata.clad.shopping_bag.adapter.AdapterShippingAddress
+import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.shopping_bag.payment.FragmentPayment
+import com.ayata.clad.shopping_bag.response.checkout.Cart
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import java.nio.BufferUnderflowException
@@ -155,8 +158,14 @@ class FragmentShipping : Fragment(){
         binding.btnProceed.setOnClickListener {
             val frag= FragmentPayment()
             val bundle:Bundle= Bundle()
+            var carts=ArrayList<ModelCheckout>()
             bundle.putInt("address",ADDRESSID)
-            bundle.putSerializable("carts",arguments?.getSerializable("carts"))
+            arguments?.let {
+                carts=it.getSerializable("carts") as ArrayList<ModelCheckout>
+            }
+            bundle.putSerializable("carts",carts)
+            Log.d("insideargumats", "initView: "+arguments?.getSerializable("carts"));
+
             frag.arguments=bundle
             parentFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, frag)

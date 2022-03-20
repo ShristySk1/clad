@@ -211,4 +211,19 @@ interface ApiService {
         @Body json: JsonObject
     ): Response<JsonObject>
 
+    //checkout order
+    @POST("checkout/")
+    suspend fun checkoutOrder(
+        @Header("Authorization") token: String,
+        @Body json: JsonObject
+    ): Response<JsonObject>
+
+    //search
+    @GET("search/")
+    suspend fun searchProduct(
+        @Header("Authorization") token: String,
+        @Query("query") query:String,
+        @Query("page")page:Int
+    ): Response<JsonObject>
+
 }

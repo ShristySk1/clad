@@ -45,6 +45,9 @@
                 android:paddingVertical="10dp"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
+                android:id="@+id/etSearch"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
                 android:background="@android:color/transparent"
                 android:textColor="@color/colorBlack"
                 android:hint="Search Products"/>

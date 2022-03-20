@@ -11,17 +11,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView.BufferType
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentCartPaymentBinding
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.shopping_bag.adapter.AdapterPaymentMethod
+import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.order_placed.FragmentOrderPlaced
 import com.ayata.clad.shopping_bag.response.checkout.Cart
+import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
+import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.view_all.FragmentViewAllProduct
 
 import com.khalti.checkout.helper.Config
 
@@ -30,6 +40,7 @@ import com.khalti.checkout.helper.KhaltiCheckOut
 import com.khalti.checkout.helper.OnCheckOutListener
 
 import com.khalti.utils.Constant
+import java.time.temporal.TemporalAmount
 
 
 class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
@@ -38,6 +49,8 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
     private lateinit var adapterPaymentMethod: AdapterPaymentMethod
     private var listPaymentMethod = ArrayList<ModelPaymentMethod>()
     private var PAYMENTNAME = ""
+    private lateinit var viewModel: CheckoutViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,12 +60,18 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         binding = FragmentCartPaymentBinding.inflate(inflater, container, false)
 
 //        (parentFragment as FragmentShoppingBag).paymentPage()
+        setUpViewModel()
         initAppbar()
         initView()
         initRecycler()
         setTermText()
-
         return binding.root
+    }
+    private fun setUpViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        )[CheckoutViewModel::class.java]
     }
 
     private fun initAppbar() {
@@ -67,20 +86,17 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 
     private fun initView() {
         binding.btnConfirm.setOnClickListener {
-//            activity?.supportFragmentManager!!.beginTransaction()
-//                .replace(R.id.main_fragment,FragmentOrderPlaced())
-//                .addToBackStack(null)
-//                .commit()
-
             //get address get carts
-            var carts=ArrayList<Cart>()
+            var carts=ArrayList<ModelCheckout>()
             var addressId = 0
             arguments?.let {
                 addressId = it.getInt("address", 0)
-                carts = it.getSerializable("carts") as ArrayList<Cart>
+                carts = it.getSerializable("carts") as ArrayList<ModelCheckout>
+                Log.d("insideargumats", "initView: ");
             }
             Log.d("testid", "initView: "+addressId+"  "+PAYMENTNAME+"\n"+carts.toString());
             //hit order api
+//            checkoutOrder(addressId,123.22)
 
             parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
             parentFragmentManager.beginTransaction()
@@ -94,6 +110,35 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
             binding.totalPrice.text = "${getString(R.string.usd)} 890"
         }
     }
+    private fun checkoutOrder(addressId:Int,amount: Double) {
+        viewModel.checkoutOrder(
+            PreferenceHandler.getToken(context).toString(),
+            PAYMENTNAME,"", arrayListOf(),addressId,amount)
+        viewModel.observeCheckoutOrder().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d("testdata", "addToWishListAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+
+                        } catch (e: Exception) {
+                            Log.d("testdata", "addToWishListAPI:Error ${e.message}")
+                            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d("testdata", "addToWishListAPI:Error ${it.message}")
+                }
+            }
+        })
+    }
+
 
     private fun setTermText() {
         val spanTxt = SpannableStringBuilder(
@@ -161,6 +206,10 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         if (data.name.equals("Khalti Wallet", ignoreCase = true)) {
             PAYMENTNAME = "KHALTI"
             setForKhalti()
+        }else if(data.name.equals("Esewa Wallet", ignoreCase = true)){
+            PAYMENTNAME = "ESEWA"
+        }else{
+            PAYMENTNAME = "CASHONDELIVERY"
         }
     }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.shopping_bag.response.checkout.Cart
 import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -21,7 +22,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
     private val quantityResponse = MutableLiveData<Resource<JsonObject>>()
     private val cartSelectResponse = MutableLiveData<Resource<JsonObject>>()
-
+    private val checkoutResponse = MutableLiveData<Resource<JsonObject>>()
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
@@ -207,6 +208,30 @@ Log.d("getcartid", "addToCartAPI: "+id);
     fun getQuantityAPI(): LiveData<Resource<JsonObject>> {
         return quantityResponse
     }
+    //checkout after payment
+    fun checkoutOrder(token: String,paymentType:String,payment_token:String,cartList: List<Cart>,addressId:Int,amountPaid:Double) {
+        checkoutResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val jsonObject = JsonObject()
+//            jsonObject.addProperty("cart_id", id)
+            val response = mainRepository.checkoutOrder("${Constants.Bearer} $token", jsonObject)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("checkoutorder", "success: " + response.body())
+                    checkoutResponse.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("checkoutorder", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    checkoutResponse.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+    }
+    fun observeCheckoutOrder(): LiveData<Resource<JsonObject>> {
+        return checkoutResponse
+    }
+
 
     private fun onError(message: String) {
         errorMessage.postValue(message)

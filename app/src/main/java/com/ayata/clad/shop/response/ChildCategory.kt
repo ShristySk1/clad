@@ -8,4 +8,5 @@ data class ChildCategory(
     val image: String,
     val title: String,
     val comment: String = "",
+    val product_count:Int=0
 ) : Serializable
