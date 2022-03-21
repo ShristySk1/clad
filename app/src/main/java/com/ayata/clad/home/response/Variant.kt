@@ -2,6 +2,7 @@ package com.ayata.clad.home.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Variant(
     @SerializedName("color_hex")
@@ -33,4 +34,4 @@ data class Variant(
     val isInCart: Boolean,
     @SerializedName("is_in_wishlist")
     var isInWishlist: Boolean
-)
+):Serializable

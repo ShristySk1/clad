@@ -2,6 +2,7 @@ package com.ayata.clad.home.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Coupon(
     val code: String,
@@ -10,4 +11,4 @@ data class Coupon(
     val discountAmount: Double,
     val id: Int,
     val title: String
-)
+):Serializable

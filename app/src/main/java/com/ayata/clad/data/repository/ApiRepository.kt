@@ -63,7 +63,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
         ).liveData
     }
     //checkout order
-    suspend fun checkoutOrder(token: String, json: JsonObject) = retrofitService.checkoutOrder(token, json)
+    suspend fun checkoutOrder(token: String, json: String) = retrofitService.checkoutOrder(token, json)
     //search
     suspend fun searchOrder(token: String, query:String,page: Int) = retrofitService.searchProduct(token, query,page)
     fun getSearchResult(title: String, auth: String): LiveData<PagingData<ProductDetail>> {

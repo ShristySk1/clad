@@ -40,7 +40,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
                 val response =
-                    mainRepository.productAllApi("${Constants.Bearer} $token", currentPage, filter)
+                    mainRepository.productAllApi("$token", currentPage, filter)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
 //                        currentPage++
@@ -74,7 +74,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
             val jsonObject = JsonObject()
             jsonObject.addProperty("wishlist_id", id)
             val response =
-                mainRepository.removeFromWishAPI("${Constants.Bearer} $token", jsonObject)
+                mainRepository.removeFromWishAPI("$token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("removeFromWishAPI", "success: " + response.body())
@@ -99,7 +99,7 @@ class ProductAllViewModel constructor(private val mainRepository: ApiRepository)
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject = JsonObject()
             jsonObject.addProperty("variant_id", id)
-            val response = mainRepository.addToWishApi("${Constants.Bearer} $token", jsonObject)
+            val response = mainRepository.addToWishApi("$token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("addToWishAPI", "success: " + response.body())

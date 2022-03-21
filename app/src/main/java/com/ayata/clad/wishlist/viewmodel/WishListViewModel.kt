@@ -31,7 +31,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
 
             try {
-                val response = mainRepository.wishListApi("${Constants.Bearer} $token")
+                val response = mainRepository.wishListApi("$token")
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("wishListAPI", "success: "+response.body())
@@ -61,7 +61,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("wishlist_id",id)
-            val response = mainRepository.removeFromWishAPI("${Constants.Bearer} $token",jsonObject)
+            val response = mainRepository.removeFromWishAPI("$token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("removeFromWishAPI", "success: "+response.body())
@@ -84,7 +84,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
     fun wishListToCart(token: String, id: Int) {
         wishListToCart.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.wishlistToCart("${Constants.Bearer} $token", id)
+            val response = mainRepository.wishlistToCart("$token", id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("addToWishAPI", "success: " + response.body())
@@ -107,7 +107,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
         addCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
 
-            val response = mainRepository.addToCartApi("${Constants.Bearer} $token",id)
+            val response = mainRepository.addToCartApi("$token",id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("addToCartAPI", "success: "+response.body())
@@ -133,7 +133,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
             val jsonObject=JsonObject()
             jsonObject.addProperty("product_id",id)
             jsonObject.addProperty("size",id)
-            val response = mainRepository.saveSizeAPI("${Constants.Bearer} $token",jsonObject)
+            val response = mainRepository.saveSizeAPI("$token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("saveSizeAPI", "success: "+response.body())

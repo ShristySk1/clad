@@ -31,22 +31,23 @@ data class ProductDetail(
     @SerializedName("order_count")
     val orderCount: Int,
     val price: Double,
+    val dollar_price: Double=0.0,
     val priority: Int,
     @SerializedName("product_address")
     val productAddress: String,
     @SerializedName("product_id")
     val productId: Int,
     @SerializedName("product_weight")
-    val productWeight: Any,
+    val productWeight: String,
     @SerializedName("reference_code")
-    val referenceCode: Any,
+    val referenceCode: String,
     val reviews: Reviews,
     @SerializedName("seo_description")
     val seoDescription: String,
     @SerializedName("seo_keywords")
-    val seoKeywords: List<Any>,
+    val seoKeywords: List<String>,
     @SerializedName("seo_title")
-    val seoTitle: Any,
+    val seoTitle: String,
     val slug: String,
     val store: String,
     val summary: String,

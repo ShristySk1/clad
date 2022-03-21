@@ -32,7 +32,7 @@ interface ApiService {
             if (retrofitService == null) {
                 val client: OkHttpClient =
                     OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
-                        .addInterceptor(NetworkConnectionInterceptor(WeakReference(context)))
+                        .addInterceptor(NetworkConnectionInterceptor(context))
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
                         .writeTimeout(10, TimeUnit.SECONDS).build()
@@ -215,7 +215,7 @@ interface ApiService {
     @POST("checkout/")
     suspend fun checkoutOrder(
         @Header("Authorization") token: String,
-        @Body json: JsonObject
+        @Body json: String
     ): Response<JsonObject>
 
     //search

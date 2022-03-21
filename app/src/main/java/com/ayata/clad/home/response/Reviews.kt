@@ -2,6 +2,7 @@ package com.ayata.clad.home.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Reviews(
     val comfort: String,
@@ -13,4 +14,4 @@ data class Reviews(
     @SerializedName("total_review")
     val totalReview: Int,
     val width: String
-)
+):Serializable

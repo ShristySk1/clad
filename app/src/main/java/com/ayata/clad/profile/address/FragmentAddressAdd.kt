@@ -141,7 +141,7 @@ class FragmentAddressAdd : Fragment() {
         jsonObject.addProperty("postal_code", binding.textInputZip.editText!!.text.toString())
         jsonObject.addProperty("contact_number", binding.textInputPhone.editText!!.text.toString())
         viewModel.addShippingAddress(
-            Constants.Bearer + " " + PreferenceHandler.getToken(
+             PreferenceHandler.getToken(
                 requireContext()
             )!!, jsonObject
         )
@@ -157,7 +157,7 @@ class FragmentAddressAdd : Fragment() {
         jsonObject.addProperty("postal_code", binding.textInputZip.editText!!.text.toString())
         jsonObject.addProperty("contact_number", binding.textInputPhone.editText!!.text.toString())
         viewModel.addUserAddress(
-            Constants.Bearer + " " + PreferenceHandler.getToken(requireContext())!!,
+            PreferenceHandler.getToken(requireContext())!!,
             jsonObject
         )
 

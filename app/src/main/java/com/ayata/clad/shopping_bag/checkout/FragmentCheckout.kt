@@ -23,7 +23,6 @@ import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentCartCheckoutBinding
-import com.ayata.clad.shopping_bag.FragmentShoppingBag
 import com.ayata.clad.shopping_bag.adapter.AdapterCheckout
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
@@ -41,7 +40,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -61,7 +59,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private lateinit var adapterCircleQty: AdapterCircleText
     private var listQty = ArrayList<ModelCircleText>()
     private var updatePosition = -1
-
+private lateinit var listContainingGrandtotal: CartResponse
     companion object {
         private const val TAG = "FragmentCheckout"
     }
@@ -105,6 +103,12 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                                 updateCartAtPosition(updatePosition)
                             } else {
+                                val checkoutResponse =
+                                    Gson().fromJson<CartResponse>(
+                                        jsonObject,
+                                        CartResponse::class.java
+                                    )
+                                listContainingGrandtotal=checkoutResponse
                             }
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
@@ -135,22 +139,15 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-
-                            val d = jsonObject.get("cart").asJsonArray
-                            val p_npr = jsonObject.get("cart_total_npr")?.let { it.asDouble }
-                            val p_dollar = jsonObject.get("cart_total_dollar")?.let { it.asDouble }
-                            val gson = Gson()
-
-                            val userListType: Type =
-                                object : TypeToken<ArrayList<Cart?>?>() {}.type
-
-                            val cartArray: ArrayList<Cart> =
-                                gson.fromJson(d, userListType)
-//                                val userListType: Type =
-//                                    object : TypeToken<Cart>() {}.type
-//
-//                                val cartArray:Cart =
-//                                    gson.fromJson(d, userListType)
+                            val checkoutResponse =
+                                Gson().fromJson<CartResponse>(
+                                    jsonObject,
+                                    CartResponse::class.java
+                                )
+                            val cartArray=checkoutResponse.cart
+                            val p_npr = checkoutResponse.cartTotalNpr
+                            val p_dollar =checkoutResponse.cartTotalDollar
+                            listContainingGrandtotal=checkoutResponse
                             if (cartArray != null) {
 //                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
 
@@ -208,17 +205,15 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-
-                            val d = jsonObject.get("cart").asJsonArray
-                            val p_npr = jsonObject.get("cart_total_npr")?.let { it.asDouble }
-                            val p_dollar = jsonObject.get("cart_total_dollar")?.let { it.asDouble }
-                            val gson = Gson()
-
-                            val userListType: Type =
-                                object : TypeToken<ArrayList<Cart?>?>() {}.type
-
-                            val cartArray: ArrayList<Cart> =
-                                gson.fromJson(d, userListType)
+                            val checkoutResponse =
+                                Gson().fromJson<CartResponse>(
+                                    jsonObject,
+                                    CartResponse::class.java
+                                )
+                            val cartArray=checkoutResponse.cart
+                            val p_npr = checkoutResponse.cartTotalNpr
+                            val p_dollar =checkoutResponse.cartTotalDollar
+                            listContainingGrandtotal=checkoutResponse
                             if (cartArray != null) {
                                 //update cart
                                 updateCartAtPosition(
@@ -272,18 +267,15 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                         val jsonObject = it.data
                         if (jsonObject != null) {
                             try {
-                                val d = jsonObject.get("cart").asJsonArray
-                                val p_npr = jsonObject.get("cart_total_npr")?.let { it.asDouble }
-                                val p_dollar =
-                                    jsonObject.get("cart_total_dollar")?.let { it.asDouble }
-                                val gson = Gson()
-
-                                val userListType: Type =
-                                    object : TypeToken<ArrayList<Cart?>?>() {}.type
-
-                                val cartArray: ArrayList<Cart> =
-                                    gson.fromJson(d, userListType)
-//                                if (cartArray != null) {
+                                val checkoutResponse =
+                                    Gson().fromJson<CartResponse>(
+                                        jsonObject,
+                                        CartResponse::class.java
+                                    )
+                                val cartArray=checkoutResponse.cart
+                                val p_npr = checkoutResponse.cartTotalNpr
+                                val p_dollar =checkoutResponse.cartTotalDollar
+                                listContainingGrandtotal=checkoutResponse
                                 //update cart
                                 Log.d("imhere", "addToCartAPI: ");
 
@@ -336,10 +328,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         )[CheckoutViewModel::class.java]
     }
 
-    override fun onResume() {
-        super.onResume()
-//        (parentFragment as FragmentShoppingBag).checkoutPage()
-    }
 
     private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(true)
@@ -394,8 +382,10 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
            val frag= FragmentShipping()
             val bundle:Bundle= Bundle()
             val selectedCarts=listCheckout.filter { it.isSelected==true }
+            val otherPrices=listContainingGrandtotal
             Log.d("tetstcarts", "initView: "+selectedCarts);
             bundle.putSerializable("carts",selectedCarts as ArrayList<ModelCheckout>)
+            bundle.putSerializable("totals",otherPrices)
             frag.arguments=bundle
             fragmentManager?.beginTransaction()?.replace(R.id.main_fragment,frag )
                 ?.addToBackStack("checkout")?.commit()
@@ -431,8 +421,15 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     }
 
-    private fun prepareList(res: List<Cart>, cartTotalNpr: Double, cartTotalDollar: Double) {
+    private fun prepareList(
+        res: List<Cart>,
+        cartTotalNpr: Double,
+        cartTotalDollar: Double,
+        checkoutResponse: CartResponse
+    ) {
         apiCartList = res
+
+        listContainingGrandtotal=checkoutResponse
 //        listCheckout.clear()
 //        listCheckout.add(ModelCheckout("Nike Air Jordan",784569,8790.0,80.0,"A",2,true,
 //            "https://freepngimg.com/thumb/categories/627.png"))
@@ -676,7 +673,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                         try {
                             val message = jsonObject.get("message").asString
                             if (message.contains("empty.", true)) {
-
                                 setUpView()
                             }
                         } catch (e: Exception) {
@@ -694,8 +690,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                         prepareList(
                                             cartlist,
                                             checkoutResponse.cartTotalNpr,
-                                            checkoutResponse.cartTotalDollar
-                                        )
+                                            checkoutResponse.cartTotalDollar,checkoutResponse)
                                     } else {
                                         setUpView()
                                     }

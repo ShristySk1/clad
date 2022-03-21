@@ -15,6 +15,7 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.ActivityMainBinding
+import com.ayata.clad.databinding.ActivityOnboardingBinding
 import com.ayata.clad.databinding.DialogLoginBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
@@ -41,7 +42,7 @@ import com.google.gson.Gson
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity :  BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     private lateinit var binding: ActivityMainBinding
     private lateinit var badge: BadgeDrawable
     private lateinit var badge_wishlist: BadgeDrawable
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //set login
+        PreferenceHandler.setIsOnBoarding(this, false)
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener)
         if (findViewById<View?>(R.id.main_fragment) != null) {
             if (savedInstanceState != null) {
@@ -396,7 +399,7 @@ class MainActivity : AppCompatActivity() {
         val window: Window = this.window
         var flags = window.decorView.systemUiVisibility // get current flag
         flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR // add LIGHT_STATUS_BAR to flag
-        if (PreferenceHandler.isThemeDark(this)) {
+        if (PreferenceHandler.isThemeDark(this)!!) {
             flags = flags xor View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
         window.decorView.systemUiVisibility = flags
@@ -527,10 +530,9 @@ class MainActivity : AppCompatActivity() {
         }
         dialogBinding.btnSave.setOnClickListener {
             //google login
+            signIn()
             bottomSheetDialog.dismiss()
         }
         bottomSheetDialog.show()
     }
-
-
 }

@@ -43,7 +43,7 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
         initAppbar()
         initRecycler()
         setUpViewModel()
-        viewModel.getUserAddress(Constants.Bearer + " " + PreferenceHandler.getToken(requireContext()))
+        viewModel.getUserAddress(PreferenceHandler.getToken(requireContext()).toString())
         binding.llAddAddress.setOnClickListener {
             val fragment = FragmentAddressAdd()
             val bundle = Bundle()

@@ -19,6 +19,8 @@ class PreferenceHandler {
         const val EMAIL = "email"
         const val USERNAME = "username"
         const val IMAGE = "image"
+        const val SHOW_ONBOARDING="show onboarding"
+
         private fun getSharedPreference(ctx: Context?): SharedPreferences? {
             return PreferenceManager.getDefaultSharedPreferences(ctx)
         }
@@ -27,12 +29,33 @@ class PreferenceHandler {
                 context
             )?.edit()?.putString(const, string)?.apply()
         }
+
+        private fun editorInt(context: Context, const: String, int: Int) {
+            getSharedPreference(
+                context
+            )?.edit()?.putInt(const, int)?.apply()
+        }
+        private fun editorBoolean(context: Context, const: String, boolean: Boolean) {
+            getSharedPreference(
+                context
+            )?.edit()?.putBoolean(const, boolean)?.apply()
+        }
         fun savePhoneNumber(context: Context?,tokenid:String?){
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
             val editor = sharedPref.edit()
             editor.putString(Constants.PHONE, tokenid)
             editor.apply()
         }
+        fun setIsOnBoarding(context: Context, showOnboarding: Boolean) {
+            editorBoolean(
+                context,
+                SHOW_ONBOARDING,
+                showOnboarding
+            )
+        }
+        fun getShowOnBoarding(context: Context) = getSharedPreference(
+            context
+        )?.getBoolean(SHOW_ONBOARDING, true)
         fun getEmail(context: Context) = getSharedPreference(
             context
         )?.getString(EMAIL, "")
@@ -80,60 +103,41 @@ class PreferenceHandler {
                 .decodeByteArray(decodedByte, 0, decodedByte.size)
         }
 
-
-//    fun getImage(context: Context) = getSharedPreference(
-//        context
-//    )?.getString(IMAGE, "")
-
         fun getImage(context: Context) = getSharedPreference(
             context
         )?.getString(IMAGE, "")
-        fun getPhoneNumber(context: Context?):String?
-        {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            return sharedPref.getString(Constants.PHONE, "")
-        }
-
         fun setTheme(context: Context?,isDark:Boolean){
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            val editor = sharedPref.edit()
-            editor.putBoolean(DARK_THEME, isDark)
-            editor.apply()
+            if(context!=null)
+            editorBoolean(context,DARK_THEME, isDark)
         }
 
-        fun isThemeDark(context: Context?):Boolean
-        {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            return sharedPref.getBoolean(DARK_THEME, false)
-        }
+        fun isThemeDark(context: Context?)=
+            getSharedPreference(
+                context
+            ).let {  it?.getBoolean(DARK_THEME, false)}
+
 
         fun setCurrency(context: Context?,currency:String){
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            val editor = sharedPref.edit()
-            editor.putString(CURRENCY, currency)
-            editor.apply()
+            if(context!=null)
+                editor(context,CURRENCY, currency)
         }
 
-        fun getCurrency(context: Context?): String?
-        {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            return sharedPref.getString(CURRENCY, "npr")
-        }
+        fun getCurrency(context: Context?)=
+            getSharedPreference(
+                context
+            )?.getString(CURRENCY, "npr")
 
         fun setToken(context: Context?,token:String){
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            val editor = sharedPref.edit()
-            editor.putString(TOKEN, token)
-            editor.apply()
+            if(context!=null)
+                editor(context,TOKEN, token)
         }
 
-        fun getToken(context: Context?): String?
-        {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            return sharedPref.getString(TOKEN, "")
-        }
+        fun getToken(context: Context?)=
+            getSharedPreference(
+                context
+            )?.getString(TOKEN, "")
         fun logout(context: Context) {
-            val preferences =  PreferenceManager.getDefaultSharedPreferences(context)
+            val preferences = getSharedPreference(context)
             val editor = preferences?.edit()
             editor?.clear()
             editor?.commit()

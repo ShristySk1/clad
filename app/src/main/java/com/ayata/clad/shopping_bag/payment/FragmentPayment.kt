@@ -25,9 +25,11 @@ import com.ayata.clad.databinding.FragmentCartPaymentBinding
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.shopping_bag.adapter.AdapterPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelCheckout
+import com.ayata.clad.shopping_bag.model.ModelFinalOrder
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.order_placed.FragmentOrderPlaced
 import com.ayata.clad.shopping_bag.response.checkout.Cart
+import com.ayata.clad.shopping_bag.response.checkout.CartResponse
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
@@ -38,9 +40,7 @@ import com.khalti.checkout.helper.Config
 import com.khalti.checkout.helper.KhaltiCheckOut
 
 import com.khalti.checkout.helper.OnCheckOutListener
-
 import com.khalti.utils.Constant
-import java.time.temporal.TemporalAmount
 
 
 class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
@@ -49,7 +49,9 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
     private lateinit var adapterPaymentMethod: AdapterPaymentMethod
     private var listPaymentMethod = ArrayList<ModelPaymentMethod>()
     private var PAYMENTNAME = ""
+    private var PAYMENTTOKEN = ""
     private lateinit var viewModel: CheckoutViewModel
+    private lateinit var cartResponse: CartResponse
 
 
     override fun onCreateView(
@@ -63,10 +65,18 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         setUpViewModel()
         initAppbar()
         initView()
+        initBundle()
         initRecycler()
         setTermText()
         return binding.root
     }
+
+    private fun initBundle() {
+        arguments?.let {
+            cartResponse = it.getSerializable("totals") as CartResponse
+        }
+    }
+
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
@@ -94,15 +104,9 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
                 carts = it.getSerializable("carts") as ArrayList<ModelCheckout>
                 Log.d("insideargumats", "initView: ");
             }
-            Log.d("testid", "initView: "+addressId+"  "+PAYMENTNAME+"\n"+carts.toString());
+//            Log.d("testid", "initView: "+addressId+"  "+PAYMENTNAME+"\n"+carts.toString());
             //hit order api
-//            checkoutOrder(addressId,123.22)
-
-            parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentOrderPlaced())
-                .addToBackStack(null)
-                .commit()
+            checkoutOrder(addressId,carts)
         }
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
             binding.totalPrice.text = "${getString(R.string.rs)} 7800.0"
@@ -110,18 +114,24 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
             binding.totalPrice.text = "${getString(R.string.usd)} 890"
         }
     }
-    private fun checkoutOrder(addressId:Int,amount: Double) {
+    private fun checkoutOrder(addressId:Int,carts:List<ModelCheckout>) {
+       val cartIdList= carts.map { it.cartId }
         viewModel.checkoutOrder(
             PreferenceHandler.getToken(context).toString(),
-            PAYMENTNAME,"", arrayListOf(),addressId,amount)
+            PAYMENTNAME,PAYMENTTOKEN, cartIdList,addressId,cartResponse.cartGrandTotalNpr)
         viewModel.observeCheckoutOrder().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    binding.spinKit.visibility=View.GONE
                     Log.d("testdata", "addToWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-
+                            parentFragmentManager.popBackStack("checkout", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                            parentFragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment, FragmentOrderPlaced())
+                                .addToBackStack(null)
+                                .commit()
                         } catch (e: Exception) {
                             Log.d("testdata", "addToWishListAPI:Error ${e.message}")
                             Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
@@ -129,9 +139,11 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
                     }
                 }
                 Status.LOADING -> {
+                    binding.spinKit.visibility=View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
+                    binding.spinKit.visibility=View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d("testdata", "addToWishListAPI:Error ${it.message}")
                 }
@@ -193,7 +205,7 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         listPaymentMethod.clear()
         listPaymentMethod.add(ModelPaymentMethod("Khalti Wallet", "", false))
         listPaymentMethod.add(ModelPaymentMethod("Esewa Wallet", "", false))
-        listPaymentMethod.add(ModelPaymentMethod("IME Pay", "", false))
+        listPaymentMethod.add(ModelPaymentMethod("Cash on delivery", "https://okcredit-blog-images-prod.storage.googleapis.com/2021/05/cashondelivery1.jpg", false))
 
         adapterPaymentMethod.notifyDataSetChanged()
     }
@@ -202,36 +214,27 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         for (item in listPaymentMethod) {
             item.isSelected = data == item
         }
-        adapterPaymentMethod.notifyDataSetChanged()
         if (data.name.equals("Khalti Wallet", ignoreCase = true)) {
             PAYMENTNAME = "KHALTI"
             setForKhalti()
         }else if(data.name.equals("Esewa Wallet", ignoreCase = true)){
             PAYMENTNAME = "ESEWA"
         }else{
-            PAYMENTNAME = "CASHONDELIVERY"
+            PAYMENTNAME = "Cash"
         }
+        adapterPaymentMethod.notifyDataSetChanged()
+
     }
 
     private fun setForKhalti() {
-        val productId = "Product ID"
+        val productId = "ProductID"
         val product_name = "Main"
-        val amount = 100L
-        val khalti_merchant_id = "This is extra data"
-        val khalti_merchant_extra = "merchant_extra"
-        val map: MutableMap<String, Any> = HashMap()
-        map[khalti_merchant_extra] = khalti_merchant_id
-        val builder: Config.Builder =
-            Config.Builder(Constant.pub, productId, product_name, amount, object :
-                OnCheckOutListener {
-                override fun onSuccess(data: MutableMap<String, Any>) {
-                    Log.i("success", data.toString())
-                }
+        val amount = cartResponse.cartGrandTotalNpr.toLong()
+//        val khalti_merchant_id = "This is extra data"
+//        val khalti_merchant_extra = "merchant_extra"
+//        val map: MutableMap<String, Any> = HashMap()
+//        map[khalti_merchant_extra] = khalti_merchant_id
 
-                override fun onError(action: String, errorMap: MutableMap<String, String>) {
-                    Log.i("error", errorMap.toString())
-                }
-            })
         //                .paymentPreferences(new ArrayList<PaymentPreference>() {{
 //                    add(PaymentPreference.KHALTI);
 //                    add(PaymentPreference.EBANKING);
@@ -242,9 +245,24 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 //                .additionalData(map)
 //                .productUrl("")
 //                .mobile("9800000000");
-        val config: Config = builder.build()
-        val khaltiCheckOut = KhaltiCheckOut(requireContext(), config)
-        khaltiCheckOut.show()
+        try {
+            val builder: Config.Builder =
+                Config.Builder(Constant.pub, productId, product_name, amount, object :
+                    OnCheckOutListener {
+                    override fun onSuccess(data: MutableMap<String, Any>) {
+                        PAYMENTTOKEN=data.get("token").toString()
+                    }
+                    override fun onError(action: String, errorMap: MutableMap<String, String>) {
+                        Log.i("errorkhaltti", errorMap.toString())
+                    }
+                })
+            val config: Config = builder.build()
+            val khaltiCheckOut = KhaltiCheckOut(requireContext(), config)
+            khaltiCheckOut.show()
+        }catch (e:Exception){
+           Log.d("testkhalti", "setForKhalti: "+e.message);
+        }
+
     }
 
 }

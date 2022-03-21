@@ -50,7 +50,7 @@ internal class AdapterJustDropped(private var context:Context?,
         if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
             holder.description.text="${context!!.getString(R.string.rs)} ${item.price}"
         }else{
-            holder.description.text="${context!!.getString(R.string.usd)} ${item.price}"
+            holder.description.text="${context!!.getString(R.string.usd)} ${item.dollar_price}"
         }
 
         holder.progressBar.visibility = View.VISIBLE

@@ -94,14 +94,15 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun setAppMode(){
-        val isDarkMode=PreferenceHandler.isThemeDark(this)
+        val isDarkMode=PreferenceHandler.isThemeDark(this)!!
+        Log.d(TAG, "setAppMode: "+isDarkMode);
         val currentMode= if(isDarkMode){
             AppCompatDelegate.MODE_NIGHT_YES
         }else{
             AppCompatDelegate.MODE_NIGHT_NO
         }
         if(currentMode!=AppCompatDelegate.getDefaultNightMode()){
-            if(PreferenceHandler.isThemeDark(this)){
+            if(PreferenceHandler.isThemeDark(this)!!){
                 AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate
                         .MODE_NIGHT_YES)

@@ -50,7 +50,7 @@ class AdapterProductList(var context: Context?,
                 binding.price.text="${context!!.getString(R.string.rs)} ${item.price}"
             }else{
                 //usd
-                binding.price.text="${context!!.getString(R.string.usd)} ${item.price}"
+                binding.price.text="${context!!.getString(R.string.usd)} ${item.dollar_price}"
             }
 
         }

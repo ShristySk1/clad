@@ -537,7 +537,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 //        }
 //
         viewModel.dashboardAPI(
-            Constants.Bearer + " " + PreferenceHandler.getToken(requireContext()) ?: ""
+            PreferenceHandler.getToken(requireContext()) ?: ""
         )
         viewModel.getDashboardAPI().observe(viewLifecycleOwner, {
             when (it.status) {

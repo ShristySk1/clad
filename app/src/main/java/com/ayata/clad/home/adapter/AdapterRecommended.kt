@@ -50,7 +50,7 @@ internal class AdapterRecommended(private var context: Context?, private var lis
         if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
             holder.price.text="${context!!.getString(R.string.rs)} ${item.price}"
         }else{
-            holder.price.text="${context!!.getString(R.string.usd)} ${item.price}"
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.dollar_price}"
         }
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!).load(item.imageUrl[0])

@@ -2,6 +2,7 @@ package com.ayata.clad.shopping_bag.response.checkout
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Selected(
     @SerializedName("color_hex")
@@ -19,4 +20,4 @@ data class Selected(
     val vTotal: Double,
     @SerializedName("variant_id")
     val variantId: Int
-)
+):Serializable

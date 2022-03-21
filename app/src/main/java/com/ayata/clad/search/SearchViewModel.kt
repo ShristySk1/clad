@@ -26,7 +26,7 @@ class SearchViewModel constructor(private val mainRepository: ApiRepository)  : 
     fun productListSearchApi(token:String) {
         listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.searchOrder("${Constants.Bearer} $token","",1)
+            val response = mainRepository.searchOrder("$token","",1)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("productListApi", "success: "+response.body())

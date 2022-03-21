@@ -26,7 +26,7 @@ class BrandAllViewModel constructor(private val mainRepository: ApiRepository) :
     fun brandListApi(filter: String,token:String="") {
         listResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.brandListApi("${Constants.Bearer} $token",currentPage, filter)
+            val response = mainRepository.brandListApi("$token",currentPage, filter)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     currentPage++

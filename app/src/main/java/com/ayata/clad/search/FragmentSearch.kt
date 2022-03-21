@@ -208,7 +208,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
 
         viewModel.searchProduct(
             filter,
-            Constants.Bearer + " " + PreferenceHandler.getToken(context)
+            PreferenceHandler.getToken(context).toString()
         )
     }
 

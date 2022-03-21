@@ -52,7 +52,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository) : 
         try {
             job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                 val response =
-                    mainRepository.profileUpdateApi("${Constants.Bearer} $token", profile)
+                    mainRepository.profileUpdateApi("$token", profile)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("profileDetailAPI", "success: " + response.body())
@@ -83,7 +83,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository) : 
     fun orderListAPI(token: String) {
         orderResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.orderListApi("${Constants.Bearer} $token")
+            val response = mainRepository.orderListApi("$token")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("orderListAPI", "success: " + response.body())
@@ -106,7 +106,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository) : 
     fun orderDetailAPI(token: String, id: Int) {
         orderDetailResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.orderDetailApi("${Constants.Bearer} $token", id)
+            val response = mainRepository.orderDetailApi("$token", id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("orderDetailAPI", "success: " + response.body())

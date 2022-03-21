@@ -44,7 +44,7 @@ class FragmentAccount : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentAccountBinding.inflate(inflater, container, false)
-        prevTheme = if (PreferenceHandler.isThemeDark(context)) {
+        prevTheme = if (PreferenceHandler.isThemeDark(context)?:false) {
             "dark"
         } else {
             "light"
@@ -197,7 +197,7 @@ class FragmentAccount : Fragment() {
             MyFilterContentViewItem.SingleChoice("Dark Theme", false)
         )
 
-        if (PreferenceHandler.isThemeDark(context)) {
+        if (PreferenceHandler.isThemeDark(context)?:false) {
             list[1].isSelected = true
             list[0].isSelected = false
         } else {

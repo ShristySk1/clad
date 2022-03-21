@@ -66,7 +66,7 @@ class ProductDetailViewAllAdapter(private val listener:onItemClickListener) : Pa
                 if(PreferenceHandler.getCurrency(name.context).equals(name.context.getString(R.string.npr_case),true)){
                     price.text="${context!!.getString(R.string.rs)} ${item.price}"
                 }else{
-                    price.text="${context!!.getString(R.string.usd)} ${item.price}"
+                    price.text="${context!!.getString(R.string.usd)} ${item.dollar_price}"
                 }
 
                 progressBar.visibility = View.VISIBLE

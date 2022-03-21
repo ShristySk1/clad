@@ -40,6 +40,8 @@
         android:textAllCaps="false"
         app:backgroundTint="@null"
         android:textSize="16sp"
+        android:textColor="@color/white"
+
         android:background="@drawable/ripple_on_button_drawable"
         app:layout_constraintBottom_toTopOf="@id/btnongoogle"
         tools:layout_editor_absoluteX="20dp" />
@@ -53,6 +55,7 @@
         android:textAllCaps="false"
         app:backgroundTint="@null"
         android:textSize="16sp"
+        android:textColor="@color/white"
         android:background="@drawable/ripple_on_button_drawable"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="20dp" />
