@@ -270,9 +270,10 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     }
 
     private fun getAllTest(filter: String) {
-        viewModel.searchProductViewAll(filter, Constants.Bearer + " " + PreferenceHandler.getToken(context))
+        viewModel.searchProductViewAll(filter, PreferenceHandler.getToken(context).toString())
         viewModel.productList.observe(viewLifecycleOwner, {
             adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
+            adapterPaging.snapshot().items
         })
     }
 

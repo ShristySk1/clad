@@ -52,6 +52,7 @@ internal class AdapterCheckout(
         val colorHexImage = itemView.findViewById<ImageView>(R.id.ivColor)
         val brand = itemView.findViewById<TextView>(R.id.tvBrandName)
         val stock = itemView.findViewById<TextView>(R.id.stock)
+        var coupen=itemView.findViewById<TextView>(R.id.tv_text_to_copy)
 
 
         fun clickView() {
@@ -163,6 +164,12 @@ internal class AdapterCheckout(
 
         }
         holder.stock.setText(textToDisplay)
+        if(item.isCoupenAvailable){
+            holder.coupen.visibility=View.VISIBLE
+            holder.coupen.text=item.coupenText
+        }else{
+            holder.coupen.visibility=View.GONE
+        }
         //click
         holder.clickView()
         holder.remove.setOnClickListener {
@@ -185,6 +192,7 @@ internal class AdapterCheckout(
     }
 
     override fun getItemCount(): Int {
+        Log.d("testsize", "getItemCount: "+listItems.size);
         return listItems.size
     }
 

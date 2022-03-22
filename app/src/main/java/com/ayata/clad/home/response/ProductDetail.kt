@@ -32,6 +32,7 @@ data class ProductDetail(
     val orderCount: Int,
     val price: Double,
     val dollar_price: Double=0.0,
+    val old_dollar_price: Double=0.0,
     val priority: Int,
     @SerializedName("product_address")
     val productAddress: String,

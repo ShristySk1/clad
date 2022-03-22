@@ -38,9 +38,6 @@ import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Type
-import kotlin.collections.ArrayList
 
 
 class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
@@ -59,7 +56,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private lateinit var adapterCircleQty: AdapterCircleText
     private var listQty = ArrayList<ModelCircleText>()
     private var updatePosition = -1
-private lateinit var listContainingGrandtotal: CartResponse
+    private lateinit var listContainingGrandtotal: CartResponse
+
     companion object {
         private const val TAG = "FragmentCheckout"
     }
@@ -98,7 +96,7 @@ private lateinit var listContainingGrandtotal: CartResponse
                     if (jsonObject != null) {
                         try {
                             val message = jsonObject.get("message").asString
-                            Log.d(TAG, "setRemoveObserver: "+message);
+                            Log.d(TAG, "setRemoveObserver: " + message);
                             if (message.contains("removed", true)) {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                                 updateCartAtPosition(updatePosition)
@@ -108,7 +106,7 @@ private lateinit var listContainingGrandtotal: CartResponse
                                         jsonObject,
                                         CartResponse::class.java
                                     )
-                                listContainingGrandtotal=checkoutResponse
+                                listContainingGrandtotal = checkoutResponse
                             }
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
@@ -144,10 +142,10 @@ private lateinit var listContainingGrandtotal: CartResponse
                                     jsonObject,
                                     CartResponse::class.java
                                 )
-                            val cartArray=checkoutResponse.cart
+                            val cartArray = checkoutResponse.cart
                             val p_npr = checkoutResponse.cartTotalNpr
-                            val p_dollar =checkoutResponse.cartTotalDollar
-                            listContainingGrandtotal=checkoutResponse
+                            val p_dollar = checkoutResponse.cartTotalDollar
+                            listContainingGrandtotal = checkoutResponse
                             if (cartArray != null) {
 //                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
 
@@ -210,10 +208,10 @@ private lateinit var listContainingGrandtotal: CartResponse
                                     jsonObject,
                                     CartResponse::class.java
                                 )
-                            val cartArray=checkoutResponse.cart
+                            val cartArray = checkoutResponse.cart
                             val p_npr = checkoutResponse.cartTotalNpr
-                            val p_dollar =checkoutResponse.cartTotalDollar
-                            listContainingGrandtotal=checkoutResponse
+                            val p_dollar = checkoutResponse.cartTotalDollar
+                            listContainingGrandtotal = checkoutResponse
                             if (cartArray != null) {
                                 //update cart
                                 updateCartAtPosition(
@@ -272,10 +270,10 @@ private lateinit var listContainingGrandtotal: CartResponse
                                         jsonObject,
                                         CartResponse::class.java
                                     )
-                                val cartArray=checkoutResponse.cart
+                                val cartArray = checkoutResponse.cart
                                 val p_npr = checkoutResponse.cartTotalNpr
-                                val p_dollar =checkoutResponse.cartTotalDollar
-                                listContainingGrandtotal=checkoutResponse
+                                val p_dollar = checkoutResponse.cartTotalDollar
+                                listContainingGrandtotal = checkoutResponse
                                 //update cart
                                 Log.d("imhere", "addToCartAPI: ");
 
@@ -379,15 +377,15 @@ private lateinit var listContainingGrandtotal: CartResponse
 
         binding.btnCheckout.setOnClickListener {
 //            fragment_shopping
-           val frag= FragmentShipping()
-            val bundle:Bundle= Bundle()
-            val selectedCarts=listCheckout.filter { it.isSelected==true }
-            val otherPrices=listContainingGrandtotal
-            Log.d("tetstcarts", "initView: "+selectedCarts);
-            bundle.putSerializable("carts",selectedCarts as ArrayList<ModelCheckout>)
-            bundle.putSerializable("totals",otherPrices)
-            frag.arguments=bundle
-            fragmentManager?.beginTransaction()?.replace(R.id.main_fragment,frag )
+            val frag = FragmentShipping()
+            val bundle: Bundle = Bundle()
+            val selectedCarts = listCheckout.filter { it.isSelected == true }
+            val otherPrices = listContainingGrandtotal
+            Log.d("tetstcarts", "initView: " + selectedCarts);
+            bundle.putSerializable("carts", selectedCarts as ArrayList<ModelCheckout>)
+            bundle.putSerializable("totals", otherPrices)
+            frag.arguments = bundle
+            fragmentManager?.beginTransaction()?.replace(R.id.main_fragment, frag)
                 ?.addToBackStack("checkout")?.commit()
         }
 
@@ -429,22 +427,13 @@ private lateinit var listContainingGrandtotal: CartResponse
     ) {
         apiCartList = res
 
-        listContainingGrandtotal=checkoutResponse
-//        listCheckout.clear()
-//        listCheckout.add(ModelCheckout("Nike Air Jordan",784569,8790.0,80.0,"A",2,true,
-//            "https://freepngimg.com/thumb/categories/627.png"))
-//        listCheckout.add(ModelCheckout("Nike Air Jordan",784579,9000.0,180.0,"A",1,false,
-//            "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png"))
-//        listCheckout.add(ModelCheckout("Nike Air Jordan",784577,8790.0,80.0,"A",2,true,
-//            "https://freepngimg.com/thumb/categories/627.png"))
-//        listCheckout.add(ModelCheckout("Nike Air Jordan",784599,8790.0,80.0,"A",2,true,
-//            "https://freepngimg.com/thumb/categories/627.png"))
+        listContainingGrandtotal = checkoutResponse
         listCheckout.clear()
         Log.d(TAG, "prepareList: " + listCheckout.size);
         Log.d(TAG, "prepareList: " + apiCartList.size);
 
         for (item in apiCartList) {
-            Log.d(TAG, "prepareList: loop");
+            Log.d(TAG, "prepareList: loop"+item.productDetails.coupon?.code);
             listCheckout.add(
                 ModelCheckout(
                     item.productDetails?.name ?: "",
@@ -459,7 +448,9 @@ private lateinit var listContainingGrandtotal: CartResponse
                     item.selected.colorName,
                     item.selected.colorHex,
                     item.productDetails.brand.name,
-                    item.selected.sku
+                    item.selected.sku,
+                    item.productDetails.isCouponAvailable?:false,
+                    item.productDetails.coupon?.let { it.code }?:run {""}
                 )
             )
         }
@@ -476,12 +467,12 @@ private lateinit var listContainingGrandtotal: CartResponse
 
     override fun onSizeClicked(data: ModelCheckout, position: Int) {
         //open dialog
-        showDialogSize(data, position)
+//        showDialogSize(data, position)
     }
 
     override fun onQuantityClicked(data: ModelCheckout, position: Int) {
         //open dialog
-        showDialogQTY(data, position)
+//        showDialogQTY(data, position)
     }
 
     override fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean, position: Int) {
@@ -537,82 +528,82 @@ private lateinit var listContainingGrandtotal: CartResponse
         binding.textItemSelected.text = "$selected/${listCheckout.count()} ITEMS Selected"
     }
 
-    private fun showDialogSize(data: ModelCheckout, position: Int) {
+//    private fun showDialogSize(data: ModelCheckout, position: Int) {
+//
+//        val dialogBinding = DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
+//        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+//        bottomSheetDialog.setContentView(dialogBinding.root)
+//
+//        dialogBinding.title.text = "Size"
+//        adapterCircleSize = AdapterCircleText(context, listSize).also { adapter ->
+//            adapter.setCircleClickListener { listItem ->
+//                for (item in listSize) {
+//                    item.isSelected = item.equals(listItem)
+//                }
+//                adapterCircleSize.notifyDataSetChanged()
+//                data.size = listItem.title
+//                adapterCheckout.notifyItemChanged(position)
+//            }
+//        }
+//        prepareListSize(data)
+//
+//        dialogBinding.recyclerView.apply {
+//            layoutManager = GridLayoutManager(context, 5)
+//            adapter = adapterCircleSize
+//        }
+//
+//        dialogBinding.btnClose.setOnClickListener {
+//            bottomSheetDialog.dismiss()
+//        }
+//
+//        dialogBinding.btnSave.setOnClickListener {
+//            saveSizeAPI(data, data.size)
+//            bottomSheetDialog.dismiss()
+//        }
+//
+//        bottomSheetDialog.show()
+//    }
 
-        val dialogBinding = DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
-        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(dialogBinding.root)
-
-        dialogBinding.title.text = "Size"
-        adapterCircleSize = AdapterCircleText(context, listSize).also { adapter ->
-            adapter.setCircleClickListener { listItem ->
-                for (item in listSize) {
-                    item.isSelected = item.equals(listItem)
-                }
-                adapterCircleSize.notifyDataSetChanged()
-                data.size = listItem.title
-                adapterCheckout.notifyItemChanged(position)
-            }
-        }
-        prepareListSize(data)
-
-        dialogBinding.recyclerView.apply {
-            layoutManager = GridLayoutManager(context, 5)
-            adapter = adapterCircleSize
-        }
-
-        dialogBinding.btnClose.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        dialogBinding.btnSave.setOnClickListener {
-            saveSizeAPI(data, data.size)
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.show()
-    }
-
-    private fun showDialogQTY(data: ModelCheckout, position: Int) {
-
-        val dialogBinding = DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
-        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(dialogBinding.root)
-        dialogBinding.title.text = "Quantity"
-
-        adapterCircleQty = AdapterCircleText(context, listQty).also { adapter ->
-            adapter.setCircleClickListener { listItem ->
-                for (item in listQty) {
-                    item.isSelected = item.equals(listItem)
-                }
-                adapterCircleQty.notifyDataSetChanged()
-                try {
-                    data.qty = listItem.title.toInt()
-                } catch (e: Exception) {
-                    data.qty = 1
-                }
-                adapterCheckout.notifyItemChanged(position)
-                calculatePrice()
-            }
-        }
-        prepareListQuantity()
-
-        dialogBinding.recyclerView.apply {
-            layoutManager = GridLayoutManager(context, 5)
-            adapter = adapterCircleQty
-        }
-
-        dialogBinding.btnClose.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        dialogBinding.btnSave.setOnClickListener {
-            saveQuantityAPI(data, data.qty.toString())
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.show()
-    }
+//    private fun showDialogQTY(data: ModelCheckout, position: Int) {
+//
+//        val dialogBinding = DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
+//        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
+//        bottomSheetDialog.setContentView(dialogBinding.root)
+//        dialogBinding.title.text = "Quantity"
+//
+//        adapterCircleQty = AdapterCircleText(context, listQty).also { adapter ->
+//            adapter.setCircleClickListener { listItem ->
+//                for (item in listQty) {
+//                    item.isSelected = item.equals(listItem)
+//                }
+//                adapterCircleQty.notifyDataSetChanged()
+//                try {
+//                    data.qty = listItem.title.toInt()
+//                } catch (e: Exception) {
+//                    data.qty = 1
+//                }
+//                adapterCheckout.notifyItemChanged(position)
+//                calculatePrice()
+//            }
+//        }
+//        prepareListQuantity()
+//
+//        dialogBinding.recyclerView.apply {
+//            layoutManager = GridLayoutManager(context, 5)
+//            adapter = adapterCircleQty
+//        }
+//
+//        dialogBinding.btnClose.setOnClickListener {
+//            bottomSheetDialog.dismiss()
+//        }
+//
+//        dialogBinding.btnSave.setOnClickListener {
+//            saveQuantityAPI(data, data.qty.toString())
+//            bottomSheetDialog.dismiss()
+//        }
+//
+//        bottomSheetDialog.show()
+//    }
 
     private fun prepareListSize(data: ModelCheckout) {
         listSize.clear()
@@ -690,7 +681,8 @@ private lateinit var listContainingGrandtotal: CartResponse
                                         prepareList(
                                             cartlist,
                                             checkoutResponse.cartTotalNpr,
-                                            checkoutResponse.cartTotalDollar,checkoutResponse)
+                                            checkoutResponse.cartTotalDollar, checkoutResponse
+                                        )
                                     } else {
                                         setUpView()
                                     }
@@ -717,13 +709,22 @@ private lateinit var listContainingGrandtotal: CartResponse
             }
         })
     }
-    private fun showError(it:String) {
-        binding.layoutMain.visibility=View.GONE
-        MyLayoutInflater().onAddField(requireContext(), binding.layoutContainer, R.layout.layout_error,R.drawable.ic_cart,"Error!",it)
+
+    private fun showError(it: String) {
+        binding.layoutMain.visibility = View.GONE
+        MyLayoutInflater().onAddField(
+            requireContext(),
+            binding.layoutContainer,
+            R.layout.layout_error,
+            R.drawable.ic_cart,
+            "Error!",
+            it
+        )
 
     }
+
     private fun hideError() {
-        binding.layoutMain.visibility=View.VISIBLE
+        binding.layoutMain.visibility = View.VISIBLE
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
                 binding.layoutContainer,
@@ -731,67 +732,68 @@ private lateinit var listContainingGrandtotal: CartResponse
             )
         }
     }
-    private fun saveSizeAPI(product: ModelCheckout, sizeSelected: String) {
-        viewModel.saveSizeAPI(
-            PreferenceHandler.getToken(context).toString(),
-            product.itemId,
-            sizeSelected
-        )
-        viewModel.getSizeAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "saveSizeAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        showSnackBar("Size Updated")
-                        try {
 
-                        } catch (e: Exception) {
-                            Log.d(TAG, "saveSizeAPI:Error ${e.message}")
-                        }
-                    }
-                }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "saveSizeAPI:Error ${it.message}")
-                }
-            }
-        })
-    }
-
-    private fun saveQuantityAPI(product: ModelCheckout, quantitySelected: String) {
-        viewModel.saveQuantityAPI(
-            PreferenceHandler.getToken(context).toString(),
-            product.itemId,
-            quantitySelected
-        )
-        viewModel.getQuantityAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "saveQuantityAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        showSnackBar("Quantity Updated")
-                        try {
-
-                        } catch (e: Exception) {
-                            Log.d(TAG, "saveQuantityAPI:Error ${e.message}")
-                        }
-                    }
-                }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "saveQuantityAPI:Error ${it.message}")
-                }
-            }
-        })
-    }
+//    private fun saveSizeAPI(product: ModelCheckout, sizeSelected: String) {
+//        viewModel.saveSizeAPI(
+//            PreferenceHandler.getToken(context).toString(),
+//            product.itemId,
+//            sizeSelected
+//        )
+//        viewModel.getSizeAPI().observe(viewLifecycleOwner, {
+//            when (it.status) {
+//                Status.SUCCESS -> {
+//                    Log.d(TAG, "saveSizeAPI: ${it.data}")
+//                    val jsonObject = it.data
+//                    if (jsonObject != null) {
+//                        showSnackBar("Size Updated")
+//                        try {
+//
+//                        } catch (e: Exception) {
+//                            Log.d(TAG, "saveSizeAPI:Error ${e.message}")
+//                        }
+//                    }
+//                }
+//                Status.LOADING -> {
+//                }
+//                Status.ERROR -> {
+//                    //Handle Error
+//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//                    Log.d(TAG, "saveSizeAPI:Error ${it.message}")
+//                }
+//            }
+//        })
+//    }
+//
+//    private fun saveQuantityAPI(product: ModelCheckout, quantitySelected: String) {
+//        viewModel.saveQuantityAPI(
+//            PreferenceHandler.getToken(context).toString(),
+//            product.itemId,
+//            quantitySelected
+//        )
+//        viewModel.getQuantityAPI().observe(viewLifecycleOwner, {
+//            when (it.status) {
+//                Status.SUCCESS -> {
+//                    Log.d(TAG, "saveQuantityAPI: ${it.data}")
+//                    val jsonObject = it.data
+//                    if (jsonObject != null) {
+//                        showSnackBar("Quantity Updated")
+//                        try {
+//
+//                        } catch (e: Exception) {
+//                            Log.d(TAG, "saveQuantityAPI:Error ${e.message}")
+//                        }
+//                    }
+//                }
+//                Status.LOADING -> {
+//                }
+//                Status.ERROR -> {
+//                    //Handle Error
+//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//                    Log.d(TAG, "saveQuantityAPI:Error ${it.message}")
+//                }
+//            }
+//        })
+//    }
 
     private fun showSnackBar(msg: String) {
         val snackbar = Snackbar
@@ -856,7 +858,7 @@ private lateinit var listContainingGrandtotal: CartResponse
     }
 
     private fun checkIfCartEmpty() {
-       setUpView()
+        setUpView()
     }
 
 

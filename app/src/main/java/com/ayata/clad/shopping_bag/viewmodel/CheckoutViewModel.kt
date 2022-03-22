@@ -242,12 +242,16 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
         payment_token: String,
         cartList: List<Int>,
         addressId: Int,
+        addressType:String,
         amountPaid: Double
     ) {
         checkoutResponse.postValue(Resource.loading(null))
         val finalOrder = ModelFinalOrder(
             payment_gateway = paymentType,
-            received_amount = amountPaid, cart_id = cartList
+            payment_token= payment_token,
+            received_amount = amountPaid, cart_id = cartList,
+            address_id = addressId,
+            address_type = addressType
         )
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {

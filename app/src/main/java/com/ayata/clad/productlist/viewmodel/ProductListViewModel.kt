@@ -1,11 +1,12 @@
 package com.ayata.clad.productlist.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -52,7 +53,6 @@ class ProductListViewModel constructor(private val mainRepository: ApiRepository
     }
     private val categoryProductResponse = MutableLiveData<Resource<JsonObject>>()
     fun categoryProductListAPI(categoryId: Int) {
-
         if (shouldFetchAgain) {
         categoryProductResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -73,6 +73,20 @@ class ProductListViewModel constructor(private val mainRepository: ApiRepository
             }
         }
     }}
+    private val currentQuery = MutableLiveData(DEFAULT_QUERY)
+
+    val productList: LiveData<PagingData<ProductDetail>> = currentQuery.switchMap { categoryId ->
+        mainRepository.searchProductListFromCategory(categoryId).cachedIn(viewModelScope)
+    }
+    //productlist
+    fun searchProductListFromCategory(categoryId: Int) {
+        currentQuery.value = categoryId
+    }
+    companion object {
+        private const val CURRENT_QUERY =1
+        private const val DEFAULT_QUERY = 0
+    }
+
     fun getCategoryProductListAPI(): LiveData<Resource<JsonObject>> {
         return categoryProductResponse
     }

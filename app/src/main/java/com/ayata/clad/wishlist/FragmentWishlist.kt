@@ -25,10 +25,13 @@ import com.ayata.clad.databinding.FragmentWishlistBinding
 import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.home.adapter.AdapterRecommended
+import com.ayata.clad.home.response.HomeResponse
+import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.home.viewmodel.HomeViewModel
+import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
-import com.ayata.clad.product.ModelRecommendedProduct
-import com.ayata.clad.product.adapter.AdapterRecommendation
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
@@ -50,11 +53,14 @@ class FragmentWishlist : Fragment() {
         private const val TAG = "FragmentWishlist"
     }
 
+    private  var listRecommendation= ArrayList<ProductDetail>()
     private lateinit var binding: FragmentWishlistBinding
     private var myWishList = ArrayList<Wishlist>()
     private lateinit var adapterWishList: AdapterWishList
-
+    private lateinit var adapterRecommended: AdapterRecommended
     private lateinit var viewModel: WishListViewModel
+    private lateinit var viewModelHome: HomeViewModel
+
 
     //size dialog
     private lateinit var adapterCircleSize: AdapterCircleText
@@ -81,6 +87,12 @@ class FragmentWishlist : Fragment() {
             this,
             WishListViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         ).get(WishListViewModel::class.java)
+
+        viewModelHome = ViewModelProvider(
+            requireActivity(),
+            HomeViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        )
+            .get(HomeViewModel::class.java)
     }
 
     private fun initRefreshLayout() {
@@ -149,53 +161,63 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun setUpRecyclerRecommendation() {
+        adapterRecommended = AdapterRecommended(
+            requireContext(),
+            listRecommendation, object : AdapterRecommended.OnItemClickListener {
+                override fun onRecommendedClicked(data: ProductDetail, position: Int) {
+                    val bundle = Bundle()
+                    bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
+                    val fragmentProductDetail = FragmentProductDetail()
+                    fragmentProductDetail.arguments = bundle
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragment, fragmentProductDetail)
+                        .addToBackStack(null).commit()
+                }
+
+            }
+        )
         binding.rvRecommendation.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = AdapterRecommendation(
-                requireContext(),
-                prepareDataForRecommended(mutableListOf()).toList()
-            ).also {
-                it.setProductClickListener { recommendedProduct ->
-                    parentFragmentManager.beginTransaction().replace(
-                        R.id.main_fragment,
-                        FragmentProductDetail()
-                    )
-                        .addToBackStack(null).commit()
+            adapter = adapterRecommended
+        }
+        viewModelHome.getDashboardAPI().observe(viewLifecycleOwner, {
+            Log.d(TAG, "setUpRecyclerRecommendation: "+it.status);
+            when (it.status) {
+                Status.SUCCESS -> {
+//                    setShimmerLayout(false)
+//                    hideError()
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val homeResponse =
+                                Gson().fromJson<HomeResponse>(jsonObject, HomeResponse::class.java)
+                            if (homeResponse.details != null) {
+                                val detail = homeResponse.details
+                                prepareDataForRecommended(detail.recommended)
+                            }
+                        } catch (e: Exception) {
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+//                    setShimmerLayout(true)
+                }
+                Status.ERROR -> {
+                    //Handle Error
+//                    setShimmerLayout(false)
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//                    showError(it.message.toString())
                 }
             }
-        }
-
+        })
     }
 
-    private fun prepareDataForRecommended(listRecommended: MutableList<ModelRecommendedProduct>): MutableList<ModelRecommendedProduct> {
-        listRecommended.clear()
-        listRecommended.add(
-            ModelRecommendedProduct(
-                "https://freepngimg.com/thumb/categories/627.png",
-                "Nike ISPA Overreact Sail Multi", "Nike Company",
-                "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg",
-                "3561", "37"
-            )
-        )
-        listRecommended.add(
-            ModelRecommendedProduct(
-                "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-                "adidas Yeezy Boost 700 MNVN Bone", "Lowest Ask",
-                "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",
-                "5004", "64"
-            )
-        )
-        listRecommended.add(
-            ModelRecommendedProduct(
-                "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-                "Jordan 11 Retro Low White Concord (W) ", "Lowest Ask",
-                "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",
-                "4500", "100"
-            )
-        )
-        return listRecommended
+    private fun prepareDataForRecommended(list: List<ProductDetail>) {
 
+        listRecommendation.addAll(list)
+        adapterRecommended.notifyDataSetChanged()
     }
 
     private fun setUpRecyclerProductList() {
@@ -253,6 +275,7 @@ class FragmentWishlist : Fragment() {
         }
 
     }
+
     //not used
     private fun showDialogMultipleChoice(
         title: String,
@@ -337,8 +360,11 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun addToCartAPI(product: Wishlist) {
-        Log.d(TAG, "addToCartAPI: "+product);
-        viewModel.wishListToCart(PreferenceHandler.getToken(context).toString(), product.wishlist_id)
+        Log.d(TAG, "addToCartAPI: " + product);
+        viewModel.wishListToCart(
+            PreferenceHandler.getToken(context).toString(),
+            product.wishlist_id
+        )
         viewModel.getWishAPIToCart().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -346,27 +372,28 @@ class FragmentWishlist : Fragment() {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         showSnackBar("Product added to cart")
-                        MainActivity.NavCount.myBoolean= MainActivity.NavCount.myBoolean?.plus(1)
-                        var pos=0
+                        MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
+                        var pos = 0
                         for (item in myWishList) {
                             if (item.wishlist_id == product.wishlist_id) {
 //                                item.product.is_in_cart = true
-                                pos=myWishList.indexOf(item)
+                                pos = myWishList.indexOf(item)
                             }
                         }
                         myWishList.removeAt(pos)
                         adapterWishList.notifyItemRemoved(pos)
-                        MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.minus(1)
+                        MainActivity.NavCount.myWishlist =
+                            MainActivity.NavCount.myWishlist?.minus(1)
                     }
-                    binding.spinKit.visibility=View.GONE
+                    binding.spinKit.visibility = View.GONE
 
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility=View.VISIBLE
+                    binding.spinKit.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility=View.GONE
+                    binding.spinKit.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToCartAPI:Error ${it.message}")
                 }
@@ -480,13 +507,22 @@ class FragmentWishlist : Fragment() {
             }
         })
     }
-    private fun showError(it:String) {
-        binding.layoutFilled.visibility=View.GONE
-        MyLayoutInflater().onAddField(requireContext(), binding.layoutContainer, R.layout.layout_error,R.drawable.ic_cart,"Error!",it)
+
+    private fun showError(it: String) {
+        binding.layoutFilled.visibility = View.GONE
+        MyLayoutInflater().onAddField(
+            requireContext(),
+            binding.layoutContainer,
+            R.layout.layout_error,
+            R.drawable.ic_cart,
+            "Error!",
+            it
+        )
 
     }
+
     private fun hideError() {
-        binding.layoutFilled.visibility=View.VISIBLE
+        binding.layoutFilled.visibility = View.VISIBLE
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
                 binding.layoutContainer,
@@ -494,6 +530,7 @@ class FragmentWishlist : Fragment() {
             )
         }
     }
+
     private fun setDataToView(wishlist: List<Wishlist>) {
         myWishList.clear()
         myWishList.addAll(wishlist)

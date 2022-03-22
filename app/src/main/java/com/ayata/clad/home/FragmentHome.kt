@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,6 @@ import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentHomeBinding
 import com.ayata.clad.home.adapter.*
 import com.ayata.clad.home.model.ModelNewSubscription
-import com.ayata.clad.home.model.ModelStory
 import com.ayata.clad.home.response.*
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
@@ -73,6 +73,8 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
     private lateinit var adapterBanner: AdapterBanner
     private var listBanner = ArrayList<Slider>()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -138,7 +140,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
-            this,
+            requireActivity(),
             HomeViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )
             .get(HomeViewModel::class.java)
@@ -556,6 +558,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
                                 val detail = homeResponse.details
                                 prepareDataForPopularBrands(detail.brands)
                                 prepareDataForRecommended(detail.recommended)
+//                                (activity as MainActivity).saveRecommendationInMainActivty(detail.recommended)
                                 prepareDataForJustDropped(detail.justDropped)
                                 prepareDataForMostPopular(detail.mostPopular)
                                 prepareDataForPopularMonth(detail.popularThisMonth)

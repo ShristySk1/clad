@@ -31,7 +31,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("variant_id",id)
-            val response = mainRepository.removeFromCartAPI("${Constants.Bearer} $token",jsonObject)
+            val response = mainRepository.removeFromCartAPI("$token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("removeFromCartAPI", "success: "+response.body())
@@ -55,7 +55,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
         addCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
-            val response = mainRepository.addToCartApi("${Constants.Bearer} $token",id)
+            val response = mainRepository.addToCartApi("$token",id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("addToCartAPI", "success: "+response.body())
@@ -80,7 +80,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("variant_id",id)
-            val response = mainRepository.removeFromWishAPI("${Constants.Bearer} $token",jsonObject)
+            val response = mainRepository.removeFromWishAPI("$token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("removeFromWishAPI", "success: "+response.body())
@@ -105,7 +105,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("variant_id",id)
-            val response = mainRepository.addToWishApi("${Constants.Bearer} $token",jsonObject)
+            val response = mainRepository.addToWishApi("$token",jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("addToWishAPI", "success: "+response.body())

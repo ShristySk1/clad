@@ -44,7 +44,7 @@ class FragmentShipping : Fragment() {
     private lateinit var adapterShippingAddress2: AdapterShippingAddress
     private var listAddress2 = ArrayList<ModelShippingAddress>()
     private var ADDRESSID = 0
-
+    private var ADDRESSTYPE = ""
     private lateinit var viewModel: AddressViewModel
     private lateinit var shipData: Detail
     private lateinit var homeData: Detail
@@ -169,10 +169,10 @@ class FragmentShipping : Fragment() {
             bundle.putInt("address", ADDRESSID)
             arguments?.let {
                 carts = it.getSerializable("carts") as ArrayList<ModelCheckout>
-
             }
             bundle.putSerializable("carts", carts)
             bundle.putSerializable("totals",cartResponse)
+            bundle.putString("address_type",ADDRESSTYPE)
             Log.d("insideargumats", "initView: " + arguments?.getSerializable("carts"));
 
             frag.arguments = bundle
@@ -226,10 +226,12 @@ class FragmentShipping : Fragment() {
     private fun setCheckBox() {
         if (isFirstChecked) {
             ADDRESSID = homeData.id
+            ADDRESSTYPE="user_address"
             binding.recyclerView.checkBox.isChecked = true
             binding.recyclerView2.checkBox.isChecked = false
         } else {
             ADDRESSID = shipData.id
+            ADDRESSTYPE="shipping_address"
             binding.recyclerView.checkBox.isChecked = false
             binding.recyclerView2.checkBox.isChecked = true
         }

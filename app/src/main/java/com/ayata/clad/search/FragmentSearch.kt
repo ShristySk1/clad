@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.TextView.OnEditorActionListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -81,7 +80,9 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
 //            }
 //            handled
 //        })
-        binding.etSearch.on(EditorInfo.IME_ACTION_SEARCH, {getSearchProducts(binding.etSearch.text.toString())})
+        binding.etSearch.on(
+            EditorInfo.IME_ACTION_SEARCH,
+            { getSearchProducts(binding.etSearch.text.toString()) })
 
         return binding.root
     }
@@ -92,6 +93,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
             SearchViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[SearchViewModel::class.java]
         viewModel.productList.observe(viewLifecycleOwner, {
+            populateRecentSearch()
             adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
         })
     }
@@ -106,6 +108,11 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
             parentFragmentManager.popBackStackImmediate()
         }
         binding.clearAllBtn.setOnClickListener {
+            val oldList = PreferenceHandler.getRecentSearchList(requireContext())?.toMutableList()
+            if (oldList != null) {
+                oldList.clear()
+                PreferenceHandler.setRecentSearchList(requireContext(), oldList.toSet())
+            }
             listRecent.clear()
             adapterRecentSearch.notifyDataSetChanged()
         }
@@ -125,6 +132,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
                 count: Int, after: Int
             ) {
             }
+
             override fun onTextChanged(
                 s: CharSequence, start: Int,
                 before: Int, count: Int
@@ -136,6 +144,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
             }
         })
     }
+
     fun EditText.on(actionId: Int, func: () -> Unit) {
         setOnEditorActionListener { _, receivedActionId, _ ->
 
@@ -197,21 +206,30 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
 
     private fun populateRecentSearch() {
         listRecent.clear()
-
-        listRecent.add("Shoes for men")
-        listRecent.add("Running")
+        val oldList = PreferenceHandler.getRecentSearchList(requireContext())?.toMutableList()
+        if (oldList != null) {
+            listRecent.addAll(oldList)
+        }
         adapterRecentSearch.notifyDataSetChanged()
     }
 
-
     private fun getSearchProducts(filter: String) {
-
+        val oldList = PreferenceHandler.getRecentSearchList(requireContext())?.toMutableList()
+        oldList?.let {
+            if (oldList.size <= 2) {
+                oldList.add(filter)
+                oldList.reverse()
+            } else {
+                oldList.clear()
+                oldList.add(filter)
+            }
+            PreferenceHandler.setRecentSearchList(requireContext(), oldList.toSet())
+        }
         viewModel.searchProduct(
             filter,
             PreferenceHandler.getToken(context).toString()
         )
     }
-
 
 
     private fun initScrollListener() {
@@ -285,6 +303,11 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     }
 
     override fun onCloseClicked(data: String, position: Int) {
+        val oldList = PreferenceHandler.getRecentSearchList(requireContext())?.toMutableList()
+        if (oldList != null) {
+            oldList.removeAt(position)
+            PreferenceHandler.setRecentSearchList(requireContext(), oldList.toSet())
+        }
         listRecent.removeAt(position)
         adapterRecentSearch.notifyDataSetChanged()
     }

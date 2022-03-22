@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.productlist.CategoryPagingDataSource
 import com.ayata.clad.profile.edit.response.Details
 import com.ayata.clad.search.paging.SearchPagingDataSource
 import com.ayata.clad.view_all.paging.ProductPagingDataSource
@@ -77,4 +78,17 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
             pagingSourceFactory = { SearchPagingDataSource(auth, title, retrofitService) }
         ).liveData
     }
+    //product list from category
+    fun searchProductListFromCategory(categoryId:Int): LiveData<PagingData<ProductDetail>> {
+        Log.d("tet5stcall", "getViewAllResult: ");
+        return Pager(
+            config = PagingConfig(
+                pageSize = 16,
+                maxSize = 100,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { CategoryPagingDataSource(categoryId, retrofitService) }
+        ).liveData
+    }
+
 }

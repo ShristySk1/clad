@@ -6,7 +6,6 @@ import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -15,17 +14,16 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.ActivityMainBinding
-import com.ayata.clad.databinding.ActivityOnboardingBinding
 import com.ayata.clad.databinding.DialogLoginBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.preorder.FragmentPreorder
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
-import com.ayata.clad.shopping_bag.response.checkout.Cart
 import com.ayata.clad.shopping_bag.response.checkout.CartResponse
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
@@ -40,14 +38,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class MainActivity :  BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     private lateinit var binding: ActivityMainBinding
     private lateinit var badge: BadgeDrawable
     private lateinit var badge_wishlist: BadgeDrawable
     lateinit var viewModelCart: CheckoutViewModel
     lateinit var viewModelWishlist: WishListViewModel
+
+    //for empty view we need to show recommendation
+    var listRecommended = ArrayList<ProductDetail>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -294,10 +296,10 @@ class MainActivity :  BaseActivity<ActivityMainBinding>(ActivityMainBinding::inf
 //            } else {
 //                showDialogLogin()
 //            }
-                            supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_fragment, FragmentProfile())
-                    .addToBackStack(null)
-                    .commit()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, FragmentProfile())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -534,5 +536,14 @@ class MainActivity :  BaseActivity<ActivityMainBinding>(ActivityMainBinding::inf
             bottomSheetDialog.dismiss()
         }
         bottomSheetDialog.show()
+    }
+     fun saveRecommendationInMainActivty(listGiven: List<ProductDetail>?) {
+        listRecommended.clear()
+        if (listGiven != null) {
+            listRecommended.addAll(listGiven)
+        }
+    }
+     fun getRecommendedList():List<ProductDetail>{
+        return listRecommended
     }
 }

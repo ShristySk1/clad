@@ -5,7 +5,7 @@ import java.io.Serializable
 class ModelCheckout:Serializable {
 
     constructor(name:String,itemId:Int,priceNPR:Double,priceUSD:Double,size:String,qty:Int,
-                isSelected:Boolean,image:String,cartId:Int,color:String,colorHex:String,brand:String,stock:Int){
+                isSelected:Boolean,image:String,cartId:Int,color:String,colorHex:String,brand:String,stock:Int,coupenAvailability:Boolean,coupenString:String){
         this.name=name
         this.isSelected=isSelected
         this.itemId=itemId
@@ -19,6 +19,8 @@ class ModelCheckout:Serializable {
         this.colorHex=colorHex
         this.brand=brand
         this.stock=stock
+        this.isCoupenAvailable=coupenAvailability
+        this.coupenText=coupenString
     }
 
 
@@ -35,6 +37,8 @@ class ModelCheckout:Serializable {
     var colorHex:String=""
     var brand:String=""
     var stock:Int=0
+    var isCoupenAvailable:Boolean=false
+    var coupenText:String=""
     override fun toString(): String {
         return "ModelCheckout(name='$name', isSelected=$isSelected, itemId=$itemId, cartId=$cartId)"
     }

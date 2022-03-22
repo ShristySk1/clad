@@ -24,8 +24,12 @@ import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentProductDetailBinding
 import com.ayata.clad.home.FragmentHome
+import com.ayata.clad.home.adapter.AdapterRecommended
+import com.ayata.clad.home.response.HomeResponse
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.response.Variant
+import com.ayata.clad.home.viewmodel.HomeViewModel
+import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.adapter.AdapterColor
 import com.ayata.clad.product.adapter.AdapterRecommendation
 import com.ayata.clad.product.viewmodel.ProductViewModel
@@ -35,6 +39,7 @@ import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PercentageCropImageView
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.copyToClipboard
+import com.ayata.clad.wishlist.viewmodel.WishListViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
@@ -42,6 +47,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -56,8 +62,10 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var viewModel: ProductViewModel
     private lateinit var productDetail: ProductDetail
     var galleryBundle: Bundle? = null
+    private  var listRecommendation= ArrayList<ProductDetail>()
 
-    //    var dynamicProductId = 0
+    private lateinit var adapterRecommended: AdapterRecommended
+    private lateinit var viewModelHome: HomeViewModel
     var dynamicVarientId = 0
     var choosenSizePosition = 0
 
@@ -138,7 +146,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        isProductInCart = productDetail.isInCart
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         //reviews
-        setUpTabChoose(productDetail.reviews.size,productDetail.reviews.width,productDetail.reviews.quality,productDetail.reviews.comfort)
+        setUpTabChoose(
+            productDetail.reviews.size,
+            productDetail.reviews.width,
+            productDetail.reviews.quality,
+            productDetail.reviews.comfort
+        )
 
 
         val colorsize = setHashMapColorSize()
@@ -152,6 +165,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             this,
             ProductViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ProductViewModel::class.java]
+        viewModelHome = ViewModelProvider(
+            requireActivity(),
+            HomeViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        )
+            .get(HomeViewModel::class.java)
     }
 
     private fun productLikedListener() {
@@ -251,53 +269,86 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
     }
 
-    private fun setUpRecyclerRecommendation() {
-        binding.detail2.rvRecommendation.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = AdapterRecommendation(
-                requireContext(),
-                prepareDataForRecommended(mutableListOf()).toList()
-            ).also {
-                it.setProductClickListener { recommendedProduct ->
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, FragmentProductDetail())
-                        .addToBackStack(null).commit()
-                }
+//    private fun setUpRecyclerRecommendation() {
+//        binding.detail2.rvRecommendation.apply {
+//            layoutManager =
+//                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+//            adapter = AdapterRecommended(
+//                requireContext(),
+//                prepareDataForRecommended(),object :AdapterRecommended.OnItemClickListener{
+//                    override fun onRecommendedClicked(data: ProductDetail, position: Int) {
+//                        val bundle = Bundle()
+//                        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
+//                        val fragmentProductDetail = FragmentProductDetail()
+//                        fragmentProductDetail.arguments = bundle
+//                        parentFragmentManager.beginTransaction()
+//                            .replace(R.id.main_fragment, fragmentProductDetail)
+//                            .addToBackStack(null).commit()
+//                    }
+//
+//                }
+//            )
+//            }
+//}
+private fun setUpRecyclerRecommendation() {
+    adapterRecommended = AdapterRecommended(
+        requireContext(),
+        listRecommendation, object : AdapterRecommended.OnItemClickListener {
+            override fun onRecommendedClicked(data: ProductDetail, position: Int) {
+                val bundle = Bundle()
+                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
+                val fragmentProductDetail = FragmentProductDetail()
+                fragmentProductDetail.arguments = bundle
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, fragmentProductDetail)
+                    .addToBackStack(null).commit()
             }
         }
-
+    )
+    binding.detail2.rvRecommendation.apply {
+        layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        adapter = adapterRecommended
     }
+    viewModelHome.getDashboardAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+//                setShimmerLayout(false)
+//                hideError()
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        val homeResponse =
+                            Gson().fromJson<HomeResponse>(jsonObject, HomeResponse::class.java)
+                        if (homeResponse.details != null) {
+                            val detail = homeResponse.details
+                            prepareDataForRecommended(detail.recommended)
+                        }
+                    } catch (e: Exception) {
+                    }
+                }
 
-    private fun prepareDataForRecommended(listRecommended: MutableList<ModelRecommendedProduct>): MutableList<ModelRecommendedProduct> {
-        listRecommended.clear()
-        listRecommended.add(
-            ModelRecommendedProduct(
-                "https://freepngimg.com/thumb/categories/627.png",
-                "Nike ISPA Overreact Sail Multi", "Nike Company",
-                "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg",
-                "3561", "555"
-            )
-        )
-        listRecommended.add(
-            ModelRecommendedProduct(
-                "https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-                "adidas Yeezy Boost 700 MNVN Bone",
-                "Lowest Ask",
-                "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png",
-                "7589", "550"
-            )
-        )
-        listRecommended.add(
-            ModelRecommendedProduct(
-                "https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-                "Jordan 11 Retro Low White Concord (W) ",
-                "Lowest Ask",
-                "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png",
-                "4555", "458"
-            )
-        )
-        return listRecommended
+            }
+            Status.LOADING -> {
+            }
+            Status.ERROR -> {
+                //Handle Error
+//                setShimmerLayout(false)
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//                showError(it.message.toString())
+            }
+        }
+    })
+}
+
+        private fun prepareDataForRecommended(list: List<ProductDetail>) {
+            listRecommendation.addAll(list)
+            adapterRecommended.notifyDataSetChanged()
+        }
+
+
+    private fun prepareDataForRecommended(): List<ProductDetail> {
+        return  (activity as MainActivity).getRecommendedList()
 
     }
 

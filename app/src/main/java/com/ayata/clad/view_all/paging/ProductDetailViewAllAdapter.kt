@@ -61,7 +61,7 @@ class ProductDetailViewAllAdapter(private val listener:onItemClickListener) : Pa
             Log.d("getAllTest", "bind: "+item.name);
             val context=binding.name.context
             binding.apply {
-                 name.text = item!!.name
+                name.text = item!!.name
                 company.text = item!!.vendor
                 if(PreferenceHandler.getCurrency(name.context).equals(name.context.getString(R.string.npr_case),true)){
                     price.text="${context!!.getString(R.string.rs)} ${item.price}"

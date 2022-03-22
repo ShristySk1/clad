@@ -20,6 +20,7 @@ class PreferenceHandler {
         const val USERNAME = "username"
         const val IMAGE = "image"
         const val SHOW_ONBOARDING="show onboarding"
+        const val RECENT_SEARCH="recent search"
 
         private fun getSharedPreference(ctx: Context?): SharedPreferences? {
             return PreferenceManager.getDefaultSharedPreferences(ctx)
@@ -28,6 +29,11 @@ class PreferenceHandler {
             getSharedPreference(
                 context
             )?.edit()?.putString(const, string)?.apply()
+        }
+        private fun editorList(context: Context, const: String, string: Set<String>) {
+            getSharedPreference(
+                context
+            )?.edit()?.putStringSet(const, string)?.apply()
         }
 
         private fun editorInt(context: Context, const: String, int: Int) {
@@ -77,6 +83,19 @@ class PreferenceHandler {
         fun getUsername(context: Context) = getSharedPreference(
             context
         )?.getString(USERNAME, "")
+
+
+
+        fun setRecentSearchList(context: Context, username: Set<String>) {
+            editorList(
+                context,
+                RECENT_SEARCH,
+                username
+            )
+        }
+        fun getRecentSearchList(context: Context) = getSharedPreference(
+            context
+        )?.getStringSet(RECENT_SEARCH, setOf())
         fun setImage(context: Context, imageBitmap: Bitmap?) {
             editor(
                 context,
