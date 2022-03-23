@@ -26,10 +26,12 @@ import com.ayata.clad.shopping_bag.adapter.AdapterPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
 import com.ayata.clad.shopping_bag.order_placed.FragmentOrderPlaced
+import com.ayata.clad.shopping_bag.payment.response.PaymentResponse
+import com.ayata.clad.shopping_bag.payment.viewmodel.PaymentViewModel
+import com.ayata.clad.shopping_bag.payment.viewmodel.PaymentViewModelFactory
 import com.ayata.clad.shopping_bag.response.checkout.CartResponse
-import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
-import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
+import com.google.gson.Gson
 import com.khalti.checkout.helper.Config
 import com.khalti.checkout.helper.KhaltiCheckOut
 import com.khalti.checkout.helper.OnCheckOutListener
@@ -41,9 +43,9 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
     private lateinit var binding: FragmentCartPaymentBinding
     private lateinit var adapterPaymentMethod: AdapterPaymentMethod
     private var listPaymentMethod = ArrayList<ModelPaymentMethod>()
-    private var PAYMENTNAME = ""
+    private var PAYMENTID = ""
     private var PAYMENTTOKEN = ""
-    private lateinit var viewModel: CheckoutViewModel
+    private lateinit var viewModel: PaymentViewModel
     private lateinit var cartResponse: CartResponse
 
 
@@ -60,8 +62,44 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         initAppbar()
         initView()
         initRecycler()
+        getPaymentApi()
         setTermText()
         return binding.root
+    }
+
+    private fun getPaymentApi() {
+        viewModel.getPaymentApi(
+            PreferenceHandler.getToken(context).toString()
+        )
+        viewModel.observePaymentApi().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    binding.spinKit.visibility = View.GONE
+                    Log.d("testdata", "addToWishListAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            var paymentResponse =
+                                Gson().fromJson(jsonObject, PaymentResponse::class.java)
+                            preparePaymentMethod(paymentResponse.gateways)
+
+                        } catch (e: Exception) {
+                            Log.d("testdata", "addToWishListAPI:Error ${e.message}")
+                            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                    binding.spinKit.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    binding.spinKit.visibility = View.GONE
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d("testdata", "addToWishListAPI:Error ${it.message}")
+                }
+            }
+        })
     }
 
     private fun initBundle() {
@@ -73,8 +111,8 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
-            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
-        )[CheckoutViewModel::class.java]
+            PaymentViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        )[PaymentViewModel::class.java]
     }
 
     private fun initAppbar() {
@@ -115,7 +153,7 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         val cartIdList = carts.map { it.cartId }
         viewModel.checkoutOrder(
             PreferenceHandler.getToken(context).toString(),
-            PAYMENTNAME,
+            PAYMENTID,
             PAYMENTTOKEN,
             cartIdList,
             addressId,
@@ -204,21 +242,12 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
             adapter = adapterPaymentMethod
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-        preparePaymentMethod()
+//        preparePaymentMethod()
     }
 
-    private fun preparePaymentMethod() {
+    private fun preparePaymentMethod(gateways: List<ModelPaymentMethod>) {
         listPaymentMethod.clear()
-        listPaymentMethod.add(ModelPaymentMethod("Khalti Wallet", "", false))
-        listPaymentMethod.add(ModelPaymentMethod("Esewa Wallet", "", false))
-        listPaymentMethod.add(
-            ModelPaymentMethod(
-                "Cash on delivery",
-                "https://okcredit-blog-images-prod.storage.googleapis.com/2021/05/cashondelivery1.jpg",
-                false
-            )
-        )
-
+        listPaymentMethod.addAll(gateways)
         adapterPaymentMethod.notifyDataSetChanged()
     }
 
@@ -227,12 +256,15 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
             item.isSelected = data == item
         }
         if (data.name.equals("Khalti Wallet", ignoreCase = true)) {
-            PAYMENTNAME = "KHALTI"
+//             "KHALTI"
+            PAYMENTID = data.name
             setForKhalti()
         } else if (data.name.equals("Esewa Wallet", ignoreCase = true)) {
-            PAYMENTNAME = "ESEWA"
+            //esewa
+            PAYMENTID = data.name
         } else {
-            PAYMENTNAME = "Cash"
+            //cash
+            PAYMENTID = data.name
         }
         adapterPaymentMethod.notifyDataSetChanged()
 

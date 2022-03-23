@@ -226,4 +226,9 @@ interface ApiService {
         @Query("page")page:Int
     ): Response<JsonObject>
 
+    //payment gateway
+    @GET("payment-gateways/")
+    suspend fun getPaymentGateways(
+        @Header("Authorization") token: String,
+    ): Response<JsonObject>
 }

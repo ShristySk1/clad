@@ -468,6 +468,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     }
 
+    fun openHomePage() {
+        startActivity(intent) // start same activity
+        finish() // destroy older activity
+        overridePendingTransition(0, 0) // this is important for seamless transition
+    }
+
     fun openFragmentShop() {
         binding.bottomNavigationView.selectedItemId = R.id.nav_hanger
         supportFragmentManager.beginTransaction()
@@ -493,6 +499,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         fun onWishListCountChange(count: Int?)
 
     }
+
 
     object NavCount {
         private var myCartCount: Int? = null
@@ -537,13 +544,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
         bottomSheetDialog.show()
     }
-     fun saveRecommendationInMainActivty(listGiven: List<ProductDetail>?) {
+
+    fun saveRecommendationInMainActivty(listGiven: List<ProductDetail>?) {
         listRecommended.clear()
         if (listGiven != null) {
             listRecommended.addAll(listGiven)
         }
     }
-     fun getRecommendedList():List<ProductDetail>{
+
+    fun getRecommendedList(): List<ProductDetail> {
         return listRecommended
     }
 }

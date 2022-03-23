@@ -159,8 +159,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                 )
 
                             }
-
-
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
                             try {
@@ -170,11 +168,9 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                     setUpView()
                                 } else {
                                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-
                                 }
                             } catch (e: Exception) {
                                 Log.d(TAG, "getCartAPI:Error ${e.message}")
-
                             }
                         }
                     }

@@ -48,7 +48,6 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun getShippingAddress(token: String) = retrofitService.getShippingAddress(token)
     suspend fun addAddress(token: String, json: JsonObject) = retrofitService.addUserAddress(token, json)
     suspend fun getAddress(token: String) = retrofitService.getUserAddress(token)
-
     //paging 3
     fun getViewAllResult(title: String, auth: String): LiveData<PagingData<ProductDetail>> {
         Log.d("calledheretwo", "getViewAllResult: ");
@@ -65,6 +64,8 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     }
     //checkout order
     suspend fun checkoutOrder(token: String, json: String) = retrofitService.checkoutOrder(token, json)
+    //payment gateways
+    suspend fun getPaymentGateways(token: String) = retrofitService.getPaymentGateways(token)
     //search
     suspend fun searchOrder(token: String, query:String,page: Int) = retrofitService.searchProduct(token, query,page)
     fun getSearchResult(title: String, auth: String): LiveData<PagingData<ProductDetail>> {

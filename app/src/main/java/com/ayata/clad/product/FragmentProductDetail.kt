@@ -31,7 +31,7 @@ import com.ayata.clad.home.response.Variant
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.adapter.AdapterColor
-import com.ayata.clad.product.adapter.AdapterRecommendation
+import com.ayata.clad.product.reviews.FragmentReview
 import com.ayata.clad.product.viewmodel.ProductViewModel
 import com.ayata.clad.product.viewmodel.ProductViewModelFactory
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
@@ -39,7 +39,6 @@ import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PercentageCropImageView
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.copyToClipboard
-import com.ayata.clad.wishlist.viewmodel.WishListViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
@@ -62,7 +61,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var viewModel: ProductViewModel
     private lateinit var productDetail: ProductDetail
     var galleryBundle: Bundle? = null
-    private  var listRecommendation= ArrayList<ProductDetail>()
+    private var listRecommendation = ArrayList<ProductDetail>()
 
     private lateinit var adapterRecommended: AdapterRecommended
     private lateinit var viewModelHome: HomeViewModel
@@ -157,9 +156,14 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         val colorsize = setHashMapColorSize()
         setUpRecyclerColor(colorsize.keys)
 //        setCurrentVariant()
+
+        binding.detail2.tvViewAllReview.setOnClickListener {
+            val fragment = FragmentReview.newInstance(productDetail.reviews)
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
-
-
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
@@ -269,7 +273,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
     }
 
-//    private fun setUpRecyclerRecommendation() {
+    //    private fun setUpRecyclerRecommendation() {
 //        binding.detail2.rvRecommendation.apply {
 //            layoutManager =
 //                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -290,65 +294,65 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //            )
 //            }
 //}
-private fun setUpRecyclerRecommendation() {
-    adapterRecommended = AdapterRecommended(
-        requireContext(),
-        listRecommendation, object : AdapterRecommended.OnItemClickListener {
-            override fun onRecommendedClicked(data: ProductDetail, position: Int) {
-                val bundle = Bundle()
-                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
-                val fragmentProductDetail = FragmentProductDetail()
-                fragmentProductDetail.arguments = bundle
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.main_fragment, fragmentProductDetail)
-                    .addToBackStack(null).commit()
+    private fun setUpRecyclerRecommendation() {
+        adapterRecommended = AdapterRecommended(
+            requireContext(),
+            listRecommendation, object : AdapterRecommended.OnItemClickListener {
+                override fun onRecommendedClicked(data: ProductDetail, position: Int) {
+                    val bundle = Bundle()
+                    bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
+                    val fragmentProductDetail = FragmentProductDetail()
+                    fragmentProductDetail.arguments = bundle
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragment, fragmentProductDetail)
+                        .addToBackStack(null).commit()
+                }
             }
+        )
+        binding.detail2.rvRecommendation.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = adapterRecommended
         }
-    )
-    binding.detail2.rvRecommendation.apply {
-        layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        adapter = adapterRecommended
-    }
-    viewModelHome.getDashboardAPI().observe(viewLifecycleOwner, {
-        when (it.status) {
-            Status.SUCCESS -> {
+        viewModelHome.getDashboardAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
 //                setShimmerLayout(false)
 //                hideError()
-                val jsonObject = it.data
-                if (jsonObject != null) {
-                    try {
-                        val homeResponse =
-                            Gson().fromJson<HomeResponse>(jsonObject, HomeResponse::class.java)
-                        if (homeResponse.details != null) {
-                            val detail = homeResponse.details
-                            prepareDataForRecommended(detail.recommended)
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val homeResponse =
+                                Gson().fromJson<HomeResponse>(jsonObject, HomeResponse::class.java)
+                            if (homeResponse.details != null) {
+                                val detail = homeResponse.details
+                                prepareDataForRecommended(detail.recommended)
+                            }
+                        } catch (e: Exception) {
                         }
-                    } catch (e: Exception) {
                     }
+
                 }
-
-            }
-            Status.LOADING -> {
-            }
-            Status.ERROR -> {
-                //Handle Error
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
 //                setShimmerLayout(false)
-                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
 //                showError(it.message.toString())
+                }
             }
-        }
-    })
-}
+        })
+    }
 
-        private fun prepareDataForRecommended(list: List<ProductDetail>) {
-            listRecommendation.addAll(list)
-            adapterRecommended.notifyDataSetChanged()
-        }
+    private fun prepareDataForRecommended(list: List<ProductDetail>) {
+        listRecommendation.addAll(list)
+        adapterRecommended.notifyDataSetChanged()
+    }
 
 
     private fun prepareDataForRecommended(): List<ProductDetail> {
-        return  (activity as MainActivity).getRecommendedList()
+        return (activity as MainActivity).getRecommendedList()
 
     }
 
@@ -400,7 +404,11 @@ private fun setUpRecyclerRecommendation() {
         val tabStrip = binding.detail2.tabSize.getChildAt(0) as LinearLayout
         for (i in 0 until tabStrip.childCount) {
             tabStrip.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
-            if((binding.detail2.tabSize.getTabAt(i)?.text.toString())?.equals(size,ignoreCase = true)){
+            if ((binding.detail2.tabSize.getTabAt(i)?.text.toString())?.equals(
+                    size,
+                    ignoreCase = true
+                )
+            ) {
                 binding.detail2.tabSize.getTabAt(i)?.select()
             }
         }
@@ -408,7 +416,11 @@ private fun setUpRecyclerRecommendation() {
         val tabStrip2 = binding.detail2.tabWidth.getChildAt(0) as LinearLayout
         for (i in 0 until tabStrip.childCount) {
             tabStrip2.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
-            if((binding.detail2.tabWidth.getTabAt(i)?.text.toString())?.equals(width,ignoreCase = true)){
+            if ((binding.detail2.tabWidth.getTabAt(i)?.text.toString())?.equals(
+                    width,
+                    ignoreCase = true
+                )
+            ) {
                 binding.detail2.tabWidth.getTabAt(i)?.select()
             }
         }
@@ -416,20 +428,27 @@ private fun setUpRecyclerRecommendation() {
         val tabStrip3 = binding.detail2.tabComfort.getChildAt(0) as LinearLayout
         for (i in 0 until tabStrip.childCount) {
             tabStrip2.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
-            if((binding.detail2.tabComfort.getTabAt(i)?.text.toString())?.equals(comfort,ignoreCase = true)) {
+            if ((binding.detail2.tabComfort.getTabAt(i)?.text.toString())?.equals(
+                    comfort,
+                    ignoreCase = true
+                )
+            ) {
                 binding.detail2.tabComfort.getTabAt(i)?.select()
             }
         }
         //quality
-        binding.detail2.progressBarQuality.progress= Math.round(quality).toInt()
+        binding.detail2.progressBarQuality.progress = Math.round(quality).toInt()
         //total reviews
-        binding.detail2.tvReviewNumber.text=productDetail.reviews.totalReview.toString()+" REVIEWS"
+        binding.detail2.tvReviewNumber.text =
+            productDetail.reviews.totalReview.toString() + " REVIEWS"
         //rating
-        binding.detail2.tvRatingNumber.text=productDetail.reviews.rating.toString()
-        binding.detail2.ratingBar.rating=productDetail.reviews.rating.toFloat()
-        binding.ratingBar1.rating=productDetail.reviews.rating.toFloat()
+        binding.detail2.tvRatingNumber.text = productDetail.reviews.rating.toString()
+        binding.detail2.ratingBar.rating = productDetail.reviews.rating.toFloat()
+        binding.ratingBar1.rating = productDetail.reviews.rating.toFloat()
         //recommended
-        binding.detail2.tvRecommended.text=productDetail.reviews.recommendedBy?.let {  it.equals("")?.let { "0" }+"%"}?:run { "0%" }
+        binding.detail2.tvRecommended.text =
+            productDetail.reviews.recommendedBy?.let { it.equals("")?.let { "0" } + "%" }
+                ?: run { "0%" }
 
     }
 
@@ -520,7 +539,7 @@ private fun setUpRecyclerRecommendation() {
     private fun prepareListSize(colorHex: String) {
         listText.clear()
         val filteredVariants = getValueFromHashKey(colorHex) ?: ArrayList<Variant>()
-        Log.d(TAG, "prepareListSize: "+filteredVariants);
+        Log.d(TAG, "prepareListSize: " + filteredVariants);
         for (v in filteredVariants) {
             if (v.size != null) {
                 binding.detail2.constraintLayout2.visibility = View.VISIBLE
@@ -535,7 +554,7 @@ private fun setUpRecyclerRecommendation() {
                 )
             } else {
                 //disable size layout
-                dynamicVarientId=productDetail.variants[0].variantId
+                dynamicVarientId = productDetail.variants[0].variantId
                 binding.detail2.constraintLayout2.visibility = View.GONE
             }
         }
@@ -545,7 +564,7 @@ private fun setUpRecyclerRecommendation() {
         binding.detail2.rvSize.post {
 
             binding.detail2.rvSize.findViewHolderForAdapterPosition(0)?.itemView?.performClick();
-            Log.d("sizechecked", "prepareListSize: 2"+listText);
+            Log.d("sizechecked", "prepareListSize: 2" + listText);
         }
 
 
@@ -637,7 +656,7 @@ private fun setUpRecyclerRecommendation() {
     }
 
     private fun showDialogSize() {
-        Log.d("sizechecked", "prepareListSize: 3"+listText);
+        Log.d("sizechecked", "prepareListSize: 3" + listText);
         if (binding.detail2.constraintLayout2.isVisible) {
             val dialogBinding =
                 DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
@@ -679,7 +698,7 @@ private fun setUpRecyclerRecommendation() {
     }
 
     private fun addCart() {
-        Toast.makeText(context,dynamicVarientId.toString(),Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, dynamicVarientId.toString(), Toast.LENGTH_SHORT).show()
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -743,7 +762,7 @@ private fun setUpRecyclerRecommendation() {
     }
 
     fun setCurrentVariant() {
-        if(dynamicVarientId!=0) {
+        if (dynamicVarientId != 0) {
             Log.d("testvarientid", "setCurrentVariant: " + dynamicVarientId);
             val myCurrentVarient = productDetail.variants.filter {
                 it.variantId == dynamicVarientId

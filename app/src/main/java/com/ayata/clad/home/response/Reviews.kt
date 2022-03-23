@@ -13,5 +13,6 @@ data class Reviews(
     val size: String,
     @SerializedName("total_review")
     val totalReview: Int,
-    val width: String
+    val width: String,
+    val review_details:List<SingleReview>?
 ):Serializable

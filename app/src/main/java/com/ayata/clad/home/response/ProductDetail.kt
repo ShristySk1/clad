@@ -59,5 +59,5 @@ data class ProductDetail(
     @SerializedName("vat_included")
     val vatIncluded: Boolean,
     val vendor: String,
-    val visibility: Boolean
+    val visibility: Boolean,
 ) : Serializable

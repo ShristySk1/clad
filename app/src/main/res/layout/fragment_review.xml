@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".product.reviews.FragmentReview">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="16dp"
+        android:background="@drawable/background_outline_bottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_Rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4.5/5"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/ratingBar1"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.ayata.clad.utils.SvgRatingBar
+            android:id="@+id/ratingBar1"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:progressDrawable="@drawable/custom_rating_star"
+            android:rating="3.5"
+            android:stepSize="0.5"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_Rating"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_Rating"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_totalReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="33 Reviews"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_Rating" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:id="@+id/rv_reviews"
+        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
