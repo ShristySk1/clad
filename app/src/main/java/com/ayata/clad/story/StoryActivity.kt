@@ -88,8 +88,6 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         // on below line we are calling a set on touch
         // listener method to move to next story.
         binding.skip.setOnTouchListener(handleTouch)
-
-
         if (storyIndex >= 0 && storyIndex < listStory.size) {
             fromPause = false
             setStoryView(listStory[storyIndex])
@@ -112,31 +110,31 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
     }
 
-    private fun prepareData() {
+    private fun prepareData(listOfProductForSingleImage: ArrayList<ProductDetail>) {
         listProduct.clear()
-        listProduct.add(ModelJustDropped("https://www.onlinepng.com/media/catalog/product/cache/571072fdb4ae023a8c393de549460086/r/i/rin639656_1.jpg",
-            "10% OFF","5000","50",
-            "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
-        listProduct.add(ModelJustDropped("https://i.pinimg.com/736x/37/2c/6f/372c6f40eb0835eea3abd13a02a64cd0.jpg",
-            "20% OFF","5000","45",
-            "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
-
-        listProduct.shuffle()
-//        listOfProductForSingleImage.forEach {
-//            listProduct.add(
-//                ModelJustDropped(
-//                    "https://www.onlinepng.com/media/catalog/product/cache/571072fdb4ae023a8c393de549460086/r/i/rin639656_1.jpg",
-//                    "10% OFF", "5000", "50",
-//                    "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"
-//                )
-//            )
-//        }
+//        listProduct.add(ModelJustDropped("https://www.onlinepng.com/media/catalog/product/cache/571072fdb4ae023a8c393de549460086/r/i/rin639656_1.jpg",
+//            "10% OFF","5000","50",
+//            "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
+//        listProduct.add(ModelJustDropped("https://i.pinimg.com/736x/37/2c/6f/372c6f40eb0835eea3abd13a02a64cd0.jpg",
+//            "20% OFF","5000","45",
+//            "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
+//
+//        listProduct.shuffle()
+        listOfProductForSingleImage.forEach {
+            listProduct.add(
+                ModelJustDropped(
+                    it.imageUrl[0],
+                    "${it.discountPercent} OFF", it.price.toString(), it.dollar_price.toString(),
+                    "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"
+                )
+            )
+        }
         adapterStoryProduct.notifyDataSetChanged()
 
     }
 
     private fun setStoryView(data: Story) {
-        prepareData()
+//        prepareData()
         //set view
         binding.textTitle.text = data.vendor
         binding.textSubTitle.text = ""
@@ -190,15 +188,13 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
         // below line is use to start stories progress bar.
         binding.stories.startStories()
-
         // on below line we are setting image to our image view.
         loadImage(listImageStory[counter])
-
     }
 
     private fun loadImage(imageUrl: String) {
-//        val listOfProductForSingleImage = listoflistofproducts[counter]
-//        prepareData(listOfProductForSingleImage)
+        val listOfProductForSingleImage = listoflistofproducts[counter]
+        prepareData(listOfProductForSingleImage)
         Log.d(TAG, "loadImage: here")
         if (!fromPause) {
             Log.d(TAG, "loadImage: pause")
