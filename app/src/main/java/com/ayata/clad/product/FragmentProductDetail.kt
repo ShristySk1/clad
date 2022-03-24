@@ -624,15 +624,15 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                     Log.d(TAG, "addToWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
-                        showSnackBar("Product added to wishlist")
-                        isProductWishList = true
-                        setWishlist(true)
-                        MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.plus(1)
-
                         try {
+                            showSnackBar(jsonObject.get("message").toString())
+                            isProductWishList = true
+                            setWishlist(true)
+                            MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.plus(1)
 
                         } catch (e: Exception) {
                             Log.d(TAG, "addToWishListAPI:Error ${e.message}")
+                            Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -698,7 +698,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun addCart() {
-        Toast.makeText(context, dynamicVarientId.toString(), Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, dynamicVarientId.toString(), Toast.LENGTH_SHORT).show()
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -706,11 +706,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                     Log.d(TAG, "addToCartAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
-                        isProductInCart = true
-                        setCart(true)
-                        showSnackBar("Product added to cart")
-                        MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
                         try {
+                            isProductInCart = true
+                            setCart(true)
+                            showSnackBar(jsonObject.get("message").toString())
+                            MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
 
                         } catch (e: Exception) {
                             Log.d(TAG, "addToCartAPI:Error ${e.message}")

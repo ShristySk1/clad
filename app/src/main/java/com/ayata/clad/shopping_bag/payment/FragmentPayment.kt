@@ -151,6 +151,10 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 
     private fun checkoutOrder(addressId: Int, addressType: String, carts: List<ModelCheckout>) {
         val cartIdList = carts.map { it.cartId }
+        if(PAYMENTID.isEmpty()){
+            Toast.makeText(context,"Select at least one payment gateway.",Toast.LENGTH_SHORT).show()
+            return
+        }
         viewModel.checkoutOrder(
             PreferenceHandler.getToken(context).toString(),
             PAYMENTID,

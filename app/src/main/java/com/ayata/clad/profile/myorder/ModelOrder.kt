@@ -1,5 +1,6 @@
 package com.ayata.clad.profile
 
+import com.ayata.clad.profile.myorder.order.response.Order
 import java.io.Serializable
 
 data class ModelOrder(
@@ -20,9 +21,11 @@ sealed class MyOrderRecyclerViewItem {
         val quantity: String,
         val image: String,
         val priceNPR:String,
-        val priceUSD:String
+        val priceUSD:String,
+        val order:Order
 
-    ) : MyOrderRecyclerViewItem()
+    ) : MyOrderRecyclerViewItem(), Serializable
+
     class Divider(
     ) : MyOrderRecyclerViewItem()
 }

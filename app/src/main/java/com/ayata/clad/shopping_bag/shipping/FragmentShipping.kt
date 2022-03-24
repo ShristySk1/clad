@@ -173,6 +173,10 @@ class FragmentShipping : Fragment() {
             bundle.putSerializable("carts", carts)
             bundle.putSerializable("totals",cartResponse)
             bundle.putString("address_type",ADDRESSTYPE)
+            if(ADDRESSTYPE.isEmpty()){
+                Toast.makeText(context,"Select at least one address.",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             Log.d("insideargumats", "initView: " + arguments?.getSerializable("carts"));
 
             frag.arguments = bundle

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
-        tools:context=".order.FragmentOrderDetail">
+        tools:context=".profile.myorder.order.FragmentOrderDetail">
 
 
         <TextView
@@ -110,10 +110,11 @@
             <TextView
                 android:id="@+id/address"
                 style="@style/normalText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="New Baneshwor - 10,Kathmandu, Nepal"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/phone"
                 app:layout_constraintTop_toBottomOf="@+id/phone" />
 

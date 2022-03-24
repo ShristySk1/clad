@@ -381,6 +381,10 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             bundle.putSerializable("carts", selectedCarts as ArrayList<ModelCheckout>)
             bundle.putSerializable("totals", otherPrices)
             frag.arguments = bundle
+            if(selectedCarts.size==0){
+                Toast.makeText(context,"Select at least one cart item.",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             fragmentManager?.beginTransaction()?.replace(R.id.main_fragment, frag)
                 ?.addToBackStack("checkout")?.commit()
         }

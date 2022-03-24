@@ -7,11 +7,11 @@ import com.ayata.clad.profile.edit.response.Details
 import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 
@@ -134,7 +134,6 @@ interface ApiService {
     ): Response<JsonObject>
 
 
-
     //not made
     @POST("size/")
     suspend fun saveSizeAPI(
@@ -215,15 +214,15 @@ interface ApiService {
     @POST("checkout/")
     suspend fun checkoutOrder(
         @Header("Authorization") token: String,
-        @Body json: String
+        @Body json: JsonObject
     ): Response<JsonObject>
 
     //search
     @GET("search/")
     suspend fun searchProduct(
         @Header("Authorization") token: String,
-        @Query("query") query:String,
-        @Query("page")page:Int
+        @Query("query") query: String,
+        @Query("page") page: Int
     ): Response<JsonObject>
 
     //payment gateway
@@ -231,4 +230,11 @@ interface ApiService {
     suspend fun getPaymentGateways(
         @Header("Authorization") token: String,
     ): Response<JsonObject>
+
+    //order detail
+    @GET("user-orders/")
+    suspend fun getOrder(
+        @Header("Authorization") token: String,
+    ): Response<JsonObject>
+
 }

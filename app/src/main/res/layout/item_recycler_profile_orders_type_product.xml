@@ -11,7 +11,7 @@
         android:layout_height="160dp"
         android:background="@drawable/background_curve_gray"
         android:padding="0dp"
-        android:scaleType="centerInside"
+        android:scaleType="centerCrop"
         android:src="@drawable/shoes" />
 
     <LinearLayout

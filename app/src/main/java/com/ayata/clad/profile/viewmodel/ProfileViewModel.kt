@@ -31,7 +31,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository) : 
     fun profileDetailAPI(token: String) {
         profileResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.profileApi("${Constants.Bearer} $token")
+            val response = mainRepository.profileApi("$token")
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("profileDetailAPI", "success: " + response.body())

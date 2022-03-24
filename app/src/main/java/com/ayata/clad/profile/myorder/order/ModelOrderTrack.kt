@@ -1,4 +1,4 @@
-package com.ayata.clad.order
+package com.ayata.clad.profile.myorder.order
 
 class ModelOrderTrack(
     var orderTrackTitle: String,

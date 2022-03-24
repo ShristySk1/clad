@@ -10,6 +10,11 @@ import com.ayata.clad.shopping_bag.model.ModelFinalOrder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
+import org.json.JSONArray
+
+
+
+
 
 class PaymentViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
@@ -42,10 +47,13 @@ class PaymentViewModel constructor(private val mainRepository: ApiRepository) : 
             }
         }
     }
+
     fun observePaymentApi(): LiveData<Resource<JsonObject>> {
         return paymentResponse
     }
+
     private val checkoutResponse = MutableLiveData<Resource<JsonObject>>()
+
     //checkout after payment
     fun checkoutOrder(
         token: String,
@@ -53,21 +61,31 @@ class PaymentViewModel constructor(private val mainRepository: ApiRepository) : 
         payment_token: String,
         cartList: List<Int>,
         addressId: Int,
-        addressType:String,
+        addressType: String,
         amountPaid: Double
     ) {
         checkoutResponse.postValue(Resource.loading(null))
         val finalOrder = ModelFinalOrder(
             payment_gateway = paymentID,
-            payment_token= payment_token,
+            payment_token = payment_token,
             received_amount = amountPaid, cart_id = cartList,
             address_id = addressId,
             address_type = addressType
         )
+        val s=Gson().toJson(finalOrder).toString()
+        Log.d("testdata1", "checkoutOrder: "+s);
+        Log.d("testdata", "checkoutOrder: "+s.replace("\\\\",""));
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
+                val jsonObject=JsonObject()
+                jsonObject.addProperty("payment_gateway",paymentID)
+                jsonObject.addProperty("payment_token",payment_token)
+                jsonObject.addProperty("received_amount",amountPaid)
+                jsonObject.add("cart_id",Gson().toJsonTree(cartList).getAsJsonArray())
+                jsonObject.addProperty("address_id",addressId)
+                jsonObject.addProperty("address_type",addressType)
                 val response =
-                    mainRepository.checkoutOrder("$token", Gson().toJson(finalOrder).toString())
+                    mainRepository.checkoutOrder("$token",jsonObject )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("checkoutorder", "success: " + response.body())
@@ -88,6 +106,7 @@ class PaymentViewModel constructor(private val mainRepository: ApiRepository) : 
     fun observeCheckoutOrder(): LiveData<Resource<JsonObject>> {
         return checkoutResponse
     }
+
     private fun onError(message: String) {
         errorMessage.postValue(message)
         loading.postValue(false)
