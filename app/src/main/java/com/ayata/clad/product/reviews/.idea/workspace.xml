@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="da0b0a71-5bb3-4c30-8eeb-983d4902df4e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../profile/reviews/FragmentMyReviews.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../profile/reviews/FragmentMyReviewsForm.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../profile/reviews/adapter/AdapterMyReviews.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../profile/reviews/model/ModelReview.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../utils/SvgRatingBarReview.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../view_all/paging/BrandPagingDataSource.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../view_all/paging/BrandViewAllAdapter.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../res/drawable/custom_rating_star_big.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../res/drawable/ic_star_empty_big.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../res/drawable/ic_star_filled_big.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../res/layout/fragment_my_review_form.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../res/layout/fragment_my_reviews.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../res/layout/item_recycler_to_be_reviewed.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../../../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../../../release/app-release.aab" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../../../release/app-release.aab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../data/network/ApiService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../data/network/ApiService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../data/repository/ApiRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../data/repository/ApiRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../home/response/ProductDetail.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../home/response/ProductDetail.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../home/response/Reviews.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../home/response/Reviews.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FragmentProductDetail.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../FragmentProductDetail.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FragmentProductDetailFull2.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../FragmentProductDetailFull2.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../profile/account/FragmentAccount.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../profile/account/FragmentAccount.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../profile/myorder/AdapterOrders.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../profile/myorder/AdapterOrders.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../profile/myorder/FragmentMyOrder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../profile/myorder/FragmentMyOrder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../profile/myorder/order/FragmentOrderDetail.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../profile/myorder/order/FragmentOrderDetail.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../profile/myorder/order/ModelOrderTrack.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../profile/myorder/order/ModelOrderTrack.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../profile/myorder/order/response/Variant.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../profile/myorder/order/response/Variant.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../profile/myorder/viewmodel/OrderViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../profile/myorder/viewmodel/OrderViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../shopping_bag/adapter/AdapterCheckout.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../shopping_bag/adapter/AdapterCheckout.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../shopping_bag/checkout/FragmentCheckout.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../shopping_bag/checkout/FragmentCheckout.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../story/AdapterStoryProduct.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../story/AdapterStoryProduct.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../story/StoryActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../story/StoryActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../view_all/FragmentViewAllBrand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../view_all/FragmentViewAllBrand.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../view_all/viewmodel/BrandAllViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../view_all/viewmodel/BrandAllViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/layout/fragment_myorder.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/layout/fragment_myorder.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/layout/fragment_order_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/layout/fragment_order_detail.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/layout/item_recycler_profile_orders_type_product.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/layout/item_recycler_profile_orders_type_product.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/layout/recycler_checkout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/layout/recycler_checkout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/values/colors.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../../../../../.." />
+  </component>
+  <component name="ProjectId" id="26xqKTD1K5iyya0D32HKQbRzLT6" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../../../../../../RecyclerViewEnhanced" />
+    <property name="settings.editor.selected.configurable" value="preferences.language.Kotlin" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="da0b0a71-5bb3-4c30-8eeb-983d4902df4e" name="Default Changelist" comment="" />
+      <created>1648375521324</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648375521324</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1648375592639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1648375592639" />
+  </component>
+</project>

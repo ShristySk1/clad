@@ -1,11 +1,13 @@
 package com.ayata.clad.view_all.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.home.response.Brand
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -41,6 +43,22 @@ class BrandAllViewModel constructor(private val mainRepository: ApiRepository) :
             }
         }
 
+    }
+
+    private val currentQuery = MutableLiveData(DEFAULT_QUERY)
+    private var auth=""
+
+    val brandList: LiveData<PagingData<Brand>> = currentQuery.switchMap { queryString ->
+        mainRepository.getViewAllResultBrand(queryString, auth = auth).cachedIn(viewModelScope)
+    }
+
+    fun searchBrandViewAll(query: String, autho: String) {
+        currentQuery.value = query
+        auth=autho
+    }
+    companion object {
+        private const val CURRENT_QUERY = "current_query"
+        private const val DEFAULT_QUERY = ""
     }
 
     fun getBrandListAPI(): LiveData<Resource<JsonObject>> {

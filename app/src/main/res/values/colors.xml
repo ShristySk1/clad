@@ -67,4 +67,8 @@
 
     <color name="colorRedLight">#2fFF1100</color>
     <color name="colorRedDark">#FF1100</color>
+
+    <color name="recycler_view_item_swipe_left_background">#FF1100</color>
+    <color name="recycler_view_item_swipe_right_background">#FF1100</color>
+
 </resources>

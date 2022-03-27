@@ -25,11 +25,9 @@ import com.ayata.clad.login.viewmodel.LoginViewModelFactory
 import com.ayata.clad.onboarding.ActivityOnboarding
 import com.ayata.clad.profile.address.FragmentAddressDetail
 import com.ayata.clad.profile.edit.FragmentProfileEdit
+import com.ayata.clad.profile.reviews.FragmentMyReviews
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class FragmentAccount : Fragment() {
     lateinit var binding: FragmentAccountBinding
@@ -100,6 +98,7 @@ class FragmentAccount : Fragment() {
         listAccount.clear()
         listAccount.add(ModelAccount(0, 2, "PERSONAL INFORMATION"))
         listAccount.add(ModelAccount(1, 2, "ADDRESS BOOK"))
+        listAccount.add(ModelAccount(3, 2, "MY REVIEWS"))
         listAccount.add(ModelAccount(2, 1, "APP SETTINGS"))
         listAccount.add(ModelAccount(4, 2, "NOTIFICATION"))
         listAccount.add(ModelAccount(8, 2, "THEME"))
@@ -155,9 +154,15 @@ class FragmentAccount : Fragment() {
                         } else {
                             (activity as MainActivity).showDialogLogin()
                         }
-
                     }
-                    3 -> {//COUNTRY & LANGUAGE
+                    3 -> {//REVIEWS
+                        if (PreferenceHandler.getToken(requireContext()) != "") {
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment, FragmentMyReviews())
+                                .addToBackStack(null).commit()
+                        } else {
+                            (activity as MainActivity).showDialogLogin()
+                        }
                     }
                     4 -> {//NOTIFICATION
                     }

@@ -9,7 +9,7 @@ data class Variant(
     val dollarPrice: Double,
     @SerializedName("npr_price")
     val nprPrice: Double,
-    val size: Any,
+    val size: String?,
     @SerializedName("variant_id")
     val variantId: Int
 )

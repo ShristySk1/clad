@@ -31,7 +31,6 @@ class FragmentProductDetailFull2 : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentProductDetailFull2Binding.inflate(inflater, container, false)
         initView()
-        getBundle()
         def()
         setup()
         return binding.root
@@ -47,26 +46,31 @@ class FragmentProductDetailFull2 : Fragment() {
         (activity as MainActivity).showBottomNavigation(false)
     }
 
-    private fun getBundle() {
-//        val bundle = arguments
-//        if (bundle != null) {
-//            val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL) as ProductDetail
-//            if (data != null) {
-////                Glide.with(requireContext()).load(data.image_url).into(binding.)
+    private fun getBundle(): ArrayList<String> {
+        val bundle = arguments
+        if (bundle != null) {
+            val data = bundle.getSerializable("gallary") as ArrayList<String>
+            if (data != null) {
+//                Glide.with(requireContext()).load(data.image_url).into(binding.)
 //                val dynamicMediaList: MutableList<MediaInfo> = ArrayList()
 //                val images = arrayListOf<String>(
 //                    "https://cdn.shopify.com/s/files/1/0010/6518/9429/products/IMG_2333_1000x1000.jpg?v=1522633014",
 //                    "https://cdn.shopify.com/s/files/1/0010/6518/9429/products/IMG_2341_1000x1000.jpg?v=1522633015",
 //                    "https://cdn.shopify.com/s/files/1/0010/6518/9429/products/IMG_2347_1000x1000.jpg?v=1522633016"
 //                )
-//
-//            }
-//
-//        }
+                return data
+
+            }else{
+               return ArrayList<String>()
+            }
+
+        }else{
+            return  ArrayList<String>()
+        }
     }
 
     private fun def() {
-        mUrls = getMockImgs()
+        mUrls = getBundle()
     }
 
 

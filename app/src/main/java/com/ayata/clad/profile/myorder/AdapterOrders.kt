@@ -9,10 +9,8 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerProfileOrdersTypeDateBinding
 import com.ayata.clad.databinding.ItemRecyclerProfileOrdersTypeLineBinding
 import com.ayata.clad.databinding.ItemRecyclerProfileOrdersTypeProductBinding
-import com.ayata.clad.onboarding.AdapaterActivityOnboarding
 import com.ayata.clad.profile.ModelOrder
 import com.ayata.clad.profile.MyOrderRecyclerViewItem
-import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 
@@ -59,12 +57,13 @@ class AdapterOrders(val context: Context, data: List<ModelOrder>) :
     override fun onBindViewHolder(holder: HomeRecyclerViewHolder, position: Int) {
         when (holder) {
             is HomeRecyclerViewHolder.TitleViewHolder -> holder.bind(items[position] as MyOrderRecyclerViewItem.Title)
-            is HomeRecyclerViewHolder.ProductViewHolder -> {holder.bind(items[position] as MyOrderRecyclerViewItem.Product)
-            holder.itemView.setOnClickListener {
-                itemOrderClick?.let {
-                    it(items.get(position) as MyOrderRecyclerViewItem.Product)
+            is HomeRecyclerViewHolder.ProductViewHolder -> {
+                holder.bind(items[position] as MyOrderRecyclerViewItem.Product)
+                holder.itemView.setOnClickListener {
+                    itemOrderClick?.let {
+                        it(items.get(position) as MyOrderRecyclerViewItem.Product)
+                    }
                 }
-            }
             }
             is HomeRecyclerViewHolder.DividerViewHolder -> holder.bind(items[position] as MyOrderRecyclerViewItem.Divider)
         }
@@ -110,11 +109,13 @@ class AdapterOrders(val context: Context, data: List<ModelOrder>) :
                     } else {
                         binding.price.text = "${context!!.getString(R.string.usd)} ${item.priceUSD}"
                     }
-                    binding.name.text=name
-                    binding.itemId.text="Item ID: ${order.products.productId}"
+                    binding.name.text = name
+                    binding.itemId.text = "Item ID: ${order.products.productId}"
                     Glide.with(context).load(item.image).into(binding.image)
-                    binding.description.text="Size: ${order.products.variant.size} / Colour: ${order.products.variant.color} / Qty: ${quantity}"
-
+                    binding.description.text =
+                        "${order.products.variant.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${order.products.variant.color} / Qty: ${quantity}"
+                    binding.orderStatus.text =
+                        order.orderStatus[order.orderStatus.size - 1].status + ""
                 }
             }
         }
@@ -131,7 +132,8 @@ class AdapterOrders(val context: Context, data: List<ModelOrder>) :
         }
 
     }
-     var itemOrderClick: ((MyOrderRecyclerViewItem.Product) -> Unit)? = null
+
+    var itemOrderClick: ((MyOrderRecyclerViewItem.Product) -> Unit)? = null
     fun setitemOrderClick(listener: ((MyOrderRecyclerViewItem.Product) -> Unit)) {
         itemOrderClick = listener
     }

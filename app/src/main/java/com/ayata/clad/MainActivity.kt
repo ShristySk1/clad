@@ -222,16 +222,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val extras = intent.extras
         if (extras != null) {
             val value = extras.getBoolean(Constants.FROM_STORY, false)
+            val data = extras.getSerializable("data") as ProductDetail
             if (value) {
-                fromStory()
+                fromStory(data)
             }
         }
     }
 
-    private fun fromStory() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment, FragmentProductDetail())
-            .commit()
+    private fun fromStory(data:ProductDetail) {
+        val bundle = Bundle()
+        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
+        val fragmentProductDetail = FragmentProductDetail()
+        fragmentProductDetail.arguments = bundle
+        supportFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentProductDetail)
+            .addToBackStack(null).commit()
+
     }
 
     fun showBottomNavigation(show: Boolean) {

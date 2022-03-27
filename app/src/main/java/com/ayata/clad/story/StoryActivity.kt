@@ -25,6 +25,7 @@ import jp.shts.android.storiesprogressview.StoriesProgressView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 
 class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
@@ -51,7 +52,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     private var isImageLoading = false
 
     private lateinit var adapterStoryProduct: AdapterStoryProduct
-    private var listProduct = ArrayList<ModelJustDropped>()
+    private var listProduct = ArrayList<ProductDetail>()
 
     private lateinit var binding: ActivityStoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,13 +122,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 //
 //        listProduct.shuffle()
         listOfProductForSingleImage.forEach {
-            listProduct.add(
-                ModelJustDropped(
-                    it.imageUrl[0],
-                    "${it.discountPercent} OFF", it.price.toString(), it.dollar_price.toString(),
-                    "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"
-                )
-            )
+            listProduct.add(it)
         }
         adapterStoryProduct.notifyDataSetChanged()
 
@@ -326,9 +321,10 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         super.onResume()
     }
 
-    override fun onProductClick(data: ModelJustDropped, position: Int) {
+    override fun onProductClick(data: ProductDetail, position: Int) {
         val i = Intent(this, MainActivity::class.java)
         i.putExtra(Constants.FROM_STORY, true)
+        i.putExtra("data",data as ProductDetail)
         startActivity(i)
     }
 }

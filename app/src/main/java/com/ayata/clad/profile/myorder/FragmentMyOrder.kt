@@ -49,7 +49,7 @@ class FragmentMyOrder : Fragment() {
         viewModel.observeOrderResponse().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -69,12 +69,12 @@ class FragmentMyOrder : Fragment() {
 
                 }
                 Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
+                    binding.spinKit.visibility = View.VISIBLE
 
                 }
                 Status.ERROR -> {
                     //Handle Error
-//                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.visibility = View.GONE
                     if (it.message.equals("Unauthorized")) {
 
                     } else {

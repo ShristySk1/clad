@@ -16,13 +16,14 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
     private val errorMessage = MutableLiveData<String>()
 
     private val orderResponse = MutableLiveData<Resource<JsonObject>>()
+    private val cancelOrderResponse = MutableLiveData<Resource<JsonObject>>()
+
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
     private val loading = MutableLiveData<Boolean>()
-
     fun getOrderApi(token: String) {
         orderResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -41,10 +42,29 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
         }
 
     }
-
-
     fun observeOrderResponse(): LiveData<Resource<JsonObject>> {
         return orderResponse
+    }
+    fun cancelOrderApi(token: String,orderId:Int) {
+        cancelOrderResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.cancelOrder("$token",orderId)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("profileDetailAPI", "success: " + response.body())
+                    cancelOrderResponse.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("profileDetailAPI", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    cancelOrderResponse.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+
+    }
+    fun observeCancelOrderResponse(): LiveData<Resource<JsonObject>> {
+        return cancelOrderResponse
     }
 
     private fun onError(message: String) {

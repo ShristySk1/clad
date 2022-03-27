@@ -7,7 +7,7 @@ import java.io.Serializable
 data class ProductDetail(
     val brand: Brand,
     val categories: List<Category>,
-    val coupon: Coupon,
+    val coupon: Coupon?=null,
     val description: String,
     @SerializedName("discount_percent")
     val discountPercent: Double,

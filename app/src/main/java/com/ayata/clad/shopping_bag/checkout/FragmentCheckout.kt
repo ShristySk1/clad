@@ -1,5 +1,6 @@
 package com.ayata.clad.shopping_bag.checkout
 
+import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -7,21 +8,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.databinding.DialogShoppingSizeBinding
+import com.ayata.clad.databinding.DialogCustomBinding
 import com.ayata.clad.databinding.FragmentCartCheckoutBinding
 import com.ayata.clad.shopping_bag.adapter.AdapterCheckout
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
@@ -35,9 +34,10 @@ import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener
+import kotlin.reflect.KFunction2
 
 
 class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
@@ -57,6 +57,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private var listQty = ArrayList<ModelCircleText>()
     private var updatePosition = -1
     private lateinit var listContainingGrandtotal: CartResponse
+    private var onTouchListener: RecyclerTouchListener? = null
+
 
     companion object {
         private const val TAG = "FragmentCheckout"
@@ -113,7 +115,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
                         }
                     }
-
                 }
                 Status.LOADING -> {
 //                    binding.spinKit.visibility = View.VISIBLE
@@ -336,23 +337,23 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private fun initRefreshLayout() {
         //refresh layout on swipe
-        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-            getCartAPI()
-            binding.swipeRefreshLayout.isRefreshing = false
-        })
-        //Adding ScrollListener to activate swipe refresh layout
-        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
-            binding.swipeRefreshLayout.isEnabled = i1 == 0
-        })
-
-        // Adding ScrollListener to getting whether we're on First Item position or not
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                binding.swipeRefreshLayout.isEnabled =
-                    layoutManagerCheckout.findFirstVisibleItemPosition() == 0
-            }
-        })
+//        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+//            getCartAPI()
+//            binding.swipeRefreshLayout.isRefreshing = false
+//        })
+//        //Adding ScrollListener to activate swipe refresh layout
+//        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+//            binding.swipeRefreshLayout.isEnabled = i1 == 0
+//        })
+//
+//        // Adding ScrollListener to getting whether we're on First Item position or not
+//        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                binding.swipeRefreshLayout.isEnabled =
+//                    layoutManagerCheckout.findFirstVisibleItemPosition() == 0
+//            }
+//        })
 
     }
 
@@ -415,10 +416,24 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             adapter = adapterCheckout
             layoutManager = layoutManagerCheckout
         }
-//        prepareList()
+        // Create and add a callback
+        onTouchListener = RecyclerTouchListener(activity, binding.recyclerView)
+        onTouchListener!!
+            .setSwipeOptionViews(R.id.add)
+            .setSwipeable(R.id.layout1, R.id.rowBG, object : RecyclerTouchListener.OnSwipeOptionsClickListener{
+                override fun onSwipeOptionClicked(viewID: Int, position: Int) {
+                    var message = ""
+                    if (viewID == R.id.add) {
+                        message += "Add"
 
+                        showDialog("Alert!","Are you sure you want to remove this item from cart?",adapterCheckout.getCartId(position), position ,::removeFromCartAPI)
+
+                    }
+                    message += " clicked for row " + (position + 1)
+                }
+
+            })
     }
-
     private fun prepareList(
         res: List<Cart>,
         cartTotalNpr: Double,
@@ -463,6 +478,19 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             "${getString(R.string.usd)} $cartTotalDollar"
         }
 
+    }
+
+     override fun onResume() {
+        super.onResume()
+         onTouchListener?.let {
+             binding.recyclerView.addOnItemTouchListener(onTouchListener!!)
+
+         }
+    }
+
+     override fun onPause() {
+        super.onPause()
+        binding.recyclerView.removeOnItemTouchListener(onTouchListener!!)
     }
 
     override fun onSizeClicked(data: ModelCheckout, position: Int) {
@@ -890,6 +918,34 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             cartId
         )
 
+    }
+    private fun showDialog(
+        title:String,
+        message:String,
+        caratId:Int,
+        pos:Int,
+        action: KFunction2<Int, Int, Unit>
+    ) {
+        val bind: DialogCustomBinding =
+            DialogCustomBinding.inflate(LayoutInflater.from(context))
+        val dialog = Dialog(requireContext(), R.style.CustomDialog)
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.setCancelable(false)
+        dialog?.setContentView(bind.root)
+        bind.textTitle.text = title
+        bind.textMsg.text =
+            message
+        bind.dialogBtnYes.text = "Yes"
+        bind.dialogBtnYes.setOnClickListener {
+            action(caratId,pos)
+            dialog?.dismiss()
+        }
+        bind.dialogBtnNo.text = "No"
+        bind.dialogBtnNo.setOnClickListener {
+            dialog?.dismiss()
+        }
+        dialog?.show()
     }
 
 }

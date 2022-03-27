@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -22,7 +23,7 @@ import com.bumptech.glide.request.target.Target
 import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class AdapterStoryProduct(private var context:Context?,
-                                   private var listItems:List<ModelJustDropped>,
+                                   private var listItems:List<ProductDetail>,
                                    private val onItemClickListener: OnItemClickListener)
     :RecyclerView.Adapter<AdapterStoryProduct.MyViewHolder>(){
 
@@ -48,15 +49,15 @@ internal class AdapterStoryProduct(private var context:Context?,
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item=listItems[position]
         if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
-            holder.price.text="${context!!.getString(R.string.rs)} ${item.priceNPR}"
+            holder.price.text="${context!!.getString(R.string.rs)} ${item.price}"
         }else{
-            holder.price.text="${context!!.getString(R.string.usd)} ${item.priceUSD}"
+            holder.price.text="${context!!.getString(R.string.usd)} ${item.dollar_price}"
         }
-        holder.discount.text=item.title
+        holder.discount.text=item.discountPercent.toString()
 
 //        holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.imageUrl)
+            .load(item.imageUrl[0])
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -90,7 +91,7 @@ internal class AdapterStoryProduct(private var context:Context?,
     }
 
     interface OnItemClickListener{
-        fun onProductClick(data: ModelJustDropped, position:Int)
+        fun onProductClick(data: ProductDetail, position:Int)
     }
 
 }

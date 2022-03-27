@@ -36,6 +36,7 @@ import com.ayata.clad.product.viewmodel.ProductViewModel
 import com.ayata.clad.product.viewmodel.ProductViewModelFactory
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PercentageCropImageView
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.copyToClipboard
@@ -46,7 +47,9 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
+import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -60,7 +63,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private var isProductInCart: Boolean = false
     private lateinit var viewModel: ProductViewModel
     private lateinit var productDetail: ProductDetail
-    var galleryBundle: Bundle? = null
+   lateinit var galleryBundle: List<String>
     private var listRecommendation = ArrayList<ProductDetail>()
 
     private lateinit var adapterRecommended: AdapterRecommended
@@ -94,12 +97,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun goToGalleryView() {
         val fragment = FragmentProductDetailFull2()
-        fragment.arguments = galleryBundle
+        val bundle=Bundle()
+        bundle.putSerializable("gallary",galleryBundle as Serializable)
+        fragment.arguments = bundle
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
             .addToBackStack(null)
             .commit()
     }
-
     private fun getBundle() {
         val bundle = arguments
         if (bundle != null) {
@@ -107,15 +111,14 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL)
             if (data != null) {
                 productDetail = data as ProductDetail
+                galleryBundle = data.imageUrl
                 setProductData()
             }
-            galleryBundle = bundle
-
+//            galleryBundle = bundle
         } else {
             Log.d(TAG, "getBundle:null ");
         }
     }
-
     private fun setProductData() {
         choosenSizePosition = 0
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
@@ -130,10 +133,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         }
         if (productDetail.isCouponAvailable) {
             binding.detail2.constraintLayout.visibility = View.VISIBLE
-            binding.detail2.couponTitle.text = productDetail.coupon.title
-            binding.detail2.couponDesc.text = productDetail.coupon.description
-            binding.detail2.tvTextToCopy.text = productDetail.coupon.code//code
-
+            binding.detail2.couponTitle.text = productDetail.coupon?.title
+            binding.detail2.couponDesc.text = productDetail.coupon?.description
+            binding.detail2.tvTextToCopy.text = productDetail.coupon?.code//code
         } else {
             binding.detail2.constraintLayout.visibility = View.GONE
         }
@@ -145,12 +147,14 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        isProductInCart = productDetail.isInCart
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         //reviews
-        setUpTabChoose(
-            productDetail.reviews.size,
-            productDetail.reviews.width,
-            productDetail.reviews.quality,
-            productDetail.reviews.comfort
-        )
+        if(productDetail.reviews!=null) {
+            setUpTabChoose(
+                productDetail.reviews.size,
+                productDetail.reviews.width,
+                productDetail.reviews.quality,
+                productDetail.reviews.comfort
+            )
+        }
 
 
         val colorsize = setHashMapColorSize()
@@ -272,28 +276,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 toast.show()
             }
     }
-
-    //    private fun setUpRecyclerRecommendation() {
-//        binding.detail2.rvRecommendation.apply {
-//            layoutManager =
-//                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-//            adapter = AdapterRecommended(
-//                requireContext(),
-//                prepareDataForRecommended(),object :AdapterRecommended.OnItemClickListener{
-//                    override fun onRecommendedClicked(data: ProductDetail, position: Int) {
-//                        val bundle = Bundle()
-//                        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
-//                        val fragmentProductDetail = FragmentProductDetail()
-//                        fragmentProductDetail.arguments = bundle
-//                        parentFragmentManager.beginTransaction()
-//                            .replace(R.id.main_fragment, fragmentProductDetail)
-//                            .addToBackStack(null).commit()
-//                    }
-//
-//                }
-//            )
-//            }
-//}
     private fun setUpRecyclerRecommendation() {
         adapterRecommended = AdapterRecommended(
             requireContext(),
@@ -351,10 +333,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
 
-    private fun prepareDataForRecommended(): List<ProductDetail> {
-        return (activity as MainActivity).getRecommendedList()
-
-    }
 
     private fun initView() {
         (activity as MainActivity).showToolbar(false)
@@ -399,43 +377,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        imageView.setCropYCenterOffsetPct(0.33f);
     }
 
-    private fun setUpTabChoose(size: String, width: String, quality: Double, comfort: String) {
+    private fun setUpTabChoose(size: String?, width: String?, quality: Double, comfort: String?) {
         //size
-        val tabStrip = binding.detail2.tabSize.getChildAt(0) as LinearLayout
-        for (i in 0 until tabStrip.childCount) {
-            tabStrip.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
-            if ((binding.detail2.tabSize.getTabAt(i)?.text.toString())?.equals(
-                    size,
-                    ignoreCase = true
-                )
-            ) {
-                binding.detail2.tabSize.getTabAt(i)?.select()
-            }
-        }
+        formatMyTab(binding.detail2.tabSize,size)
         //width
-        val tabStrip2 = binding.detail2.tabWidth.getChildAt(0) as LinearLayout
-        for (i in 0 until tabStrip.childCount) {
-            tabStrip2.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
-            if ((binding.detail2.tabWidth.getTabAt(i)?.text.toString())?.equals(
-                    width,
-                    ignoreCase = true
-                )
-            ) {
-                binding.detail2.tabWidth.getTabAt(i)?.select()
-            }
-        }
+        formatMyTab(binding.detail2.tabWidth,width)
         //comfort
-        val tabStrip3 = binding.detail2.tabComfort.getChildAt(0) as LinearLayout
-        for (i in 0 until tabStrip.childCount) {
-            tabStrip2.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
-            if ((binding.detail2.tabComfort.getTabAt(i)?.text.toString())?.equals(
-                    comfort,
-                    ignoreCase = true
-                )
-            ) {
-                binding.detail2.tabComfort.getTabAt(i)?.select()
-            }
-        }
+        formatMyTab(binding.detail2.tabComfort,comfort)
         //quality
         binding.detail2.progressBarQuality.progress = Math.round(quality).toInt()
         //total reviews
@@ -450,6 +398,20 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             productDetail.reviews.recommendedBy?.let { it.equals("")?.let { "0" } + "%" }
                 ?: run { "0%" }
 
+    }
+    fun formatMyTab(tab:TabLayout,title:String?){
+        val tabStrip3 = tab.getChildAt(0) as LinearLayout
+        for (i in 0 until tabStrip3.childCount) {
+            tabStrip3.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
+            if ((tab.getTabAt(i)?.text.toString())?.equals(
+                    title,
+                    ignoreCase = true
+                )
+            ) {
+                tab.getTabAt(i)?.select()
+            }else{
+            }
+        }
     }
 
     private fun setUpRecyclerColor(keys: MutableSet<String>) {
@@ -574,7 +536,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         Glide.with(requireContext())
             .load(color.imageUrl)
             .transition(DrawableTransitionOptions.withCrossFade())
-            .error(R.drawable.splashimage)
+            .error(Constants.ERROR_DRAWABLE)
+            .fallback(Constants.ERROR_DRAWABLE)
             .into(binding.imageView3)
         binding.imageView3.cropYCenterOffsetPct = 0f
         Log.d("testcolorclick", "onColorClicked: " + position);

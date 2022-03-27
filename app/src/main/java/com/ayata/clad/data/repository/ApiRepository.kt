@@ -7,10 +7,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.home.response.Brand
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.productlist.CategoryPagingDataSource
 import com.ayata.clad.profile.edit.response.Details
 import com.ayata.clad.search.paging.SearchPagingDataSource
+import com.ayata.clad.view_all.paging.BrandPagingDataSource
 import com.ayata.clad.view_all.paging.ProductPagingDataSource
 import com.google.gson.JsonObject
 
@@ -54,12 +56,25 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
 
         return Pager(
             config = PagingConfig(
-                pageSize = 16,
+                pageSize = 2,
                 maxSize = 100,
-                initialLoadSize = 4,
+                initialLoadSize = 2,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = { ProductPagingDataSource(auth, title, retrofitService) }
+        ).liveData
+    }
+    //brand
+    fun getViewAllResultBrand(title: String, auth: String): LiveData<PagingData<Brand>> {
+        Log.d("calledheretwo", "getViewAllResult: ");
+        return Pager(
+            config = PagingConfig(
+                pageSize = 2,
+                maxSize = 100,
+                initialLoadSize = 2,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { BrandPagingDataSource(auth, title, retrofitService) }
         ).liveData
     }
     //checkout order
@@ -68,13 +83,15 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun getPaymentGateways(token: String) = retrofitService.getPaymentGateways(token)
     //order
     suspend fun getOrder(token: String) = retrofitService.getOrder(token)
+    //cancel order
+    suspend fun cancelOrder(token: String,orderId:Int) = retrofitService.cancelOrder(token,orderId)
     //search
     suspend fun searchOrder(token: String, query:String,page: Int) = retrofitService.searchProduct(token, query,page)
     fun getSearchResult(title: String, auth: String): LiveData<PagingData<ProductDetail>> {
         Log.d("tet5stcall", "getViewAllResult: ");
         return Pager(
             config = PagingConfig(
-                pageSize = 16,
+                pageSize = 2,
                 maxSize = 100,
                 enablePlaceholders = false
             ),
@@ -86,7 +103,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
         Log.d("tet5stcall", "getViewAllResult: ");
         return Pager(
             config = PagingConfig(
-                pageSize = 16,
+                pageSize = 2,
                 maxSize = 100,
                 enablePlaceholders = false
             ),

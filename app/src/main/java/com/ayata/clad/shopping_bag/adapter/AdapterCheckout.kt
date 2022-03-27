@@ -25,7 +25,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
 internal class AdapterCheckout(
-    private var context: Context?, private var listItems: List<ModelCheckout>,
+    private var context: Context?, private var listItems: MutableList<ModelCheckout>,
     private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<AdapterCheckout.MyViewHolder>() {
 
@@ -194,6 +194,31 @@ internal class AdapterCheckout(
     override fun getItemCount(): Int {
         Log.d("testsize", "getItemCount: "+listItems.size);
         return listItems.size
+    }
+
+    fun removeItem(position: Int): ModelCheckout? {
+        var item: ModelCheckout? = null
+        try {
+            item = listItems.get(position)
+            listItems.removeAt(position)
+            notifyItemRemoved(position)
+        } catch (e: Exception) {
+            Log.e("test", e.message!!)
+        }
+        return item
+    }
+
+    fun addItem(item: ModelCheckout, position: Int) {
+        try {
+            listItems.add(position, item)
+            notifyItemInserted(position)
+        } catch (e: java.lang.Exception) {
+            Log.e("MainActivity", e.message!!)
+        }
+    }
+
+    fun getCartId(position: Int): Int {
+        return listItems.get(position).cartId
     }
 
     interface OnItemClickListener {

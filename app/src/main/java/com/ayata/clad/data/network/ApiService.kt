@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 interface ApiService {
 
     companion object {
-
         private const val baseUrl = "https://clad.ayata.com.np/api/v1/"
         private val httpLoggingInterceptor = run {
             val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -235,6 +234,14 @@ interface ApiService {
     @GET("user-orders/")
     suspend fun getOrder(
         @Header("Authorization") token: String,
+    ): Response<JsonObject>
+
+    //cancel order
+    @POST("cancel-order/")
+    @FormUrlEncoded
+    suspend fun cancelOrder(
+        @Header("Authorization") token: String,
+        @Field("order_id") orderId:Int
     ): Response<JsonObject>
 
 }

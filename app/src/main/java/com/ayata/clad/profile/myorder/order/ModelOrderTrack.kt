@@ -12,7 +12,7 @@ class ModelOrderTrack(
         const val ORDER_TYPE_PLACED = "Order Placed"
         const val ORDER_TYPE_DISPATCHED = "Order Dispatched"
         const val ORDER_TYPE_TRANSIT = "Order in Transit"
-        const val ORDER_TYPE_DELIVERED = "Delivered Successfully"
+        const val ORDER_TYPE_DELIVERED = "Order Delivered"
         const val ORDER_TYPE_NONE = "None"
     }
 }
