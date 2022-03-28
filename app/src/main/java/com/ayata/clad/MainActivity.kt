@@ -22,6 +22,8 @@ import com.ayata.clad.preorder.FragmentPreorder
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.profile.myorder.order.FragmentOrderDetail
+import com.ayata.clad.profile.reviews.FragmentMyReviewsForm
+import com.ayata.clad.profile.reviews.model.ModelReview
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
@@ -566,5 +568,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             .replace(R.id.main_fragment, frag)
             .addToBackStack(null)
             .commit()
+    }
+
+    fun openFragmentReviewForm(it: ModelReview) {
+        supportFragmentManager.beginTransaction().replace(R.id.main_fragment,
+            FragmentMyReviewsForm()
+        ).addToBackStack(null).commit()
+
     }
 }

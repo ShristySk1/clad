@@ -4,31 +4,26 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ayata.clad.databinding.ItemRecyclerToBeReviewedBinding
+import com.ayata.clad.databinding.ItemRecyclerReviewImageBinding
 import com.ayata.clad.profile.reviews.model.ModelReview
+import com.bumptech.glide.Glide
 
 
-class AdapterMyReviews(val context:Context,
-                       var myReviewList: List<ModelReview>,
-) : RecyclerView.Adapter<AdapterMyReviews.ViewHolder>() {
-    inner class ViewHolder(val binding: ItemRecyclerToBeReviewedBinding) :
+class AdapterImage(
+    val context: Context,
+    var myReviewList: List<String>,
+) : RecyclerView.Adapter<AdapterImage.ViewHolder>() {
+    inner class ViewHolder(val binding: ItemRecyclerReviewImageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun clickView(item: ModelReview) {
-            if(item.isAlreadyReviewed){
-                binding.tvReview.text="Edit"
-            }
-            binding.tvReview.setOnClickListener {
-                itemReviewClick?.let {
-                    it(item)
-                }
-            }
+        fun clickView(item: String) {
+            Glide.with(context).load(item).into(binding.image)
         }
     }
 
     // inside the onCreateViewHolder inflate the view of SingleItemBinding
     // and return new ViewHolder object containing this layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemRecyclerToBeReviewedBinding.inflate(
+        val binding = ItemRecyclerReviewImageBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -49,6 +44,7 @@ class AdapterMyReviews(val context:Context,
     override fun getItemCount(): Int {
         return myReviewList.size
     }
+
     private var itemReviewClick: ((ModelReview) -> Unit)? = null
     fun setReviewClickListener(listener: ((ModelReview) -> Unit)) {
         itemReviewClick = listener

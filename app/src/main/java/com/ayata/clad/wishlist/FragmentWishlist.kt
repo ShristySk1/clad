@@ -131,6 +131,7 @@ class FragmentWishlist : Fragment() {
             binding.llEmpty.visibility = View.VISIBLE
             setUpRecyclerRecommendation()
         } else {
+            binding.productCount.text="${myWishList.size} PRODUCT(S)"
             binding.layoutFilled.visibility = View.VISIBLE
             binding.llEmpty.visibility = View.GONE
         }
@@ -361,29 +362,29 @@ class FragmentWishlist : Fragment() {
 
     private fun addToCartAPI(product: Wishlist) {
         Log.d(TAG, "addToCartAPI: " + product);
-        viewModel.wishListToCart(
+        viewModel.addToCartAPI(
             PreferenceHandler.getToken(context).toString(),
-            product.wishlist_id
+            product.selected.variantId
         )
-        viewModel.getWishAPIToCart().observe(viewLifecycleOwner, {
+        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "addToCartAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
-                        showSnackBar("Product added to cart")
+                        showSnackBar(jsonObject.get("message").toString())
                         MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
-                        var pos = 0
-                        for (item in myWishList) {
-                            if (item.wishlist_id == product.wishlist_id) {
-//                                item.product.is_in_cart = true
-                                pos = myWishList.indexOf(item)
-                            }
-                        }
-                        myWishList.removeAt(pos)
-                        adapterWishList.notifyItemRemoved(pos)
-                        MainActivity.NavCount.myWishlist =
-                            MainActivity.NavCount.myWishlist?.minus(1)
+//                        var pos = 0
+//                        for (item in myWishList) {
+//                            if (item.wishlist_id == product.wishlist_id) {
+////                                item.product.is_in_cart = true
+//                                pos = myWishList.indexOf(item)
+//                            }
+//                        }
+//                        myWishList.removeAt(pos)
+//                        adapterWishList.notifyItemRemoved(pos)
+//                        MainActivity.NavCount.myWishlist =
+//                            MainActivity.NavCount.myWishlist?.minus(1)
                     }
                     binding.spinKit.visibility = View.GONE
 
@@ -429,6 +430,8 @@ class FragmentWishlist : Fragment() {
                             setUpView()
                             position?.let {
                                 adapterWishList.notifyItemRemoved(position)
+                                MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.minus(1)
+
                             }
 
                         } catch (e: Exception) {

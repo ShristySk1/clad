@@ -26,6 +26,7 @@ import com.ayata.clad.onboarding.ActivityOnboarding
 import com.ayata.clad.profile.address.FragmentAddressDetail
 import com.ayata.clad.profile.edit.FragmentProfileEdit
 import com.ayata.clad.profile.reviews.FragmentMyReviews
+import com.ayata.clad.profile.reviews.FragmentMyReviewsList
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -158,7 +159,7 @@ class FragmentAccount : Fragment() {
                     3 -> {//REVIEWS
                         if (PreferenceHandler.getToken(requireContext()) != "") {
                             requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.main_fragment, FragmentMyReviews())
+                                .replace(R.id.main_fragment, FragmentMyReviewsList())
                                 .addToBackStack(null).commit()
                         } else {
                             (activity as MainActivity).showDialogLogin()

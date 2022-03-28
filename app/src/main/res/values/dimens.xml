@@ -11,7 +11,7 @@
 
     <dimen name="shopping_margin1">25dp</dimen>
     <dimen name="item_offset">2dp</dimen>
-
+    <dimen name="item_offset_image">8dp</dimen>
     <dimen name="appbar_icon_size">32dp</dimen>
     <dimen name="appbar_icon_padding1">8dp</dimen>
     <dimen name="appbar_icon_padding2">5dp</dimen>

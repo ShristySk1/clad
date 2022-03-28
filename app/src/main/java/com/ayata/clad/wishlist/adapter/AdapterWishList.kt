@@ -9,6 +9,7 @@ import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerWishlistBinding
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.wishlist.response.get.Wishlist
 import com.bumptech.glide.Glide
@@ -28,8 +29,9 @@ class AdapterWishList(
         RecyclerView.ViewHolder(binding.root) {
         fun clickView(item: Wishlist) {
             binding.progressBar.visibility = View.VISIBLE
+            val image=if(item.selected.imageUrl.isEmpty()) Constants.ERROR_DRAWABLE else item.selected.imageUrl
             Glide.with(binding.image.context)
-                .load(item.product.imageUrl[0])
+                .load(image)
                 .listener(object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
                         @Nullable e: GlideException?,
@@ -58,10 +60,10 @@ class AdapterWishList(
                     .equals(context!!.getString(R.string.npr_case), true)
             ) {
                 //npr
-                binding.price.text = "${context!!.getString(R.string.rs)} ${item.product.price}"
+                binding.price.text = "${context!!.getString(R.string.rs)} ${item.selected.vTotal}"
             } else {
                 //usd
-                binding.price.text = "${context!!.getString(R.string.usd)} ${item.product.price}"
+                binding.price.text = "${context!!.getString(R.string.usd)} ${item.selected.vDollarTotal}"
             }
 
             binding.image.setOnClickListener {

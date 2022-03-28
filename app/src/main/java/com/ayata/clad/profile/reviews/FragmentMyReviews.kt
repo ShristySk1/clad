@@ -25,16 +25,22 @@ class FragmentMyReviews : Fragment() {
         binding =
             FragmentMyReviewsBinding.inflate(inflater, container, false)
         initAppbar()
+       initRecyclerView()
+        return binding.root
+    }
+
+    private fun initRecyclerView() {
+        val data = arguments?.getSerializable("datas") as? List<ModelReview>
         binding.rvReviews.apply {
             layoutManager=LinearLayoutManager(context)
-            adapter=AdapterMyReviews(context, listOf(ModelReview("a"),ModelReview("b"))).also {
+            adapter=AdapterMyReviews(context, data?.let { it }?: kotlin.run { arrayListOf() }).also {
                 it.setReviewClickListener {
-                    parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentMyReviewsForm()).addToBackStack(null).commit()
+                    (activity as MainActivity).openFragmentReviewForm(it)
                 }
             }
         }
-        return binding.root
     }
+
     private fun initAppbar() {
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar2(

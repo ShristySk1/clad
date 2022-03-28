@@ -883,6 +883,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                 "${getString(R.string.usd)} $totalPriceDollar"
             }
         adapterCheckout.notifyItemRemoved(position)
+        MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.minus(1)
+
     }
 
     private fun checkIfCartEmpty() {
