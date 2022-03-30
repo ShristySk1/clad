@@ -22,7 +22,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-
 class ProductDetailViewAllAdapter(private val listener:onItemClickListener) : PagingDataAdapter<ProductDetail, ProductDetailViewAllAdapter.ProductDetailViewHolder>(PHOTO_COMPARATOR) {
     inner class ProductDetailViewHolder(private val binding: RecyclerViewAllProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -36,17 +35,16 @@ class ProductDetailViewAllAdapter(private val listener:onItemClickListener) : Pa
                     }
                 }
             }
-            binding.iconWish.setOnClickListener {
-                val position=bindingAdapterPosition
-                if(position!=RecyclerView.NO_POSITION){
-                    val item=(getItem(position))
-                    item?.let {
-                        listener.onWishListClick(item,position)
-                    }
-                }
-//                onItemClickListener.onWishListClicked(itemList!![adapterPosition]!!,adapterPosition)
-
-            }
+//            binding.iconWish.setOnClickListener {
+//                val position=bindingAdapterPosition
+//                if(position!=RecyclerView.NO_POSITION){
+//                    val item=(getItem(position))
+//                    item?.let {
+//                        listener.onWishListClick(item,position)
+//                    }
+//                }
+//
+//            }
         }
 
         fun bind(item: ProductDetail) {

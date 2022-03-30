@@ -6,7 +6,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -15,7 +14,6 @@ import androidx.viewbinding.ViewBinding
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.databinding.ActivityOnboardingBinding
 import com.ayata.clad.login.viewmodel.LoginViewModel
 import com.ayata.clad.login.viewmodel.LoginViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
@@ -114,8 +112,22 @@ private lateinit var progressDialog: ProgressDialog
                     val lastname =
                         it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("last_name")
                             .toString()
+                    //contact_number
+                    val contact_number =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("contact_number")
+                            .toString()
+                    //dob
+                    val dob =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("dob")
+                            .toString()
+                    val gender =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("gender")
+                            .toString()
+
                     val token = it.data?.get("details")?.asJsonObject?.get("token").toString()
-                    saveUserCredential(currentUser,firstname.replace("\"", ""), lastname.replace("\"", ""), email.replace("\"", ""), token.replace("\"", ""))
+                    saveUserCredential(currentUser,firstname.removeDoubleQuote(),
+                        lastname.removeDoubleQuote(), email.removeDoubleQuote(),
+                        token.removeDoubleQuote(),contact_number?.removeDoubleQuote(),dob?.removeDoubleQuote(),gender?.removeDoubleQuote())
                 }
                 Status.LOADING -> {
 //                    activityOnboarding.spinKit.visibility= View.VISIBLE
@@ -129,12 +141,28 @@ private lateinit var progressDialog: ProgressDialog
             }
         })
     }
+    //remove
+    fun String.removeDoubleQuote()= this.replace("\"", "")
 
-    fun saveUserCredential(currentUser: GoogleSignInAccount, firstname: String, lastname: String, email: String, token: String) {
+
+
+    fun saveUserCredential(
+        currentUser: GoogleSignInAccount,
+        firstname: String,
+        lastname: String,
+        email: String,
+        token: String,
+        contact: String?,
+        dob: String?,
+        gender: String?
+    ) {
         PreferenceHandler.setEmail(this, email)
         PreferenceHandler.setUsername(this, firstname+" "+lastname)
         PreferenceHandler.setToken(this, "Token "+token)
         Log.d(com.ayata.clad.login.TAG, "saveUserCredential: "+currentUser.photoUrl.toString());
+        PreferenceHandler.setGender(this,gender?:"")
+        PreferenceHandler.setDOB(this,dob?:"")
+        PreferenceHandler.setPhone(this,contact?:"")
         getBitmapFromURL(currentUser.photoUrl.toString())
     }
 

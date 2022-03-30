@@ -21,6 +21,9 @@ class PreferenceHandler {
         const val IMAGE = "image"
         const val SHOW_ONBOARDING="show onboarding"
         const val RECENT_SEARCH="recent search"
+        private const val GENDER="Gender"
+        private const val DATE_OF_BIRTH="Data of birth"
+        private const val PHONE="phone"
 
         private fun getSharedPreference(ctx: Context?): SharedPreferences? {
             return PreferenceManager.getDefaultSharedPreferences(ctx)
@@ -145,6 +148,41 @@ class PreferenceHandler {
             getSharedPreference(
                 context
             )?.getString(CURRENCY, "npr")
+
+
+        fun setGender(context: Context?,gender:String){
+            if(context!=null)
+                editor(context, GENDER, gender)
+        }
+
+        fun getGender(context: Context?)=
+            getSharedPreference(
+                context
+            )?.getString(GENDER, "")
+
+
+        fun setDOB(context: Context?,dob:String){
+            if(context!=null)
+                editor(context, DATE_OF_BIRTH, dob)
+        }
+
+        fun getDOB(context: Context?)=
+            getSharedPreference(
+                context
+            )?.getString(DATE_OF_BIRTH, "")
+
+        //phone
+        fun setPhone(context: Context?,phone:String){
+            if(context!=null)
+                editor(context, PHONE, phone)
+        }
+
+        fun getPhone(context: Context?)=
+            getSharedPreference(
+                context
+            )?.getString(PHONE, "")
+
+
 
         fun setToken(context: Context?,token:String){
             if(context!=null)

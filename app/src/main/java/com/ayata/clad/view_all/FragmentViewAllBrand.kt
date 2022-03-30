@@ -20,8 +20,10 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentViewAllBrandBinding
+import com.ayata.clad.databinding.LayoutErrorPagingBinding
 import com.ayata.clad.home.response.Brand
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProductLoadStateAdapter
 import com.ayata.clad.view_all.adapter.AdapterViewAllBrand
 import com.ayata.clad.view_all.paging.BrandViewAllAdapter
 import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
@@ -38,7 +40,9 @@ class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener
     }
 
     private lateinit var binding: FragmentViewAllBrandBinding
-//    private lateinit var adapterViewAllBrand: AdapterViewAllBrand
+    private lateinit var mergeBinding: LayoutErrorPagingBinding
+
+    //    private lateinit var adapterViewAllBrand: AdapterViewAllBrand
     private var listBrand = ArrayList<Brand?>()
     private lateinit var viewModel: BrandAllViewModel
     private lateinit var adapterPaging: BrandViewAllAdapter
@@ -56,6 +60,8 @@ class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentViewAllBrandBinding.inflate(inflater, container, false)
+        mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
+
         initAppbar()
         initViewModel()
         initRecycler()
@@ -107,26 +113,36 @@ class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener
 
                 itemAnimator = null
                 setHasFixedSize(true)
-                adapter = adapterPaging
+                adapter = adapterPaging.withLoadStateHeaderAndFooter(
+                    header = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    },
+                    footer = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    }
+                )
+            }
+            mergeBinding.buttonRetry.setOnClickListener {
+                adapterPaging.retry()
             }
         }
         //load state
         adapterPaging.addLoadStateListener { loadState ->
             binding.apply {
-                defaultProgress.isVisible = loadState.source.refresh is LoadState.Loading
+                mergeBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                 recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
-//                textViewError.isVisible = loadState.source.refresh is LoadState.Error
-//                buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                mergeBinding.textViewError.isVisible = loadState.source.refresh is LoadState.Error
+                mergeBinding.buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
                 //for empty view
                 if (loadState.source.refresh is LoadState.NotLoading
                     && loadState.append.endOfPaginationReached
                     && adapterPaging.itemCount < 1
                 ) {
                     recyclerView.isVisible = false
-//                    textViewEmpty.isVisible = true
+                    mergeBinding.textViewEmpty.isVisible = true
 
                 } else {
-//                    textViewEmpty.isVisible = false
+                    mergeBinding.textViewEmpty.isVisible = false
                 }
 
             }
@@ -169,22 +185,22 @@ class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener
 //        })
 //    }
 
-    fun showProgress() {
-        isLoading = true
-        if (isFirstTime) {
-            binding.defaultProgress.visibility = View.VISIBLE
-        } else {
-            binding.loadMoreProgress.visibility = View.VISIBLE
-        }
-    }
-    fun hideProgress() {
-        isLoading = false
-        if (isFirstTime) {
-            binding.defaultProgress.visibility = View.GONE
-        } else {
-            binding.loadMoreProgress.visibility = View.GONE
-        }
-    }
+//    fun showProgress() {
+//        isLoading = true
+//        if (isFirstTime) {
+//            binding.defaultProgress.visibility = View.VISIBLE
+//        } else {
+//            binding.loadMoreProgress.visibility = View.VISIBLE
+//        }
+//    }
+//    fun hideProgress() {
+//        isLoading = false
+//        if (isFirstTime) {
+//            binding.defaultProgress.visibility = View.GONE
+//        } else {
+//            binding.loadMoreProgress.visibility = View.GONE
+//        }
+//    }
 
     private fun setUpEmptyView(message: String) {
 

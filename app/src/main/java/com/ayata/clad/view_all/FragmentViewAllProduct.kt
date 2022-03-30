@@ -21,11 +21,13 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentViewAllProductBinding
+import com.ayata.clad.databinding.LayoutErrorPagingBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProductLoadStateAdapter
 import com.ayata.clad.view_all.adapter.AdapterViewAllProduct2
 import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
 import com.ayata.clad.view_all.viewmodel.ProductAllViewModel
@@ -42,6 +44,8 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     }
 
     private lateinit var binding: FragmentViewAllProductBinding
+    private lateinit var mergeBinding: LayoutErrorPagingBinding
+
     private var listItem = ArrayList<ProductDetail?>()
     private lateinit var adapterRecycler: AdapterViewAllProduct2
     private lateinit var adapterPaging: ProductDetailViewAllAdapter
@@ -71,6 +75,8 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentViewAllProductBinding.inflate(inflater, container, false)
+        mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
+
         val bundle = arguments
         if (bundle != null) {
             title = bundle.getString(Constants.FILTER_HOME, "")
@@ -78,9 +84,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
         initAppbar()
         initRecycler()
         listItem.clear()
-//        getProductListAPI(title, true)
         getAllTest(title)
-//        initScrollListener()
 
 
         return binding.root
@@ -120,153 +124,63 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
                 itemAnimator = null
                 setHasFixedSize(true)
 //                adapter = unsplashAdapter
-                adapter = adapterPaging
+                adapter = adapterPaging.withLoadStateHeaderAndFooter(
+                    header = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    },
+                    footer = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    }
+                )
+            }
+            mergeBinding.buttonRetry.setOnClickListener {
+                adapterPaging.retry()
             }
         }
         //load state
         adapterPaging.addLoadStateListener { loadState ->
             binding.apply {
-                defaultProgress.isVisible = loadState.source.refresh is LoadState.Loading
+                mergeBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                 recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
-//                textViewError.isVisible = loadState.source.refresh is LoadState.Error
-//                buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                mergeBinding.textViewError.isVisible = loadState.source.refresh is LoadState.Error
+                mergeBinding.buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
                 //for empty view
                 if (loadState.source.refresh is LoadState.NotLoading
                     && loadState.append.endOfPaginationReached
                     && adapterPaging.itemCount < 1
                 ) {
                     recyclerView.isVisible = false
-//                    textViewEmpty.isVisible = true
+                    mergeBinding.textViewEmpty.isVisible = true
 
                 } else {
-//                    textViewEmpty.isVisible = false
+                    mergeBinding.textViewEmpty.isVisible = false
                 }
 
             }
         }
     }
 
-
-    private fun initScrollListener() {
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    isScrolling = true
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                Log.d(TAG, "onScrolled: ");
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val isNotLoadingAndIsNoLastPage = !isLoading && !isLastPage
-                val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
-                val isNotAtBeginning = firstVisibleItemPosition >= 0
-                val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE
-                val shouldPaginate =
-                    isNotLoadingAndIsNoLastPage && isAtLastItem && isNotAtBeginning && isTotalMoreThanVisible && isScrolling
-                if (shouldPaginate) {
-                    currentPage++;
-                    getProductListAPI(title, false)
-                    isScrolling = false
-                }
-            }
-        })
-    }
-
-    fun showProgress() {
-        isLoading = true
-        if (isFirstTime) {
-            binding.defaultProgress.visibility = View.VISIBLE
-        } else {
-            binding.loadMoreProgress.visibility = View.VISIBLE
-        }
-    }
-
-    fun hideProgress() {
-        isLoading = false
-        if (isFirstTime) {
-            binding.defaultProgress.visibility = View.GONE
-        } else {
-            binding.loadMoreProgress.visibility = View.GONE
-        }
-    }
+//    fun showProgress() {
+//        isLoading = true
+//        if (isFirstTime) {
+//            binding.defaultProgress.visibility = View.VISIBLE
+//        } else {
+//            binding.loadMoreProgress.visibility = View.VISIBLE
+//        }
+//    }
+//
+//    fun hideProgress() {
+//        isLoading = false
+//        if (isFirstTime) {
+//            binding.defaultProgress.visibility = View.GONE
+//        } else {
+//            binding.loadMoreProgress.visibility = View.GONE
+//        }
+//    }
 
     private fun setUpEmptyView(message: String) {
 
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-
-    private fun getProductListAPI(filter: String, firsttime: Boolean) {
-//    isFirstTime = firsttime
-//    viewModel.getProductListAPI().observe(viewLifecycleOwner, {
-//        when (it.status) {
-//            Status.SUCCESS -> {
-//                Log.d(TAG, "getProductListAPI: ${it.data}")
-//                val jsonObject = it.data
-//                if (jsonObject != null) {
-//                    try {
-//                        //object
-//                        try {
-//                            val message = jsonObject.get("message").asString
-//                            if (message.contains("Your product is empty.", true)) {
-//                                setUpEmptyView(message)
-//                            }
-//                        } catch (e: Exception) {
-//                            Log.d(TAG, "getWishListAPI:Error ${e.message}")
-//                            try {
-//                                val gson = Gson()
-//                                val type: Type =
-//                                    object : TypeToken<List<ProductDetail?>?>() {}.type
-//                                val productList: List<ProductDetail> =
-//                                    gson.fromJson(jsonObject.get("products"), type)
-//                                if (productList != null) {
-//                                    if (productList.size > 0) {
-//                                        if(isFirstTime){
-//                                            listItem.clear()
-//                                        }
-//                                        val oldCount = listItem.size
-//                                        binding.recyclerView.post {
-//                                            listItem.addAll(productList)
-//                                            adapterRecycler.updateList(
-//                                                listItem,
-//                                                oldCount,
-//                                                listItem.size
-//                                            )
-//                                        }
-//
-//                                    } else {
-//                                        setUpEmptyView("empty product")
-//                                    }
-//
-//                                }
-//                            } catch (e: Exception) {
-//                                setUpEmptyView(e.message.toString())
-//
-//                            }
-//                        }
-//                    } catch (e: Exception) {
-//                        Log.d(TAG, "getProductListAPI:Error ${e.message}")
-//                    }
-//                }
-//                hideProgress()
-//            }
-//            Status.LOADING -> {
-//                showProgress()
-//            }
-//            Status.ERROR -> {
-//                //Handle Error
-//                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-//                hideProgress()
-//            }
-//        }
-//    })
-//    viewModel.productListApi(filter, PreferenceHandler.getToken(requireContext())!!,currentPage)
     }
 
     private fun getAllTest(filter: String) {

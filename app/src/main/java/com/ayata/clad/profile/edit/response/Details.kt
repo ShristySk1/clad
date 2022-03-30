@@ -5,9 +5,10 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Details(
-    var dob: String,
+    var dob: String?=null,
     var email: String,
     @SerializedName("full_name")
     var fullName: String,
-    var gender: String
+    var gender: String?=null,
+    var phone:String?=null,
 ) : Serializable

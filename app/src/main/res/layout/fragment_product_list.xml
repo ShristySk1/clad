@@ -62,23 +62,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="15dp"/>
-    <com.github.ybq.android.spinkit.SpinKitView
-        android:id="@+id/defaultProgress"
-        style="@style/SpinKitView.Large.Circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerInParent="true"
-        android:visibility="visible"
-        app:SpinKit_Color="@color/colorRed" />
+<!--    <com.github.ybq.android.spinkit.SpinKitView-->
+<!--        android:id="@+id/defaultProgress"-->
+<!--        style="@style/SpinKitView.Large.Circle"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:visibility="visible"-->
+<!--        app:SpinKit_Color="@color/colorRed" />-->
 
-    <ProgressBar
-        android:id="@+id/loadMoreProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:indeterminate="true"
-        android:visibility="gone" />
+<!--    <ProgressBar-->
+<!--        android:id="@+id/loadMoreProgress"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:indeterminate="true"-->
+<!--        android:visibility="gone" />-->
+    <include layout="@layout/layout_error_paging" />
+
 
 
 </RelativeLayout>

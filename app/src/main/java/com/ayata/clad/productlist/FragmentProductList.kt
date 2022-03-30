@@ -28,6 +28,7 @@ import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.network.interceptor.EmptyException
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentProductListBinding
+import com.ayata.clad.databinding.LayoutErrorPagingBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.product.FragmentProductDetail
@@ -39,6 +40,7 @@ import com.ayata.clad.shop.response.ChildCategory
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProductLoadStateAdapter
 import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
 import com.google.gson.Gson
 import retrofit2.HttpException
@@ -48,6 +50,8 @@ import java.io.IOException
 class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickListener {
     private val TAG: String = "FragmentProductList"
     private lateinit var binding: FragmentProductListBinding
+    private lateinit var mergeBinding: LayoutErrorPagingBinding
+
     private lateinit var adapterProductList: AdapterProductList
     private var listProduct = ArrayList<ProductDetail>()
     private lateinit var adapterPaging: ProductDetailViewAllAdapter
@@ -72,6 +76,8 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProductListBinding.inflate(inflater, container, false)
+        mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
+
         setUpViewModel()
         setUpRecyclerProductList()
         getBundle()
@@ -163,43 +169,69 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
                 itemAnimator = null
                 setHasFixedSize(true)
 //                adapter = unsplashAdapter
-                adapter = adapterPaging
+                adapter = adapterPaging.withLoadStateHeaderAndFooter(
+                    header = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    },
+                    footer = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    }
+                )
+            }
+            mergeBinding.buttonRetry.setOnClickListener {
+                adapterPaging.retry()
             }
         }
         //load state
         adapterPaging.addLoadStateListener { loadState ->
             binding.apply {
-                defaultProgress.isVisible = loadState.source.refresh is LoadState.Loading
-                rvProductList.isVisible = loadState.source.refresh is LoadState.NotLoading
-//                textViewError.isVisible = loadState.source.refresh is LoadState.Error
-//                buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
-                //for empty view
-                if (loadState.source.refresh is LoadState.NotLoading
-                    && loadState.append.endOfPaginationReached
-                    && adapterPaging.itemCount < 1
-                ) {
-                    rvProductList.isVisible = false
-//                    textViewEmpty.isVisible = true
+//                defaultProgress.isVisible = loadState.source.refresh is LoadState.Loading
+//                rvProductList.isVisible = loadState.source.refresh is LoadState.NotLoading
+////                textViewError.isVisible = loadState.source.refresh is LoadState.Error
+////                buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+//                //for empty view
+//                if (loadState.source.refresh is LoadState.NotLoading
+//                    && loadState.append.endOfPaginationReached
+//                    && adapterPaging.itemCount < 1
+//                ) {
+//                    rvProductList.isVisible = false
+////                    textViewEmpty.isVisible = true
+//
+//                } else {
+////                    textViewEmpty.isVisible = false
+//                }
+//                //handle view according to error
+//                val errorState = when {
+//                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+//                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+//                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+//                    else -> null
+//                }
+//
+//                when (val throwable = errorState?.error) {
+//                    is EmptyException -> { setUpEmptyView() }
+//                    is HttpException -> {
+//                        if (throwable.code() == 401) { /* Handle HTTP 401 */ }
+//                        else { /* Do something else */ }
+//                    }
+//                    is IOException->{/* Handle IO exceptions */}
+//                }
+                    mergeBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                    rvProductList.isVisible = loadState.source.refresh is LoadState.NotLoading
+                    mergeBinding.textViewError.isVisible = loadState.source.refresh is LoadState.Error
+                    mergeBinding.buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                    //for empty view
+                    if (loadState.source.refresh is LoadState.NotLoading
+                        && loadState.append.endOfPaginationReached
+                        && adapterPaging.itemCount < 1
+                    ) {
+                        rvProductList.isVisible = false
+                        mergeBinding.textViewEmpty.isVisible = true
 
-                } else {
-//                    textViewEmpty.isVisible = false
-                }
-                //handle view according to error
-                val errorState = when {
-                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
-                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
-                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
-                    else -> null
-                }
-
-                when (val throwable = errorState?.error) {
-                    is EmptyException -> { setUpEmptyView() }
-                    is HttpException -> {
-                        if (throwable.code() == 401) { /* Handle HTTP 401 */ }
-                        else { /* Do something else */ }
+                    } else {
+                        mergeBinding.textViewEmpty.isVisible = false
                     }
-                    is IOException->{/* Handle IO exceptions */}
-                }
+
 
             }
         }
@@ -225,22 +257,22 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
             )
         }
     }
-    fun showProgress() {
-        isLoading = true
-        if (isFirstTime) {
-            binding.defaultProgress.visibility = View.VISIBLE
-        } else {
-            binding.loadMoreProgress.visibility = View.VISIBLE
-        }
-    }
-    fun hideProgress() {
-        isLoading = false
-        if (isFirstTime) {
-            binding.defaultProgress.visibility = View.GONE
-        } else {
-            binding.loadMoreProgress.visibility = View.GONE
-        }
-    }
+//    fun showProgress() {
+//        isLoading = true
+//        if (isFirstTime) {
+//            binding.defaultProgress.visibility = View.VISIBLE
+//        } else {
+//            binding.loadMoreProgress.visibility = View.VISIBLE
+//        }
+//    }
+//    fun hideProgress() {
+//        isLoading = false
+//        if (isFirstTime) {
+//            binding.defaultProgress.visibility = View.GONE
+//        } else {
+//            binding.loadMoreProgress.visibility = View.GONE
+//        }
+//    }
 
     override fun onItemClick(product: ProductDetail, position: Int) {
                         Log.d("testmyfilter", "setUpRecyclerRecommendation: $product")

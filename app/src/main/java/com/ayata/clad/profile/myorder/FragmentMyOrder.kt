@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +23,7 @@ import com.ayata.clad.profile.myorder.order.response.Order
 import com.ayata.clad.profile.myorder.order.response.OrderResponse
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModel
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModelFactory
+import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.gson.Gson
 
@@ -49,7 +51,9 @@ class FragmentMyOrder : Fragment() {
         viewModel.observeOrderResponse().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+//                    binding.spinKit.visibility = View.GONE
+                    hideProgress()
+                    hideError()
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -69,12 +73,15 @@ class FragmentMyOrder : Fragment() {
 
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    showProgress()
+//                    binding.spinKit.visibility = View.VISIBLE
 
                 }
                 Status.ERROR -> {
+                    hideProgress()
+                    showError(it.message.toString())
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+//                    binding.spinKit.visibility = View.GONE
                     if (it.message.equals("Unauthorized")) {
 
                     } else {
@@ -85,6 +92,33 @@ class FragmentMyOrder : Fragment() {
                 }
             }
         })
+    }
+    fun showProgress(){
+        binding.progressBar.rootContainer.visibility=View.VISIBLE
+
+    }
+    fun hideProgress(){
+        binding.progressBar.rootContainer.visibility=View.GONE
+    }
+    private fun showError(it: String) {
+        MyLayoutInflater().onAddField(
+            requireContext(),
+            binding.root,
+            R.layout.layout_error,
+            R.drawable.ic_cart,
+            "Error!",
+            it
+        )
+
+    }
+
+    private fun hideError() {
+        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+            MyLayoutInflater().onDelete(
+                binding.root,
+                binding.root.findViewById(R.id.layout_root)
+            )
+        }
     }
 
     private fun prepareOrder(detail: List<Detail>) {

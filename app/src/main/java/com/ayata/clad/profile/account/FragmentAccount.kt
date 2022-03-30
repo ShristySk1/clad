@@ -63,7 +63,7 @@ class FragmentAccount : Fragment() {
     }
 
     private fun initView() {
-        binding.btnLogOut.setOnClickListener {
+        binding.btnLogOut.setOnClickListener{
             //api logout
             PreferenceHandler.getToken(context)?.let { it1 -> loginViewModel.logout(it1) }
             loginViewModel.dologout().observe(viewLifecycleOwner, {
@@ -91,7 +91,6 @@ class FragmentAccount : Fragment() {
             })
 
         }
-
     }
 
     private val listAccount = ArrayList<ModelAccount>()

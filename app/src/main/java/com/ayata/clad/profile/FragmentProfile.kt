@@ -1,24 +1,21 @@
 package com.ayata.clad.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
-import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentProfileBinding
 import com.ayata.clad.profile.account.AccountViewModel
 import com.ayata.clad.profile.account.FragmentAccount
 import com.ayata.clad.profile.edit.response.Details
-import com.ayata.clad.profile.edit.response.UserProfileResponse
 import com.ayata.clad.profile.giftcard.FragmentGiftCard
 import com.ayata.clad.profile.myorder.FragmentMyOrder
 import com.ayata.clad.profile.viewmodel.ProfileViewModel
@@ -27,7 +24,7 @@ import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.gson.Gson
+
 
 class FragmentProfile : Fragment() {
 
@@ -72,10 +69,18 @@ class FragmentProfile : Fragment() {
     }
 
     private fun setProfile() {
-        binding.accName.text = PreferenceHandler.getUsername(requireContext())
-        binding.accEmail.text = PreferenceHandler.getEmail(requireContext())
+        val name=PreferenceHandler.getUsername(requireContext())
+        val email=PreferenceHandler.getEmail(requireContext())
+        binding.accName.text = name
+        binding.accEmail.text = email
+        if(PreferenceHandler.getToken(requireContext())!!.isEmpty()){
+            binding.accName.text = "Guest User"
+            binding.accEmail.text = ""
+        }
         Glide.with(requireContext()).asBitmap()
             .load(PreferenceHandler.getImageDecoded(requireContext()))
+            .fallback(R.drawable.ic_user)
+            .error(R.drawable.ic_user)
             .into(binding.ivProfileImage)
         val detail:Details=Details("",PreferenceHandler.getEmail(requireContext())?:"",PreferenceHandler.getUsername(requireContext())?:"","")
         accountiewModel.setAccountDetail(detail)
@@ -176,9 +181,12 @@ class FragmentProfile : Fragment() {
                 tab.text = titles[position]
                 if (position != 0) {
                     if (PreferenceHandler.getToken(requireContext()) != "") {
-                        tab.view.isEnabled = true
+                        tab.view.visibility = View.VISIBLE
+
                     } else {
-                        tab.view.isEnabled = false
+//                        tab.view.isEnabled = false
+                        tab.view.visibility = View.GONE
+
                     }
                 }
             }

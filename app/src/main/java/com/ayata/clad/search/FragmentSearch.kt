@@ -23,11 +23,14 @@ import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentSearchBinding
+import com.ayata.clad.databinding.LayoutErrorPagingBinding
+import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.search.adapter.AdapterRecentSearch
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProductLoadStateAdapter
 import com.ayata.clad.view_all.adapter.AdapterViewAllProduct
 import com.ayata.clad.view_all.model.ModelViewAllProduct
 import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
@@ -38,6 +41,8 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     AdapterRecentSearch.OnItemClickListener, ProductDetailViewAllAdapter.onItemClickListener {
 
     private lateinit var binding: FragmentSearchBinding
+    private lateinit var mergeBinding: LayoutErrorPagingBinding
+
     private var listItem = ArrayList<ModelViewAllProduct?>()
     private lateinit var adapterRecycler: AdapterViewAllProduct
 
@@ -61,6 +66,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false)
+         mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
 
         val bundle = arguments
         if (bundle != null) {
@@ -69,17 +75,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
         initAppbar()
         initRecycler()
         initViewModel()
-//        initScrollListener()
         initView()
-//        binding.etSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
-//            var handled = false
-//            if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                Log.d("testedittext", "onCreateView: ");
-//                getSearchProducts(binding.etSearch.text.toString())
-//                handled = true
-//            }
-//            handled
-//        })
         binding.etSearch.on(
             EditorInfo.IME_ACTION_SEARCH,
             { getSearchProducts(binding.etSearch.text.toString()) })
@@ -157,11 +153,6 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     }
 
     private fun initRecycler() {
-//        adapterRecycler= AdapterViewAllProduct(context,listItem,this)
-//        binding.recyclerView.apply {
-//            layoutManager=GridLayoutManager(context,2)
-//            adapter=adapterRecycler
-//        }
         adapterPaging = ProductDetailViewAllAdapter(this)
         binding.apply {
             recyclerView.apply {
@@ -169,27 +160,36 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
 
                 itemAnimator = null
                 setHasFixedSize(true)
-//                adapter = unsplashAdapter
-                adapter = adapterPaging
+                adapter = adapterPaging.withLoadStateHeaderAndFooter(
+                    header = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    },
+                    footer = ProductLoadStateAdapter {
+                        adapterPaging.retry()
+                    }
+                )
+            }
+           mergeBinding.buttonRetry.setOnClickListener {
+                adapterPaging.retry()
             }
         }
         //load state
         adapterPaging.addLoadStateListener { loadState ->
             binding.apply {
-//                defaultProgress.isVisible = loadState.source.refresh is LoadState.Loading
+                mergeBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                 recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
-//                textViewError.isVisible = loadState.source.refresh is LoadState.Error
-//                buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                mergeBinding.textViewError.isVisible = loadState.source.refresh is LoadState.Error
+                mergeBinding.buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
                 //for empty view
                 if (loadState.source.refresh is LoadState.NotLoading
                     && loadState.append.endOfPaginationReached
                     && adapterPaging.itemCount < 1
                 ) {
                     recyclerView.isVisible = false
-//                    textViewEmpty.isVisible = true
+                    mergeBinding.textViewEmpty.isVisible = true
 
                 } else {
-//                    textViewEmpty.isVisible = false
+                    mergeBinding.textViewEmpty.isVisible = false
                 }
 
             }
@@ -316,11 +316,17 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     }
 
     override fun onItemClick(product: ProductDetail, position: Int) {
-        TODO("Not yet implemented")
+        val bundle=Bundle()
+        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,product)
+        val fragmentProductDetail=FragmentProductDetail()
+        fragmentProductDetail.arguments=bundle
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment, fragmentProductDetail)
+            .addToBackStack(null).commit()
     }
 
     override fun onWishListClick(product: ProductDetail, position: Int) {
-        TODO("Not yet implemented")
+
     }
 
 }

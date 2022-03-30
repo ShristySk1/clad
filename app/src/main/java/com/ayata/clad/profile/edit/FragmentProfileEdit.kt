@@ -56,17 +56,15 @@ class FragmentProfileEdit : Fragment() {
             )
                 .get(ProfileViewModel::class.java)
 
-
         // init ViewModel
         accountViewmodel =
             ViewModelProviders.of(requireActivity()).get(AccountViewModel::class.java)
-
     }
-
     private fun setDataToView(detail: Details) {
         binding.textInputName.editText?.setText(detail.fullName)
         binding.textInputEmail.editText?.setText(detail.email)
         binding.textInputDOB.editText?.setText(detail.dob)
+        binding.textInputPhone.editText?.setText(detail.phone)
         when (detail.gender) {
             "M" -> {
                 binding.radioGroupGender.check(R.id.rb_male)
@@ -78,8 +76,6 @@ class FragmentProfileEdit : Fragment() {
                 binding.radioGroupGender.check(R.id.rb_other)
             }
         }
-
-
     }
 
     private fun initAppbar() {
@@ -133,8 +129,9 @@ class FragmentProfileEdit : Fragment() {
             val v_email = validateEmail()
             val v_name = validateTextField(binding.textInputName, "Name")
             val v_dob = validateTextField(binding.textInputDOB, "DOB")
+            val v_phone=validateTextField(binding.textInputPhone,"Contact Number")
 //            val v_gender = validateRadioButton()
-            if (v_email && v_dob && v_dob && v_name) {
+            if (v_email && v_dob && v_dob && v_name&&v_phone) {
                 saveToServer()
             }
 
@@ -149,7 +146,8 @@ class FragmentProfileEdit : Fragment() {
     private fun saveToServer() {
         val name = binding.textInputName.editText!!.text.toString().trim { it <= ' ' }
         val dob = binding.textInputDOB.editText!!.text.toString().trim { it <= ' ' }
-        val myViewData = Details(dob = dob, email, fullName = name, gender = gender)
+        val phone = binding.textInputPhone.editText!!.text.toString().trim { it <= ' ' }
+        val myViewData = Details(dob = dob, email, fullName = name, gender = gender,phone = phone)
         viewModel.profileDetailUpdateAPI(PreferenceHandler.getToken(context)!!, myViewData)
         viewModel.postProfileAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -189,7 +187,10 @@ class FragmentProfileEdit : Fragment() {
         return if (data.isEmpty() or (data == " ")) {
             textField.error = "$dataTitle field can't be empty"
             false
-        } else {
+        } else if (dataTitle.equals("Contact Number")&&data.length <10){
+            textField.error = "Invalid $dataTitle"
+            false
+        }else{
             textField.error = null
             true
         }
@@ -229,8 +230,10 @@ class FragmentProfileEdit : Fragment() {
 //            }
 //
 //        }
+        binding.spinKit.visibility=View.VISIBLE
         accountViewmodel.getAccountDetails().observe(viewLifecycleOwner, {
             setDataToView(it)
+            binding.spinKit.visibility=View.GONE
         })
 
 

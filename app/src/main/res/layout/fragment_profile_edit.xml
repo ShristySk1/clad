@@ -96,6 +96,41 @@
                         android:textColor="@color/colorBlack"
                         android:hint="Enter Your DOB"/>
                 </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/text4"
+                    android:layout_marginTop="@dimen/pe_margin3"
+                    android:layout_marginHorizontal="@dimen/pe_margin1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="contact number"
+                    android:textSize="@dimen/pe_text2"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputPhone"
+                    android:layout_marginTop="5dp"
+                    app:hintEnabled="false"
+                    app:hintAnimationEnabled="false"
+                    android:layout_marginHorizontal="@dimen/pe_margin2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textEditPhone"
+                        android:layout_width="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:focusableInTouchMode="false"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:paddingVertical="10dp"
+                        android:textSize="@dimen/pe_text1"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/colorBlack"
+                        android:hint="Enter Your Contact Number"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/text3"
