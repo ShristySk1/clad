@@ -14,6 +14,7 @@ import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.model.ModelMostPopular
 import com.ayata.clad.home.model.ModelPopularBrands
+import com.ayata.clad.profile.giftcard.response.Coupon
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -22,7 +23,7 @@ import com.bumptech.glide.request.target.Target
 import com.mikhaellopez.circularimageview.CircularImageView
 
 internal class AdapterGiftCard(private var context:Context?,
-                               private var listItems:List<ModelGiftCard>,
+                               private var listItems:List<Coupon>,
                                private val onItemClickListener: OnItemClickListener)
     :RecyclerView.Adapter<AdapterGiftCard.MyViewHolder>(){
 
@@ -40,7 +41,7 @@ internal class AdapterGiftCard(private var context:Context?,
 
        fun clickView(){
            itemView.setOnClickListener {
-               onItemClickListener.onMostPopularClicked(listItems[adapterPosition],adapterPosition)
+               onItemClickListener.onGiftCardClick(listItems[adapterPosition],adapterPosition)
            }
        }
 
@@ -50,7 +51,7 @@ internal class AdapterGiftCard(private var context:Context?,
         val item=listItems[position]
         holder.title.text=item.title
         holder.description.text=item.description
-        holder.valid.text=item.valid
+        holder.valid.text="Valid until "+item.validTo
         holder.code.text=item.code
 
         holder.clickView()
@@ -61,7 +62,7 @@ internal class AdapterGiftCard(private var context:Context?,
     }
 
     interface OnItemClickListener{
-        fun onMostPopularClicked(data: ModelGiftCard, position:Int)
+        fun onGiftCardClick(data: Coupon, position:Int)
     }
 
 }

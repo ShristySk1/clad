@@ -52,7 +52,7 @@ class ProductListViewModel constructor(private val mainRepository: ApiRepository
         Log.d("initcalled", ": calledinit ");
     }
     private val categoryProductResponse = MutableLiveData<Resource<JsonObject>>()
-    fun categoryProductListAPI(categoryId: Int) {
+    fun categoryProductListAPI(categoryId: String) {
         if (shouldFetchAgain) {
         categoryProductResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -79,12 +79,12 @@ class ProductListViewModel constructor(private val mainRepository: ApiRepository
         mainRepository.searchProductListFromCategory(categoryId).cachedIn(viewModelScope)
     }
     //productlist
-    fun searchProductListFromCategory(categoryId: Int) {
-        currentQuery.value = categoryId
+    fun searchProductListFromCategory(category_slug: String) {
+        currentQuery.value = category_slug
     }
     companion object {
         private const val CURRENT_QUERY =1
-        private const val DEFAULT_QUERY = 0
+        private const val DEFAULT_QUERY = ""
     }
 
     fun getCategoryProductListAPI(): LiveData<Resource<JsonObject>> {

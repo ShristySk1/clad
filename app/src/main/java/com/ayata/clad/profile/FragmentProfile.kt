@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -69,21 +68,31 @@ class FragmentProfile : Fragment() {
     }
 
     private fun setProfile() {
-        val name=PreferenceHandler.getUsername(requireContext())
-        val email=PreferenceHandler.getEmail(requireContext())
+        val name = PreferenceHandler.getUsername(requireContext())
+        val email = PreferenceHandler.getEmail(requireContext())
         binding.accName.text = name
         binding.accEmail.text = email
-        if(PreferenceHandler.getToken(requireContext())!!.isEmpty()){
+        if (PreferenceHandler.getToken(requireContext())!!.isEmpty()) {
             binding.accName.text = "Guest User"
-            binding.accEmail.text = ""
+            binding.accEmail.text = "xxx xxx"
+            val initials = binding.accName.text
+                .split(' ')
+                .mapNotNull { it.firstOrNull()?.toString() }
+                .reduce { acc, s -> acc + s }
+            binding.profileNamePlaceholder.text = initials
+
         }
         Glide.with(requireContext()).asBitmap()
             .load(PreferenceHandler.getImageDecoded(requireContext()))
-            .fallback(R.drawable.ic_user)
-            .error(R.drawable.ic_user)
             .into(binding.ivProfileImage)
-        val detail:Details=Details("",PreferenceHandler.getEmail(requireContext())?:"",PreferenceHandler.getUsername(requireContext())?:"","")
-        accountiewModel.setAccountDetail(detail)
+//        val detail: Details = Details(
+//            PreferenceHandler.getDOB(requireContext()),
+//            PreferenceHandler.getEmail(requireContext()) ?: "",
+//            PreferenceHandler.getUsername(requireContext()) ?: "",
+//            PreferenceHandler.getGender(requireContext()),
+//            PreferenceHandler.getPhone(requireContext())
+//        )
+//        accountiewModel.setAccountDetail(detail)
     }
 
 //    private fun setPreviousData() {

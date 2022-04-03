@@ -58,18 +58,24 @@ class AddressViewModel constructor(private val mainRepository: ApiRepository) : 
     fun getShippingAddress(token: String) {
         getShippingAddressResposne.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getShippingAddress(token)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("phoneResponse", "login: " + response.body().toString())
-                    getShippingAddressResposne.postValue(Resource.success(response.body() as ShippingAddressResponse))
-                    loading.value = false
-                } else {
-                    Log.e("phoneResponse", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    getShippingAddressResposne.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.getShippingAddress(token)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("phoneResponse", "login: " + response.body().toString())
+                        getShippingAddressResposne.postValue(Resource.success(response.body() as ShippingAddressResponse))
+                        loading.value = false
+                    } else {
+                        Log.e("phoneResponse", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        getShippingAddressResposne.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                getShippingAddressResposne.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
 
     }
@@ -108,18 +114,23 @@ class AddressViewModel constructor(private val mainRepository: ApiRepository) : 
     fun getUserAddress(token: String) {
         getUserAddressResposne.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getAddress(token)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("phoneResponse", "login: " + response.body().toString())
-                    getUserAddressResposne.postValue(Resource.success(response.body() as ShippingAddressResponse))
-                    loading.value = false
-                } else {
-                    Log.e("phoneResponse", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    getUserAddressResposne.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.getAddress(token)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("phoneResponse", "login: " + response.body().toString())
+                        getUserAddressResposne.postValue(Resource.success(response.body() as ShippingAddressResponse))
+                        loading.value = false
+                    } else {
+                        Log.e("phoneResponse", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        getUserAddressResposne.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                getUserAddressResposne.postValue(Resource.error(e.message.toString(), null))
             }
+
         }
 
     }

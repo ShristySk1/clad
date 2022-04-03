@@ -113,16 +113,13 @@ private lateinit var progressDialog: ProgressDialog
                         it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("last_name")
                             .toString()
                     //contact_number
-                    val contact_number =
-                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("contact_number")
-                            .toString()
+                    val contact_number:String? =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("phone_no")?.toString()
                     //dob
-                    val dob =
-                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("dob")
-                            .toString()
-                    val gender =
-                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("gender")
-                            .toString()
+                    val dob:String? =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("dob")?.toString()
+                    val gender :String?=
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("gender")?.toString()
 
                     val token = it.data?.get("details")?.asJsonObject?.get("token").toString()
                     saveUserCredential(currentUser,firstname.removeDoubleQuote(),
@@ -142,7 +139,7 @@ private lateinit var progressDialog: ProgressDialog
         })
     }
     //remove
-    fun String.removeDoubleQuote()= this.replace("\"", "")
+    fun String.removeDoubleQuote()= this?.let { this.replace("\"", "")}
 
 
 

@@ -60,7 +60,6 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
     private var appBarDesc: String = "";
     private var appBarCount:Int=0
 
-
     //paging
     val QUERY_PAGE = 16
     var isLoading = false
@@ -94,7 +93,7 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
             appBarCount=child.product_count
             appBarDesc = requireArguments().getString(FragmentSubCategory.CATEGORY_TITLE, "")
 //            getCategoryProductListAPI(child.id,true)
-            getAllTest(child.id)
+            getAllTest(child.slug)
 
         }
     }
@@ -237,8 +236,8 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
         }
 
     }
-    private fun getAllTest(categoryId: Int) {
-        viewModel.searchProductListFromCategory(categoryId)
+    private fun getAllTest(category_slug: String) {
+        viewModel.searchProductListFromCategory(category_slug)
         viewModel.productList.observe(viewLifecycleOwner, {
             adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
         })

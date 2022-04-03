@@ -101,7 +101,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
         (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar1(
-            title,
+            title.replace("_"," "),
             isSearch = true,
             isProfile = false,
             isClose = false,

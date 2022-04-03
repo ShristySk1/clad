@@ -108,7 +108,7 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         apiCategoryList = categoryist;
         listCategory.clear()
         for (c in categoryist) {
-            listCategory.add(c.category)
+            listCategory.add(c.title)
         }
         val tabLayout = binding.tabLayout
         tabLayout.removeAllTabs()
@@ -267,7 +267,7 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         shopRecyclerList.clear()
 
         val getSpecificCat = apiCategoryList.filter {
-            it.category.toLowerCase() == category.toLowerCase()
+            it.title.toLowerCase() == category.toLowerCase()
         }.single()
         val listSpecificSubCat = getSpecificCat.subCategory
         if (listSpecificSubCat.size == 0) {

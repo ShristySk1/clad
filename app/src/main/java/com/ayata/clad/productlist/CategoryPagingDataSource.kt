@@ -13,13 +13,13 @@ import java.io.IOException
 import java.lang.Exception
 import java.lang.reflect.Type
 
-class CategoryPagingDataSource(private val caategoryId: Int, private val api: ApiService) :
+class CategoryPagingDataSource(private val category_slug: String, private val api: ApiService) :
     PagingSource<Int, ProductDetail>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductDetail> {
         val position = params.key ?: 1
         return try {
             Log.d("calledme", "load: ");
-            val response = api.categoryProductListAPI(caategoryId, position)
+            val response = api.categoryProductListAPI(category_slug, position)
             try {
                 val gson = Gson()
                 val type: Type =

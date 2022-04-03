@@ -13,5 +13,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="20dp"/>
-
+<include android:id="@+id/progress_bar" layout="@layout/layout_progress"/>
 </FrameLayout>

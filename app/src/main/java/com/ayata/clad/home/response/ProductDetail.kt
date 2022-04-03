@@ -1,6 +1,7 @@
 package com.ayata.clad.home.response
 
 
+import com.ayata.clad.profile.giftcard.response.Coupon
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 

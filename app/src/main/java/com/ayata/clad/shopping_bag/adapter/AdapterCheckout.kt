@@ -220,7 +220,6 @@ internal class AdapterCheckout(
     fun getCartId(position: Int): Int {
         return listItems.get(position).cartId
     }
-
     interface OnItemClickListener {
         fun onSizeClicked(data: ModelCheckout, position: Int)
         fun onQuantityClicked(data: ModelCheckout, position: Int)

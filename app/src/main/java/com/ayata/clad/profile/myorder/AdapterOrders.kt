@@ -115,7 +115,8 @@ class AdapterOrders(val context: Context, data: List<ModelOrder>) :
                     binding.description.text =
                         "${order.products.variant.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${order.products.variant.color} / Qty: ${quantity}"
                     binding.orderStatus.text =
-                        order.orderStatus[order.orderStatus.size - 1].status + ""
+                        order.orderStatus.filter { it.is_active ==true }.single().status
+                            .toString()
                 }
             }
         }

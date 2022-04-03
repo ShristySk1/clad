@@ -482,7 +482,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     private fun initButtonClick() {
         binding.justDroppedViewBtn.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString(Constants.FILTER_HOME, "Just Dropped")
+            bundle.putString(Constants.FILTER_HOME, "just_dropped")
             val fragmentViewAllProduct = FragmentViewAllProduct()
             fragmentViewAllProduct.arguments = bundle
             parentFragmentManager.beginTransaction()
@@ -492,7 +492,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
         binding.mostPopularViewBtn.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString(Constants.FILTER_HOME, "Most Popular")
+            bundle.putString(Constants.FILTER_HOME, "most_popular")
             val fragmentViewAllProduct = FragmentViewAllProduct()
             fragmentViewAllProduct.arguments = bundle
             parentFragmentManager.beginTransaction()
@@ -501,7 +501,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
         }
         binding.popularViewBtn.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString(Constants.FILTER_HOME, "Popular This Month")
+            bundle.putString(Constants.FILTER_HOME, "popular_this_month")
             val fragmentViewAllProduct = FragmentViewAllProduct()
             fragmentViewAllProduct.arguments = bundle
             parentFragmentManager.beginTransaction()
@@ -510,7 +510,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
         }
         binding.recommendedViewBtn.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString(Constants.FILTER_HOME, "Recommended")
+            bundle.putString(Constants.FILTER_HOME, "recommended")
             val fragmentViewAllProduct = FragmentViewAllProduct()
             fragmentViewAllProduct.arguments = bundle
             parentFragmentManager.beginTransaction()

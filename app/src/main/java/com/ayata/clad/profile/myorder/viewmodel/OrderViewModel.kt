@@ -26,19 +26,25 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
     private val loading = MutableLiveData<Boolean>()
     fun getOrderApi(token: String) {
         orderResponse.postValue(Resource.loading(null))
+
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getOrder("$token")
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("profileDetailAPI", "success: " + response.body())
-                    orderResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("profileDetailAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    orderResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.getOrder("$token")
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        orderResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        orderResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                orderResponse.postValue(Resource.error(e.message.toString(), null))
             }
+
         }
 
     }

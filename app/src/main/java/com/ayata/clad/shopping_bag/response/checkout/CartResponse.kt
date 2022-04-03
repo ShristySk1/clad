@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class CartResponse(
+    @SerializedName("message")
+    val message:String?=null,
     @SerializedName("cart")
     val cart: List<Cart>,
     @SerializedName("cart_subtotal_dollar")

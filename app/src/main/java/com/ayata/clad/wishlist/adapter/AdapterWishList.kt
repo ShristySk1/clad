@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
@@ -65,6 +66,8 @@ class AdapterWishList(
                 //usd
                 binding.price.text = "${context!!.getString(R.string.usd)} ${item.selected.vDollarTotal}"
             }
+           val varient= item.product.variants.filter { item.selected.variantId==it.variantId }.single()
+            if(varient.isInCart){setCart(binding.imageView4)}
 
             binding.image.setOnClickListener {
                 itemProductClick?.let { function ->
@@ -94,7 +97,11 @@ class AdapterWishList(
 
         }
     }
+    private fun setCart(image: ImageView) {
+        //from api
+            image.setImageResource(R.drawable.ic_bag_filled)
 
+    }
     // inside the onCreateViewHolder inflate the view of SingleItemBinding
     // and return new ViewHolder object containing this layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

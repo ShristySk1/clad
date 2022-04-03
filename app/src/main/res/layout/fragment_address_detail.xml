@@ -5,15 +5,16 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".profile.address.FragmentAddressDetail">
-    <com.github.ybq.android.spinkit.SpinKitView
-        android:id="@+id/spin_kit"
-        style="@style/SpinKitView.Large.Circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:SpinKit_Color="@color/colorRed" />
+<!--    <com.github.ybq.android.spinkit.SpinKitView-->
+<!--        android:id="@+id/spin_kit"-->
+<!--        style="@style/SpinKitView.Large.Circle"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:visibility="gone"-->
+<!--        app:SpinKit_Color="@color/colorRed" />-->
+    <include android:id="@+id/progress_bar" android:visibility="gone" layout="@layout/dialog_progress"/>
     <TextView
         android:id="@+id/title"
         android:layout_marginTop="15dp"
@@ -23,7 +24,7 @@
         android:layout_marginStart="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SHIPPING ADDRESS"
+        android:text="USER ADDRESS"
         android:paddingVertical="5dp"
         android:textSize="15sp"
         android:textColor="@color/colorBlack"
@@ -37,6 +38,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginHorizontal="10dp"
         android:padding="5dp"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add new"
@@ -53,6 +55,7 @@
     <LinearLayout
         android:id="@+id/ll_add_address"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
 style="@style/CustomSelectableItemBackground"
         android:layout_below="@id/recyclerView"

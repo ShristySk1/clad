@@ -71,9 +71,9 @@ interface ApiService {
     @GET("category-list/")
     suspend fun categoryListAPI(): Response<JsonObject>
 
-    @GET("category-products/")
+    @GET("products/all/")
     suspend fun categoryProductListAPI(
-        @Query("category_id") categoryId: Int,
+        @Query("title") category_slug: String,
         @Query("page") page: Int
     ): Response<JsonObject>
 
@@ -242,6 +242,19 @@ interface ApiService {
     suspend fun cancelOrder(
         @Header("Authorization") token: String,
         @Field("order_id") orderId:Int
+    ): Response<JsonObject>
+
+    //coupons
+    @GET("coupons/")
+    suspend fun coupons(
+        @Header("Authorization") token: String
+    ): Response<JsonObject>
+    //apply coupons
+    @POST("apply-coupon/")
+    @FormUrlEncoded
+    suspend fun applyCoupon(
+        @Header("Authorization") token: String,
+        @Field("coupon_code") code:String
     ): Response<JsonObject>
 
 }

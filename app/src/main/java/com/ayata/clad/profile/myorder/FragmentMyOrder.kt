@@ -40,14 +40,18 @@ class FragmentMyOrder : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentMyorderBinding.inflate(inflater, container, false)
-        setUpViewModel()
+
         setUpRecyclerView()
         getOrderApi()
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
+    }
+
     private fun getOrderApi() {
-        viewModel.getOrderApi(PreferenceHandler.getToken(context)!!)
         viewModel.observeOrderResponse().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -148,6 +152,7 @@ class FragmentMyOrder : Fragment() {
             this,
             OrderViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[OrderViewModel::class.java]
+        viewModel.getOrderApi(PreferenceHandler.getToken(context)!!)
     }
 
     private fun setUpRecyclerView() {

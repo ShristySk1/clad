@@ -1,5 +1,6 @@
 package com.ayata.clad.product
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
@@ -10,7 +11,9 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +28,7 @@ import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentProductDetailBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.adapter.AdapterRecommended
+import com.ayata.clad.home.response.Content
 import com.ayata.clad.home.response.HomeResponse
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.response.Variant
@@ -514,6 +518,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         v.dollarPrice.toString()
                     )
                 )
+
             } else {
                 //disable size layout
                 dynamicVarientId = productDetail.variants[0].variantId
@@ -524,9 +529,10 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        Log.d("sizechecked", "prepareListSize: 1"+listText.get(0));
 
         binding.detail2.rvSize.post {
-
             binding.detail2.rvSize.findViewHolderForAdapterPosition(0)?.itemView?.performClick();
             Log.d("sizechecked", "prepareListSize: 2" + listText);
+            setStockStatus(filteredVariants[0].quantity,1,binding.stock)
+
         }
 
 
@@ -737,5 +743,27 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             setCart(isProductInCart)
         }
     }
+    fun setStockStatus(stock:Int,myQuantity:Int,tv_stock:TextView,STOCKLIMIT:Int=6): String {
+        var textToDisplay = ""
+        if (myQuantity >= stock) {
+            textToDisplay = "Out of Stock"
+            changeColor(tv_stock, R.color.colorRedDark, R.color.white,requireContext())
+        } else if (myQuantity < stock) {
+            if ((stock - myQuantity) < STOCKLIMIT) {
+                changeColor(tv_stock, R.color.colorYellowDark, R.color.white,requireContext())
+                textToDisplay = "${stock - myQuantity} item(s) remaining"
+            } else {
+                textToDisplay = "In stock"
+                changeColor(tv_stock, R.color.colorGreenDark, R.color.white,requireContext())
+            }
+
+        }
+        return textToDisplay
+    }
+    private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int,context: Context) {
+        stock.setTextColor(ContextCompat.getColor(context, colorDark));
+        stock.background.setTint(ContextCompat.getColor(context, colorLight));
+    }
+
 
 }

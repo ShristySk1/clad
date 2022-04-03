@@ -10,5 +10,5 @@ data class Details(
     @SerializedName("full_name")
     var fullName: String,
     var gender: String?=null,
-    var phone:String?=null,
+    var phone_no:String?=null,
 ) : Serializable

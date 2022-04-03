@@ -66,7 +66,7 @@ class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener
         initViewModel()
         initRecycler()
         listBrand.clear()
-        getAllTest("Brand")
+        getAllTest("brand")
 //        getBrandListAPI(true)
 //
 //        initScrollListener()

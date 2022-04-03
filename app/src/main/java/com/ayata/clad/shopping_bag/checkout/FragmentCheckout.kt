@@ -84,57 +84,23 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         setMinusObserver()
         setSelectObserver()
         setRemoveObserver()
+        setApplyCouponObserver()
 
         return binding.root
     }
 
-    private fun setRemoveObserver() {
-        viewModel.getRemoveFromCartAPI().observe(viewLifecycleOwner, {
+    private fun setApplyCouponObserver() {
+        binding.btnApplyCoupon.setOnClickListener {
+            if(binding.etCoupon.text.toString().trim().isNotEmpty())
+            viewModel.applyCouponAPI(PreferenceHandler.getToken(context).toString(), binding.etCoupon.text.toString())
+            else
+                Toast.makeText(context, "Empty coupon", Toast.LENGTH_LONG).show()
+
+        }
+        viewModel.getApplyCouponResponseAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
-                    Log.d(TAG, "removeWishListAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        try {
-                            val message = jsonObject.get("message").asString
-                            Log.d(TAG, "setRemoveObserver: " + message);
-                            if (message.contains("removed", true)) {
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                                updateCartAtPosition(updatePosition)
-                            } else {
-                                val checkoutResponse =
-                                    Gson().fromJson<CartResponse>(
-                                        jsonObject,
-                                        CartResponse::class.java
-                                    )
-                                listContainingGrandtotal = checkoutResponse
-                            }
-                        } catch (e: Exception) {
-                            Log.d(TAG, "getCartAPI:Error ${e.message}")
-
-                        }
-                    }
-                }
-                Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
-                }
-                Status.ERROR -> {
-//                    binding.spinKit.visibility = View.GONE
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
-                }
-            }
-        })
-    }
-
-    private fun setSelectObserver() {
-        viewModel.getSelectCartAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-//                    binding.spinKit.select = View.GONE
-                    Log.d(TAG, "selectobserver: ${it.data}")
+                    Log.d(TAG, "getCartAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -143,60 +109,208 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                     jsonObject,
                                     CartResponse::class.java
                                 )
-                            val cartArray = checkoutResponse.cart
-                            val p_npr = checkoutResponse.cartTotalNpr
-                            val p_dollar = checkoutResponse.cartTotalDollar
+                            if (checkoutResponse.message != null) {
+                                listContainingGrandtotal = checkoutResponse
+                               updateTotals(checkoutResponse)
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "getWishListAPI:Error2 ${e.message}")
+                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                        }
+                }
+                adapterCheckout.notifyDataSetChanged()
+            }
+            Status.LOADING -> {
+        }
+            Status.ERROR -> {
+            //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+        }
+        }
+    })
+}
+
+    private fun updateTotals(checkoutResponse: CartResponse?) {
+        binding.totalPrice.text =
+            if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
+                "${getString(R.string.rs)} ${checkoutResponse?.cartTotalNpr}"
+            } else {
+                "${getString(R.string.usd)} ${checkoutResponse?.cartTotalDollar}"
+            }
+
+    }
+
+    private fun setRemoveObserver() {
+    viewModel.getRemoveFromCartAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+//                    binding.spinKit.visibility = View.GONE
+                Log.d(TAG, "removeWishListAPI: ${it.data}")
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        val message = jsonObject.get("message").asString
+                        Log.d(TAG, "setRemoveObserver: " + message);
+                        if (message.contains("removed", true)) {
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            updateCartAtPosition(updatePosition)
+                        } else {
+                            val checkoutResponse =
+                                Gson().fromJson<CartResponse>(
+                                    jsonObject,
+                                    CartResponse::class.java
+                                )
                             listContainingGrandtotal = checkoutResponse
-                            if (cartArray != null) {
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "getCartAPI:Error ${e.message}")
+
+                    }
+                }
+            }
+            Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+            }
+            Status.ERROR -> {
+//                    binding.spinKit.visibility = View.GONE
+                //Handle Error
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+            }
+        }
+    })
+}
+
+private fun setSelectObserver() {
+    viewModel.getSelectCartAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+//                    binding.spinKit.select = View.GONE
+                Log.d(TAG, "selectobserver: ${it.data}")
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        val checkoutResponse =
+                            Gson().fromJson<CartResponse>(
+                                jsonObject,
+                                CartResponse::class.java
+                            )
+                        val cartArray = checkoutResponse.cart
+                        val p_npr = checkoutResponse.cartTotalNpr
+                        val p_dollar = checkoutResponse.cartTotalDollar
+                        listContainingGrandtotal = checkoutResponse
+                        if (cartArray != null) {
 //                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
 
-                                //update cart
-                                updateCartAtPosition(
-                                    cartArray[0].selected,
-                                    cartArray[0].is_selected,
-                                    updatePosition,
-                                    p_npr,
-                                    p_dollar
-                                )
+                            //update cart
+                            updateCartAtPosition(
+                                cartArray[0].selected,
+                                cartArray[0].is_selected,
+                                updatePosition,
+                                p_npr,
+                                p_dollar
+                            )
 
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "getCartAPI:Error ${e.message}")
+                        try {
+                            val message = jsonObject.get("message").asString
+                            if (message.contains("empty.", true)) {
+
+                                setUpView()
+                            } else {
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                             }
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
-                            try {
-                                val message = jsonObject.get("message").asString
-                                if (message.contains("empty.", true)) {
-
-                                    setUpView()
-                                } else {
-                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                                }
-                            } catch (e: Exception) {
-                                Log.d(TAG, "getCartAPI:Error ${e.message}")
-                            }
                         }
                     }
+                }
 
-                }
-                Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
-                }
-                Status.ERROR -> {
-//                    binding.spinKit.visibility = View.GONE
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
-                }
             }
-        })
-    }
+            Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+            }
+            Status.ERROR -> {
+//                    binding.spinKit.visibility = View.GONE
+                //Handle Error
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+            }
+        }
+    })
+}
 
-    private fun setMinusObserver() {
+private fun setMinusObserver() {
 
-        viewModel.getMinusFromCartAPI().observe(viewLifecycleOwner, {
+    viewModel.getMinusFromCartAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+//                    binding.spinKit.visibility = View.GONE
+                Log.d(TAG, "removeWishListAPI: ${it.data}")
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        val checkoutResponse =
+                            Gson().fromJson<CartResponse>(
+                                jsonObject,
+                                CartResponse::class.java
+                            )
+                        val cartArray = checkoutResponse.cart
+                        val p_npr = checkoutResponse.cartTotalNpr
+                        val p_dollar = checkoutResponse.cartTotalDollar
+                        listContainingGrandtotal = checkoutResponse
+                        if (cartArray != null) {
+                            //update cart
+                            updateCartAtPosition(
+                                cartArray[0].selected,
+                                cartArray[0].is_selected,
+                                updatePosition,
+                                p_npr,
+                                p_dollar
+                            )
+                        }
+
+
+                    } catch (e: Exception) {
+                        Log.d(TAG, "getCartAPI:Error ${e.message}")
+                        try {
+                            val message = jsonObject.get("message").asString
+                            if (message.contains("empty.", true)) {
+
+                                setUpView()
+                            } else {
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "getCartAPI:Error ${e.message}")
+
+                        }
+                    }
+                }
+
+            }
+            Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+            }
+            Status.ERROR -> {
+//                    binding.spinKit.visibility = View.GONE
+                //Handle Error
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+            }
+        }
+    })
+}
+
+private fun setAddObserver() {
+    viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
+        if (it != null) {
+            Log.d("testmystatus", "addToCartAPI: " + it.status);
             when (it.status) {
                 Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
-                    Log.d(TAG, "removeWishListAPI: ${it.data}")
+                    Log.d("testsuccess", "addToCartAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -209,18 +323,14 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             val p_npr = checkoutResponse.cartTotalNpr
                             val p_dollar = checkoutResponse.cartTotalDollar
                             listContainingGrandtotal = checkoutResponse
-                            if (cartArray != null) {
-                                //update cart
-                                updateCartAtPosition(
-                                    cartArray[0].selected,
-                                    cartArray[0].is_selected,
-                                    updatePosition,
-                                    p_npr,
-                                    p_dollar
-                                )
-                            }
+                            //update cart
+                            Log.d("imhere", "addToCartAPI: ");
 
-
+                            updateCartAtPosition(
+                                cartArray[0].selected,
+                                cartArray[0].is_selected,
+                                updatePosition, p_npr, p_dollar
+                            )
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
                             try {
@@ -234,109 +344,51 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             } catch (e: Exception) {
                                 Log.d(TAG, "getCartAPI:Error ${e.message}")
 
+
                             }
+
                         }
                     }
 
                 }
+//                    binding.spinKit.visibility=View.GONE
+
+
                 Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
+//                    binding.spinKit.visibility=View.VISIBLE
                 }
                 Status.ERROR -> {
-//                    binding.spinKit.visibility = View.GONE
                     //Handle Error
+//                    binding.spinKit.visibility=View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
                 }
             }
-        })
-    }
+        }
+    })
+}
 
-    private fun setAddObserver() {
-        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
-            if (it != null) {
-                Log.d("testmystatus", "addToCartAPI: " + it.status);
-                when (it.status) {
-                    Status.SUCCESS -> {
-                        Log.d("testsuccess", "addToCartAPI: ${it.data}")
-                        val jsonObject = it.data
-                        if (jsonObject != null) {
-                            try {
-                                val checkoutResponse =
-                                    Gson().fromJson<CartResponse>(
-                                        jsonObject,
-                                        CartResponse::class.java
-                                    )
-                                val cartArray = checkoutResponse.cart
-                                val p_npr = checkoutResponse.cartTotalNpr
-                                val p_dollar = checkoutResponse.cartTotalDollar
-                                listContainingGrandtotal = checkoutResponse
-                                //update cart
-                                Log.d("imhere", "addToCartAPI: ");
-
-                                updateCartAtPosition(
-                                    cartArray[0].selected,
-                                    cartArray[0].is_selected,
-                                    updatePosition, p_npr, p_dollar
-                                )
-                            } catch (e: Exception) {
-                                Log.d(TAG, "getCartAPI:Error ${e.message}")
-                                try {
-                                    val message = jsonObject.get("message").asString
-                                    if (message.contains("empty.", true)) {
-
-                                        setUpView()
-                                    } else {
-                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                                    }
-                                } catch (e: Exception) {
-                                    Log.d(TAG, "getCartAPI:Error ${e.message}")
+private fun setUpViewModel() {
+    viewModel = ViewModelProvider(
+        this,
+        CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+    )[CheckoutViewModel::class.java]
+}
 
 
-                                }
+private fun initAppbar() {
+    (activity as MainActivity).showBottomNavigation(true)
+    (activity as MainActivity).showToolbar(true)
+    (activity as MainActivity).setToolbar1(
+        getString(R.string.shopping_bag),
+        isSearch = false,
+        isProfile = true,
+        isClose = false
+    )
+}
 
-                            }
-                        }
-
-                    }
-//                    binding.spinKit.visibility=View.GONE
-
-
-                    Status.LOADING -> {
-//                    binding.spinKit.visibility=View.VISIBLE
-                    }
-                    Status.ERROR -> {
-                        //Handle Error
-//                    binding.spinKit.visibility=View.GONE
-                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                        Log.d(TAG, "addToCartAPI:Error ${it.message}")
-                    }
-                }
-            }
-        })
-    }
-
-    private fun setUpViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
-        )[CheckoutViewModel::class.java]
-    }
-
-
-    private fun initAppbar() {
-        (activity as MainActivity).showBottomNavigation(true)
-        (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar1(
-            getString(R.string.shopping_bag),
-            isSearch = false,
-            isProfile = true,
-            isClose = false
-        )
-    }
-
-    private fun initRefreshLayout() {
-        //refresh layout on swipe
+private fun initRefreshLayout() {
+    //refresh layout on swipe
 //        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
 //            getCartAPI()
 //            binding.swipeRefreshLayout.isRefreshing = false
@@ -355,157 +407,167 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //            }
 //        })
 
+}
+
+private fun setUpView() {
+    if (listCheckout.isEmpty()) {
+        MainActivity.NavCount.myBoolean = 0
+        binding.layoutEmpty.visibility = View.VISIBLE
+        binding.layoutMain.visibility = View.GONE
+    } else {
+        binding.layoutEmpty.visibility = View.GONE
+        binding.layoutMain.visibility = View.VISIBLE
     }
+}
 
-    private fun setUpView() {
-        if (listCheckout.isEmpty()) {
-            MainActivity.NavCount.myBoolean = 0
-            binding.layoutEmpty.visibility = View.VISIBLE
-            binding.layoutMain.visibility = View.GONE
-        } else {
-            binding.layoutEmpty.visibility = View.GONE
-            binding.layoutMain.visibility = View.VISIBLE
-        }
-    }
+private fun initView() {
+    binding.textTotal.text =
+        SpannableStringBuilder().bold { append("Total ") }.append("(incl. VAT)")
 
-    private fun initView() {
-        binding.textTotal.text =
-            SpannableStringBuilder().bold { append("Total ") }.append("(incl. VAT)")
-
-        binding.btnCheckout.setOnClickListener {
+    binding.btnCheckout.setOnClickListener {
 //            fragment_shopping
-            val frag = FragmentShipping()
-            val bundle: Bundle = Bundle()
-            val selectedCarts = listCheckout.filter { it.isSelected == true }
-            val otherPrices = listContainingGrandtotal
-            Log.d("tetstcarts", "initView: " + selectedCarts);
-            bundle.putSerializable("carts", selectedCarts as ArrayList<ModelCheckout>)
-            bundle.putSerializable("totals", otherPrices)
-            frag.arguments = bundle
-            if(selectedCarts.size==0){
-                Toast.makeText(context,"Select at least one cart item.",Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            fragmentManager?.beginTransaction()?.replace(R.id.main_fragment, frag)
-                ?.addToBackStack("checkout")?.commit()
+        val frag = FragmentShipping()
+        val bundle: Bundle = Bundle()
+        val selectedCarts = listCheckout.filter { it.isSelected == true }
+        val otherPrices = listContainingGrandtotal
+        Log.d("tetstcarts", "initView: " + selectedCarts);
+        bundle.putSerializable("carts", selectedCarts as ArrayList<ModelCheckout>)
+        bundle.putSerializable("totals", otherPrices)
+        frag.arguments = bundle
+        if (selectedCarts.size == 0) {
+            Toast.makeText(context, "Select at least one cart item.", Toast.LENGTH_SHORT).show()
+            return@setOnClickListener
         }
-
-        binding.btnBrowse.setOnClickListener {
-            (activity as MainActivity).openFragmentShop()
-        }
-
-        binding.checkBoxAll.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                for (item in listCheckout) {
-                    item.isSelected = true
-                }
-                adapterCheckout.notifyDataSetChanged()
-                calculatePrice()
-            }
-        }
-
-        binding.totalPrice.text = "Rs. 00.00"
-        binding.textItemSelected.text = "0/0 ITEMS Selected"
+        fragmentManager?.beginTransaction()?.replace(R.id.main_fragment, frag)
+            ?.addToBackStack("checkout")?.commit()
     }
 
-    private fun initRecycler() {
+    binding.btnBrowse.setOnClickListener {
+        (activity as MainActivity).openFragmentShop()
+    }
 
-        layoutManagerCheckout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        adapterCheckout = AdapterCheckout(requireContext(), listCheckout, this)
-        binding.recyclerView.apply {
-            adapter = adapterCheckout
-            layoutManager = layoutManagerCheckout
+    binding.checkBoxAll.setOnCheckedChangeListener { buttonView, isChecked ->
+        if (isChecked) {
+            for (item in listCheckout) {
+                item.isSelected = true
+            }
+            adapterCheckout.notifyDataSetChanged()
+            calculatePrice()
         }
-        // Create and add a callback
-        onTouchListener = RecyclerTouchListener(activity, binding.recyclerView)
-        onTouchListener!!
-            .setSwipeOptionViews(R.id.add)
-            .setSwipeable(R.id.layout1, R.id.rowBG, object : RecyclerTouchListener.OnSwipeOptionsClickListener{
+    }
+
+    binding.totalPrice.text = "Rs. 00.00"
+    binding.textItemSelected.text = "0/0 ITEMS Selected"
+}
+
+private fun initRecycler() {
+
+    layoutManagerCheckout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    adapterCheckout = AdapterCheckout(requireContext(), listCheckout, this)
+    binding.recyclerView.apply {
+        adapter = adapterCheckout
+        layoutManager = layoutManagerCheckout
+    }
+    // Create and add a callback
+    onTouchListener = RecyclerTouchListener(activity, binding.recyclerView)
+    onTouchListener!!
+        .setSwipeOptionViews(R.id.add)
+        .setSwipeable(
+            R.id.layout1,
+            R.id.rowBG,
+            object : RecyclerTouchListener.OnSwipeOptionsClickListener {
                 override fun onSwipeOptionClicked(viewID: Int, position: Int) {
                     var message = ""
                     if (viewID == R.id.add) {
                         message += "Add"
 
-                        showDialog("Alert!","Are you sure you want to remove this item from cart?",adapterCheckout.getCartId(position), position ,::removeFromCartAPI)
+                        showDialog(
+                            "Alert!",
+                            "Are you sure you want to remove this item from cart?",
+                            adapterCheckout.getCartId(position),
+                            position,
+                            ::removeFromCartAPI
+                        )
 
                     }
                     message += " clicked for row " + (position + 1)
                 }
 
             })
-    }
-    private fun prepareList(
-        res: List<Cart>,
-        cartTotalNpr: Double,
-        cartTotalDollar: Double,
-        checkoutResponse: CartResponse
-    ) {
-        apiCartList = res
+}
 
-        listContainingGrandtotal = checkoutResponse
-        listCheckout.clear()
-        Log.d(TAG, "prepareList: " + listCheckout.size);
-        Log.d(TAG, "prepareList: " + apiCartList.size);
+private fun prepareList(
+    res: List<Cart>,
+    cartTotalNpr: Double,
+    cartTotalDollar: Double,
+    checkoutResponse: CartResponse
+) {
+    apiCartList = res
 
-        for (item in apiCartList) {
-            Log.d(TAG, "prepareList: loop"+item.productDetails.coupon?.code);
-            listCheckout.add(
-                ModelCheckout(
-                    item.productDetails?.name ?: "",
-                    item.selected?.variantId ?: 0,
-                    item?.selected?.vTotal ?: 0.0,
-                    item.selected?.vDollarTotal ?: 0.0,
-                    item?.selected?.size ?: "",
-                    item.selected.quantity,
-                    item.is_selected,
-                    item.selected?.imageUrl ?: "",
-                    item.cartId ?: 0,
-                    item.selected.colorName,
-                    item.selected.colorHex,
-                    item.productDetails.brand.name,
-                    item.selected.sku,
-                    item.productDetails.isCouponAvailable?:false,
-                    item.productDetails.coupon?.let { it.code }?:run {""}
-                )
+    listContainingGrandtotal = checkoutResponse
+    listCheckout.clear()
+    Log.d(TAG, "prepareList: " + listCheckout.size);
+    Log.d(TAG, "prepareList: " + apiCartList.size);
+
+    for (item in apiCartList) {
+        Log.d(TAG, "prepareList: loop" + item.productDetails.coupon?.code);
+        listCheckout.add(
+            ModelCheckout(
+                item.productDetails?.name ?: "",
+                item.selected?.variantId ?: 0,
+                item?.selected?.vTotal ?: 0.0,
+                item.selected?.vDollarTotal ?: 0.0,
+                item?.selected?.size ?: "",
+                item.selected.quantity,
+                item.is_selected,
+                item.selected?.imageUrl ?: "",
+                item.cartId ?: 0,
+                item.selected.colorName,
+                item.selected.colorHex,
+                item.productDetails.brand.name,
+                item.selected.sku,
+                item.productDetails.isCouponAvailable ?: false,
+                item.productDetails.coupon?.let { it.code } ?: run { "" }
             )
-        }
-        adapterCheckout.notifyDataSetChanged()
-        setUpView()
-        calculatePrice()
-        binding.totalPrice.text = if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
-            "${getString(R.string.rs)} $cartTotalNpr."
-        } else {
-            "${getString(R.string.usd)} $cartTotalDollar"
-        }
-
+        )
+    }
+    adapterCheckout.notifyDataSetChanged()
+    setUpView()
+    calculatePrice()
+    binding.totalPrice.text = if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
+        "${getString(R.string.rs)} $cartTotalNpr."
+    } else {
+        "${getString(R.string.usd)} $cartTotalDollar"
     }
 
-     override fun onResume() {
-        super.onResume()
-         onTouchListener?.let {
-             binding.recyclerView.addOnItemTouchListener(onTouchListener!!)
+}
 
-         }
+override fun onResume() {
+    super.onResume()
+    onTouchListener?.let {
+        binding.recyclerView.addOnItemTouchListener(onTouchListener!!)
+
     }
+}
 
-     override fun onPause() {
-        super.onPause()
-        binding.recyclerView.removeOnItemTouchListener(onTouchListener!!)
-    }
+override fun onPause() {
+    super.onPause()
+    binding.recyclerView.removeOnItemTouchListener(onTouchListener!!)
+}
 
-    override fun onSizeClicked(data: ModelCheckout, position: Int) {
-        //open dialog
+override fun onSizeClicked(data: ModelCheckout, position: Int) {
+    //open dialog
 //        showDialogSize(data, position)
-    }
+}
 
-    override fun onQuantityClicked(data: ModelCheckout, position: Int) {
-        //open dialog
+override fun onQuantityClicked(data: ModelCheckout, position: Int) {
+    //open dialog
 //        showDialogQTY(data, position)
-    }
+}
 
-    override fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean, position: Int) {
+override fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean, position: Int) {
 //        Toast.makeText(requireContext(),"Checkbox $isChecked++++$position",Toast.LENGTH_SHORT).show()
-        selectCartApi(data.cartId, position)
+    selectCartApi(data.cartId, position)
 //        for (item in listCheckout) {
 //            if (item == data) {
 //                item.isSelected = isChecked
@@ -513,48 +575,48 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //        }
 //        isCheckAll()
 //        calculatePrice()
-    }
+}
 
-    override fun onAddClick(data: ModelCheckout, position: Int) {
-        addToCartAPI(data.itemId, position, data)
-    }
+override fun onAddClick(data: ModelCheckout, position: Int) {
+    addToCartAPI(data.itemId, position, data)
+}
 
-    override fun onRemove(data: ModelCheckout, position: Int) {
-        minusFromCartAPI(data.cartId, position)
-    }
+override fun onRemove(data: ModelCheckout, position: Int) {
+    minusFromCartAPI(data.cartId, position)
+}
 
-    override fun onCompleteRemove(data: ModelCheckout, position: Int) {
-        //complete remove api
-        removeFromCartAPI(data.cartId, position)
+override fun onCompleteRemove(data: ModelCheckout, position: Int) {
+    //complete remove api
+    removeFromCartAPI(data.cartId, position)
 
-    }
+}
 
-    private fun isCheckAll() {
-        var isAllChecked = true
-        for (item in listCheckout) {
-            if (!item.isSelected) {
-                isAllChecked = false
-                break
-            }
+private fun isCheckAll() {
+    var isAllChecked = true
+    for (item in listCheckout) {
+        if (!item.isSelected) {
+            isAllChecked = false
+            break
         }
-        binding.checkBoxAll.isChecked = isAllChecked
     }
+    binding.checkBoxAll.isChecked = isAllChecked
+}
 
-    private fun calculatePrice() {
-        var selected = 0
-        for (item in listCheckout) {
-            if (item.isSelected) {
+private fun calculatePrice() {
+    var selected = 0
+    for (item in listCheckout) {
+        if (item.isSelected) {
 //                total_price += if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
 //                    (item.priceNPR * item.qty)
 //                } else {
 //                    (item.priceUSD * item.qty)
 //                }
-                selected++
-            }
+            selected++
         }
-
-        binding.textItemSelected.text = "$selected/${listCheckout.count()} ITEMS Selected"
     }
+
+    binding.textItemSelected.text = "$selected/${listCheckout.count()} ITEMS Selected"
+}
 
 //    private fun showDialogSize(data: ModelCheckout, position: Int) {
 //
@@ -633,133 +695,133 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //        bottomSheetDialog.show()
 //    }
 
-    private fun prepareListSize(data: ModelCheckout) {
-        listSize.clear()
-        for (cart in apiCartList) {
-            for (v in cart.productDetails.variants) {
-                if (data.itemId == v.variantId) {
+private fun prepareListSize(data: ModelCheckout) {
+    listSize.clear()
+    for (cart in apiCartList) {
+        for (v in cart.productDetails.variants) {
+            if (data.itemId == v.variantId) {
 //                    for (v in cart?.product?.variant!!) {
-                    listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false, "", ""))
-                    //}
-                }
+                listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false, "", ""))
+                //}
             }
-
         }
+
+    }
 //        listSize.add(ModelCircleText("s", true))
 //        listSize.add(ModelCircleText("m", false))
 //        listSize.add(ModelCircleText("l", false))
 //        listSize.add(ModelCircleText("xl", false))
 //        listSize.add(ModelCircleText("xxl", false))
-        adapterCircleSize.notifyDataSetChanged()
-    }
+    adapterCircleSize.notifyDataSetChanged()
+}
 
-    private fun prepareListQuantity() {
-        listQty.clear()
+private fun prepareListQuantity() {
+    listQty.clear()
 //        listQty.add(ModelCircleText("1", true))
 //        listQty.add(ModelCircleText("2", false))
 //        listQty.add(ModelCircleText("3", false))
 //        listQty.add(ModelCircleText("4", false))
 //        listQty.add(ModelCircleText("5", false))
-        adapterCircleQty.notifyDataSetChanged()
-    }
+    adapterCircleQty.notifyDataSetChanged()
+}
 
-    private fun setShimmerLayout(isVisible: Boolean) {
-        if (isVisible) {
-            binding.layoutMain.visibility = View.GONE
-            binding.layoutEmpty.visibility = View.GONE
-            binding.shimmerFrameLayout.visibility = View.VISIBLE
-            binding.shimmerFrameLayout.startShimmer()
-        } else {
-            binding.layoutMain.visibility = View.VISIBLE
-            binding.layoutEmpty.visibility = View.GONE
-            binding.shimmerFrameLayout.visibility = View.GONE
-            binding.shimmerFrameLayout.stopShimmer()
-        }
+private fun setShimmerLayout(isVisible: Boolean) {
+    if (isVisible) {
+        binding.layoutMain.visibility = View.GONE
+        binding.layoutEmpty.visibility = View.GONE
+        binding.shimmerFrameLayout.visibility = View.VISIBLE
+        binding.shimmerFrameLayout.startShimmer()
+    } else {
+        binding.layoutMain.visibility = View.VISIBLE
+        binding.layoutEmpty.visibility = View.GONE
+        binding.shimmerFrameLayout.visibility = View.GONE
+        binding.shimmerFrameLayout.stopShimmer()
     }
+}
 
-    private fun getCartAPI() {
-        listCheckout.clear()
-        setShimmerLayout(true)
-        viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
-        viewModel.getCartListAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    setShimmerLayout(false)
-                    hideError()
-                    Log.d(TAG, "getCartAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
+private fun getCartAPI() {
+    listCheckout.clear()
+    setShimmerLayout(true)
+    viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
+    viewModel.getCartListAPI().observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.SUCCESS -> {
+                setShimmerLayout(false)
+                hideError()
+                Log.d(TAG, "getCartAPI: ${it.data}")
+                val jsonObject = it.data
+                if (jsonObject != null) {
+                    try {
+                        val message = jsonObject.get("message").asString
+                        if (message.contains("empty.", true)) {
+                            setUpView()
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "getCartAPI:Error ${e.message}")
                         try {
-                            val message = jsonObject.get("message").asString
-                            if (message.contains("empty.", true)) {
-                                setUpView()
+                            val checkoutResponse =
+                                Gson().fromJson<CartResponse>(
+                                    jsonObject,
+                                    CartResponse::class.java
+                                )
+                            if (checkoutResponse.cart != null) {
+                                if (checkoutResponse.cart.size > 0) {
+                                    val cartlist = checkoutResponse.cart
+                                    MainActivity.NavCount.myBoolean = cartlist.size
+                                    prepareList(
+                                        cartlist,
+                                        checkoutResponse.cartTotalNpr,
+                                        checkoutResponse.cartTotalDollar, checkoutResponse
+                                    )
+                                } else {
+                                    setUpView()
+                                }
+
                             }
                         } catch (e: Exception) {
-                            Log.d(TAG, "getCartAPI:Error ${e.message}")
-                            try {
-                                val checkoutResponse =
-                                    Gson().fromJson<CartResponse>(
-                                        jsonObject,
-                                        CartResponse::class.java
-                                    )
-                                if (checkoutResponse.cart != null) {
-                                    if (checkoutResponse.cart.size > 0) {
-                                        val cartlist = checkoutResponse.cart
-                                        MainActivity.NavCount.myBoolean = cartlist.size
-                                        prepareList(
-                                            cartlist,
-                                            checkoutResponse.cartTotalNpr,
-                                            checkoutResponse.cartTotalDollar, checkoutResponse
-                                        )
-                                    } else {
-                                        setUpView()
-                                    }
-
-                                }
-                            } catch (e: Exception) {
-                                Log.d(TAG, "getWishListAPI:Error2 ${e.message}")
-                            }
+                            Log.d(TAG, "getWishListAPI:Error2 ${e.message}")
                         }
                     }
-                    adapterCheckout.notifyDataSetChanged()
                 }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    setShimmerLayout(false)
+                adapterCheckout.notifyDataSetChanged()
+            }
+            Status.LOADING -> {
+            }
+            Status.ERROR -> {
+                //Handle Error
+                setShimmerLayout(false)
 //                    listCheckout.clear()
 //                    setUpView()
-                    showError(it.message.toString())
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "getCartAPI:Error ${it.message}")
-                }
+                showError(it.message.toString())
+                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                Log.d(TAG, "getCartAPI:Error ${it.message}")
             }
-        })
-    }
-
-    private fun showError(it: String) {
-        binding.layoutMain.visibility = View.GONE
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.layoutContainer,
-            R.layout.layout_error,
-            R.drawable.ic_cart,
-            "Error!",
-            it
-        )
-
-    }
-
-    private fun hideError() {
-        binding.layoutMain.visibility = View.VISIBLE
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.layoutContainer,
-                binding.root.findViewById(R.id.layout_root)
-            )
         }
+    })
+}
+
+private fun showError(it: String) {
+    binding.layoutMain.visibility = View.GONE
+    MyLayoutInflater().onAddField(
+        requireContext(),
+        binding.layoutContainer,
+        R.layout.layout_error,
+        R.drawable.ic_cart,
+        "Error!",
+        it
+    )
+
+}
+
+private fun hideError() {
+    binding.layoutMain.visibility = View.VISIBLE
+    if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+        MyLayoutInflater().onDelete(
+            binding.layoutContainer,
+            binding.root.findViewById(R.id.layout_root)
+        )
     }
+}
 
 //    private fun saveSizeAPI(product: ModelCheckout, sizeSelected: String) {
 //        viewModel.saveSizeAPI(
@@ -823,131 +885,132 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //        })
 //    }
 
-    private fun showSnackBar(msg: String) {
-        val snackbar = Snackbar
-            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
-        snackbar.setActionTextColor(Color.WHITE)
-        snackbar.show()
-    }
+private fun showSnackBar(msg: String) {
+    val snackbar = Snackbar
+        .make(binding.root, msg, Snackbar.LENGTH_SHORT)
+    snackbar.setActionTextColor(Color.WHITE)
+    snackbar.show()
+}
 
-    private fun addToCartAPI(id: Int, position: Int, old: ModelCheckout) {
-        Log.d(TAG, "hitapicart: " + id);
+private fun addToCartAPI(id: Int, position: Int, old: ModelCheckout) {
+    Log.d(TAG, "hitapicart: " + id);
 //        viewModel.resetAddCartLiveData()
-        updatePosition = position
-        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
+    updatePosition = position
+    viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
 
-    }
+}
 
-    private fun updateCartAtPosition(
-        seleted: Selected,
-        isClick: Boolean,
-        i: Int,
-        totalPriceNpr: Double? = 0.0,
-        totalPriceDollar: Double? = 0.0
-    ) {
-        Log.d(TAG, "updateCartAtPosition: " + updatePosition);
-        if (updatePosition != -1) {
-            listCheckout[i].apply {
-                qty = seleted.quantity
-                priceNPR = seleted.vTotal
-                priceUSD = seleted.vDollarTotal
-                isSelected = isClick
-            }
-            Log.d(TAG, "updateCartAtPosition: " + i);
-            isCheckAll()
-            calculatePrice()
-            binding.totalPrice.text =
-                if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
-                    "${getString(R.string.rs)} $totalPriceNpr"
-                } else {
-                    "${getString(R.string.usd)} $totalPriceDollar"
-                }
-            adapterCheckout.notifyItemChanged(i)
+private fun updateCartAtPosition(
+    seleted: Selected,
+    isClick: Boolean,
+    i: Int,
+    totalPriceNpr: Double? = 0.0,
+    totalPriceDollar: Double? = 0.0
+) {
+    Log.d(TAG, "updateCartAtPosition: " + updatePosition);
+    if (updatePosition != -1) {
+        listCheckout[i].apply {
+            qty = seleted.quantity
+            priceNPR = seleted.vTotal
+            priceUSD = seleted.vDollarTotal
+            isSelected = isClick
         }
-    }
-
-    private fun updateCartAtPosition(
-        position: Int,
-        totalPriceNpr: Double? = 0.0,
-        totalPriceDollar: Double? = 0.0
-    ) {
-        listCheckout.removeAt(position)
-        Log.d(TAG, "updateCartAtPosition: " + position);
+        Log.d(TAG, "updateCartAtPosition: " + i);
         isCheckAll()
         calculatePrice()
-        checkIfCartEmpty()
         binding.totalPrice.text =
             if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
                 "${getString(R.string.rs)} $totalPriceNpr"
             } else {
                 "${getString(R.string.usd)} $totalPriceDollar"
             }
-        adapterCheckout.notifyItemRemoved(position)
-        MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.minus(1)
-
+        adapterCheckout.notifyItemChanged(i)
     }
+}
 
-    private fun checkIfCartEmpty() {
-        setUpView()
-    }
-
-
-    private fun minusFromCartAPI(id: Int, position: Int) {
-        updatePosition = position
-        viewModel.minusFromCartAPI(
-            PreferenceHandler.getToken(context).toString(),
-            id
-        )
-
-
-    }
-
-    private fun removeFromCartAPI(id: Int, position: Int) {
-        updatePosition = position
-        viewModel.removeFromCartAPI(
-            PreferenceHandler.getToken(context).toString(),
-            id
-        )
-
-
-    }
-
-
-    private fun selectCartApi(cartId: Int, position: Int) {
-        updatePosition = position
-        viewModel.selectCartApi(
-            PreferenceHandler.getToken(context).toString(),
-            cartId
-        )
-
-    }
-    private fun showDialog(
-        title:String,
-        message:String,
-        caratId:Int,
-        pos:Int,
-        action: KFunction2<Int, Int, Unit>
-    ) {
-        val bind: DialogCustomBinding =
-            DialogCustomBinding.inflate(LayoutInflater.from(context))
-        val dialog = Dialog(requireContext(), R.style.CustomDialog)
-        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog?.setCancelable(false)
-        dialog?.setContentView(bind.root)
-        bind.textTitle.text = title
-        bind.textMsg.text =
-            message
-        bind.dialogBtnYes.text = "Yes"
-        bind.dialogBtnYes.setOnClickListener {
-            action(caratId,pos)
-            dialog?.dismiss()
+private fun updateCartAtPosition(
+    position: Int,
+    totalPriceNpr: Double? = 0.0,
+    totalPriceDollar: Double? = 0.0
+) {
+    listCheckout.removeAt(position)
+    Log.d(TAG, "updateCartAtPosition: " + position);
+    isCheckAll()
+    calculatePrice()
+    checkIfCartEmpty()
+    binding.totalPrice.text =
+        if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
+            "${getString(R.string.rs)} $totalPriceNpr"
+        } else {
+            "${getString(R.string.usd)} $totalPriceDollar"
         }
-        bind.dialogBtnNo.text = "No"
-        bind.dialogBtnNo.setOnClickListener {
-            dialog?.dismiss()
-        }
-        dialog?.show()
+    adapterCheckout.notifyItemRemoved(position)
+    MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.minus(1)
+
+}
+
+private fun checkIfCartEmpty() {
+    setUpView()
+}
+
+
+private fun minusFromCartAPI(id: Int, position: Int) {
+    updatePosition = position
+    viewModel.minusFromCartAPI(
+        PreferenceHandler.getToken(context).toString(),
+        id
+    )
+
+
+}
+
+private fun removeFromCartAPI(id: Int, position: Int) {
+    updatePosition = position
+    viewModel.removeFromCartAPI(
+        PreferenceHandler.getToken(context).toString(),
+        id
+    )
+
+
+}
+
+
+private fun selectCartApi(cartId: Int, position: Int) {
+    updatePosition = position
+    viewModel.selectCartApi(
+        PreferenceHandler.getToken(context).toString(),
+        cartId
+    )
+
+}
+
+private fun showDialog(
+    title: String,
+    message: String,
+    caratId: Int,
+    pos: Int,
+    action: KFunction2<Int, Int, Unit>
+) {
+    val bind: DialogCustomBinding =
+        DialogCustomBinding.inflate(LayoutInflater.from(context))
+    val dialog = Dialog(requireContext(), R.style.CustomDialog)
+    dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    dialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+    dialog?.setCancelable(false)
+    dialog?.setContentView(bind.root)
+    bind.textTitle.text = title
+    bind.textMsg.text =
+        message
+    bind.dialogBtnYes.text = "Yes"
+    bind.dialogBtnYes.setOnClickListener {
+        action(caratId, pos)
+        dialog?.dismiss()
     }
+    bind.dialogBtnNo.text = "No"
+    bind.dialogBtnNo.setOnClickListener {
+        dialog?.dismiss()
+    }
+    dialog?.show()
+}
 
 }

@@ -12,5 +12,6 @@ data class SubCategory(
     val imageUrl: String,
     @SerializedName("comment")
     val comment: String="",
-    val title: String
+    val title: String,
+    val slug:String
 ):Serializable

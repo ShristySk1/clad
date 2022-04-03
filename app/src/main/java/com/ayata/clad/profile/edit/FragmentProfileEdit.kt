@@ -64,7 +64,8 @@ class FragmentProfileEdit : Fragment() {
         binding.textInputName.editText?.setText(detail.fullName)
         binding.textInputEmail.editText?.setText(detail.email)
         binding.textInputDOB.editText?.setText(detail.dob)
-        binding.textInputPhone.editText?.setText(detail.phone)
+        binding.textInputPhone.editText?.setText(detail.phone_no)
+        gender=detail.gender?:""
         when (detail.gender) {
             "M" -> {
                 binding.radioGroupGender.check(R.id.rb_male)
@@ -129,9 +130,9 @@ class FragmentProfileEdit : Fragment() {
             val v_email = validateEmail()
             val v_name = validateTextField(binding.textInputName, "Name")
             val v_dob = validateTextField(binding.textInputDOB, "DOB")
-            val v_phone=validateTextField(binding.textInputPhone,"Contact Number")
+            val v_phone = validateTextField(binding.textInputPhone, "Contact Number")
 //            val v_gender = validateRadioButton()
-            if (v_email && v_dob && v_dob && v_name&&v_phone) {
+            if (v_email && v_dob && v_dob && v_name && v_phone) {
                 saveToServer()
             }
 
@@ -147,7 +148,8 @@ class FragmentProfileEdit : Fragment() {
         val name = binding.textInputName.editText!!.text.toString().trim { it <= ' ' }
         val dob = binding.textInputDOB.editText!!.text.toString().trim { it <= ' ' }
         val phone = binding.textInputPhone.editText!!.text.toString().trim { it <= ' ' }
-        val myViewData = Details(dob = dob, email, fullName = name, gender = gender,phone = phone)
+        val myViewData =
+            Details(dob = dob, email, fullName = name, gender = gender, phone_no = phone)
         viewModel.profileDetailUpdateAPI(PreferenceHandler.getToken(context)!!, myViewData)
         viewModel.postProfileAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -156,6 +158,11 @@ class FragmentProfileEdit : Fragment() {
                     binding.spinKit.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
+
+                        PreferenceHandler.setDOB(requireContext(), dob)
+                        PreferenceHandler.setUsername(requireContext(), name)
+                        PreferenceHandler.setGender(requireContext(), gender)
+                        PreferenceHandler.setPhone(requireContext(), phone)
                         Toast.makeText(context, "Successfully updated", Toast.LENGTH_SHORT).show()
                         parentFragmentManager.popBackStack()
                     } else {
@@ -174,7 +181,6 @@ class FragmentProfileEdit : Fragment() {
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
 
 
-
                 }
             }
         })
@@ -187,10 +193,10 @@ class FragmentProfileEdit : Fragment() {
         return if (data.isEmpty() or (data == " ")) {
             textField.error = "$dataTitle field can't be empty"
             false
-        } else if (dataTitle.equals("Contact Number")&&data.length <10){
+        } else if (dataTitle.equals("Contact Number") && data.length < 10) {
             textField.error = "Invalid $dataTitle"
             false
-        }else{
+        } else {
             textField.error = null
             true
         }
@@ -230,12 +236,19 @@ class FragmentProfileEdit : Fragment() {
 //            }
 //
 //        }
-        binding.spinKit.visibility=View.VISIBLE
-        accountViewmodel.getAccountDetails().observe(viewLifecycleOwner, {
-            setDataToView(it)
-            binding.spinKit.visibility=View.GONE
-        })
-
+//        binding.spinKit.visibility = View.VISIBLE
+//        accountViewmodel.getAccountDetails().observe(viewLifecycleOwner, {
+//            setDataToView(it)
+//            binding.spinKit.visibility = View.GONE
+//        })
+        val detail: Details = Details(
+            PreferenceHandler.getDOB(requireContext()),
+            PreferenceHandler.getEmail(requireContext()) ?: "",
+            PreferenceHandler.getUsername(requireContext()) ?: "",
+            PreferenceHandler.getGender(requireContext()),
+            PreferenceHandler.getPhone(requireContext())
+        )
+        setDataToView(detail)
 
     }
 }

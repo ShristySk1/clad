@@ -143,58 +143,66 @@ class FragmentOrderDetail : Fragment() {
         //order status
         var conditionalStatus = ModelOrderTrack.ORDER_TYPE_PLACED
         list_orderTrack = ArrayList<ModelOrderTrack>()
-        val titles = arrayOf(
-            ModelOrderTrack.ORDER_TYPE_PLACED,
-            ModelOrderTrack.ORDER_TYPE_DISPATCHED,
-            ModelOrderTrack.ORDER_TYPE_TRANSIT,
-            ModelOrderTrack.ORDER_TYPE_DELIVERED
-        )
-
-        val descriptions = arrayOf(
-            "",
-            "",
-            "",
-            ""
-        )
+//        val titles = arrayOf(
+//            ModelOrderTrack.ORDER_TYPE_PLACED,
+//            ModelOrderTrack.ORDER_TYPE_DISPATCHED,
+//            ModelOrderTrack.ORDER_TYPE_TRANSIT,
+//            ModelOrderTrack.ORDER_TYPE_DELIVERED,
+//            "",
+//            "",
+//            ""
+//        )
+//
+//        val descriptions = arrayOf(
+//            "",
+//            "",
+//            "",
+//            "",
+//            "",
+//            "",
+//            ""
+//        )
+        val title= arrayListOf<String>()
+        val desc= arrayListOf<String>()
         for (i in 0 until o.orderStatus.size) {
-            titles[i] = o.orderStatus[i].status
-            descriptions[i] = o.orderStatus[i].date
+            title.add(o.orderStatus[i].status)
+            desc.add(o.orderStatus[i].date?:"")
         }
-        conditionalStatus = o.orderStatus[(o.orderStatus.size) - 1].status
+        conditionalStatus = o.orderStatus.filter { it.is_active==true }.single().status
         Log.d("statusonditional", "populateData: " + conditionalStatus);
 
-        titles.reverse()
-        descriptions.reverse()
+        title.reverse()
+        desc.reverse()
 
 
         val colorInComplete: Int = R.color.colorGray
         val colorCompleted: Int = R.color.colorGray
         val colorCurrent: Int = R.color.colorBlack
         var setNone = false
-        for (i in titles.indices) {
-            if (titles[i].toLowerCase().trim { it <= ' ' } != conditionalStatus.toLowerCase()
+        for (i in title.indices) {
+            if (title[i].toLowerCase().trim { it <= ' ' } != conditionalStatus.toLowerCase()
                     .trim { it <= ' ' }) {
                 if (setNone) {
                     //set rest to grayed out
                     list_orderTrack.add(
                         ModelOrderTrack(
-                            titles[i],
-                            descriptions[i], ModelOrderTrack.ORDER_TYPE_NONE, colorInComplete, false
+                            title[i],
+                            desc[i], ModelOrderTrack.ORDER_TYPE_NONE, colorInComplete, false
                         )
                     )
                 } else {
                     list_orderTrack.add(
                         ModelOrderTrack(
-                            titles[i],
-                            descriptions[i], titles[i], colorCompleted, false
+                            title[i],
+                            desc[i], title[i], colorCompleted, false
                         )
                     )
                 }
             } else {
                 list_orderTrack.add(
                     ModelOrderTrack(
-                        titles[i],
-                        descriptions[i], titles[i], colorCurrent, true
+                        title[i],
+                        desc[i], title[i], colorCurrent, true
                     )
                 )
                 setNone = true //set it to true after we found the exact title

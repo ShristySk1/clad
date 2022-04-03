@@ -44,8 +44,7 @@
                     android:id="@+id/ivProfileImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:civ_border="false"
-                    />
+                    app:civ_border="false" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -72,15 +71,15 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textStyle="italic" />
 
-<!--        <ProgressBar-->
-<!--            android:id="@+id/spinKit"-->
-<!--            android:layout_width="20dp"-->
-<!--            android:layout_height="20dp"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:visibility="gone"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:layout_toRightOf="@id/acc_name"-->
-<!--            />-->
+        <!--        <ProgressBar-->
+        <!--            android:id="@+id/spinKit"-->
+        <!--            android:layout_width="20dp"-->
+        <!--            android:layout_height="20dp"-->
+        <!--            android:layout_alignParentEnd="true"-->
+        <!--            android:visibility="gone"-->
+        <!--            android:layout_centerInParent="true"-->
+        <!--            android:layout_toRightOf="@id/acc_name"-->
+        <!--            />-->
     </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout

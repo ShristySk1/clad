@@ -24,7 +24,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun login(token: String) = retrofitService.loginGoogle(token)
     suspend fun dashboardAPI(token: String) = retrofitService.dashboardAPI(token)
     suspend fun categoryListAPI() = retrofitService.categoryListAPI()
-    suspend fun categoryProductListAPI(categoryId: Int, page: Int) = retrofitService.categoryProductListAPI(categoryId, page)
+    suspend fun categoryProductListAPI(category_slug: String, page: Int) = retrofitService.categoryProductListAPI(category_slug, page)
     suspend fun wishListApi(token: String) = retrofitService.wishListAPI(token)
     suspend fun addToWishApi(token: String, jsonObject: JsonObject) = retrofitService.addToWishAPI(token, jsonObject)
     suspend fun wishlistToCart(token: String, id: Int) = retrofitService.wishListToCartAPI(token, id)
@@ -99,7 +99,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
         ).liveData
     }
     //product list from category
-    fun searchProductListFromCategory(categoryId:Int): LiveData<PagingData<ProductDetail>> {
+    fun searchProductListFromCategory(category_slug:String): LiveData<PagingData<ProductDetail>> {
         Log.d("tet5stcall", "getViewAllResult: ");
         return Pager(
             config = PagingConfig(
@@ -107,8 +107,12 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
                 maxSize = 100,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { CategoryPagingDataSource(categoryId, retrofitService) }
+            pagingSourceFactory = { CategoryPagingDataSource(category_slug, retrofitService) }
         ).liveData
     }
+    //get coupon
+    suspend fun getCoupons(token: String) = retrofitService.coupons(token)
+    //apply coupon
+    suspend fun applyCoupons(token: String,coupon_code:String) = retrofitService.applyCoupon(token,coupon_code)
 
 }

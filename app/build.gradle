@@ -126,10 +126,4 @@ dependencies {
     implementation 'com.github.esafirm:android-image-picker:3.0.0-beta1'
 
 
-
-
-
-
-
-
 }

@@ -22,6 +22,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
     private val quantityResponse = MutableLiveData<Resource<JsonObject>>()
     private val cartSelectResponse = MutableLiveData<Resource<JsonObject>>()
+    private val applyCouppnResponse = MutableLiveData<Resource<JsonObject>>()
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
@@ -178,9 +179,6 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
         return addCartResponse
     }
 
-    fun resetAddCartLiveData() {
-        addCartResponse.value = null
-    }
 
     fun saveSizeAPI(token: String, id: Int, size: String) {
         sizeResponse.postValue(Resource.loading(null))
@@ -233,8 +231,34 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
     fun getQuantityAPI(): LiveData<Resource<JsonObject>> {
         return quantityResponse
     }
+    fun applyCouponAPI(token: String,coupon_code:String) {
+        applyCouppnResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.applyCoupons("$token",coupon_code)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("cartListAPI", "success: " + response.body())
+                        applyCouppnResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("cartListAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        applyCouppnResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            } catch (e: Exception) {
+                applyCouppnResponse.postValue(Resource.error(e.message.toString(), null))
 
+            }
 
+        }
+
+    }
+
+    fun getApplyCouponResponseAPI(): LiveData<Resource<JsonObject>> {
+        return applyCouppnResponse
+    }
 
     private fun onError(message: String) {
         errorMessage.postValue(message)
