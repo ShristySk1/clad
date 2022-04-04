@@ -1,15 +1,16 @@
 package com.ayata.clad.shopping_bag.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.shopping_bag.model.ModelFinalOrder
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
+import org.json.JSONObject
+
 
 class CheckoutViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
@@ -242,9 +243,13 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
                         applyCouppnResponse.postValue(Resource.success(response.body()))
                         loading.value = false
                     } else {
-                        Log.e("cartListAPI", "error: $response")
+                        try {
+                            val jObjError = JSONObject(response.errorBody()!!.string()).get("message").toString()
+                            applyCouppnResponse.postValue(Resource.error(jObjError, null))
+                        } catch (e: java.lang.Exception) {
+                            applyCouppnResponse.postValue(Resource.error("Parse error 400", null))
+                        }
                         onError("Error : ${response.message()} ")
-                        applyCouppnResponse.postValue(Resource.error(response.message(), null))
                     }
                 }
             } catch (e: Exception) {

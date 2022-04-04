@@ -133,27 +133,42 @@
                     android:textSize="@dimen/ae_text2"
                     android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputState"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/pe_margin2"
-                    android:layout_marginTop="5dp"
-                    app:hintAnimationEnabled="false"
-                    app:hintEnabled="false">
+<!--                <com.google.android.material.textfield.TextInputLayout-->
+<!--                    android:id="@+id/textInputState"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginHorizontal="@dimen/pe_margin2"-->
+<!--                    android:layout_marginTop="5dp"-->
+<!--                    app:hintAnimationEnabled="false"-->
+<!--                    app:hintEnabled="false">-->
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <Spinner
+                        android:id="@+id/spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:hint="Enter Your State"
-                        android:inputType="text"
-                        android:paddingVertical="10dp"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:textColor="@color/colorBlack"
-                        android:textSize="@dimen/ae_text1" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:spinnerMode="dialog"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="5dp" />
+<!--                </com.google.android.material.textfield.TextInputLayout>-->
+                <TextView
+                    android:id="@+id/text8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/pe_margin1"
+                    android:layout_marginTop="@dimen/pe_margin3"
+                    android:text="District"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/ae_text2"
+                    android:textStyle="bold" />
+                <Spinner
+                    android:id="@+id/spinner_district"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="5dp"
+                    android:spinnerMode="dialog"
+                   />
 
                 <TextView
                     android:id="@+id/text6"
