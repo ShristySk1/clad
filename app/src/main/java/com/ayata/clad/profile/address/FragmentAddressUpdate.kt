@@ -28,7 +28,7 @@ class FragmentAddressUpdate : Fragment() {
             validateTextField(binding.textInputAddress)
             validateTextField(binding.textInputCity)
             validateTextField(binding.textInputPhone)
-            validateTextField(binding.textInputState)
+//            validateTextField(binding.textInputState)
             validateTextField(binding.textInputZip)
 //            requireActivity().supportFragmentManager.popBackStackImmediate()
         }

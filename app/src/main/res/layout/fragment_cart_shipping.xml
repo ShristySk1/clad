@@ -167,7 +167,7 @@
                 android:layout_height="wrap_content"
                 android:text="SubTotal"
                 android:textAllCaps="true"
-                android:textSize="14sp"
+                android:textSize="@dimen/fourteen_sp"
                 android:textColor="@color/colorBlack" />
 
             <TextView
@@ -176,7 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs. 7001.0"
-                android:textSize="14sp"
+                android:textSize="@dimen/fourteen_sp"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorBlack"/>
 
@@ -197,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:text="Shipping"
                 android:textAllCaps="true"
-                android:textSize="14sp"
+                android:textSize="@dimen/fourteen_sp"
                 android:textColor="@color/colorBlack" />
 
             <TextView
@@ -206,7 +206,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs. 60.0"
-                android:textSize="14sp"
+                android:textSize="@dimen/fourteen_sp"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorBlack"/>
 
@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:text="Promo Code"
                 android:textAllCaps="true"
-                android:textSize="14sp"
+                android:textSize="@dimen/fourteen_sp"
                 android:textColor="@color/colorBlack" />
 
             <TextView
@@ -237,7 +237,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs. 100.0"
-                android:textSize="14sp"
+                android:textSize="@dimen/fourteen_sp"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorBlack"/>
 
@@ -258,7 +258,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TOTAL (incl. VAT)"
-                android:textSize="15sp"
+                android:textSize="@dimen/fifteen_sp"
                 android:textColor="@color/colorBlack" />
 
             <TextView
@@ -267,7 +267,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs. 7811.0"
-                android:textSize="15sp"
+                android:textSize="@dimen/fifteen_sp"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorBlack"/>
 

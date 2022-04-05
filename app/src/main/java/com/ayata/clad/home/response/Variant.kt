@@ -31,7 +31,7 @@ data class Variant(
     @SerializedName("vat_amount")
     val vatAmount: Double,
     @SerializedName("is_in_cart")
-    val isInCart: Boolean,
+    var isInCart: Boolean,
     @SerializedName("is_in_wishlist")
     var isInWishlist: Boolean
 ):Serializable

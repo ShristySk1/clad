@@ -53,7 +53,7 @@ class FragmentWishlist : Fragment() {
         private const val TAG = "FragmentWishlist"
     }
 
-    private  var listRecommendation= ArrayList<ProductDetail>()
+    private var listRecommendation = ArrayList<ProductDetail>()
     private lateinit var binding: FragmentWishlistBinding
     private var myWishList = ArrayList<Wishlist>()
     private lateinit var adapterWishList: AdapterWishList
@@ -131,7 +131,7 @@ class FragmentWishlist : Fragment() {
             binding.llEmpty.visibility = View.VISIBLE
             setUpRecyclerRecommendation()
         } else {
-            binding.productCount.text="${myWishList.size} PRODUCT(S)"
+            binding.productCount.text = "${myWishList.size} PRODUCT(S)"
             binding.layoutFilled.visibility = View.VISIBLE
             binding.llEmpty.visibility = View.GONE
         }
@@ -183,7 +183,7 @@ class FragmentWishlist : Fragment() {
             adapter = adapterRecommended
         }
         viewModelHome.getDashboardAPI().observe(viewLifecycleOwner, {
-            Log.d(TAG, "setUpRecyclerRecommendation: "+it.status);
+            Log.d(TAG, "setUpRecyclerRecommendation: " + it.status);
             when (it.status) {
                 Status.SUCCESS -> {
 //                    setShimmerLayout(false)
@@ -262,8 +262,16 @@ class FragmentWishlist : Fragment() {
                 showDialogWishlist(product, list)
             }
         }.also {
-            it.setBagClickListener {
-                addToCartAPI(it)
+            it.setBagClickListener {wishlist->
+               val currentVariant= wishlist.product.variants.filter {
+                    it.variantId==wishlist.selected.variantId
+                }.single()
+                if(!currentVariant.isInCart){
+                    addToCartAPI(wishlist)
+                }else{
+                    Toast.makeText(requireContext(),"Product already in cart",Toast.LENGTH_SHORT).show()
+                }
+
             }
         }
 
@@ -371,22 +379,30 @@ class FragmentWishlist : Fragment() {
                 Status.SUCCESS -> {
                     Log.d(TAG, "addToCartAPI: ${it.data}")
                     val jsonObject = it.data
+                    binding.spinKit.visibility = View.GONE
                     if (jsonObject != null) {
                         showSnackBar(jsonObject.get("message").toString())
                         MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
-//                        var pos = 0
-//                        for (item in myWishList) {
-//                            if (item.wishlist_id == product.wishlist_id) {
-////                                item.product.is_in_cart = true
-//                                pos = myWishList.indexOf(item)
-//                            }
-//                        }
-//                        myWishList.removeAt(pos)
+                        var pos = 0
+                        for (item in myWishList) {
+                            if (item.wishlist_id == product.wishlist_id) {
+                                pos = myWishList.indexOf(item)
+                                break
+                            }
+                        }
+                        val data =
+                            myWishList[pos].product.variants.filter { myWishList[pos].selected.variantId == it.variantId }
+                                .single()
+
+                        data.isInCart = true
+                        adapterWishList.notifyItemChanged(pos)
+
+                        //                        myWishList.removeAt(pos)
 //                        adapterWishList.notifyItemRemoved(pos)
 //                        MainActivity.NavCount.myWishlist =
 //                            MainActivity.NavCount.myWishlist?.minus(1)
                     }
-                    binding.spinKit.visibility = View.GONE
+
 
                 }
                 Status.LOADING -> {
@@ -430,7 +446,8 @@ class FragmentWishlist : Fragment() {
                             setUpView()
                             position?.let {
                                 adapterWishList.notifyItemRemoved(position)
-                                MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.minus(1)
+                                MainActivity.NavCount.myWishlist =
+                                    MainActivity.NavCount.myWishlist?.minus(1)
 
                             }
 

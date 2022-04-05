@@ -54,4 +54,8 @@
     <dimen name="sl_size7">170dp</dimen>
     <dimen name="sl_size8">240dp</dimen>
     <dimen name="sl_size9">260dp</dimen>
+
+<!--    bottom shipping-->
+    <dimen name="fourteen_sp">13sp</dimen>
+    <dimen name="fifteen_sp">14sp</dimen>
 </resources>
