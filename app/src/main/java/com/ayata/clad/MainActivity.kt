@@ -102,7 +102,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     if (count != 0) {
                         badge.isVisible = true
                         badge.number = count
-                        Log.d(TAG, "setBadge: badgedone")
                     } else {
                         badge.isVisible = false
                         badge.clearNumber()
@@ -115,7 +114,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     if (count != 0) {
                         badge_wishlist.isVisible = true
                         badge_wishlist.number = count
-                        Log.d(TAG, "setBadge: badgedone")
                     } else {
                         badge_wishlist.isVisible = false
                         badge_wishlist.clearNumber()
