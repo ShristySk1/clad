@@ -14,6 +14,7 @@ import com.ayata.clad.databinding.FragmentMyorderBinding
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.adapter.AdapterMyReviews
 import com.ayata.clad.profile.reviews.model.ModelReview
+import com.ayata.clad.profile.reviews.model.Review
 
 class FragmentMyReviews : Fragment() {
     lateinit var binding: FragmentMyReviewsBinding
@@ -29,11 +30,13 @@ class FragmentMyReviews : Fragment() {
         return binding.root
     }
 
+
+
     private fun initRecyclerView() {
-        val data = arguments?.getSerializable("datas") as? List<ModelReview>
+        val data = arguments?.getSerializable("datas") as? List<Review>
         binding.rvReviews.apply {
             layoutManager=LinearLayoutManager(context)
-            adapter=AdapterMyReviews(context, data?.let { it }?: kotlin.run { arrayListOf() }).also {
+            adapter=AdapterMyReviews(context, data?: arrayListOf()).also {
                 it.setReviewClickListener {
                     (activity as MainActivity).openFragmentReviewForm(it)
                 }

@@ -165,7 +165,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             Log.d(TAG, "setRemoveObserver: " + message);
                             if (message.contains("removed", true)) {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                                updateCartAtPosition(updatePosition)
+                                updateCartAtPosition()
                             } else {
                                 val checkoutResponse =
                                     Gson().fromJson<CartResponse>(
@@ -570,21 +570,27 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     }
 
     override fun onCheckBoxClicked(data: ModelCheckout, isChecked: Boolean, position: Int) {
+        updatePosition = position
         selectCartApi(data.cartId, position)
     }
 
     override fun onAddClick(data: ModelCheckout, position: Int) {
+        updatePosition = position
         addToCartAPI(data.itemId, position, data)
     }
 
     override fun onRemove(data: ModelCheckout, position: Int) {
+        updatePosition = position
+        Log.d("myposition up", "onRemove: "+position);
+
         minusFromCartAPI(data.cartId, position)
     }
 
     override fun onCompleteRemove(data: ModelCheckout, position: Int) {
         //complete remove api
+        updatePosition = position
+        Log.d("myposition remove", "onRemove: "+position);
         removeFromCartAPI(data.cartId, position)
-
     }
 
     private fun isCheckAll() {
@@ -900,8 +906,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private fun addToCartAPI(id: Int, position: Int, old: ModelCheckout) {
         Log.d(TAG, "hitapicart: " + id);
 //        viewModel.resetAddCartLiveData()
-        updatePosition = position
-        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
+        viewModel.
+        addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
 
     }
 
@@ -912,7 +918,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         totalPriceNpr: Double? = 0.0,
         totalPriceDollar: Double? = 0.0
     ) {
-        Log.d(TAG, "updateCartAtPosition: " + updatePosition);
+        Log.d(TAG, "updateCartAtPosition:minud " + updatePosition);
         if (updatePosition != -1) {
             listCheckout[i].apply {
                 qty = seleted.quantity
@@ -929,19 +935,16 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     }
 
     private fun updateCartAtPosition(
-        position: Int,
-        totalPriceNpr: Double? = 0.0,
-        totalPriceDollar: Double? = 0.0
     ) {
-        listCheckout.removeAt(position)
-        Log.d(TAG, "updateCartAtPosition: " + position);
+        listCheckout.removeAt(updatePosition)
+        Log.d("testlist", "updateCartAtPosition: " + updatePosition);
+        Log.d("testlist", "updateCartAtPosition: " + listCheckout);
         isCheckAll()
         showFillingText()
         checkIfCartEmpty()
         updateTotals()
-        adapterCheckout.notifyItemRemoved(position)
+        adapterCheckout.notifyItemRemoved(updatePosition)
         MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.minus(1)
-
     }
 
     private fun checkIfCartEmpty() {
@@ -950,7 +953,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
 
     private fun minusFromCartAPI(id: Int, position: Int) {
-        updatePosition = position
+
         viewModel.minusFromCartAPI(
             PreferenceHandler.getToken(context).toString(),
             id
@@ -959,8 +962,9 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     }
 
+
     private fun removeFromCartAPI(id: Int, position: Int) {
-        updatePosition = position
+
         viewModel.removeFromCartAPI(
             PreferenceHandler.getToken(context).toString(),
             id
@@ -971,7 +975,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
 
     private fun selectCartApi(cartId: Int, position: Int) {
-        updatePosition = position
+
         viewModel.selectCartApi(
             PreferenceHandler.getToken(context).toString(),
             cartId

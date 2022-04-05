@@ -1,8 +1,6 @@
 package com.ayata.clad.profile.reviews
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
@@ -11,19 +9,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentMyReviewFormBinding
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
 import com.ayata.clad.profile.reviews.adapter.DataModel
+import com.ayata.clad.profile.reviews.model.Review
 import com.ayata.clad.profile.reviews.utils.CustomImagePickerComponents
+import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
+import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
+import com.ayata.clad.utils.PreferenceHandler
+import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 
 
 class FragmentMyReviewsForm : Fragment() {
@@ -31,10 +41,12 @@ class FragmentMyReviewsForm : Fragment() {
     lateinit var adapterImage: AdapterImageViewType
     private val images = ArrayList<Image>()
     lateinit var imagePickerLauncher: ImagePickerLauncher
+    private lateinit var viewModel: ReviewViewModel
+    lateinit var item: Review
     val TAG = "FragmentMyReviewsForm"
     val listImage = mutableListOf<DataModel>()
     val imageString = ArrayList<String>()
-    val MY_PHOTO_NUMBER=4
+    val MY_PHOTO_NUMBER = 4
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,9 +56,39 @@ class FragmentMyReviewsForm : Fragment() {
         binding =
             FragmentMyReviewFormBinding.inflate(inflater, container, false)
         initAppbar()
+        initBundle()
         initRecyclerview()
+        binding.btnPostReview.setOnClickListener {
+            val rate = binding.ratingBar1.rating
+            val desc = binding.description
+            val variantId = item.product.variantId
+            val size = "Comfortable"
+            val comfort = ""
+            val quality = ""
+            val fileList = arrayListOf<File>()
+            images.forEach {
+                fileList.add(File(it.path))
+            }
 
+        }
         return binding.root
+    }
+
+    private fun initBundle() {
+        arguments?.let {
+            item = it.getSerializable("datas") as Review
+            binding.name.text = item.product.name
+            binding.itemId.text = "Item ID: ${item.orderCode}"
+            Glide.with(requireContext()).load(item.product.image_url).into(binding.image)
+            binding.description.text =
+                "${item.product.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${item.product.color} / Qty: ${item.product.quantity}"
+
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,6 +96,14 @@ class FragmentMyReviewsForm : Fragment() {
         binding.llUploadImage.setOnClickListener {
             openGalleryForImages()
         }
+    }
+
+    private fun setUpViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ReviewViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        )[ReviewViewModel::class.java]
+        viewModel.reviewAPI(PreferenceHandler.getToken(requireContext())!!)
     }
 
     private fun initRecyclerview() {
@@ -71,8 +121,8 @@ class FragmentMyReviewsForm : Fragment() {
             addItemDecoration(itemDecoration)
         }
         adapterImage.setReviewAddClickListener {
-            val newLimit=MY_PHOTO_NUMBER-(listImage.size-1)
-            Log.d(TAG, "initRecyclerview: "+newLimit);
+            val newLimit = MY_PHOTO_NUMBER - (listImage.size - 1)
+            Log.d(TAG, "initRecyclerview: " + newLimit);
             openGalleryForImages()
         }
         adapterImage.setReviewDeleteClickListener { it, pos ->
@@ -165,7 +215,7 @@ class FragmentMyReviewsForm : Fragment() {
             } else {
                 selectedImages = images  // original selected images, used in multi mode
             }
-            Log.d(TAG, "createConfig: "+selectedImages.size);
+            Log.d(TAG, "createConfig: " + selectedImages.size);
         }
     }
 
@@ -202,7 +252,7 @@ class FragmentMyReviewsForm : Fragment() {
         listImage.add(camera)
         checkIfCamera()
         adapterImage.notifyDataSetChanged()
-        binding.llUploadImage.visibility=View.GONE
+        binding.llUploadImage.visibility = View.GONE
     }
 
     private fun checkIfCamera() {

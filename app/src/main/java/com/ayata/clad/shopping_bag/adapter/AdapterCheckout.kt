@@ -84,6 +84,20 @@ internal class AdapterCheckout(
                 Log.d("tetstdata", "clickView: ");
                 onItemClickListener.onAddClick(listItems[adapterPosition], adapterPosition)
             }
+            remove.setOnClickListener {
+                if(adapterPosition!=-1) {
+                    try {
+                        if (listItems[adapterPosition].qty == 1) {
+                            onItemClickListener.onCompleteRemove(listItems[adapterPosition], adapterPosition)
+                        } else {
+                            onItemClickListener.onRemove(listItems[adapterPosition], adapterPosition)
+                        }
+                    }catch (e:Exception){
+                        Log.d("testlog", "onBindViewHolder: "+e.message);
+                    }
+
+                }
+            }
 
         }
     }
@@ -172,19 +186,25 @@ internal class AdapterCheckout(
         }
         //click
         holder.clickView()
-        holder.remove.setOnClickListener {
-            if(position!=-1) {
-                if (item.qty == 1) {
-                    onItemClickListener.onCompleteRemove(listItems[position], position)
-                } else {
-                    onItemClickListener.onRemove(listItems[position], position)
-                }
-            }
-
-        }
+//        holder.remove.setOnClickListener {
+//            if(position!=-1) {
+//                try {
+//                    if (item.qty == 1) {
+//                        onItemClickListener.onCompleteRemove(listItems[position], position)
+//                    } else {
+//                        onItemClickListener.onRemove(listItems[position], position)
+//                    }
+//                }catch (e:Exception){
+//                    Log.d("testlog", "onBindViewHolder: "+e.message);
+//                }
+//
+//            }
+//
+//        }
 
 
     }
+    fun getList()=listItems
 
     private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int) {
         stock.setTextColor(ContextCompat.getColor(context!!, colorDark));

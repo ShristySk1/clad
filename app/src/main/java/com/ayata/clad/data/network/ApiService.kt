@@ -5,9 +5,10 @@ import com.ayata.clad.data.network.interceptor.NetworkConnectionInterceptor
 import com.ayata.clad.profile.address.response.ShippingAddressResponse
 import com.ayata.clad.profile.edit.response.Details
 import com.google.gson.JsonObject
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -241,7 +242,7 @@ interface ApiService {
     @FormUrlEncoded
     suspend fun cancelOrder(
         @Header("Authorization") token: String,
-        @Field("order_id") orderId:Int
+        @Field("order_id") orderId: Int
     ): Response<JsonObject>
 
     //coupons
@@ -249,12 +250,30 @@ interface ApiService {
     suspend fun coupons(
         @Header("Authorization") token: String
     ): Response<JsonObject>
+
     //apply coupons
     @POST("apply-coupon/")
     @FormUrlEncoded
     suspend fun applyCoupon(
         @Header("Authorization") token: String,
-        @Field("coupon_code") code:String
+        @Field("coupon_code") code: String
+    ): Response<JsonObject>
+
+    //review
+    @GET("reviews/")
+    suspend fun getReview(
+        @Header("Authorization") token: String
+    ): Response<JsonObject>
+
+    //post review
+    @Multipart
+    @POST("reviews/")
+    suspend fun postReview(
+        @Header("Authorization") token: String,
+        @Part("description") description: RequestBody,
+        @Part("rating") rating: RequestBody,
+        @Part("order_id") orderId: RequestBody,
+        @Part("images") images: List<MultipartBody.Part>
     ): Response<JsonObject>
 
 }

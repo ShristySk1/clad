@@ -25,4 +25,5 @@
             app:layout_constraintTop_toBottomOf="@+id/tabLayout_leadership_board"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
+    <include android:id="@+id/progress_bar" layout="@layout/layout_progress"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

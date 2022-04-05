@@ -6,17 +6,26 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.databinding.ItemRecyclerToBeReviewedBinding
 import com.ayata.clad.profile.reviews.model.ModelReview
+import com.ayata.clad.profile.reviews.model.Review
+import com.bumptech.glide.Glide
 
 
 class AdapterMyReviews(val context:Context,
-                       var myReviewList: List<ModelReview>,
+                       var myReviewList: List<Review>,
 ) : RecyclerView.Adapter<AdapterMyReviews.ViewHolder>() {
     inner class ViewHolder(val binding: ItemRecyclerToBeReviewedBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun clickView(item: ModelReview) {
-            if(item.isAlreadyReviewed){
+        fun clickView(item: Review) {
+            if(item.reviewDetails.isReviewed){
                 binding.tvReview.text="Edit"
             }
+
+            binding.name.text = item.product.name
+            binding.itemId.text = "Item ID: ${item.orderCode}"
+            Glide.with(context).load(item.product.image_url).into(binding.image)
+            binding.tvDate.text ="Purchased on "+ item.orderDate
+            binding.description.text =
+                "${item.product.size?.let { "Size: "+it +"/ "}?:run{""}}Colour: ${item.product.color} / Qty: ${item.product.quantity}"
             binding.tvReview.setOnClickListener {
                 itemReviewClick?.let {
                     it(item)
@@ -49,8 +58,8 @@ class AdapterMyReviews(val context:Context,
     override fun getItemCount(): Int {
         return myReviewList.size
     }
-    private var itemReviewClick: ((ModelReview) -> Unit)? = null
-    fun setReviewClickListener(listener: ((ModelReview) -> Unit)) {
+    private var itemReviewClick: ((Review) -> Unit)? = null
+    fun setReviewClickListener(listener: ((Review) -> Unit)) {
         itemReviewClick = listener
     }
 }

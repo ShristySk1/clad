@@ -24,6 +24,7 @@ import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.profile.myorder.order.FragmentOrderDetail
 import com.ayata.clad.profile.reviews.FragmentMyReviewsForm
 import com.ayata.clad.profile.reviews.model.ModelReview
+import com.ayata.clad.profile.reviews.model.Review
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
 import com.ayata.clad.shopping_bag.checkout.FragmentCheckout
@@ -570,9 +571,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             .commit()
     }
 
-    fun openFragmentReviewForm(it: ModelReview) {
+    fun openFragmentReviewForm(it: Review) {
+        val bundle=Bundle()
+        val frag= FragmentMyReviewsForm()
+        bundle.putSerializable("datas",it)
+        frag.arguments=bundle
         supportFragmentManager.beginTransaction().replace(R.id.main_fragment,
-            FragmentMyReviewsForm()
+           frag
         ).addToBackStack(null).commit()
 
     }
