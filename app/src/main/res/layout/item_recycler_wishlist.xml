@@ -87,6 +87,7 @@
         android:backgroundTint="@color/colorWhite"
         android:padding="8dp"
         android:src="@drawable/ic_cart"
+        android:tint="@color/colorBlack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

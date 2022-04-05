@@ -91,6 +91,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private fun setBadge() {
         badge = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_cart)
         badge_wishlist = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_favorite)
+        badge.badgeTextColor=ContextCompat.getColor(this@MainActivity,R.color.white)
+        badge_wishlist.badgeTextColor=ContextCompat.getColor(this@MainActivity,R.color.white)
         badge.isVisible = false
         badge_wishlist.isVisible = false
         NavCount.addMyBooleanListener(object :

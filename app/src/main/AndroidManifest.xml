@@ -19,16 +19,15 @@
         android:theme="@style/Theme.Clad"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
-        <activity android:name=".BaseActivity"></activity>
+        <activity android:name=".BaseActivity"/>
         <activity android:name=".story.StoryActivity" />
         <activity
             android:name=".SplashActivity"
             android:configChanges="orientation"
             android:exported="true"
             android:screenOrientation="portrait">
-            <intent-filter>.........
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
