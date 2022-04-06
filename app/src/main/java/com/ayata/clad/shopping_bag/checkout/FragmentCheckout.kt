@@ -165,7 +165,14 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             Log.d(TAG, "setRemoveObserver: " + message);
                             if (message.contains("removed", true)) {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                Log.d("testtest", "setRemoveObserver: " + updatePosition);
                                 updateCartAtPosition()
+                                val checkoutResponse =
+                                    Gson().fromJson<CartResponse>(
+                                        jsonObject,
+                                        CartResponse::class.java
+                                    )
+                                listContainingGrandtotal = checkoutResponse
                             } else {
                                 val checkoutResponse =
                                     Gson().fromJson<CartResponse>(
@@ -176,7 +183,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             }
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
-
                         }
                     }
                 }
@@ -492,7 +498,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                         var message = ""
                         if (viewID == R.id.add) {
                             message += "Add"
-
+                            updatePosition = position
                             showDialog(
                                 "Alert!",
                                 "Are you sure you want to remove this item from cart?",
@@ -581,7 +587,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     override fun onRemove(data: ModelCheckout, position: Int) {
         updatePosition = position
-        Log.d("myposition up", "onRemove: "+position);
+        Log.d("myposition up", "onRemove: " + position);
 
         minusFromCartAPI(data.cartId, position)
     }
@@ -589,7 +595,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     override fun onCompleteRemove(data: ModelCheckout, position: Int) {
         //complete remove api
         updatePosition = position
-        Log.d("myposition remove", "onRemove: "+position);
+        Log.d("myposition remove", "onRemove: " + position);
         removeFromCartAPI(data.cartId, position)
     }
 
@@ -613,18 +619,34 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         }
         binding.textItemSelected.text = "$selected/${listCheckout.count()} ITEMS Selected"
     }
-    private fun updateTotals(){
+
+    private fun updateTotals() {
         Log.d("uodatetoals", "updateTotals: here");
-        binding.subTotal.setText(getMyPrice(listContainingGrandtotal.cartTotalNpr,listContainingGrandtotal.cartTotalDollar))
-        binding.shippingPrice.text=getMyPrice(listContainingGrandtotal.cartShippingPriceNpr,listContainingGrandtotal.cartShippingPriceDollar)
-        binding.promoPrice.text=getMyPrice(listContainingGrandtotal.cartPromoDiscountNpr,listContainingGrandtotal.cartPromoDiscountDollar)
-        binding.totalPrice.text=getMyPrice(listContainingGrandtotal.cartGrandTotalNpr,listContainingGrandtotal.cartGrandTotalDollar)
+        binding.subTotal.setText(
+            getMyPrice(
+                listContainingGrandtotal.cartTotalNpr,
+                listContainingGrandtotal.cartTotalDollar
+            )
+        )
+        binding.shippingPrice.text = getMyPrice(
+            listContainingGrandtotal.cartShippingPriceNpr,
+            listContainingGrandtotal.cartShippingPriceDollar
+        )
+        binding.promoPrice.text = getMyPrice(
+            listContainingGrandtotal.cartPromoDiscountNpr,
+            listContainingGrandtotal.cartPromoDiscountDollar
+        )
+        binding.totalPrice.text = getMyPrice(
+            listContainingGrandtotal.cartGrandTotalNpr,
+            listContainingGrandtotal.cartGrandTotalDollar
+        )
     }
-    fun getMyPrice(npr:Double,dlr:Double):String{
+
+    fun getMyPrice(npr: Double, dlr: Double): String {
         if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
-           return "${getString(R.string.rs)} ${npr}"
+            return "${getString(R.string.rs)} ${npr}"
         } else {
-           return "${getString(R.string.usd)} ${dlr}"
+            return "${getString(R.string.usd)} ${dlr}"
         }
     }
 
@@ -778,7 +800,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                     if (checkoutResponse.cart.size > 0) {
                                         val cartlist = checkoutResponse.cart
                                         MainActivity.NavCount.myBoolean = cartlist.size
-                                        listContainingGrandtotal=checkoutResponse
+                                        listContainingGrandtotal = checkoutResponse
                                         prepareList(
                                             cartlist
                                         )
@@ -906,8 +928,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private fun addToCartAPI(id: Int, position: Int, old: ModelCheckout) {
         Log.d(TAG, "hitapicart: " + id);
 //        viewModel.resetAddCartLiveData()
-        viewModel.
-        addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
+        viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), id)
 
     }
 

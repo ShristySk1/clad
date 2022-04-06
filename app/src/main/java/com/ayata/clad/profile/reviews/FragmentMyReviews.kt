@@ -1,20 +1,18 @@
 package com.ayata.clad.profile.reviews
 
 import android.os.Bundle
-import android.view.Display
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentMyReviewsBinding
-import com.ayata.clad.databinding.FragmentMyorderBinding
-import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.adapter.AdapterMyReviews
-import com.ayata.clad.profile.reviews.model.ModelReview
 import com.ayata.clad.profile.reviews.model.Review
+import com.ayata.clad.utils.MyLayoutInflater
 
 class FragmentMyReviews : Fragment() {
     lateinit var binding: FragmentMyReviewsBinding
@@ -26,21 +24,26 @@ class FragmentMyReviews : Fragment() {
         binding =
             FragmentMyReviewsBinding.inflate(inflater, container, false)
         initAppbar()
-       initRecyclerView()
+        initRecyclerView()
         return binding.root
     }
-
 
 
     private fun initRecyclerView() {
         val data = arguments?.getSerializable("datas") as? List<Review>
         binding.rvReviews.apply {
-            layoutManager=LinearLayoutManager(context)
-            adapter=AdapterMyReviews(context, data?: arrayListOf()).also {
+            layoutManager = LinearLayoutManager(context)
+            adapter = AdapterMyReviews(context, data ?: arrayListOf()).also {
                 it.setReviewClickListener {
                     (activity as MainActivity).openFragmentReviewForm(it)
                 }
             }
+        }
+        if (data?.size == 0) {
+            //setup empty view
+            showEmpty("No products to review")
+        }else{
+            hideEmpty()
         }
     }
 
@@ -52,6 +55,26 @@ class FragmentMyReviews : Fragment() {
             textDescription = ""
         )
         (activity as MainActivity).showBottomNavigation(false)
+    }
+
+    private fun showEmpty(it: String) {
+        MyLayoutInflater().onAddField(
+            requireContext(),
+            binding.root,
+            R.layout.layout_error,
+            R.drawable.ic_cart,
+            "Empty!",
+            it
+        )
+    }
+
+    private fun hideEmpty() {
+        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+            MyLayoutInflater().onDelete(
+                binding.root,
+                binding.root.findViewById(R.id.layout_root)
+            )
+        }
     }
 
 }

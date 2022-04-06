@@ -10,8 +10,6 @@ import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import java.lang.Exception
 
 class ReviewViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
@@ -28,24 +26,30 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
     fun reviewAPI(token: String) {
         reviewResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getReviewApi("$token")
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("profileDetailAPI", "success: " + response.body())
-                    reviewResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("profileDetailAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    reviewResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.getReviewApi("$token")
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        reviewResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        reviewResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            } catch (e: Exception) {
+                reviewResponse.postValue(Resource.error(e.message.toString(), null))
             }
+
         }
     }
 
     fun observeGetReviewApi(): LiveData<Resource<JsonObject>> {
         return reviewResponse
     }
+
     fun postReviewAPI(
         token: String,
         desc: RequestBody,
@@ -59,7 +63,16 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
         postReviewResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
-                val response = mainRepository.postReviewApi("$token",desc,rate,orderId, images,size,comfort,quality)
+                val response = mainRepository.postReviewApi(
+                    "$token",
+                    desc,
+                    rate,
+                    orderId,
+                    images,
+                    size,
+                    comfort,
+                    quality
+                )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("profileDetailAPI", "success: " + response.body())
@@ -71,8 +84,8 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
                         postReviewResponse.postValue(Resource.error(response.message(), null))
                     }
                 }
-            }catch (e:Exception){
-                Log.d("testerror", "postReviewAPI: "+e.message);
+            } catch (e: Exception) {
+                Log.d("testerror", "postReviewAPI: " + e.message);
                 postReviewResponse.postValue(Resource.error(e.message.toString(), null))
 
             }

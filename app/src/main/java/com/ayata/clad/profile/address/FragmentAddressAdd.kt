@@ -59,10 +59,9 @@ class FragmentAddressAdd : Fragment() {
     }
 
     private fun setSpinner() {
-        val district = arrayListOf<String>("d1", "d2")
-        val district2 = arrayListOf<String>("d3", "d4")
+        val district = arrayListOf<String>("Kathmandu")
         val list2 =
-            arrayListOf<ModelTest>(ModelTest(district, "state1"), ModelTest(district2, "state2"))
+            arrayListOf<ModelTest>(ModelTest(district, "Bagmati Province"))
 
         if (binding.spinner != null) {
             val adapter =
@@ -76,9 +75,6 @@ class FragmentAddressAdd : Fragment() {
                     view: View, position: Int, id: Long
                 ) {
                     spin_state=list2[position].state
-//                    Toast.makeText(this@MainActivity,
-//                        getString(R.string.selected_item) + " " +
-//                                "" + languages[position], Toast.LENGTH_SHORT).show()
                     setSpinnerDistrict(list2[position])
                 }
 
@@ -201,7 +197,7 @@ class FragmentAddressAdd : Fragment() {
         jsonObject.addProperty("title", binding.textInputTitle.editText!!.text.toString())
         jsonObject.addProperty("street_name", binding.textInputAddress.editText!!.text.toString())
         jsonObject.addProperty("city", binding.textInputCity.editText!!.text.toString())
-        jsonObject.addProperty("state", spin_state)
+        jsonObject.addProperty("state", 3)
         jsonObject.addProperty("district", spin_district)
         jsonObject.addProperty("postal_code", binding.textInputZip.editText!!.text.toString())
         jsonObject.addProperty("phone_no", binding.textInputPhone.editText!!.text.toString())
@@ -218,7 +214,7 @@ class FragmentAddressAdd : Fragment() {
         jsonObject.addProperty("title", binding.textInputTitle.editText!!.text.toString())
         jsonObject.addProperty("street_name", binding.textInputAddress.editText!!.text.toString())
         jsonObject.addProperty("city", binding.textInputCity.editText!!.text.toString())
-        jsonObject.addProperty("state", spin_state)
+        jsonObject.addProperty("state", 3)
         jsonObject.addProperty("district", spin_district)
         jsonObject.addProperty("postal_code", binding.textInputZip.editText!!.text.toString())
         jsonObject.addProperty("phone_no", binding.textInputPhone.editText!!.text.toString())
