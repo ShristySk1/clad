@@ -2,6 +2,7 @@ package com.ayata.clad.profile.reviews.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Product(
     val color: String,
@@ -14,4 +15,4 @@ data class Product(
     @SerializedName("variant_id")
     val variantId: Int,
     val image_url:String
-)
+):Serializable

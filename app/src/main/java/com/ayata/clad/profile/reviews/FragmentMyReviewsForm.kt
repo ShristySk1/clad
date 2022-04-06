@@ -8,11 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
+import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentMyReviewFormBinding
 import com.ayata.clad.productlist.ItemOffsetDecoration
@@ -30,6 +33,8 @@ import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -47,6 +52,9 @@ class FragmentMyReviewsForm : Fragment() {
     val listImage = mutableListOf<DataModel>()
     val imageString = ArrayList<String>()
     val MY_PHOTO_NUMBER = 4
+    var myChosenSize = ""
+    var myChosenComfort = ""
+    var myChosenQuality = 50
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,22 +64,111 @@ class FragmentMyReviewsForm : Fragment() {
         binding =
             FragmentMyReviewFormBinding.inflate(inflater, container, false)
         initAppbar()
-        initBundle()
+        setTab(binding.tabSize, binding.tabComfort)
         initRecyclerview()
+        initBundle()
+        observePostReviewApi()
+        binding.progressBarQuality.addOnChangeListener { slider, value, fromUser -> /* `value` is the argument you need */
+            myChosenQuality = value.toInt()
+        }
         binding.btnPostReview.setOnClickListener {
+            Log.d("testclick", "onCreateView: ");
             val rate = binding.ratingBar1.rating
-            val desc = binding.description
-            val variantId = item.product.variantId
-            val size = "Comfortable"
-            val comfort = ""
-            val quality = ""
-            val fileList = arrayListOf<File>()
+            val desc = RequestBody.create(
+                "text/plain".toMediaTypeOrNull(),
+                binding.tvDescription.text.toString()
+            )
+            val orderId = item.orderId
+            Log.d("testsize", "onCreateView: " + myChosenSize);
+            Log.d("testsize", "onCreateView:comfory " + myChosenComfort);
+            Log.d("testsize", "onCreateView:quality " + myChosenQuality);
+            val size = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenSize)
+            val comfort = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenComfort)
+
+            val fileList = arrayListOf<MultipartBody.Part>()
             images.forEach {
-                fileList.add(File(it.path))
+                fileList.add(
+                    MultipartBody.Part.createFormData(
+                        "images",
+                        "img_" + images.indexOf(it) + ".jpg",
+                        RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
+                    )
+                )
+            }
+            viewModel.postReviewAPI(
+                PreferenceHandler.getToken(requireContext())!!,
+                desc,
+                rate,
+                orderId,
+                fileList,
+                size,
+                comfort,
+                myChosenQuality
+            )
+        }
+
+
+        return binding.root
+    }
+
+    private fun setTab(tabSize: TabLayout, tabComfort: TabLayout) {
+        tabSize.setOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val position = tab.position
+                myChosenSize = tabSize.getTabAt(position)?.text.toString()
             }
 
-        }
-        return binding.root
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+        })
+        tabComfort.setOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val position = tab.position
+                myChosenComfort = tabComfort.getTabAt(position)?.text.toString()
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+        })
+
+    }
+
+    private fun observePostReviewApi() {
+        viewModel.observePostReviewApi().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+//                    binding.spinKit.visibility = View.GONE
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val message = jsonObject.get("message").asString
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+
+                        }
+                    }
+                }
+                Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+//                    binding.spinKit.visibility = View.GONE
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
     }
 
     private fun initBundle() {
@@ -83,6 +180,56 @@ class FragmentMyReviewsForm : Fragment() {
             binding.description.text =
                 "${item.product.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${item.product.color} / Qty: ${item.product.quantity}"
 
+            if (item.reviewDetails.isReviewed) {
+                binding.tvDescription.setText(item.reviewDetails.description)
+                binding.ratingBar1.rating = item.reviewDetails.rate.toFloat()
+                val img = arrayListOf<Image>()
+                if (item.reviewDetails.imageUrl.size > 0) {
+                    item.reviewDetails.imageUrl.forEach {
+                        img.add(
+                            Image(
+                                item.reviewDetails.imageUrl.indexOf(it).toLong() + 1,
+                                "name",
+                                it
+                            )
+                        )
+                    }
+                }
+                formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort)
+                binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
+                myChosenQuality = item.reviewDetails.quality.toInt()
+                myChosenSize=item.reviewDetails.size
+                myChosenComfort=item.reviewDetails.comfort
+                printImages(img)
+            }
+        }
+    }
+
+    fun formatMyTab(title: String?, titleComfort: String) {
+        val tabStrip3 = binding.tabSize.getChildAt(0) as LinearLayout
+        for (i in 0 until tabStrip3.childCount) {
+//            tabStrip3.getChildAt(i).setOnTouchListener(View.OnTouchListener { v, event -> true })
+            if ((binding.tabSize.getTabAt(i)?.text.toString())?.equals(
+                    title,
+                    ignoreCase = true
+                )
+            ) {
+                binding.tabSize.getTabAt(i)?.select().toString()
+            } else {
+
+            }
+        }
+        val tabStrip = binding.tabComfort.getChildAt(0) as LinearLayout
+        for (i in 0 until tabStrip.childCount) {
+//            tabStrip3.getChildAt(i).setOnTouchListener(View.OnTouchListener { v, event -> true })
+            if ((binding.tabComfort.getTabAt(i)?.text.toString())?.equals(
+                    titleComfort,
+                    ignoreCase = true
+                )
+            ) {
+                binding.tabComfort.getTabAt(i)?.select().toString()
+            } else {
+            }
         }
     }
 
@@ -103,7 +250,6 @@ class FragmentMyReviewsForm : Fragment() {
             this,
             ReviewViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ReviewViewModel::class.java]
-        viewModel.reviewAPI(PreferenceHandler.getToken(requireContext())!!)
     }
 
     private fun initRecyclerview() {

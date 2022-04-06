@@ -2,10 +2,14 @@ package com.ayata.clad.profile.reviews.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class ReviewDetails(
     val customer: String,
     val description: String,
+    val size: String,
+    val comfort: String,
+    val quality: Int,
     @SerializedName("image_url")
     val imageUrl: List<String>,
     @SerializedName("is_reviewed")
@@ -13,4 +17,4 @@ data class ReviewDetails(
     val rate: Double,
     @SerializedName("reviewed_date")
     val reviewedDate: String
-)
+):Serializable

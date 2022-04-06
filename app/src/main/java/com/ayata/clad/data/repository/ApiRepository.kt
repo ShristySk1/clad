@@ -17,6 +17,7 @@ import com.ayata.clad.view_all.paging.ProductPagingDataSource
 import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 
 class ApiRepository constructor(private val retrofitService: ApiService) {
 
@@ -118,7 +119,16 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun applyCoupons(token: String,coupon_code:String) = retrofitService.applyCoupon(token,coupon_code)
     //review api
     suspend fun getReviewApi(token: String) = retrofitService.getReview(token)
-    suspend fun postReviewApi(token: String,des:RequestBody,rating:RequestBody,orderId:RequestBody,images:List<MultipartBody.Part>) = retrofitService.postReview(token,des,rating,orderId, images)
+    suspend fun postReviewApi(
+        token: String,
+        des: RequestBody,
+        rating: Float,
+        orderId: Int,
+        images: List<MultipartBody.Part>,
+        size: RequestBody,
+        comfort: RequestBody,
+        quality: Int
+    ) = retrofitService.postReview(token,des,rating,orderId, images,size,comfort,quality)
 
 
 

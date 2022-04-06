@@ -6,12 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.profile.edit.response.Details
-import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import java.lang.Exception
 
 class ReviewViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
@@ -46,21 +46,37 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
     fun observeGetReviewApi(): LiveData<Resource<JsonObject>> {
         return reviewResponse
     }
-    fun postReviewAPI(token: String,desc:RequestBody,rate:RequestBody,orderId:RequestBody,images:List<MultipartBody.Part>) {
+    fun postReviewAPI(
+        token: String,
+        desc: RequestBody,
+        rate: Float,
+        orderId: Int,
+        images: List<MultipartBody.Part>,
+        size: RequestBody,
+        comfort: RequestBody,
+        quality: Int
+    ) {
         postReviewResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.postReviewApi("$token",desc,rate,orderId, images)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("profileDetailAPI", "success: " + response.body())
-                    postReviewResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("profileDetailAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    postReviewResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.postReviewApi("$token",desc,rate,orderId, images,size,comfort,quality)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        postReviewResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        postReviewResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                Log.d("testerror", "postReviewAPI: "+e.message);
+                postReviewResponse.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
     }
 

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -271,9 +272,12 @@ interface ApiService {
     suspend fun postReview(
         @Header("Authorization") token: String,
         @Part("description") description: RequestBody,
-        @Part("rating") rating: RequestBody,
-        @Part("order_id") orderId: RequestBody,
-        @Part("images") images: List<MultipartBody.Part>
+        @Part("rating") rating: Float,
+        @Part("order_id") orderId: Int,
+        @Part images: List<MultipartBody.Part>,
+        @Part("size")size: RequestBody,
+        @Part("comfort")comfort: RequestBody,
+        @Part("quality")quality: Int
     ): Response<JsonObject>
 
 }

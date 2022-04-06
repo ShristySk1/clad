@@ -9,6 +9,8 @@ data class Review(
     val orderCode: String,
     @SerializedName("order_date")
     val orderDate: String,
+    @SerializedName("order_id")
+    val orderId: Int,
     val product: Product,
     @SerializedName("review_details")
     val reviewDetails: ReviewDetails

@@ -58,4 +58,10 @@
 <!--    bottom shipping-->
     <dimen name="fourteen_sp">13sp</dimen>
     <dimen name="fifteen_sp">14sp</dimen>
+
+    <dimen name="mtrl_slider_widget_height">30dp</dimen>
+
+    <dimen name="mtrl_slider_track_side_padding">16dp</dimen>
+    <dimen name="mtrl_slider_track_top">18dp</dimen>
+
 </resources>
