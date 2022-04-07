@@ -274,10 +274,21 @@ interface ApiService {
         @Part("description") description: RequestBody,
         @Part("rating") rating: Float,
         @Part("order_id") orderId: Int,
-        @Part images: List<MultipartBody.Part>,
+        @Part ("images")images: List<Int>,
         @Part("size")size: RequestBody,
         @Part("comfort")comfort: RequestBody,
         @Part("quality")quality: Int
     ): Response<JsonObject>
 
+    @Multipart
+    @POST("upload-photo/")
+    suspend fun uploadPhoto(
+        @Part images: List<MultipartBody.Part>,
+    ): Response<JsonObject>
+
+    @POST("delete-photo/")
+    @FormUrlEncoded
+    suspend fun deletePhoto(
+        @Field("image_id") image_id: Int,
+    ): Response<JsonObject>
 }

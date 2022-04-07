@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +24,7 @@ import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
 import com.ayata.clad.profile.reviews.adapter.DataModel
 import com.ayata.clad.profile.reviews.model.Review
+import com.ayata.clad.profile.reviews.response.ImageUploadResponse
 import com.ayata.clad.profile.reviews.utils.CustomImagePickerComponents
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
@@ -35,10 +38,14 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.gson.Gson
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okio.BufferedSink
 import java.io.File
+import java.io.FileInputStream
 
 
 class FragmentMyReviewsForm : Fragment() {
@@ -56,6 +63,7 @@ class FragmentMyReviewsForm : Fragment() {
     var myChosenComfort = ""
     var myChosenQuality = 50
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,10 +72,12 @@ class FragmentMyReviewsForm : Fragment() {
         binding =
             FragmentMyReviewFormBinding.inflate(inflater, container, false)
         initAppbar()
+        setUpViewModel()
         setTab(binding.tabSize, binding.tabComfort)
         initRecyclerview()
         initBundle()
         observePostReviewApi()
+        observeImageUploadApi()
         binding.progressBarQuality.addOnChangeListener { slider, value, fromUser -> /* `value` is the argument you need */
             myChosenQuality = value.toInt()
         }
@@ -85,22 +95,22 @@ class FragmentMyReviewsForm : Fragment() {
             val size = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenSize)
             val comfort = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenComfort)
 
-            val fileList = arrayListOf<MultipartBody.Part>()
-            images.forEach {
-                fileList.add(
-                    MultipartBody.Part.createFormData(
-                        "images",
-                        "img_" + images.indexOf(it) + ".jpg",
-                        RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
-                    )
-                )
-            }
+//            val fileList = arrayListOf<MultipartBody.Part>()
+//            images.forEach {
+//                fileList.add(
+//                    MultipartBody.Part.createFormData(
+//                        "images",
+//                        "img_" + images.indexOf(it) + ".jpg",
+//                        RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
+//                    )
+//                )
+//            }
             viewModel.postReviewAPI(
                 PreferenceHandler.getToken(requireContext())!!,
                 desc,
                 rate,
                 orderId,
-                fileList,
+                arrayListOf(),
                 size,
                 comfort,
                 myChosenQuality
@@ -147,22 +157,23 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observePostReviewApi().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
+                    binding.progressBar.rootContainer.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
                             val message = jsonObject.get("message").asString
                             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                            parentFragmentManager.popBackStackImmediate()
                         } catch (e: Exception) {
 
                         }
                     }
                 }
                 Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
+                    binding.progressBar.rootContainer.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
-//                    binding.spinKit.visibility = View.GONE
+                    binding.progressBar.rootContainer.visibility = View.GONE
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
@@ -174,6 +185,7 @@ class FragmentMyReviewsForm : Fragment() {
     private fun initBundle() {
         arguments?.let {
             item = it.getSerializable("datas") as Review
+            Log.d("tetstitem", "initBundle: " + item);
             binding.name.text = item.product.name
             binding.itemId.text = "Item ID: ${item.orderCode}"
             Glide.with(requireContext()).load(item.product.image_url).into(binding.image)
@@ -198,8 +210,8 @@ class FragmentMyReviewsForm : Fragment() {
                 formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort)
                 binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
                 myChosenQuality = item.reviewDetails.quality.toInt()
-                myChosenSize=item.reviewDetails.size
-                myChosenComfort=item.reviewDetails.comfort
+                myChosenSize = item.reviewDetails.size
+                myChosenComfort = item.reviewDetails.comfort
                 printImages(img)
             }
         }
@@ -233,10 +245,6 @@ class FragmentMyReviewsForm : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setUpViewModel()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -382,23 +390,62 @@ class FragmentMyReviewsForm : Fragment() {
         for (image in images) {
             imageString.add(image.uri.toString())
         }
-        setModelData(imageString)
+        setModelData()
     }
 
-    private fun setModelData(list: ArrayList<String>) {
-        val datas = list.map {
-            DataModel.Image(it)
+    private fun setModelData() {
+        val fileList = arrayListOf<MultipartBody.Part>()
+        images.forEach {
+            fileList.add(
+                MultipartBody.Part.createFormData(
+                    "images",
+                    "img_" + images.indexOf(it) + ".jpg",
+                    RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
+                )
+            )
         }
-        val camera = DataModel.Camera(
-            R.drawable.ic_add,
-            true
-        )
-        listImage.clear()
-        listImage.addAll(datas)
-        listImage.add(camera)
-        checkIfCamera()
-        adapterImage.notifyDataSetChanged()
-        binding.llUploadImage.visibility = View.GONE
+        viewModel.imageUploadAPI(fileList)
+    }
+
+
+    private fun observeImageUploadApi() {
+        viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val imageResponse =
+                                Gson().fromJson(jsonObject, ImageUploadResponse::class.java)
+                            if (imageResponse.details != null) {
+                               listImage.clear()
+                                imageResponse.details.forEach {
+                                    listImage.add(DataModel.Image(it.imageUrl))
+                                }
+                            }
+                            val camera = DataModel.Camera(
+                                R.drawable.ic_add,
+                                true
+                            )
+                            listImage.add(camera)
+                            checkIfCamera()
+                            adapterImage.notifyDataSetChanged()
+                            binding.llUploadImage.visibility = View.GONE
+
+                        } catch (e: Exception) {
+
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
     }
 
     private fun checkIfCamera() {
@@ -407,4 +454,36 @@ class FragmentMyReviewsForm : Fragment() {
         (listImage[listImage.size - 1] as DataModel.Camera).isEnabled = listImage.size < 5
     }
 
+    /** Returns a new request body that transmits the content of this. */
+    fun File.asRequestBodyWithProgress(
+        contentType: MediaType? = null,
+        progressCallback: ((progress: Float) -> Unit)?
+    ): RequestBody {
+        return object : RequestBody() {
+            override fun contentType() = contentType
+
+            override fun contentLength() = length()
+
+            override fun writeTo(sink: BufferedSink) {
+                val fileLength = contentLength()
+                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                val inSt = FileInputStream(this@asRequestBodyWithProgress)
+                var uploaded = 0L
+                inSt.use {
+                    var read: Int = inSt.read(buffer)
+                    val handler = Handler(Looper.getMainLooper())
+                    while (read != -1) {
+                        progressCallback?.let {
+                            uploaded += read
+                            val progress = (uploaded.toDouble() / fileLength.toDouble()).toFloat()
+                            handler.post { it(progress) }
+
+                            sink.write(buffer, 0, read)
+                        }
+                        read = inSt.read(buffer)
+                    }
+                }
+            }
+        }
+    }
 }

@@ -102,7 +102,6 @@ private lateinit var progressDialog: ProgressDialog
                     progressDialog.dismiss()
 //                    activityOnboarding.spinKit.visibility= View.GONE
                     //{"message":"Token created successfully","details":{"token":"0d43a2fcea8a4fcd14481cb8018a4890f0330126","profile":{"email":"srezty@gmail.com","first_name":"Shristy","last_name":"Shakya"}}}
-
                     val email =
                         it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("email")
                             .toString()
@@ -155,6 +154,8 @@ private lateinit var progressDialog: ProgressDialog
     ) {
         PreferenceHandler.setEmail(this, email)
         PreferenceHandler.setUsername(this, firstname+" "+lastname)
+        PreferenceHandler.setFirstName(this, firstname)
+        PreferenceHandler.setLastName(this, lastname)
         PreferenceHandler.setToken(this, "Token "+token)
         Log.d(com.ayata.clad.login.TAG, "saveUserCredential: "+currentUser.photoUrl.toString());
         PreferenceHandler.setGender(this,gender?:"")

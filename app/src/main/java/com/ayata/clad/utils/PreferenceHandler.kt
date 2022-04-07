@@ -18,6 +18,8 @@ class PreferenceHandler {
         private const val TOKEN="bearer token"
         const val EMAIL = "email"
         const val USERNAME = "username"
+        const val FIRSTNAME = "firstname"
+        const val LASTNAME = "lastname"
         const val IMAGE = "image"
         const val SHOW_ONBOARDING="show onboarding"
         const val RECENT_SEARCH="recent search"
@@ -87,7 +89,26 @@ class PreferenceHandler {
             context
         )?.getString(USERNAME, "")
 
-
+        fun setFirstName(context: Context, username: String) {
+            editor(
+                context,
+                FIRSTNAME,
+                username
+            )
+        }
+        fun setLastName(context: Context, username: String) {
+            editor(
+                context,
+                LASTNAME,
+                username
+            )
+        }
+        fun getLastName(context: Context) = getSharedPreference(
+            context
+        )?.getString(LASTNAME, "")
+        fun getFirstName(context: Context) = getSharedPreference(
+            context
+        )?.getString(FIRSTNAME, "")
 
         fun setRecentSearchList(context: Context, username: Set<String>) {
             editorList(

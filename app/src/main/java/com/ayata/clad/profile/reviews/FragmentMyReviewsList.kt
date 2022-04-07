@@ -37,11 +37,6 @@ class FragmentMyReviewsList : Fragment() {
     private lateinit var listFragment: ArrayList<Fragment>
     private lateinit var viewModel: ReviewViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setUpViewModel()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +45,7 @@ class FragmentMyReviewsList : Fragment() {
         binding =
             FragmentMyReviewsListBinding.inflate(inflater, container, false)
         initAppbar()
+        setUpViewModel()
         setTabLayout()
         return binding.root
     }
@@ -181,10 +177,10 @@ class FragmentMyReviewsList : Fragment() {
         listReviewed.clear()
         listReviewed.addAll(reviewed)
         listReviewUnreviewed.addAll(unreviewed)
-        Log.d("testreviewlist", "setData: "+listReviewed);
-        Log.d("testreviewlist", "setData: "+listReviewUnreviewed);
+        Log.d("testreviewlist", "setData: reviewed "+listReviewed);
+        Log.d("testreviewlist", "setData: unreviewd "+listReviewUnreviewed);
 
-        val currentPosition: Int = binding.viewPager.getCurrentItem()
+        val currentPosition: Int =0
         adapterReviewViewPager.notifyDataSetChanged()
         binding.viewPager.adapter = null
         binding.viewPager.adapter = adapterReviewViewPager

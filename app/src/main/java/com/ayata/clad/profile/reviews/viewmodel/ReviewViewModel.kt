@@ -17,6 +17,10 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
     private val reviewResponse = MutableLiveData<Resource<JsonObject>>()
     private val postReviewResponse = MutableLiveData<Resource<JsonObject>>()
 
+
+    private val imageUploadResponse = MutableLiveData<Resource<JsonObject>>()
+    private val imageDeleteResponse = MutableLiveData<Resource<JsonObject>>()
+
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
@@ -50,12 +54,66 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
         return reviewResponse
     }
 
+    fun imageUploadAPI(images: List<MultipartBody.Part>) {
+        imageUploadResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.uploadImageReviewApi(images)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        imageUploadResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        imageUploadResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            } catch (e: Exception) {
+                imageUploadResponse.postValue(Resource.error(e.message.toString(), null))
+            }
+
+        }
+    }
+
+    fun observeimageUploadAPI(): LiveData<Resource<JsonObject>> {
+        return imageUploadResponse
+    }
+
+    fun imageDeleteAPI(image_id: Int) {
+        imageDeleteResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.deleteImageReviewApi(image_id)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        imageDeleteResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        imageDeleteResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            } catch (e: Exception) {
+                imageDeleteResponse.postValue(Resource.error(e.message.toString(), null))
+            }
+
+        }
+    }
+
+    fun observeDeleteUploadAPI(): LiveData<Resource<JsonObject>> {
+        return imageDeleteResponse
+    }
+
     fun postReviewAPI(
         token: String,
         desc: RequestBody,
         rate: Float,
         orderId: Int,
-        images: List<MultipartBody.Part>,
+        images: List<Int>,
         size: RequestBody,
         comfort: RequestBody,
         quality: Int

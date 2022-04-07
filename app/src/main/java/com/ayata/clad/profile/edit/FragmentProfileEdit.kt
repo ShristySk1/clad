@@ -55,13 +55,13 @@ class FragmentProfileEdit : Fragment() {
                 ProfileViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
             )
                 .get(ProfileViewModel::class.java)
-
         // init ViewModel
         accountViewmodel =
             ViewModelProviders.of(requireActivity()).get(AccountViewModel::class.java)
     }
     private fun setDataToView(detail: Details) {
-        binding.textInputName.editText?.setText(detail.fullName)
+        binding.textInputName.editText?.setText(detail.firstName)
+        binding.textInputNameLast.editText?.setText(detail.lastName)
         binding.textInputEmail.editText?.setText(detail.email)
         binding.textInputDOB.editText?.setText(detail.dob)
         binding.textInputPhone.editText?.setText(detail.phone_no)
@@ -128,11 +128,12 @@ class FragmentProfileEdit : Fragment() {
 
         binding.btnSave.setOnClickListener {
             val v_email = validateEmail()
-            val v_name = validateTextField(binding.textInputName, "Name")
+            val v_name = validateTextField(binding.textInputName, "First Name")
+            val v_name_last = validateTextField(binding.textInputNameLast, "Last Name")
             val v_dob = validateTextField(binding.textInputDOB, "DOB")
             val v_phone = validateTextField(binding.textInputPhone, "Contact Number")
 //            val v_gender = validateRadioButton()
-            if (v_email && v_dob && v_dob && v_name && v_phone) {
+            if (v_email && v_dob && v_dob && v_name && v_phone&&v_name_last) {
                 saveToServer()
             }
 
@@ -146,10 +147,11 @@ class FragmentProfileEdit : Fragment() {
 
     private fun saveToServer() {
         val name = binding.textInputName.editText!!.text.toString().trim { it <= ' ' }
+        val lastname = binding.textInputNameLast.editText!!.text.toString().trim { it <= ' ' }
         val dob = binding.textInputDOB.editText!!.text.toString().trim { it <= ' ' }
         val phone = binding.textInputPhone.editText!!.text.toString().trim { it <= ' ' }
         val myViewData =
-            Details(dob = dob, email, fullName = name, gender = gender, phone_no = phone)
+            Details(dob = dob, email, firstName = name,lastName= lastname, gender = gender, phone_no = phone)
         viewModel.profileDetailUpdateAPI(PreferenceHandler.getToken(context)!!, myViewData)
         viewModel.postProfileAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -244,7 +246,8 @@ class FragmentProfileEdit : Fragment() {
         val detail: Details = Details(
             PreferenceHandler.getDOB(requireContext()),
             PreferenceHandler.getEmail(requireContext()) ?: "",
-            PreferenceHandler.getUsername(requireContext()) ?: "",
+            PreferenceHandler.getFirstName(requireContext()) ?: "",
+            PreferenceHandler.getLastName(requireContext())?:"",
             PreferenceHandler.getGender(requireContext()),
             PreferenceHandler.getPhone(requireContext())
         )

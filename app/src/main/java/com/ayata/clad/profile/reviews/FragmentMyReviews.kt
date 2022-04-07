@@ -1,6 +1,7 @@
 package com.ayata.clad.profile.reviews
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ class FragmentMyReviews : Fragment() {
 
     private fun initRecyclerView() {
         val data = arguments?.getSerializable("datas") as? List<Review>
+        Log.d("testdatas", "initRecyclerView: "+data);
         binding.rvReviews.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = AdapterMyReviews(context, data ?: arrayListOf()).also {
