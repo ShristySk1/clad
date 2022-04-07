@@ -47,7 +47,7 @@ import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
 
-
+const val  MY_PHOTO_NUMBER = 4
 class FragmentMyReviewsForm : Fragment() {
     lateinit var binding: FragmentMyReviewFormBinding
     lateinit var adapterImage: AdapterImageViewType
@@ -58,7 +58,7 @@ class FragmentMyReviewsForm : Fragment() {
     val TAG = "FragmentMyReviewsForm"
     val listImage = mutableListOf<DataModel>()
     val imageString = ArrayList<String>()
-    val MY_PHOTO_NUMBER = 4
+
     var myChosenSize = ""
     var myChosenComfort = ""
     var myChosenQuality = 50
@@ -412,6 +412,7 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    binding.progressBarPhoto.visibility=View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -424,13 +425,13 @@ class FragmentMyReviewsForm : Fragment() {
                                 }
                             }
                             val camera = DataModel.Camera(
-                                R.drawable.ic_add,
+                                R.drawable.ic_camera,
                                 true
                             )
                             listImage.add(camera)
                             checkIfCamera()
                             adapterImage.notifyDataSetChanged()
-                            binding.llUploadImage.visibility = View.GONE
+
 
                         } catch (e: Exception) {
 
@@ -438,9 +439,13 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                 }
                 Status.LOADING -> {
+                    binding.progressBarPhoto.visibility=View.VISIBLE
+                    binding.llUploadImage.visibility = View.GONE
+
                 }
                 Status.ERROR -> {
                     //Handle Error
+                    binding.progressBarPhoto.visibility=View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }

@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
+import com.ayata.clad.profile.reviews.MY_PHOTO_NUMBER
 import com.ayata.clad.profile.reviews.model.ModelReview
 import com.bumptech.glide.Glide
+import org.w3c.dom.Text
 
 class AdapterImageViewType(private val adapterData:MutableList<DataModel>) : RecyclerView.Adapter<AdapterImageViewType.DataAdapterViewHolder>() {
 
@@ -72,10 +75,14 @@ class AdapterImageViewType(private val adapterData:MutableList<DataModel>) : Rec
         private const val TYPE_IMAGE = 1
 
     }
-    class DataAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class DataAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         private fun bindCamera(item: DataModel.Camera) {
+            val img:ImageView=itemView.findViewById(R.id.image)
+            val txt:TextView=itemView.findViewById(R.id.text)
             //Do your view assignment here from the data model
-            Glide.with(itemView.context).load(item.cameraImage).into(itemView as ImageView)
+            Glide.with(itemView.context).load(item.cameraImage).into(img)
+            txt.setText("${adapterData.size-1}/${MY_PHOTO_NUMBER}")
             itemView.isEnabled = item.isEnabled
 
         }
