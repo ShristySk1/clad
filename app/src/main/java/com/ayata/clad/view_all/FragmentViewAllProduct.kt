@@ -307,7 +307,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
 
     override fun onWishListClick(data: ProductDetail, position: Int) {
         val isOnWishList = data.isInWishlist
-        Log.d(TAG, "onWishListClick: " + isOnWishList);
+        Log.d(TAG, "onWishListClick: $isOnWishList")
 //        api call
         if (isOnWishList) {
 //            removeWishListAPI(data, position)

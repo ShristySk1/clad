@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".product.reviews.FragmentReview">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="4.5/5"
+            android:textColor="@color/colorBlack"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/ratingBar1"
             app:layout_constraintHorizontal_bias="0.5"
@@ -31,7 +33,7 @@
             android:layout_height="20dp"
             android:isIndicator="true"
             android:numStars="5"
-            android:progressDrawable="@drawable/custom_rating_star"
+            android:progressDrawable="@drawable/custom_rating_star_theme"
             android:rating="3.5"
             android:stepSize="0.5"
             app:layout_constraintBottom_toBottomOf="@+id/tv_Rating"
@@ -46,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="33 Reviews"
+            android:textColor="@color/colorGrayText2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_Rating" />

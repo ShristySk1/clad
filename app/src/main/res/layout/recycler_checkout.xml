@@ -51,7 +51,7 @@
         </RelativeLayout></LinearLayout>
 
     <RelativeLayout
-        android:background="@color/white"
+        android:background="@color/colorWhite"
         android:id="@+id/layout1"
         android:paddingHorizontal="16dp"
         android:layout_width="match_parent"
@@ -74,7 +74,7 @@
                     android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitXY"
                     android:src="@drawable/image_shoe" />
 
                 <CheckBox
@@ -109,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@id/itemId"
+                android:layout_toStartOf="@id/itemId"
                 android:maxLines="2"
                 android:text="Nike Air Jordandddddddd"
                 android:textColor="@color/colorBlack"
@@ -122,20 +122,21 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:text="Item Id: 788455"
-                android:textColor="@color/colorGrayTextShopping"
-                android:textSize="10sp"
+                android:textColor="@color/colorGrayText"
+                android:textSize="12sp"
                 android:textStyle="normal" />
 
             <TextView
                 android:id="@id/color"
+                android:layout_marginTop="2dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name"
-                android:layout_marginLeft="4dp"
-                android:layout_toRightOf="@id/ivColor"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/layout_circle"
                 android:text="Black"
                 android:textColor="@color/colorGrayTextShopping"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="normal" />
 
             <TextView
@@ -143,20 +144,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/color"
-                android:layout_marginLeft="4dp"
-                android:layout_toRightOf="@id/color"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/color"
                 android:text="Brand: Jordan"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
-            <ImageView
-                android:id="@+id/ivColor"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+            <RelativeLayout
+                android:id="@+id/layout_circle"
                 android:layout_below="@id/name"
                 android:layout_marginTop="3dp"
-                android:src="@drawable/background_circle_with_border"
-                android:tint="@color/black" />
-
+                android:layout_width="12dp"
+                android:layout_height="12dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/colorGrayText"
+                    android:background="@drawable/background_circle_with_border"/>
+                <ImageView
+                    android:id="@+id/ivColor"
+                    android:layout_centerInParent="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0.5dp"
+                    android:src="@drawable/background_circle_with_border" />
+            </RelativeLayout>
             <LinearLayout
                 android:id="@+id/layout3"
                 android:layout_width="wrap_content"
@@ -202,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:minWidth="35dp"
                         android:text="Size: A"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -211,7 +222,7 @@
                         android:layout_height="10dp"
                         android:layout_marginStart="8dp"
                         android:src="@drawable/ic_arrow_down_angle"
-                        android:tint="@color/black" />
+                        android:tint="@color/colorBlack" />
 
                 </LinearLayout>
 
@@ -265,12 +276,13 @@
 
                 <ImageView
                     android:id="@+id/ivAdd"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:background="@drawable/background_circle"
                     android:foreground="@drawable/background_ripple"
                     android:padding="6dp"
-                    android:src="@drawable/ic_add" />
+                    android:src="@drawable/ic_add"
+                    android:tint="@color/black"/>
 
                 <TextView
                     android:id="@+id/number"
@@ -286,12 +298,13 @@
 
                 <ImageView
                     android:id="@+id/ivRemove"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:background="@drawable/background_circle"
                     android:foreground="@drawable/background_ripple"
                     android:padding="6dp"
-                    android:src="@drawable/ic_minus" />
+                    android:src="@drawable/ic_minus"
+                    android:tint="@color/black"/>
             </LinearLayout>
 
             <TextView
