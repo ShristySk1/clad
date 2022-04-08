@@ -19,7 +19,6 @@ import com.ayata.clad.databinding.FragmentMyorderBinding
 import com.ayata.clad.profile.MyOrderRecyclerViewItem
 import com.ayata.clad.profile.myorder.order.FragmentOrderDetail
 import com.ayata.clad.profile.myorder.order.response.Detail
-import com.ayata.clad.profile.myorder.order.response.Order
 import com.ayata.clad.profile.myorder.order.response.OrderResponse
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModel
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModelFactory
@@ -52,6 +51,7 @@ class FragmentMyOrder : Fragment() {
     }
 
     private fun getOrderApi() {
+        viewModel.getOrderApi(PreferenceHandler.getToken(context)!!)
         viewModel.observeOrderResponse().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -68,7 +68,11 @@ class FragmentMyOrder : Fragment() {
                                 )
                             if (orderResponse.details != null) {
                                 val detail = orderResponse.details
-                                prepareOrder(detail)
+                                if (detail.size > 0) {
+                                    prepareOrder (detail)
+                                } else {
+                                    showError("Empty!", "No any order yet.")
+                                }
                             }
                         } catch (e: Exception) {
                             Log.d("", "prepareAPI: ${e.message}")
@@ -78,12 +82,13 @@ class FragmentMyOrder : Fragment() {
                 }
                 Status.LOADING -> {
                     showProgress()
+                    hideError()
 //                    binding.spinKit.visibility = View.VISIBLE
 
                 }
                 Status.ERROR -> {
                     hideProgress()
-                    showError(it.message.toString())
+                    showError("Error!", it.message.toString())
                     //Handle Error
 //                    binding.spinKit.visibility = View.GONE
                     if (it.message.equals("Unauthorized")) {
@@ -97,20 +102,25 @@ class FragmentMyOrder : Fragment() {
             }
         })
     }
-    fun showProgress(){
-        binding.progressBar.rootContainer.visibility=View.VISIBLE
+
+    fun showProgress() {
+        binding.progressBar.rootContainer.visibility = View.VISIBLE
 
     }
-    fun hideProgress(){
-        binding.progressBar.rootContainer.visibility=View.GONE
+
+    fun hideProgress() {
+        binding.progressBar.rootContainer.visibility = View.GONE
     }
-    private fun showError(it: String) {
+
+    private fun showError(
+        title: String, it: String
+    ) {
         MyLayoutInflater().onAddField(
             requireContext(),
             binding.root,
             R.layout.layout_error,
             R.drawable.ic_cart,
-            "Error!",
+            title,
             it
         )
 
@@ -138,13 +148,15 @@ class FragmentMyOrder : Fragment() {
                         order.products.imageUrl,
                         order.nprTotal.toString(),
                         order.dollarTotal.toString(),
-                        order
+                        order,
+                        order.currentStatus.contains("Order Cancelled", ignoreCase = true)
                     )
                 )
             }
             array.add(MyOrderRecyclerViewItem.Divider())
         }
         myAdapter.items = array
+
     }
 
     private fun setUpViewModel() {
@@ -152,7 +164,6 @@ class FragmentMyOrder : Fragment() {
             this,
             OrderViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[OrderViewModel::class.java]
-        viewModel.getOrderApi(PreferenceHandler.getToken(context)!!)
     }
 
     private fun setUpRecyclerView() {
@@ -170,13 +181,16 @@ class FragmentMyOrder : Fragment() {
 //            )
         }
         myAdapter.setitemOrderClick {
-            val b = Bundle()
-            b.putSerializable("order", it.order)
-            val frag = FragmentOrderDetail()
-            frag.arguments = b
-            (activity as MainActivity).openOrderDetail(frag)
+            if (!it.isCancelled) {
+                val b = Bundle()
+                b.putSerializable("order", it.order)
+                val frag = FragmentOrderDetail()
+                frag.arguments = b
+                (activity as MainActivity).openOrderDetail(frag)
+            } else {
+                Toast.makeText(requireContext(), "Order was Cancelled", Toast.LENGTH_SHORT).show()
+            }
         }
-
     }
 //    private fun groupDataIntoHashMap(chatModelList: List<ApiOrder>) {
 //        val groupedHashMap: LinkedHashMap<String, MutableSet<ApiOrder>?> =

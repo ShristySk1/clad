@@ -192,6 +192,7 @@
                     android:id="@+id/layout_b"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginHorizontal="15dp"
                     android:orientation="horizontal">
 
@@ -203,6 +204,7 @@
                         android:layout_weight="1"
                         android:text="SubTotal"
                         android:textAllCaps="true"
+
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/fourteen_sp" />
 
@@ -212,6 +214,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Rs. 00.0"
+
                         android:textAlignment="textEnd"
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/fourteen_sp" />
@@ -220,6 +223,7 @@
 
                 <LinearLayout
                     android:id="@+id/layout_c"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
@@ -250,6 +254,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:id="@+id/layout_d"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

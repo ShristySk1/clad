@@ -10,6 +10,7 @@ data class ModelOrder(
     val quantity: String,
     val image: String
 ) : Serializable
+
 sealed class MyOrderRecyclerViewItem {
     class Title(
         val date: String,
@@ -20,10 +21,10 @@ sealed class MyOrderRecyclerViewItem {
         val name: String,
         val quantity: String,
         val image: String,
-        val priceNPR:String,
-        val priceUSD:String,
-        val order:Order
-
+        val priceNPR: String,
+        val priceUSD: String,
+        val order: Order,
+        val isCancelled: Boolean
     ) : MyOrderRecyclerViewItem(), Serializable
 
     class Divider(

@@ -25,6 +25,7 @@ class FragmentMyReviews : Fragment() {
         binding =
             FragmentMyReviewsBinding.inflate(inflater, container, false)
         initAppbar()
+
         initRecyclerView()
         return binding.root
     }
@@ -32,7 +33,9 @@ class FragmentMyReviews : Fragment() {
 
     private fun initRecyclerView() {
         val data = arguments?.getSerializable("datas") as? List<Review>
-        Log.d("testdatas", "initRecyclerView: "+data);
+        val isFetched = arguments?.getBoolean("isFetched") as Boolean
+        Log.d("testdatas", "initRecyclerView: " + data+isFetched);
+        hideEmpty()
         binding.rvReviews.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = AdapterMyReviews(context, data ?: arrayListOf()).also {
@@ -42,10 +45,14 @@ class FragmentMyReviews : Fragment() {
             }
         }
         if (data?.size == 0) {
-            //setup empty view
-            showEmpty("No products to review")
-        }else{
-            hideEmpty()
+            if (FragmentMyReviewsList.isApiFetched) {
+                showEmpty("No products to review")
+            }
+        } else {
+            if (FragmentMyReviewsList.isApiFetched) {
+                hideEmpty()
+            }
+
         }
     }
 

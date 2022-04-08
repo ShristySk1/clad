@@ -18,6 +18,8 @@ data class Order(
     val orderId: Int,
     @SerializedName("order_status")
     val orderStatus: List<OrderStatus>,
+    @SerializedName("current_status")
+    val currentStatus: String,
     val products: Products,
     @SerializedName("receiver_name")
     val receiverName: String,

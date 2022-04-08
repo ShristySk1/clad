@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 
 class ReviewViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
@@ -110,26 +110,35 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
 
     fun postReviewAPI(
         token: String,
-        desc: RequestBody,
+        desc: String,
         rate: Float,
         orderId: Int,
         images: List<Int>,
-        size: RequestBody,
-        comfort: RequestBody,
+        size: String,
+        comfort: String,
         quality: Int
     ) {
         postReviewResponse.postValue(Resource.loading(null))
+//        @Field("description") description: RequestBody,
+//        @Field("rating") rating: Float,
+//        @Field("order_id") orderId: Int,
+//        @Field("images")images: List<Int>,
+//        @Field("size")size: RequestBody,
+//        @Field("comfort")comfort: RequestBody,
+//        @Part("quality")quality: Int
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
+                val jsonObject=JsonObject()
+                jsonObject.addProperty("description",desc)
+                jsonObject.addProperty("rating",rate)
+                jsonObject.addProperty("order_id",orderId)
+                jsonObject.add("images", Gson().toJsonTree(images).getAsJsonArray())
+                jsonObject.addProperty("size",size)
+                jsonObject.addProperty("comfort",comfort)
+                jsonObject.addProperty("quality",quality)
                 val response = mainRepository.postReviewApi(
                     "$token",
-                    desc,
-                    rate,
-                    orderId,
-                    images,
-                    size,
-                    comfort,
-                    quality
+                   jsonObject
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {

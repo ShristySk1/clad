@@ -7,8 +7,6 @@ import com.ayata.clad.profile.edit.response.Details
 import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -267,17 +265,10 @@ interface ApiService {
     ): Response<JsonObject>
 
     //post review
-    @Multipart
     @POST("reviews/")
     suspend fun postReview(
         @Header("Authorization") token: String,
-        @Part("description") description: RequestBody,
-        @Part("rating") rating: Float,
-        @Part("order_id") orderId: Int,
-        @Part ("images")images: List<Int>,
-        @Part("size")size: RequestBody,
-        @Part("comfort")comfort: RequestBody,
-        @Part("quality")quality: Int
+        @Body json: JsonObject
     ): Response<JsonObject>
 
     @Multipart

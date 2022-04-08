@@ -117,6 +117,7 @@ sealed class DataModel {
         var isEnabled:Boolean
     ) : DataModel()
     data class Image(
+        val id:Int,
         val image: String,
     ) : DataModel()
 }

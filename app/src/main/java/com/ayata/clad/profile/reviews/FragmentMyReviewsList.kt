@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
@@ -17,6 +20,7 @@ import com.ayata.clad.databinding.FragmentMyReviewsListBinding
 import com.ayata.clad.profile.reviews.adapter.AdapterReviewsViewPager
 import com.ayata.clad.profile.reviews.model.ModelReview
 import com.ayata.clad.profile.reviews.model.Review
+import com.ayata.clad.profile.reviews.utils.observeOnce
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
 import com.ayata.clad.utils.MyLayoutInflater
@@ -36,6 +40,11 @@ class FragmentMyReviewsList : Fragment() {
     private lateinit var adapterReviewViewPager: AdapterReviewsViewPager
     private lateinit var listFragment: ArrayList<Fragment>
     private lateinit var viewModel: ReviewViewModel
+    private var isFetchedApi = false
+
+    companion object {
+        var isApiFetched = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,8 +79,9 @@ class FragmentMyReviewsList : Fragment() {
 
     private fun setTabLayout() {
         getDataFromApi()
-        val fragmentUnReviewed = getMyFragment(FragmentMyReviews(), listReviewUnreviewed)
-        val fragmentReviewed = getMyFragment(FragmentMyReviews(), listReviewed)
+        val fragmentUnReviewed =
+            getMyFragment(FragmentMyReviews(), listReviewUnreviewed, isFetchedApi)
+        val fragmentReviewed = getMyFragment(FragmentMyReviews(), listReviewed, isFetchedApi)
         listFragment = arrayListOf()
         listFragment.clear()
         listFragment.add(fragmentUnReviewed)
@@ -101,46 +111,56 @@ class FragmentMyReviewsList : Fragment() {
     }
 
     private fun observeGetReview() {
-        viewModel.observeGetReviewApi().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    hideProgress()
-                    hideError()
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        Log.d("listsixe", "observeGetReview: "+jsonObject.toString());
-                        try {
-                            val reviewResponse: Type =
-                                object : TypeToken<ArrayList<Review?>?>() {}.type
-                            val list: ArrayList<Review> = Gson().fromJson(jsonObject.get("reviews").asJsonArray,reviewResponse)
-                            Log.d("listsixe", "observeGetReview: "+list);
-                            if (list.size > 0) {
-                                val unreviewed =
-                                    list.filter { it.reviewDetails.isReviewed == false }
-                                        .toMutableList()
-                                val reviewed = list.filter { it.reviewDetails.isReviewed == true }
-                                    .toMutableList()
-                                setData(unreviewed, reviewed)
+        val livedata = viewModel.observeGetReviewApi()
+        livedata
+            .observe(viewLifecycleOwner) {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        hideError()
+                        val jsonObject = it.data
+                        if (jsonObject != null) {
+                            Log.d("listsixe", "observeGetReview: " + jsonObject.toString());
+                            try {
+                                val reviewResponse: Type =
+                                    object : TypeToken<ArrayList<Review?>?>() {}.type
+                                val list: ArrayList<Review> = Gson().fromJson(
+                                    jsonObject.get("reviews").asJsonArray,
+                                    reviewResponse
+                                )
+                                Log.d("listsixe", "observeGetReview: " + list);
+                                if (list.size > 0) {
+
+                                    val unreviewed =
+                                        list.filter { it.reviewDetails.isReviewed == false }
+                                            .toMutableList()
+                                    val reviewed =
+                                        list.filter { it.reviewDetails.isReviewed == true }
+                                            .toMutableList()
+                                    setData(unreviewed, reviewed)
+                                } else {
+
+                                    setData(arrayListOf(), arrayListOf())
+                                }
+                            } catch (e: Exception) {
+                                Log.d("catchme", "prepareAPI: ${e.message}")
 
                             }
-                        } catch (e: Exception) {
-                            Log.d("catchme", "prepareAPI: ${e.message}")
-
                         }
                     }
-                }
-                Status.LOADING -> {
-                    showProgress()
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    hideProgress()
-                    showError(it.message.toString())
+                    Status.LOADING -> {
+                        showProgress()
+                        hideError()
+                    }
+                    Status.ERROR -> {
+                        //Handle Error
+                        hideProgress()
+                        showError(it.message.toString())
+                    }
                 }
             }
-        })
-
     }
+
 
     fun showProgress() {
         binding.progressBar.rootContainer.visibility = View.VISIBLE
@@ -173,14 +193,17 @@ class FragmentMyReviewsList : Fragment() {
     }
 
     private fun setData(unreviewed: MutableList<Review>, reviewed: MutableList<Review>) {
+        isApiFetched = true
         listReviewUnreviewed.clear()
         listReviewed.clear()
         listReviewed.addAll(reviewed)
         listReviewUnreviewed.addAll(unreviewed)
-        Log.d("testreviewlist", "setData: reviewed "+listReviewed);
-        Log.d("testreviewlist", "setData: unreviewd "+listReviewUnreviewed);
+        Log.d("testreviewlist", "setData: reviewed " + listReviewed);
+        Log.d("testreviewlist", "setData: unreviewd " + listReviewUnreviewed);
 
-        val currentPosition: Int =0
+        val currentPosition: Int = 0
+        isFetchedApi = true
+        Log.d("testreviewlist", "setData: " + isFetchedApi);
         adapterReviewViewPager.notifyDataSetChanged()
         binding.viewPager.adapter = null
         binding.viewPager.adapter = adapterReviewViewPager
@@ -189,10 +212,13 @@ class FragmentMyReviewsList : Fragment() {
 
     private fun getMyFragment(
         fragmentToday: Fragment,
-        list: ArrayList<Review>
+        list: ArrayList<Review>,
+        isFetched: Boolean
     ): Fragment {
         val bundle = Bundle()
         bundle.putSerializable("datas", list)
+        bundle.putBoolean("isFetched", isFetched)
+        Log.d("testdatas here", "getMyFragment: " + isFetched);
         fragmentToday.arguments = bundle
         return fragmentToday
     }

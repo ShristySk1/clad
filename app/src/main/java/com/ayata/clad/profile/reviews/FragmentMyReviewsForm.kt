@@ -47,7 +47,8 @@ import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
 
-const val  MY_PHOTO_NUMBER = 4
+const val MY_PHOTO_NUMBER = 4
+
 class FragmentMyReviewsForm : Fragment() {
     lateinit var binding: FragmentMyReviewFormBinding
     lateinit var adapterImage: AdapterImageViewType
@@ -62,6 +63,8 @@ class FragmentMyReviewsForm : Fragment() {
     var myChosenSize = ""
     var myChosenComfort = ""
     var myChosenQuality = 50
+    var isLoading=false
+    var myDeletePosition=-1
 
 
     override fun onCreateView(
@@ -78,22 +81,24 @@ class FragmentMyReviewsForm : Fragment() {
         initBundle()
         observePostReviewApi()
         observeImageUploadApi()
+        observeDeleteImageReviewApi()
         binding.progressBarQuality.addOnChangeListener { slider, value, fromUser -> /* `value` is the argument you need */
             myChosenQuality = value.toInt()
         }
         binding.btnPostReview.setOnClickListener {
-            Log.d("testclick", "onCreateView: ");
+
+            if (!isLoading){
+                Log.d("testclick", "onCreateView: ");
             val rate = binding.ratingBar1.rating
-            val desc = RequestBody.create(
-                "text/plain".toMediaTypeOrNull(),
+            val desc =
                 binding.tvDescription.text.toString()
-            )
+
             val orderId = item.orderId
             Log.d("testsize", "onCreateView: " + myChosenSize);
             Log.d("testsize", "onCreateView:comfory " + myChosenComfort);
             Log.d("testsize", "onCreateView:quality " + myChosenQuality);
-            val size = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenSize)
-            val comfort = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenComfort)
+//            val size = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenSize)
+//            val comfort = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenComfort)
 
 //            val fileList = arrayListOf<MultipartBody.Part>()
 //            images.forEach {
@@ -105,16 +110,25 @@ class FragmentMyReviewsForm : Fragment() {
 //                    )
 //                )
 //            }
+//            val subClasses = DataModel::class.sealedSubclasses.filter { clazz -> clazz == DataModel.Image::class }
+            Log.d(TAG, "onCreateView: " + listImage);
+            val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
+            Log.d(TAG, "onCreateView: " + imageFromModel);
+            val imgIds = imageFromModel.map { (it as DataModel.Image).id }
+            Log.d(TAG, "onCreateView: " + imgIds);
             viewModel.postReviewAPI(
                 PreferenceHandler.getToken(requireContext())!!,
                 desc,
                 rate,
                 orderId,
-                arrayListOf(),
-                size,
-                comfort,
+                imgIds,
+                myChosenSize,
+                myChosenComfort,
                 myChosenQuality
             )
+        }else{
+            Toast.makeText(requireContext(),"Please wait! Your photos are being uploaded",Toast.LENGTH_SHORT).show()
+            }
         }
 
 
@@ -157,6 +171,7 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observePostReviewApi().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    isLoading=false
                     binding.progressBar.rootContainer.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -170,9 +185,11 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                 }
                 Status.LOADING -> {
+                    isLoading=true
                     binding.progressBar.rootContainer.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
+                    isLoading=false
                     binding.progressBar.rootContainer.visibility = View.GONE
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
@@ -181,7 +198,42 @@ class FragmentMyReviewsForm : Fragment() {
         })
 
     }
+    private fun observeDeleteImageReviewApi() {
+        viewModel.observeDeleteUploadAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    isLoading=false
+                    binding.progressBarPhoto.visibility = View.GONE
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val message = jsonObject.get("message").asString
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                            listImage.removeAt(myDeletePosition)
+                            checkIfCamera()
+                            adapterImage.notifyItemChanged(myDeletePosition)
+                            adapterImage.notifyItemChanged(listImage.size)
+                            images.removeAt(myDeletePosition)
+                        } catch (e: Exception) {
 
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                    isLoading=true
+                    binding.progressBarPhoto.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+                    isLoading=false
+                    binding.progressBarPhoto.visibility = View.GONE
+
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+    }
     private fun initBundle() {
         arguments?.let {
             item = it.getSerializable("datas") as Review
@@ -273,6 +325,7 @@ class FragmentMyReviewsForm : Fragment() {
             adapter = adapterImage
             val itemDecoration = ItemOffsetDecoration(context, R.dimen.item_offset_image)
             addItemDecoration(itemDecoration)
+            setItemAnimator(null)
         }
         adapterImage.setReviewAddClickListener {
             val newLimit = MY_PHOTO_NUMBER - (listImage.size - 1)
@@ -280,21 +333,16 @@ class FragmentMyReviewsForm : Fragment() {
             openGalleryForImages()
         }
         adapterImage.setReviewDeleteClickListener { it, pos ->
-            listImage.removeAt(pos)
-            checkIfCamera()
-            adapterImage.notifyItemChanged(pos)
-            adapterImage.notifyItemChanged(listImage.size)
-            images.removeAt(pos)
+            myDeletePosition=pos
+            viewModel.imageDeleteAPI(it.id)
         }
     }
 
     private fun openGalleryForImages() {
         if (imagePickerLauncher == null) {
             Log.d(TAG, "start:null ");
-
         } else {
             Log.d(TAG, "start:not null ");
-
         }
         imagePickerLauncher?.launch(createConfig())
     }
@@ -307,6 +355,7 @@ class FragmentMyReviewsForm : Fragment() {
             textDescription = ""
         )
         (activity as MainActivity).showBottomNavigation(false)
+
     }
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -412,16 +461,16 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.progressBarPhoto.visibility=View.GONE
+                    binding.progressBarPhoto.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
                             val imageResponse =
                                 Gson().fromJson(jsonObject, ImageUploadResponse::class.java)
                             if (imageResponse.details != null) {
-                               listImage.clear()
+                                listImage.clear()
                                 imageResponse.details.forEach {
-                                    listImage.add(DataModel.Image(it.imageUrl))
+                                    listImage.add(DataModel.Image(it.id, it.imageUrl))
                                 }
                             }
                             val camera = DataModel.Camera(
@@ -439,13 +488,14 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                 }
                 Status.LOADING -> {
-                    binding.progressBarPhoto.visibility=View.VISIBLE
+                    binding.progressBarPhoto.visibility = View.VISIBLE
                     binding.llUploadImage.visibility = View.GONE
 
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.progressBarPhoto.visibility=View.GONE
+                    binding.llUploadImage.visibility = View.VISIBLE
+                    binding.progressBarPhoto.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }

@@ -70,6 +70,7 @@ class FragmentOrderDetail : Fragment() {
                                     jsonObject.get("message").toString(),
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                parentFragmentManager.popBackStackImmediate()
                             } catch (e: Exception) {
 //                                Log.d("", "prepareAPI: ${e.message}")
                             }
