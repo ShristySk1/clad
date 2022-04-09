@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +22,7 @@ import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
 import com.ayata.clad.profile.reviews.adapter.DataModel
 import com.ayata.clad.profile.reviews.model.Review
+import com.ayata.clad.profile.reviews.response.Detail
 import com.ayata.clad.profile.reviews.response.ImageUploadResponse
 import com.ayata.clad.profile.reviews.utils.CustomImagePickerComponents
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
@@ -39,13 +38,10 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.Gson
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okio.BufferedSink
 import java.io.File
-import java.io.FileInputStream
 
 const val MY_PHOTO_NUMBER = 4
 
@@ -58,14 +54,14 @@ class FragmentMyReviewsForm : Fragment() {
     lateinit var item: Review
     val TAG = "FragmentMyReviewsForm"
     val listImage = mutableListOf<DataModel>()
-    val imageString = ArrayList<String>()
+//    val imageString = ArrayList<String>()
 
     var myChosenSize = ""
     var myChosenComfort = ""
     var myChosenQuality = 50
-    var isLoading=false
-    var myDeletePosition=-1
-
+    var isLoading = false
+    var myDeletePosition = -1
+    var isDisabledImagePicker = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,16 +83,16 @@ class FragmentMyReviewsForm : Fragment() {
         }
         binding.btnPostReview.setOnClickListener {
 
-            if (!isLoading){
+            if (!isLoading) {
                 Log.d("testclick", "onCreateView: ");
-            val rate = binding.ratingBar1.rating
-            val desc =
-                binding.tvDescription.text.toString()
+                val rate = binding.ratingBar1.rating
+                val desc =
+                    binding.tvDescription.text.toString()
 
-            val orderId = item.orderId
-            Log.d("testsize", "onCreateView: " + myChosenSize);
-            Log.d("testsize", "onCreateView:comfory " + myChosenComfort);
-            Log.d("testsize", "onCreateView:quality " + myChosenQuality);
+                val orderId = item.orderId
+                Log.d("testsize", "onCreateView: " + myChosenSize);
+                Log.d("testsize", "onCreateView:comfory " + myChosenComfort);
+                Log.d("testsize", "onCreateView:quality " + myChosenQuality);
 //            val size = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenSize)
 //            val comfort = RequestBody.create("text/plain".toMediaTypeOrNull(), myChosenComfort)
 
@@ -111,23 +107,27 @@ class FragmentMyReviewsForm : Fragment() {
 //                )
 //            }
 //            val subClasses = DataModel::class.sealedSubclasses.filter { clazz -> clazz == DataModel.Image::class }
-            Log.d(TAG, "onCreateView: " + listImage);
-            val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
-            Log.d(TAG, "onCreateView: " + imageFromModel);
-            val imgIds = imageFromModel.map { (it as DataModel.Image).id }
-            Log.d(TAG, "onCreateView: " + imgIds);
-            viewModel.postReviewAPI(
-                PreferenceHandler.getToken(requireContext())!!,
-                desc,
-                rate,
-                orderId,
-                imgIds,
-                myChosenSize,
-                myChosenComfort,
-                myChosenQuality
-            )
-        }else{
-            Toast.makeText(requireContext(),"Please wait! Your photos are being uploaded",Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "onCreateView: " + listImage);
+                val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
+                Log.d(TAG, "onCreateView: " + imageFromModel);
+                val imgIds = imageFromModel.map { (it as DataModel.Image).id }
+                Log.d(TAG, "onCreateView: " + imgIds);
+                viewModel.postReviewAPI(
+                    PreferenceHandler.getToken(requireContext())!!,
+                    desc,
+                    rate,
+                    orderId,
+                    imgIds,
+                    myChosenSize,
+                    myChosenComfort,
+                    myChosenQuality
+                )
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Please wait! Your photos are being uploaded",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -171,7 +171,7 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observePostReviewApi().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    isLoading=false
+                    isLoading = false
                     binding.progressBar.rootContainer.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -185,11 +185,11 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                 }
                 Status.LOADING -> {
-                    isLoading=true
+                    isLoading = true
                     binding.progressBar.rootContainer.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
-                    isLoading=false
+                    isLoading = false
                     binding.progressBar.rootContainer.visibility = View.GONE
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
@@ -198,11 +198,12 @@ class FragmentMyReviewsForm : Fragment() {
         })
 
     }
+
     private fun observeDeleteImageReviewApi() {
         viewModel.observeDeleteUploadAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    isLoading=false
+                    isLoading = false
                     binding.progressBarPhoto.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -220,11 +221,11 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                 }
                 Status.LOADING -> {
-                    isLoading=true
+                    isLoading = true
                     binding.progressBarPhoto.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
-                    isLoading=false
+                    isLoading = false
                     binding.progressBarPhoto.visibility = View.GONE
 
                     //Handle Error
@@ -234,6 +235,7 @@ class FragmentMyReviewsForm : Fragment() {
         })
 
     }
+
     private fun initBundle() {
         arguments?.let {
             item = it.getSerializable("datas") as Review
@@ -248,24 +250,84 @@ class FragmentMyReviewsForm : Fragment() {
                 binding.tvDescription.setText(item.reviewDetails.description)
                 binding.ratingBar1.rating = item.reviewDetails.rate.toFloat()
                 val img = arrayListOf<Image>()
-                if (item.reviewDetails.imageUrl.size > 0) {
-                    item.reviewDetails.imageUrl.forEach {
-                        img.add(
-                            Image(
-                                item.reviewDetails.imageUrl.indexOf(it).toLong() + 1,
-                                "name",
-                                it
-                            )
-                        )
-                    }
-                }
+//                if (item.reviewDetails.imageUrl.size > 0) {
+//                    item.reviewDetails.imageUrl.forEach {
+//                        img.add(
+//                            Image(
+//                                item.reviewDetails.imageUrl.indexOf(it).toLong() + 1,
+//                                "name",
+//                                it
+//                            )
+//                        )
+//                    }
+//                }
+                val testImage =
+                    "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
+//                for (i in 1..2) {
+//                    img.add(
+//                        Image(
+//                            i.toLong(),
+//                            "name",
+//                            testImage
+//                        )
+//                    )
+//                }
                 formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort)
                 binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
                 myChosenQuality = item.reviewDetails.quality.toInt()
                 myChosenSize = item.reviewDetails.size
                 myChosenComfort = item.reviewDetails.comfort
-                printImages(img)
+//                printImages(img)
+                images.clear()
+                images.addAll(img)
+                setUpImageInList(images, null)
             }
+        }
+    }
+
+    private fun setUpImageInList(
+        imagesFromBundle: java.util.ArrayList<Image>?,
+        imagesFromApi: List<Detail>?
+    ) {
+        if (imagesFromBundle != null) {
+            //from bundle
+            if (images.size > 0) {
+                binding.llUploadImage.visibility = View.GONE
+                listImage.clear()
+                images.forEach {
+                    listImage.add(DataModel.Image(it.id.toInt(), it.path))
+                }
+            }
+        } else {
+            //from api
+//            listImage.clear() //to clear if response sends all images
+            if (listImage.size > 0) {
+                var shouldAddCamera = true
+                val lastData = listImage.get(listImage.size - 1)
+                val lastPos = listImage.size - 1
+                if (lastData is DataModel.Camera) {
+                    shouldAddCamera = false
+                }
+                if (!shouldAddCamera) {
+                    listImage.removeAt(lastPos)
+                }
+            }
+            imagesFromApi?.forEach {
+                listImage.add(DataModel.Image(it.id, it.imageUrl))
+            }
+        }
+        if (!(listImage.size == 0)) {
+            binding.llUploadImage.visibility = View.GONE
+            val camera = DataModel.Camera(
+                R.drawable.ic_camera,
+                true
+            )
+            listImage.add(camera)
+            checkIfCamera()
+
+            adapterImage.notifyDataSetChanged()
+        } else {
+            binding.llUploadImage.visibility = View.VISIBLE
         }
     }
 
@@ -301,7 +363,15 @@ class FragmentMyReviewsForm : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.llUploadImage.setOnClickListener {
-            openGalleryForImages()
+            if (!isDisabledImagePicker)
+                openGalleryForImages()
+            else
+                Toast.makeText(
+                    requireContext(),
+                    "Image upload is limited to 4 photos",
+                    Toast.LENGTH_SHORT
+                ).show()
+
         }
     }
 
@@ -318,7 +388,7 @@ class FragmentMyReviewsForm : Fragment() {
             flexDirection = FlexDirection.ROW
             alignItems = AlignItems.FLEX_START
         }
-        imageString.addAll(listOf<String>())
+//        imageString.addAll(listOf<String>())
         adapterImage = AdapterImageViewType(listImage)
         binding.rvImage.apply {
             layoutManager = flexboxLayoutManager
@@ -328,12 +398,17 @@ class FragmentMyReviewsForm : Fragment() {
             setItemAnimator(null)
         }
         adapterImage.setReviewAddClickListener {
-            val newLimit = MY_PHOTO_NUMBER - (listImage.size - 1)
-            Log.d(TAG, "initRecyclerview: " + newLimit);
-            openGalleryForImages()
+            if (!isDisabledImagePicker)
+                openGalleryForImages()
+            else
+                Toast.makeText(
+                    requireContext(),
+                    "Image upload is limited to 4 photos",
+                    Toast.LENGTH_SHORT
+                ).show()
         }
         adapterImage.setReviewDeleteClickListener { it, pos ->
-            myDeletePosition=pos
+            myDeletePosition = pos
             viewModel.imageDeleteAPI(it.id)
         }
     }
@@ -435,11 +510,9 @@ class FragmentMyReviewsForm : Fragment() {
 
     private fun printImages(images: List<Image>?) {
         if (images == null) return
-        imageString.clear()
-        for (image in images) {
-            imageString.add(image.uri.toString())
+        if (images.size > 0) {
+            setModelData()
         }
-        setModelData()
     }
 
     private fun setModelData() {
@@ -468,18 +541,19 @@ class FragmentMyReviewsForm : Fragment() {
                             val imageResponse =
                                 Gson().fromJson(jsonObject, ImageUploadResponse::class.java)
                             if (imageResponse.details != null) {
-                                listImage.clear()
-                                imageResponse.details.forEach {
-                                    listImage.add(DataModel.Image(it.id, it.imageUrl))
-                                }
+                                setUpImageInList(null, imageResponse.details)
+//                                listImage.clear()
+//                                imageResponse.details.forEach {
+//                                    listImage.add(DataModel.Image(it.id, it.imageUrl))
+//                                }
                             }
-                            val camera = DataModel.Camera(
-                                R.drawable.ic_camera,
-                                true
-                            )
-                            listImage.add(camera)
-                            checkIfCamera()
-                            adapterImage.notifyDataSetChanged()
+//                            val camera = DataModel.Camera(
+//                                R.drawable.ic_camera,
+//                                true
+//                            )
+//                            listImage.add(camera)
+//                            checkIfCamera()
+//                            adapterImage.notifyDataSetChanged()
 
 
                         } catch (e: Exception) {
@@ -506,39 +580,9 @@ class FragmentMyReviewsForm : Fragment() {
     private fun checkIfCamera() {
         Log.d(TAG, "checkIfCamera: " + (listImage.size));
         Log.d(TAG, "checkIfCamera: " + (listImage.size < 5));
-        (listImage[listImage.size - 1] as DataModel.Camera).isEnabled = listImage.size < 5
+//        (listImage[listImage.size - 1] as DataModel.Camera).isEnabled = listImage.size < 5
+        isDisabledImagePicker = !(listImage.size < 5)
+
     }
 
-    /** Returns a new request body that transmits the content of this. */
-    fun File.asRequestBodyWithProgress(
-        contentType: MediaType? = null,
-        progressCallback: ((progress: Float) -> Unit)?
-    ): RequestBody {
-        return object : RequestBody() {
-            override fun contentType() = contentType
-
-            override fun contentLength() = length()
-
-            override fun writeTo(sink: BufferedSink) {
-                val fileLength = contentLength()
-                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                val inSt = FileInputStream(this@asRequestBodyWithProgress)
-                var uploaded = 0L
-                inSt.use {
-                    var read: Int = inSt.read(buffer)
-                    val handler = Handler(Looper.getMainLooper())
-                    while (read != -1) {
-                        progressCallback?.let {
-                            uploaded += read
-                            val progress = (uploaded.toDouble() / fileLength.toDouble()).toFloat()
-                            handler.post { it(progress) }
-
-                            sink.write(buffer, 0, read)
-                        }
-                        read = inSt.read(buffer)
-                    }
-                }
-            }
-        }
-    }
 }
