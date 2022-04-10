@@ -25,7 +25,6 @@ class FragmentMyReviews : Fragment() {
         binding =
             FragmentMyReviewsBinding.inflate(inflater, container, false)
         initAppbar()
-
         initRecyclerView()
         return binding.root
     }

@@ -4,10 +4,8 @@
     package="com.ayata.clad">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<!--    //upload image for review-->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- //upload image for review -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -19,8 +17,11 @@
         android:theme="@style/Theme.Clad"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
-        <activity android:name=".BaseActivity"/>
-        <activity android:name=".story.StoryActivity" />
+        <activity android:name=".profile.reviews.ReviewFromActivity"
+            android:exported="true"/>
+        <activity android:name=".BaseActivity"
+            android:exported="true"/>
+        <activity android:name=".story.StoryActivity" android:exported="true"/>
         <activity
             android:name=".SplashActivity"
             android:configChanges="orientation"
@@ -28,6 +29,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -55,6 +57,14 @@
             <!-- </intent-filter> -->
 
         </activity>
+
+        <service android:name=".notification.MyFirebaseNotificationService"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

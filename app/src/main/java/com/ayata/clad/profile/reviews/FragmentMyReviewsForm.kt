@@ -250,17 +250,17 @@ class FragmentMyReviewsForm : Fragment() {
                 binding.tvDescription.setText(item.reviewDetails.description)
                 binding.ratingBar1.rating = item.reviewDetails.rate.toFloat()
                 val img = arrayListOf<Image>()
-//                if (item.reviewDetails.imageUrl.size > 0) {
-//                    item.reviewDetails.imageUrl.forEach {
-//                        img.add(
-//                            Image(
-//                                item.reviewDetails.imageUrl.indexOf(it).toLong() + 1,
-//                                "name",
-//                                it
-//                            )
-//                        )
-//                    }
-//                }
+                if (item.reviewDetails.imageUrl.size > 0) {
+                    item.reviewDetails.imageUrl.forEach {
+                        img.add(
+                            Image(
+                                item.reviewDetails.imageUrl.indexOf(it).toLong() + 1,
+                                "name",
+                                it
+                            )
+                        )
+                    }
+                }
                 val testImage =
                     "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
 //                for (i in 1..2) {

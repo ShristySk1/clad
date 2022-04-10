@@ -27,12 +27,13 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
-abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater) -> B) : AppCompatActivity() {
+abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater) -> B) :
+    AppCompatActivity() {
     private lateinit var binding: B
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var loginViewModel: LoginViewModel
-private lateinit var progressDialog: ProgressDialog
+    private lateinit var progressDialog: ProgressDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = bindingFactory(layoutInflater)
@@ -84,8 +85,8 @@ private lateinit var progressDialog: ProgressDialog
 
     private fun login(currentUser: GoogleSignInAccount) {
 //        (binding).spinKit.visibility= View.VISIBLE
-        progressDialog=ProgressDialog.newInstance("", "")
-            progressDialog.show(supportFragmentManager, "login_progress")
+        progressDialog = ProgressDialog.newInstance("", "")
+        progressDialog.show(supportFragmentManager, "login_progress")
         val id = currentUser.idToken
         if (id != null) {
             Log.d(com.ayata.clad.login.TAG, "login:token   " + id);
@@ -112,18 +113,28 @@ private lateinit var progressDialog: ProgressDialog
                         it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("last_name")
                             .toString()
                     //contact_number
-                    val contact_number:String? =
-                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("phone_no")?.toString()
+                    val contact_number: String? =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("phone_no")
+                            ?.toString()
                     //dob
-                    val dob:String? =
-                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("dob")?.toString()
-                    val gender :String?=
-                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("gender")?.toString()
+                    val dob: String? =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("dob")
+                            ?.toString()
+                    val gender: String? =
+                        it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("gender")
+                            ?.toString()
 
                     val token = it.data?.get("details")?.asJsonObject?.get("token").toString()
-                    saveUserCredential(currentUser,firstname.removeDoubleQuote(),
-                        lastname.removeDoubleQuote(), email.removeDoubleQuote(),
-                        token.removeDoubleQuote(),contact_number?.removeDoubleQuote(),dob?.removeDoubleQuote(),gender?.removeDoubleQuote())
+                    saveUserCredential(
+                        currentUser,
+                        firstname.removeDoubleQuote(),
+                        lastname.removeDoubleQuote(),
+                        email.removeDoubleQuote(),
+                        token.removeDoubleQuote(),
+                        contact_number?.removeDoubleQuote(),
+                        dob?.removeDoubleQuote(),
+                        gender?.removeDoubleQuote()
+                    )
                 }
                 Status.LOADING -> {
 //                    activityOnboarding.spinKit.visibility= View.VISIBLE
@@ -137,9 +148,9 @@ private lateinit var progressDialog: ProgressDialog
             }
         })
     }
-    //remove
-    fun String.removeDoubleQuote()= this?.let { this.replace("\"", "")}
 
+    //remove
+    fun String.removeDoubleQuote() = this?.let { this.replace("\"", "") }
 
 
     fun saveUserCredential(
@@ -153,14 +164,14 @@ private lateinit var progressDialog: ProgressDialog
         gender: String?
     ) {
         PreferenceHandler.setEmail(this, email)
-        PreferenceHandler.setUsername(this, firstname+" "+lastname)
+        PreferenceHandler.setUsername(this, firstname + " " + lastname)
         PreferenceHandler.setFirstName(this, firstname)
         PreferenceHandler.setLastName(this, lastname)
-        PreferenceHandler.setToken(this, "Token "+token)
-        Log.d(com.ayata.clad.login.TAG, "saveUserCredential: "+currentUser.photoUrl.toString());
-        PreferenceHandler.setGender(this,gender?:"")
-        PreferenceHandler.setDOB(this,dob?:"")
-        PreferenceHandler.setPhone(this,contact?:"")
+        PreferenceHandler.setToken(this, "Token " + token)
+        Log.d(com.ayata.clad.login.TAG, "saveUserCredential: " + currentUser.photoUrl.toString());
+        PreferenceHandler.setGender(this, gender ?: "")
+        PreferenceHandler.setDOB(this, dob ?: "")
+        PreferenceHandler.setPhone(this, contact ?: "")
         getBitmapFromURL(currentUser.photoUrl.toString())
     }
 

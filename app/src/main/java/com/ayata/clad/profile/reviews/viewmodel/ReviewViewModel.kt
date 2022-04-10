@@ -132,7 +132,7 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
                 jsonObject.addProperty("description",desc)
                 jsonObject.addProperty("rating",rate)
                 jsonObject.addProperty("order_id",orderId)
-                jsonObject.add("images", Gson().toJsonTree(images).getAsJsonArray())
+                jsonObject.add("image_id", Gson().toJsonTree(images).getAsJsonArray())
                 jsonObject.addProperty("size",size)
                 jsonObject.addProperty("comfort",comfort)
                 jsonObject.addProperty("quality",quality)

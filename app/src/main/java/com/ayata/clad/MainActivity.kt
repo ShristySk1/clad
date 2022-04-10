@@ -567,7 +567,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     fun openOrderDetail(frag:FragmentOrderDetail) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment, frag)
-            .addToBackStack(null)
+            .addToBackStack("order_list")
             .commit()
     }
 

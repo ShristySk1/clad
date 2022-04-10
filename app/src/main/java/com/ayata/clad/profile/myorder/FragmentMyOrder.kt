@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
@@ -17,7 +18,9 @@ import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentMyorderBinding
 import com.ayata.clad.profile.MyOrderRecyclerViewItem
+import com.ayata.clad.profile.account.AccountViewModel
 import com.ayata.clad.profile.myorder.order.FragmentOrderDetail
+import com.ayata.clad.profile.myorder.order.cancel.CancelViewModel
 import com.ayata.clad.profile.myorder.order.response.Detail
 import com.ayata.clad.profile.myorder.order.response.OrderResponse
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModel
@@ -30,6 +33,7 @@ import com.google.gson.Gson
 class FragmentMyOrder : Fragment() {
     lateinit var binding: FragmentMyorderBinding
     private lateinit var viewModel: OrderViewModel
+    private lateinit var cancelViewModel:CancelViewModel
     val myAdapter by lazy { AdapterOrders(requireContext(), listOf()) }
 
     override fun onCreateView(
@@ -164,6 +168,7 @@ class FragmentMyOrder : Fragment() {
             this,
             OrderViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[OrderViewModel::class.java]
+
     }
 
     private fun setUpRecyclerView() {
