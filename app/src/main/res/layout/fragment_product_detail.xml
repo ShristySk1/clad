@@ -169,7 +169,7 @@
                         android:id="@+id/ivGallaryView"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
-                        android:src="@drawable/ic_gallary"
+                        android:src="@drawable/ic_gallary_filled"
                         app:layout_constraintBottom_toBottomOf="@+id/textView4"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/card_Wish"
