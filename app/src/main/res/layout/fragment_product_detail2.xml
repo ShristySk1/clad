@@ -332,11 +332,13 @@
                     android:id="@+id/textView25"
                     style="@style/normalBoldText"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:text="WIDTH" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabWidth"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"

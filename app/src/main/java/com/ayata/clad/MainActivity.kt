@@ -1,5 +1,8 @@
 package com.ayata.clad
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -40,6 +43,7 @@ import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -60,6 +64,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setContentView(binding.root)
         //set login
         PreferenceHandler.setIsOnBoarding(this, false)
+        setUpFirebaseNotification()
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener)
         if (findViewById<View?>(R.id.main_fragment) != null) {
             if (savedInstanceState != null) {
@@ -75,6 +80,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         setBadge()
 
+    }
+    private fun setUpFirebaseNotification() {
+        //for orea>=
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "Clad",
+                "i m name",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("myfirebasetoken", "onComplete: " + task.result)
+            }
+        }
     }
 
     private fun setUpViewModel() {

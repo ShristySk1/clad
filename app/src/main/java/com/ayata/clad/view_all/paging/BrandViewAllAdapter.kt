@@ -43,7 +43,7 @@ class BrandViewAllAdapter(val listener: onItemClickListener) :
                 name.text = item!!.name
                 progressBar.visibility = View.VISIBLE
                 Glide.with(name.context)
-                    .load(item.iconUrl)
+                    .load(item.brandImage)
                     .listener(object : RequestListener<Drawable?> {
                         override fun onLoadFailed(
                             @Nullable e: GlideException?,

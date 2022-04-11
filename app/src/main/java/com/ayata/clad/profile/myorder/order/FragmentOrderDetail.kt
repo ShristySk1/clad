@@ -225,7 +225,7 @@ class FragmentOrderDetail : Fragment() {
             title.add(o.orderStatus[i].status)
             desc.add(o.orderStatus[i].date ?: "")
         }
-        conditionalStatus = o.orderStatus.filter { it.is_active == true }.single().status
+        conditionalStatus = o.currentStatus
         Log.d("statusonditional", "populateData: " + conditionalStatus);
 
         title.reverse()

@@ -3,6 +3,8 @@ package com.ayata.clad.profile.myorder
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.ayata.clad.R
@@ -115,9 +117,22 @@ class AdapterOrders(val context: Context, data: List<ModelOrder>) :
                     binding.description.text =
                         "${order.products.variant.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${order.products.variant.color} / Qty: ${quantity}"
                     binding.orderStatus.text =
-                        order.orderStatus.filter { it.is_active ==true }.single().status
+                        order.currentStatus
                             .toString()
+                    //setcolor and background for order status\
+                    if(order.currentStatus.contains("Delivered",ignoreCase = true)){
+                        changeColor(binding.orderStatus, R.color.colorGreenLight, R.color.colorGreenDark)
+                    }else if(order.currentStatus.contains("Refunded",ignoreCase = true) or order.currentStatus.contains("Cancel",ignoreCase = true)){
+                        changeColor(binding.orderStatus, R.color.colorRedLight, R.color.colorRedDark)
+                    }else{
+                        changeColor(binding.orderStatus, R.color.colorYellowLight, R.color.colorYellowDark)
+                    }
+
                 }
+            }
+            private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int) {
+                stock.setTextColor(ContextCompat.getColor(context!!, colorDark));
+                stock.background.setTint(ContextCompat.getColor(context!!, colorLight));
             }
         }
 
@@ -138,5 +153,6 @@ class AdapterOrders(val context: Context, data: List<ModelOrder>) :
     fun setitemOrderClick(listener: ((MyOrderRecyclerViewItem.Product) -> Unit)) {
         itemOrderClick = listener
     }
+
 
 }

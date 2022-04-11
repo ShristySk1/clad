@@ -49,7 +49,7 @@ internal class AdapterPopularBrands(private var context:Context?,
 
         holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.iconUrl)
+            .load(item.brandImage)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,

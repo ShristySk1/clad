@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.profile.reviews.ReviewFromActivity
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -64,9 +63,9 @@ class MyFirebaseNotificationService : FirebaseMessagingService() {
             this,
             0,
             myIntent,
-            0
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-        val builder = NotificationCompat.Builder(this, "Medipuzzle")
+        val builder = NotificationCompat.Builder(this, "Clad")
             .setAutoCancel(true)
             .setContentTitle(title)
             .setContentIntent(pendingIntent)

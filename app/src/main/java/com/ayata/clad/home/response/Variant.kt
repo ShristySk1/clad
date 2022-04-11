@@ -33,5 +33,8 @@ data class Variant(
     @SerializedName("is_in_cart")
     var isInCart: Boolean,
     @SerializedName("is_in_wishlist")
-    var isInWishlist: Boolean
+    var isInWishlist: Boolean,
+    @SerializedName("stock_status")
+    var stockStatus:String
+
 ):Serializable

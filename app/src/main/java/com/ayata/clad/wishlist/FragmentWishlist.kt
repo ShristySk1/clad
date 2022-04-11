@@ -1,13 +1,16 @@
 package com.ayata.clad.wishlist
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -37,6 +40,7 @@ import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.removeDoubleQuote
 import com.ayata.clad.wishlist.adapter.AdapterDialogOption
 import com.ayata.clad.wishlist.adapter.AdapterWishList
 import com.ayata.clad.wishlist.response.get.GetWishListResponse
@@ -44,7 +48,6 @@ import com.ayata.clad.wishlist.response.get.Wishlist
 import com.ayata.clad.wishlist.viewmodel.WishListViewModel
 import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 
 
@@ -56,6 +59,7 @@ class FragmentWishlist : Fragment() {
     private var listRecommendation = ArrayList<ProductDetail>()
     private lateinit var binding: FragmentWishlistBinding
     private var myWishList = ArrayList<Wishlist>()
+    private var myWishListRecommendation = ArrayList<Wishlist>()
     private lateinit var adapterWishList: AdapterWishList
     private lateinit var adapterRecommended: AdapterRecommended
     private lateinit var viewModel: WishListViewModel
@@ -254,7 +258,7 @@ class FragmentWishlist : Fragment() {
 //                if (!product.product.is_in_cart) {
 //                    list.add(getString(R.string.wl_case1))
 //                }
-                list.add(getString(R.string.wl_case3))
+//                list.add(getString(R.string.wl_case3))
 //                if (isWish) {
                 list.add(getString(R.string.wl_case2))
 //                }
@@ -262,14 +266,15 @@ class FragmentWishlist : Fragment() {
                 showDialogWishlist(product, list)
             }
         }.also {
-            it.setBagClickListener {wishlist->
-               val currentVariant= wishlist.product.variants.filter {
-                    it.variantId==wishlist.selected.variantId
+            it.setBagClickListener { wishlist ->
+                val currentVariant = wishlist.product.variants.filter {
+                    it.variantId == wishlist.selected.variantId
                 }.single()
-                if(!currentVariant.isInCart){
+                if (!currentVariant.isInCart) {
                     addToCartAPI(wishlist)
-                }else{
-                    Toast.makeText(requireContext(),"Product already in cart",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Product already in cart", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
             }
@@ -283,6 +288,26 @@ class FragmentWishlist : Fragment() {
             addItemDecoration(itemDecoration)
         }
 
+    }
+
+    private fun showToast(message: String, isSuccess: Boolean) {
+        val toast = Toast(context)
+        val view: View = LayoutInflater.from(context)
+            .inflate(R.layout.custom_toast, null)
+        val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
+        val ivImage = view.findViewById<ImageView>(R.id.ivImage)
+        val cardView: CardView = view.findViewById(R.id.cardBackground)
+        tvMessage.text = message
+        if (isSuccess) {
+            cardView.setCardBackgroundColor(requireContext().resources.getColor(R.color.title_color))
+            ivImage.setImageResource(R.drawable.ic_success)
+        } else {
+//            cardView.setCardBackgroundColor(context!!.resources.getColor(R.color.colorPriceTag))
+//            ivImage.setImageResource(R.drawable.ic_info)
+        }
+        toast.setView(view)
+        toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 150)
+        toast.show()
     }
 
     //not used
@@ -331,6 +356,7 @@ class FragmentWishlist : Fragment() {
         bottomSheetDialog.show()
     }
 
+
     private fun showDialogSingleChoice(
         title: String,
         listContent: List<MyFilterContentViewItem.SingleChoice>
@@ -346,7 +372,28 @@ class FragmentWishlist : Fragment() {
                 for (item in list) {
                     item.isSelected = item.equals(data)
                 }
+                when (data.title) {
+                    "Cheapest (low - high)" -> {
+                        myWishList.sortBy {
+                            it.product.price
+                        }
+                        adapterWishList.notifyDataSetChanged()
+                    }
+                    "Most Expensive (high - low)" -> {
+                        myWishList.sortByDescending {
+                            it.product.price
+                        }
+                        adapterWishList.notifyDataSetChanged()
+                    }
+                    "Recommended" -> {
+                        myWishList.clear()
+                        myWishList.addAll(myWishListRecommendation)
+                        adapterWishList.notifyDataSetChanged()
+                    }
+
+                }
                 adapter.notifyDataSetChanged()
+                bottomSheetDialog.dismiss()
             }
         }
         dialogBinding.title.text = title
@@ -362,10 +409,12 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun showSnackBar(msg: String) {
-        val snackbar = Snackbar
-            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
-        snackbar.setActionTextColor(Color.WHITE)
-        snackbar.show()
+//        val snackbar = Snackbar
+//            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
+//        snackbar.setActionTextColor(Color.WHITE)
+//        snackbar.show()
+        showToast(msg.removeDoubleQuote(), true)
+
     }
 
     private fun addToCartAPI(product: Wishlist) {
@@ -554,6 +603,7 @@ class FragmentWishlist : Fragment() {
     private fun setDataToView(wishlist: List<Wishlist>) {
         myWishList.clear()
         myWishList.addAll(wishlist)
+        myWishListRecommendation.addAll(wishlist)
         Log.d(TAG, "setUpView upper: " + wishlist.size);
         adapterWishList.notifyDataSetChanged()
         setUpView()

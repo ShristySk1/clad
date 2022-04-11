@@ -101,7 +101,7 @@ internal class AdapterViewAllBrand(var context: Context?,
 
         viewHolder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
-            .load(item.iconUrl)
+            .load(item.brandImage)
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,

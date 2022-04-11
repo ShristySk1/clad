@@ -5,14 +5,13 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.OnTouchListener
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -28,7 +27,6 @@ import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.databinding.FragmentProductDetailBinding
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.adapter.AdapterRecommended
-import com.ayata.clad.home.response.Content
 import com.ayata.clad.home.response.HomeResponse
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.response.Variant
@@ -40,10 +38,7 @@ import com.ayata.clad.product.viewmodel.ProductViewModel
 import com.ayata.clad.product.viewmodel.ProductViewModelFactory
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
-import com.ayata.clad.utils.Constants
-import com.ayata.clad.utils.PercentageCropImageView
-import com.ayata.clad.utils.PreferenceHandler
-import com.ayata.clad.utils.copyToClipboard
+import com.ayata.clad.utils.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
@@ -67,7 +62,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private var isProductInCart: Boolean = false
     private lateinit var viewModel: ProductViewModel
     private lateinit var productDetail: ProductDetail
-   lateinit var galleryBundle: List<String>
+    lateinit var galleryBundle: List<String>
     private var listRecommendation = ArrayList<ProductDetail>()
 
     private lateinit var adapterRecommended: AdapterRecommended
@@ -93,7 +88,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         setUpRecyclerRecommendation()
         binding.imageView3.setOnClickListener {
             goToGalleryView()
-            true
+        }
+        binding.ivGallaryView.setOnClickListener {
+            goToGalleryView()
         }
 
         return binding.root
@@ -101,13 +98,14 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun goToGalleryView() {
         val fragment = FragmentProductDetailFull2()
-        val bundle=Bundle()
-        bundle.putSerializable("gallary",galleryBundle as Serializable)
+        val bundle = Bundle()
+        bundle.putSerializable("gallary", galleryBundle as Serializable)
         fragment.arguments = bundle
         parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
             .addToBackStack(null)
             .commit()
     }
+
     private fun getBundle() {
         val bundle = arguments
         if (bundle != null) {
@@ -123,6 +121,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             Log.d(TAG, "getBundle:null ");
         }
     }
+
     private fun setProductData() {
         choosenSizePosition = 0
         if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
@@ -151,7 +150,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //        isProductInCart = productDetail.isInCart
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         //reviews
-        if(productDetail.reviews!=null) {
+        if (productDetail.reviews != null) {
             setUpTabChoose(
                 productDetail.reviews.size,
                 productDetail.reviews.width,
@@ -159,8 +158,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 productDetail.reviews.comfort
             )
         }
-
-
         val colorsize = setHashMapColorSize()
         setUpRecyclerColor(colorsize.keys)
 //        setCurrentVariant()
@@ -172,6 +169,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 .commit()
         }
     }
+
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
@@ -228,10 +226,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun showSnackBar(msg: String) {
-        val snackbar = Snackbar
-            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
-        snackbar.setActionTextColor(Color.WHITE)
-        snackbar.show()
+//        val snackbar = Snackbar
+//            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
+//        snackbar.setActionTextColor(Color.WHITE)
+//        snackbar.show()
+        showToast(msg,true)
     }
 
     private fun setWishlist(isWishList: Boolean) {
@@ -280,6 +279,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 toast.show()
             }
     }
+
     private fun setUpRecyclerRecommendation() {
         adapterRecommended = AdapterRecommended(
             requireContext(),
@@ -337,7 +337,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
 
-
     private fun initView() {
         (activity as MainActivity).showToolbar(false)
         (activity as MainActivity).showBottomNavigation(false)
@@ -383,11 +382,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun setUpTabChoose(size: String?, width: String?, quality: Double, comfort: String?) {
         //size
-        formatMyTab(binding.detail2.tabSize,size)
+        formatMyTab(binding.detail2.tabSize, size)
         //width
-        formatMyTab(binding.detail2.tabWidth,width)
+//        formatMyTab(binding.detail2.tabWidth, width)
         //comfort
-        formatMyTab(binding.detail2.tabComfort,comfort)
+        formatMyTab(binding.detail2.tabComfort, comfort)
         //quality
         binding.detail2.progressBarQuality.progress = Math.round(quality).toInt()
         //total reviews
@@ -403,7 +402,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 ?: run { "0%" }
 
     }
-    fun formatMyTab(tab:TabLayout,title:String?){
+
+    fun formatMyTab(tab: TabLayout, title: String?) {
         val tabStrip3 = tab.getChildAt(0) as LinearLayout
         for (i in 0 until tabStrip3.childCount) {
             tabStrip3.getChildAt(i).setOnTouchListener(OnTouchListener { v, event -> true })
@@ -413,7 +413,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 )
             ) {
                 tab.getTabAt(i)?.select()
-            }else{
+            } else {
             }
         }
     }
@@ -531,7 +531,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.detail2.rvSize.post {
             binding.detail2.rvSize.findViewHolderForAdapterPosition(0)?.itemView?.performClick();
             Log.d("sizechecked", "prepareListSize: 2" + listText);
-            setStockStatus(filteredVariants[0].quantity,1,binding.stock)
+//            setStockStatus(filteredVariants[0].quantity, 1, binding.stock)
+            setStockStatus(filteredVariants[0].stockStatus, binding.stock)
 
         }
 
@@ -583,7 +584,25 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
         })
     }
-
+    private fun showToast(message: String, isSuccess: Boolean) {
+        val toast = Toast(context)
+        val view: View = LayoutInflater.from(context)
+            .inflate(R.layout.custom_toast, null)
+        val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
+        val ivImage = view.findViewById<ImageView>(R.id.ivImage)
+        val cardView: CardView = view.findViewById(R.id.cardBackground)
+        tvMessage.text = message
+        if (isSuccess) {
+            cardView.setCardBackgroundColor(requireContext().resources.getColor(R.color.title_color))
+            ivImage.setImageResource(R.drawable.ic_success)
+        } else {
+//            cardView.setCardBackgroundColor(context!!.resources.getColor(R.color.colorPriceTag))
+//            ivImage.setImageResource(R.drawable.ic_info)
+        }
+        toast.setView(view)
+        toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 0)
+        toast.show()
+    }
     private fun addToWishListAPI() {
         Log.d(TAG, "addToWishListAPI: " + dynamicVarientId);
         viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
@@ -594,14 +613,15 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-                            showSnackBar(jsonObject.get("message").toString())
+                            showSnackBar(jsonObject.get("message").toString().removeDoubleQuote())
                             isProductWishList = true
                             setWishlist(true)
-                            MainActivity.NavCount.myWishlist = MainActivity.NavCount.myWishlist?.plus(1)
+                            MainActivity.NavCount.myWishlist =
+                                MainActivity.NavCount.myWishlist?.plus(1)
 
                         } catch (e: Exception) {
                             Log.d(TAG, "addToWishListAPI:Error ${e.message}")
-                            Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -678,8 +698,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         try {
                             isProductInCart = true
                             setCart(true)
-                            showSnackBar(jsonObject.get("message").toString())
-                            MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
+                            showSnackBar(jsonObject.get("message").toString().removeDoubleQuote())
+                            MainActivity.NavCount.myBoolean =
+                                MainActivity.NavCount.myBoolean?.plus(1)
 
                         } catch (e: Exception) {
                             Log.d(TAG, "addToCartAPI:Error ${e.message}")
@@ -741,26 +762,48 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             isProductWishList = myCurrentVarient.isInWishlist
             setWishlist(isProductWishList)
             setCart(isProductInCart)
+            setStockStatus(myCurrentVarient.stockStatus, binding.stock)
         }
     }
-    fun setStockStatus(stock:Int,myQuantity:Int,tv_stock:TextView,STOCKLIMIT:Int=6): String {
+
+    fun setStockStatus(
+        stock: Int,
+        myQuantity: Int,
+        tv_stock: TextView,
+        STOCKLIMIT: Int = 6
+    ): String {
         var textToDisplay = ""
         if (myQuantity >= stock) {
             textToDisplay = "Out of Stock"
-            changeColor(tv_stock, R.color.colorRedDark, R.color.white,requireContext())
+            changeColor(tv_stock, R.color.colorRedDark, R.color.white, requireContext())
         } else if (myQuantity < stock) {
             if ((stock - myQuantity) < STOCKLIMIT) {
-                changeColor(tv_stock, R.color.colorYellowDark, R.color.white,requireContext())
+                changeColor(tv_stock, R.color.colorYellowDark, R.color.white, requireContext())
                 textToDisplay = "${stock - myQuantity} item(s) remaining"
             } else {
                 textToDisplay = "In stock"
-                changeColor(tv_stock, R.color.colorGreenDark, R.color.white,requireContext())
+                changeColor(tv_stock, R.color.colorGreenDark, R.color.white, requireContext())
             }
 
         }
         return textToDisplay
     }
-    private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int,context: Context) {
+
+    fun setStockStatus(stock: String, tv_stock: TextView): String {
+        var textToDisplay = stock
+        if (stock.contains("Out of Stock", ignoreCase = true)) {
+            changeColor(tv_stock, R.color.colorRedDark, R.color.white, requireContext())
+        } else if (stock.contains("In stock", ignoreCase = true)) {
+
+            changeColor(tv_stock, R.color.colorGreenDark, R.color.white, requireContext())
+
+        } else {
+            changeColor(tv_stock, R.color.colorYellowDark, R.color.white, requireContext())
+        }
+        return textToDisplay
+    }
+
+    private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int, context: Context) {
         stock.setTextColor(ContextCompat.getColor(context, colorDark));
         stock.background.setTint(ContextCompat.getColor(context, colorLight));
     }

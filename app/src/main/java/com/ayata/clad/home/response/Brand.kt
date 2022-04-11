@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Brand(
-    @SerializedName("icon_url")
-    val iconUrl: String,
+    @SerializedName("brand_image")
+    val brandImage: String,
     val id: Int,
     val name: String
 ):Serializable

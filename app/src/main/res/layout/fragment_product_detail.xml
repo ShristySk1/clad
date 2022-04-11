@@ -165,6 +165,15 @@
                         app:layout_constraintBaseline_toBaselineOf="@+id/storeName"
                         app:layout_constraintEnd_toEndOf="parent" />
 
+                    <ImageView
+                        android:id="@+id/ivGallaryView"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_gallary"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/card_Wish"
+                        app:layout_constraintTop_toTopOf="@+id/textView4" />
                     <TextView
                         android:id="@+id/textView4"
                         style="@style/normalText"

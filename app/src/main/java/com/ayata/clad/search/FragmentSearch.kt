@@ -31,10 +31,15 @@ import com.ayata.clad.search.adapter.AdapterRecentSearch
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.ProductLoadStateAdapter
+import com.ayata.clad.utils.hideKeyboard
 import com.ayata.clad.view_all.adapter.AdapterViewAllProduct
 import com.ayata.clad.view_all.model.ModelViewAllProduct
 import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
@@ -66,7 +71,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false)
-         mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
+        mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
 
         val bundle = arguments
         if (bundle != null) {
@@ -77,8 +82,23 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
         initViewModel()
         initView()
         binding.etSearch.on(
-            EditorInfo.IME_ACTION_SEARCH,
-            { getSearchProducts(binding.etSearch.text.toString()) })
+            EditorInfo.IME_ACTION_SEARCH
+        ) {
+            val oldList = PreferenceHandler.getRecentSearchList(requireContext())?.toMutableList()
+            oldList?.let {
+                if (oldList.size <= 2) {
+                    oldList.add(binding.etSearch.text.toString())
+                    oldList.reverse()
+                } else {
+                    oldList.clear()
+                    oldList.add(binding.etSearch.text.toString())
+                }
+                PreferenceHandler.setRecentSearchList(requireContext(), oldList.toSet())
+            }
+            getSearchProducts(binding.etSearch.text.toString())
+            hideKeyboard()
+
+        }
 
         return binding.root
     }
@@ -119,7 +139,8 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
             binding.btnClose.visibility = View.GONE
         }
 
-        binding.textInputSearch.editText!!.addTextChangedListener(object : TextWatcher {
+        var job: Job? = null
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable) {}
 
@@ -136,6 +157,16 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
                 binding.btnClose.visibility = View.VISIBLE
                 if (count == 0) {
                     binding.btnClose.visibility = View.GONE
+                }
+                job?.cancel()
+                job = MainScope().launch {
+                    delay(500L)
+                    binding.etSearch?.let {
+                        if (it.toString().isNotEmpty()) {
+                            getSearchProducts(s.toString())
+                            Log.d("testsearch", "onViewCreated: ${it.toString()}");
+                        }
+                    }
                 }
             }
         })
@@ -169,7 +200,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
                     }
                 )
             }
-           mergeBinding.buttonRetry.setOnClickListener {
+            mergeBinding.buttonRetry.setOnClickListener {
                 adapterPaging.retry()
             }
         }
@@ -214,17 +245,6 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     }
 
     private fun getSearchProducts(filter: String) {
-        val oldList = PreferenceHandler.getRecentSearchList(requireContext())?.toMutableList()
-        oldList?.let {
-            if (oldList.size <= 2) {
-                oldList.add(filter)
-                oldList.reverse()
-            } else {
-                oldList.clear()
-                oldList.add(filter)
-            }
-            PreferenceHandler.setRecentSearchList(requireContext(), oldList.toSet())
-        }
         viewModel.searchProduct(
             filter,
             PreferenceHandler.getToken(context).toString()
@@ -316,10 +336,10 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     }
 
     override fun onItemClick(product: ProductDetail, position: Int) {
-        val bundle=Bundle()
-        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,product)
-        val fragmentProductDetail=FragmentProductDetail()
-        fragmentProductDetail.arguments=bundle
+        val bundle = Bundle()
+        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, product)
+        val fragmentProductDetail = FragmentProductDetail()
+        fragmentProductDetail.arguments = bundle
         parentFragmentManager.beginTransaction()
             .replace(R.id.main_fragment, fragmentProductDetail)
             .addToBackStack(null).commit()
