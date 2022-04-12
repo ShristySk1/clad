@@ -11,4 +11,5 @@ object Constants {
 
      const val Bearer="Token"
      const val ERROR_DRAWABLE= R.drawable.ic_clad_logo_grey
+     const val ERROR_TEXT_DRAWABLE=R.drawable.ic_clad_logo_grey
 }

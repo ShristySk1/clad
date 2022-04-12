@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.shopping_bag.model.ModelCheckout
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -158,7 +159,8 @@ internal class AdapterCheckout(
                 }
             })
 //            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.shoes)
+            .error(Constants.ERROR_DRAWABLE)
+            .fallback(Constants.ERROR_DRAWABLE)
             .into(holder.image)
         //stock calculate
         val stock = item.stock

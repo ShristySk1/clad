@@ -74,7 +74,7 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         viewModel.observePaymentApi().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     Log.d("testdata", "addToWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -90,11 +90,11 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
                     }
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    binding.spinKit.rootContainer.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d("testdata", "addToWishListAPI:Error ${it.message}")
                 }
@@ -167,7 +167,7 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         viewModel.observeCheckoutOrder().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     Log.d("testdata", "addToWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -187,11 +187,11 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
                     }
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    binding.spinKit.rootContainer.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d("testdata", "addToWishListAPI:Error ${it.message}")
                 }

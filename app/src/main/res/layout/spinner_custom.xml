@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:text="aa"
     android:id="@+id/text_view"
+    android:background="@drawable/background_outline_gray"
     android:textColor="@color/colorBlack"
+    android:gravity="center_vertical"
     android:paddingVertical="16dp"
-    android:paddingHorizontal="8dp"
+    android:drawableRight="@drawable/ic_arrow_drop_down"
+    android:paddingHorizontal="12dp"
     android:layout_height="wrap_content"/>

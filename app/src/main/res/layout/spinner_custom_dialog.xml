@@ -4,6 +4,6 @@
     android:text="aa"
     android:id="@+id/text_view"
     android:textColor="@color/colorBlack"
-    android:paddingVertical="16dp"
+    android:paddingVertical="14dp"
     android:paddingHorizontal="24dp"
     android:layout_height="wrap_content"/>

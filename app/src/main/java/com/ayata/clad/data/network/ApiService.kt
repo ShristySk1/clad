@@ -241,7 +241,9 @@ interface ApiService {
     @FormUrlEncoded
     suspend fun cancelOrder(
         @Header("Authorization") token: String,
-        @Field("order_id") orderId: Int
+        @Field("order_id") orderId: Int,
+        @Field("reason")reason:String,
+        @Field("comment")comment:String
     ): Response<JsonObject>
 
     //coupons

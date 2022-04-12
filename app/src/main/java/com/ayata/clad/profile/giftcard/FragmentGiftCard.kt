@@ -20,6 +20,7 @@ import com.ayata.clad.profile.giftcard.response.CouponReponse
 import com.ayata.clad.profile.giftcard.viewmodel.GiftcardViewModel
 import com.ayata.clad.profile.giftcard.viewmodel.GiftcardViewModelFactory
 import com.ayata.clad.profile.viewmodel.ProfileViewModelFactory
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.copyToClipboard
@@ -122,7 +123,7 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
             requireContext(),
             binding.root,
             R.layout.layout_error,
-            R.drawable.ic_cart,
+            Constants.ERROR_TEXT_DRAWABLE,
             title,
             it
         )

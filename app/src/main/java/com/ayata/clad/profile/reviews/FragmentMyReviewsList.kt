@@ -23,6 +23,7 @@ import com.ayata.clad.profile.reviews.model.Review
 import com.ayata.clad.profile.reviews.utils.observeOnce
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.tabs.TabLayout
@@ -144,7 +145,7 @@ class FragmentMyReviewsList : Fragment() {
                                 }
                             } catch (e: Exception) {
                                 Log.d("catchme", "prepareAPI: ${e.message}")
-
+                                showError("${e.message}")
                             }
                         }
                     }
@@ -176,7 +177,7 @@ class FragmentMyReviewsList : Fragment() {
             requireContext(),
             binding.root,
             R.layout.layout_error,
-            R.drawable.ic_cart,
+            Constants.ERROR_TEXT_DRAWABLE,
             "Error!",
             it
         )

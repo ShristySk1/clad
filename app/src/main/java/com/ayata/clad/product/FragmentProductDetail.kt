@@ -89,7 +89,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.imageView3.setOnClickListener {
             goToGalleryView()
         }
-        binding.ivGallaryView.setOnClickListener {
+        binding.cardGallary.setOnClickListener {
             goToGalleryView()
         }
 
@@ -230,7 +230,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
 //        snackbar.setActionTextColor(Color.WHITE)
 //        snackbar.show()
-        showToast(msg,true)
+        requireContext().showToast(msg,true)
     }
 
     private fun setWishlist(isWishList: Boolean) {
@@ -583,25 +583,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
             }
         })
-    }
-    private fun showToast(message: String, isSuccess: Boolean) {
-        val toast = Toast(context)
-        val view: View = LayoutInflater.from(context)
-            .inflate(R.layout.custom_toast, null)
-        val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
-        val ivImage = view.findViewById<ImageView>(R.id.ivImage)
-        val cardView: CardView = view.findViewById(R.id.cardBackground)
-        tvMessage.text = message
-        if (isSuccess) {
-            cardView.setCardBackgroundColor(requireContext().resources.getColor(R.color.title_color))
-            ivImage.setImageResource(R.drawable.ic_success)
-        } else {
-//            cardView.setCardBackgroundColor(context!!.resources.getColor(R.color.colorPriceTag))
-//            ivImage.setImageResource(R.drawable.ic_info)
-        }
-        toast.setView(view)
-        toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 0)
-        toast.show()
     }
     private fun addToWishListAPI() {
         Log.d(TAG, "addToWishListAPI: " + dynamicVarientId);

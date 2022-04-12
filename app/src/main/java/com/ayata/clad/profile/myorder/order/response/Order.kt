@@ -21,6 +21,8 @@ data class Order(
     @SerializedName("current_status")
     val currentStatus: String,
     val products: Products,
+    val is_cancellable:Boolean,
+    val is_returnable:Boolean,
     @SerializedName("receiver_name")
     val receiverName: String,
     @SerializedName("shipping_address")

@@ -12,6 +12,7 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentReviewBinding
 import com.ayata.clad.home.response.Reviews
 import com.ayata.clad.product.reviews.adapter.AdapterReview
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import java.io.Serializable
 
@@ -87,7 +88,7 @@ class FragmentReview : Fragment() {
             requireContext(),
             binding.root,
             R.layout.layout_error,
-            R.drawable.ic_cart,
+            Constants.ERROR_TEXT_DRAWABLE,
             title,
             it
         )

@@ -84,7 +84,7 @@ class FragmentShipping : Fragment() {
         viewModel.observeShippingAddress().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     try {
                         it.data?.details?.let { it1 -> prepareListAddress2(it1) }
                     } catch (e: Exception) {
@@ -92,11 +92,11 @@ class FragmentShipping : Fragment() {
                 }
 
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    binding.spinKit.rootContainer.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -104,19 +104,18 @@ class FragmentShipping : Fragment() {
         viewModel.observeUserAddress().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     try {
                         it.data?.details?.let { it1 -> prepareListAddress1(it1) }
                     } catch (e: Exception) {
                     }
                 }
-
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    binding.spinKit.rootContainer.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    binding.spinKit.rootContainer.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }

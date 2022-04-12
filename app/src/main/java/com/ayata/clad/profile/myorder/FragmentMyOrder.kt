@@ -25,6 +25,7 @@ import com.ayata.clad.profile.myorder.order.response.Detail
 import com.ayata.clad.profile.myorder.order.response.OrderResponse
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModel
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModelFactory
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.gson.Gson
@@ -123,7 +124,7 @@ class FragmentMyOrder : Fragment() {
             requireContext(),
             binding.root,
             R.layout.layout_error,
-            R.drawable.ic_cart,
+            Constants.ERROR_TEXT_DRAWABLE,
             title,
             it
         )
@@ -186,15 +187,15 @@ class FragmentMyOrder : Fragment() {
 //            )
         }
         myAdapter.setitemOrderClick {
-            if (!it.isCancelled) {
+//            if (!it.isCancelled) {
                 val b = Bundle()
                 b.putSerializable("order", it.order)
                 val frag = FragmentOrderDetail()
                 frag.arguments = b
                 (activity as MainActivity).openOrderDetail(frag)
-            } else {
-                Toast.makeText(requireContext(), "Order was Cancelled", Toast.LENGTH_SHORT).show()
-            }
+//            } else {
+//                Toast.makeText(requireContext(), "Order was Cancelled", Toast.LENGTH_SHORT).show()
+//            }
         }
     }
 //    private fun groupDataIntoHashMap(chatModelList: List<ApiOrder>) {

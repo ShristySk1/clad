@@ -32,6 +32,7 @@ import com.ayata.clad.shopping_bag.response.checkout.Selected
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.snackbar.Snackbar
@@ -839,7 +840,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             requireContext(),
             binding.layoutContainer,
             R.layout.layout_error,
-            R.drawable.ic_cart,
+            Constants.ERROR_TEXT_DRAWABLE,
             "Error!",
             it
         )

@@ -245,7 +245,7 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
 
     private fun setUpEmptyView() {
 //        Toast.makeText(context,"Empty products",Toast.LENGTH_SHORT).show()
-        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Empty!","No products available")
+        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,Constants.ERROR_TEXT_DRAWABLE,"Empty!","No products available")
 
     }
     private fun removeEmptyView(){

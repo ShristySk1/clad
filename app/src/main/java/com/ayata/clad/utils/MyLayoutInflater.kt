@@ -17,7 +17,7 @@ class MyLayoutInflater {
 
     }
 
-    fun onAddField(context: Context, parentView: ViewGroup, childLayout: Int,image: Int,title:String,subtitle:String) {
+    fun onAddField(context: Context, parentView: ViewGroup, childLayout: Int,myImage: Int,title:String,subtitle:String) {
         if (parentView.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
                 parentView,
@@ -30,7 +30,7 @@ class MyLayoutInflater {
         val images=rowView.findViewById<ImageView>(R.id.error_image)
         val titles=rowView.findViewById<TextView>(R.id.error_title)
         val subTitles=rowView.findViewById<TextView>(R.id.error_description)
-        images.setImageResource(image)
+        images.setImageResource(myImage)
         subTitles.setText(subtitle)
         titles.setText(title)
         if (parentView.contains(rowView)) {

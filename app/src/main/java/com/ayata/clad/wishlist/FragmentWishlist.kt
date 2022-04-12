@@ -38,9 +38,7 @@ import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
-import com.ayata.clad.utils.MyLayoutInflater
-import com.ayata.clad.utils.PreferenceHandler
-import com.ayata.clad.utils.removeDoubleQuote
+import com.ayata.clad.utils.*
 import com.ayata.clad.wishlist.adapter.AdapterDialogOption
 import com.ayata.clad.wishlist.adapter.AdapterWishList
 import com.ayata.clad.wishlist.response.get.GetWishListResponse
@@ -64,6 +62,7 @@ class FragmentWishlist : Fragment() {
     private lateinit var adapterRecommended: AdapterRecommended
     private lateinit var viewModel: WishListViewModel
     private lateinit var viewModelHome: HomeViewModel
+    private lateinit var progressDialog: ProgressDialog
 
 
     //size dialog
@@ -290,25 +289,6 @@ class FragmentWishlist : Fragment() {
 
     }
 
-    private fun showToast(message: String, isSuccess: Boolean) {
-        val toast = Toast(context)
-        val view: View = LayoutInflater.from(context)
-            .inflate(R.layout.custom_toast, null)
-        val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
-        val ivImage = view.findViewById<ImageView>(R.id.ivImage)
-        val cardView: CardView = view.findViewById(R.id.cardBackground)
-        tvMessage.text = message
-        if (isSuccess) {
-            cardView.setCardBackgroundColor(requireContext().resources.getColor(R.color.title_color))
-            ivImage.setImageResource(R.drawable.ic_success)
-        } else {
-//            cardView.setCardBackgroundColor(context!!.resources.getColor(R.color.colorPriceTag))
-//            ivImage.setImageResource(R.drawable.ic_info)
-        }
-        toast.setView(view)
-        toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 150)
-        toast.show()
-    }
 
     //not used
     private fun showDialogMultipleChoice(
@@ -413,7 +393,7 @@ class FragmentWishlist : Fragment() {
 //            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
 //        snackbar.setActionTextColor(Color.WHITE)
 //        snackbar.show()
-        showToast(msg.removeDoubleQuote(), true)
+        requireContext().showToast(msg.removeDoubleQuote(), true,150)
 
     }
 
@@ -428,7 +408,7 @@ class FragmentWishlist : Fragment() {
                 Status.SUCCESS -> {
                     Log.d(TAG, "addToCartAPI: ${it.data}")
                     val jsonObject = it.data
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     if (jsonObject != null) {
                         showSnackBar(jsonObject.get("message").toString())
                         MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
@@ -455,11 +435,13 @@ class FragmentWishlist : Fragment() {
 
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+//                    binding.spinKit.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "add_progress")
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToCartAPI:Error ${it.message}")
                 }
@@ -475,7 +457,7 @@ class FragmentWishlist : Fragment() {
         viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     Log.d(TAG, "removeWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -507,10 +489,11 @@ class FragmentWishlist : Fragment() {
 
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "remove_progress")
                 }
                 Status.ERROR -> {
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "removeWishListAPI:Error ${it.message}")
@@ -583,7 +566,7 @@ class FragmentWishlist : Fragment() {
             requireContext(),
             binding.layoutContainer,
             R.layout.layout_error,
-            R.drawable.ic_cart,
+            Constants.ERROR_TEXT_DRAWABLE,
             "Error!",
             it
         )

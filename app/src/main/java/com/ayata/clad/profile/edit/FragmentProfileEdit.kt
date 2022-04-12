@@ -22,6 +22,8 @@ import com.ayata.clad.profile.edit.response.Details
 import com.ayata.clad.profile.viewmodel.ProfileViewModel
 import com.ayata.clad.profile.viewmodel.ProfileViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProgressDialog
+import com.ayata.clad.utils.removeDoubleQuote
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,6 +34,7 @@ class FragmentProfileEdit : Fragment() {
     private lateinit var binding: FragmentProfileEditBinding
     private lateinit var viewModel: ProfileViewModel
     private lateinit var accountViewmodel: AccountViewModel
+    private lateinit var progressDialog: ProgressDialog
 
     private var email = ""
     private var gender = ""
@@ -157,7 +160,7 @@ class FragmentProfileEdit : Fragment() {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "saveToServer: ");
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     val jsonObject = it.data
                     if (jsonObject != null) {
 
@@ -165,7 +168,7 @@ class FragmentProfileEdit : Fragment() {
                         PreferenceHandler.setUsername(requireContext(), name)
                         PreferenceHandler.setGender(requireContext(), gender)
                         PreferenceHandler.setPhone(requireContext(), phone)
-                        Toast.makeText(context, "Successfully updated", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, jsonObject.get("message").toString().removeDoubleQuote(), Toast.LENGTH_SHORT).show()
                         parentFragmentManager.popBackStack()
                     } else {
                         Toast.makeText(context, "null", Toast.LENGTH_SHORT).show()
@@ -173,13 +176,14 @@ class FragmentProfileEdit : Fragment() {
 
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "login_progress")
                     Log.d(TAG, "saveToServer: load");
 
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
 
 

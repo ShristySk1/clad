@@ -11,10 +11,10 @@ data class ReviewDetails(
     val comfort: String,
     val quality: Int,
     @SerializedName("image_url")
-    val imageUrl: List<String>,
+    val imageUrl: List<ImageReview>,
     @SerializedName("is_reviewed")
     val isReviewed: Boolean,
     val rate: Double,
     @SerializedName("reviewed_date")
     val reviewedDate: String
-):Serializable
+) : Serializable

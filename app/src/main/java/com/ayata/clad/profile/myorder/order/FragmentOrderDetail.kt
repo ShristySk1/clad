@@ -34,8 +34,6 @@ class FragmentOrderDetail : Fragment() {
     private lateinit var cancelviewModel:CancelViewModel
     lateinit var o: Order
     lateinit var conditionalStatus: String
-    var isCancellable = true
-    var isReturnable = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,20 +52,18 @@ class FragmentOrderDetail : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = AdapterOrderTrack(requireContext(), list_orderTrack)
         }
-
-
         binding.btnCancelOrder.setOnClickListener {
             val bundle=Bundle()
             bundle.putSerializable("order",o)
             val frag=FragmentCancelForm()
             frag.arguments=bundle
-            if(isCancellable){
+            if(o.is_cancellable){
                parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
                    frag
                ).addToBackStack(null).commit()
 
             }
-            if(isReturnable){
+            if(o.is_returnable){
                 parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
                     frag
                 ).addToBackStack(null).commit()
@@ -128,20 +124,20 @@ class FragmentOrderDetail : Fragment() {
     private fun observeCancelFormPost() {
         cancelviewModel.getCancelDetails().observe(viewLifecycleOwner,{
             if(it){
-                viewModel.cancelOrderApi(PreferenceHandler.getToken(context)!!, o.orderId)
+//                viewModel.cancelOrderApi(PreferenceHandler.getToken(context)!!, o.orderId)
 
             }
         })
     }
 
     private fun checkForShowingRespectiveButton() {
-        if (isCancellable && !isReturnable) {
+        if (o.is_cancellable && !o.is_returnable) {
             binding.btnCancelOrder.text = "Cancel Order"
             binding.btnCancelOrder.visibility=View.VISIBLE
-        } else if (isReturnable && isCancellable) {
+        } else if (o.is_returnable && !o.is_cancellable) {
             binding.btnCancelOrder.visibility=View.VISIBLE
             binding.btnCancelOrder.setText("Return Order")
-        } else if (!isCancellable && !isReturnable) {
+        } else if (!o.is_cancellable && !o.is_returnable) {
             binding.btnCancelOrder.visibility=View.GONE
         }
     }
@@ -180,17 +176,17 @@ class FragmentOrderDetail : Fragment() {
             binding.include.price.text = getString(R.string.usd) +  "${o.products.variant.dollarPrice}"
         }
             binding.include.name.text = o.products.name
-            //date
-            try {
-                val dateformat = SimpleDateFormat("yyyy-MM-ddTHH:mm:ss")
-                val output_dateformat = SimpleDateFormat("MMMM dd, yyyy")
-                val date = dateformat.parse(o.createdAt)
-                val myFormatedDate = output_dateformat.format(date)
-                binding.textView29.text = "Ordered on " + myFormatedDate
-            } catch (e: Exception) {
-
-            }
-
+//            //date
+//            try {
+//                val dateformat = SimpleDateFormat("yyyy-MM-ddTHH:mm:ss")
+//                val output_dateformat = SimpleDateFormat("MMMM dd, yyyy")
+//                val date = dateformat.parse(o.createdAt)
+//                val myFormatedDate = output_dateformat.format(date)
+//                binding.textView29.text = "Ordered on " + myFormatedDate
+//            } catch (e: Exception) {
+//
+//            }
+            binding.textView29.text = "Ordered on " + o.createdAt
             binding.include.itemId.text = "Item ID: ${o.products.productId}"
             Glide.with(requireContext()).load(o.products.imageUrl).into(binding.include.image)
             binding.include.description.text =

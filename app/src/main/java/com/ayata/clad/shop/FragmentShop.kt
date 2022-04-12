@@ -29,6 +29,7 @@ import com.ayata.clad.shop.response.CategoryResponse
 import com.ayata.clad.shop.response.SubCategory
 import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModelFactory
+import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
@@ -283,7 +284,8 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         val listSpecificSubCat = getSpecificCat.subCategory
         if (listSpecificSubCat.size == 0) {
             //empty list
-            MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Empty!","No products available")
+            MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,
+                Constants.ERROR_TEXT_DRAWABLE,"Empty!","No products available")
         } else {
             if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
                 MyLayoutInflater().onDelete(
@@ -367,7 +369,7 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
 
     private fun showError(it:String) {
 //        binding.rootContainer.visibility=View.GONE
-        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,R.drawable.ic_cart,"Error!",it)
+        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error, Constants.ERROR_TEXT_DRAWABLE,"Error!",it)
 
     }
     private fun hideError() {

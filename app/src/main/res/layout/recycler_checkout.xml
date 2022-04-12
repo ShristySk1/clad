@@ -14,7 +14,7 @@
             android:id="@+id/add"
             android:layout_width="85dp"
             android:layout_height="190dp"
-            android:background="@color/red"
+            android:background="@color/recycler_view_item_swipe_left_background"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical">

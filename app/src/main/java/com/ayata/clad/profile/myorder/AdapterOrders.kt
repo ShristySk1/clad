@@ -125,7 +125,7 @@ class AdapterOrders(val context: Context, data: List<ModelOrder>) :
                     }else if(order.currentStatus.contains("Refunded",ignoreCase = true) or order.currentStatus.contains("Cancel",ignoreCase = true)){
                         changeColor(binding.orderStatus, R.color.colorRedLight, R.color.colorRedDark)
                     }else{
-                        changeColor(binding.orderStatus, R.color.colorYellowLight, R.color.colorYellowDark)
+                        changeColor(binding.orderStatus, R.color.colorBlueLight, R.color.colorBlueDark)
                     }
 
                 }

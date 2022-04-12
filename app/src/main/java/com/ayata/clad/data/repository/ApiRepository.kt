@@ -125,8 +125,8 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun getOrder(token: String) = retrofitService.getOrder(token)
 
     //cancel order
-    suspend fun cancelOrder(token: String, orderId: Int) =
-        retrofitService.cancelOrder(token, orderId)
+    suspend fun cancelOrder(token: String, orderId: Int,comment:String,reason:String) =
+        retrofitService.cancelOrder(token, orderId,comment,reason)
 
     //search
     suspend fun searchOrder(token: String, query: String, page: Int) =

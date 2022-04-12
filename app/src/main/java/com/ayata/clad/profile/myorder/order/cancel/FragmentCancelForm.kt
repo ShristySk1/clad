@@ -1,7 +1,6 @@
 package com.ayata.clad.profile.myorder.order.cancel
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -48,16 +47,20 @@ class FragmentCancelForm : Fragment() {
         binding.btnCancelOrder.setOnClickListener {
             val comment = binding.tvDescription.text.toString()
             //send comment and reason in post request
-//            viewModel.cancelOrderApi(PreferenceHandler.getToken(context)!!, o.orderId)
-            progressDialog = ProgressDialog.newInstance("", "")
-            progressDialog.show(parentFragmentManager, "cancel_progress")
-            Handler().postDelayed({
-                progressDialog.dismiss()
-                parentFragmentManager.popBackStack(
-                    "order_list",
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE
-                )
-            }, 3000)
+//            Handler().postDelayed({
+//                progressDialog.dismiss()
+//                parentFragmentManager.popBackStack(
+//                    "order_list",
+//                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+//                )
+//            }, 3000)
+
+            viewModel.cancelOrderApi(
+                PreferenceHandler.getToken(context)!!,
+                o.orderId,
+                reason_,
+                comment
+            )
         }
         return binding.root
     }
@@ -86,6 +89,7 @@ class FragmentCancelForm : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             cancelViewmodel.setCancelDetails(true)
+                            progressDialog.dismiss()
                             //directly go to order list fragment
                             parentFragmentManager.popBackStack(
                                 "order_list",
@@ -147,11 +151,11 @@ class FragmentCancelForm : Fragment() {
             arrayListOf<ModelTest>(
                 ModelTest(arrayListOf(), "Change of mind"),
                 ModelTest(arrayListOf(), "Change of Delivery Address"),
-                ModelTest(arrayListOf(), "Shipping Fees"),
+//                ModelTest(arrayListOf(), "Shipping Fees"),
                 ModelTest(arrayListOf(), "Decided for alternative product"),
                 ModelTest(arrayListOf(), "Found cheaper elsewhere"),
                 ModelTest(arrayListOf(), "Forgot to use voucher"),
-                ModelTest(arrayListOf(), "Delilvery time is too long"),
+                ModelTest(arrayListOf(), "Delivery time is too long"),
                 ModelTest(arrayListOf(), "Duplicate order")
             )
         if (binding.spinner != null) {

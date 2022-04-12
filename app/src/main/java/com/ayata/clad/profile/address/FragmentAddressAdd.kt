@@ -19,6 +19,8 @@ import com.ayata.clad.profile.address.response.Detail
 import com.ayata.clad.profile.address.viewmodel.AddressViewModel
 import com.ayata.clad.profile.address.viewmodel.AddressViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProgressDialog
+import com.ayata.clad.utils.removeDoubleQuote
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.JsonObject
 
@@ -29,6 +31,7 @@ class FragmentAddressAdd : Fragment() {
     var isShipApi = false
     var spin_state = "Bagmati Province"
     var spin_district = "Kathmandu"
+    private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -146,22 +149,23 @@ class FragmentAddressAdd : Fragment() {
         viewModel.observeShippingAddAddress().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
+                            Toast.makeText(requireContext(),jsonObject.get("message").toString().removeDoubleQuote(),Toast.LENGTH_SHORT).show()
                             requireActivity().supportFragmentManager.popBackStackImmediate()
                         } catch (e: Exception) {
                         }
                     }
-
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "ship_progress")
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -169,10 +173,11 @@ class FragmentAddressAdd : Fragment() {
         viewModel.observeUserAddAddress().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.spinKit.visibility = View.GONE
+                   progressDialog.dismiss()
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
+                            Toast.makeText(requireContext(),jsonObject.get("message").toString().removeDoubleQuote(),Toast.LENGTH_SHORT).show()
                             requireActivity().supportFragmentManager.popBackStackImmediate()
                         } catch (e: Exception) {
                         }
@@ -180,11 +185,12 @@ class FragmentAddressAdd : Fragment() {
 
                 }
                 Status.LOADING -> {
-                    binding.spinKit.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "user_progress")
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }

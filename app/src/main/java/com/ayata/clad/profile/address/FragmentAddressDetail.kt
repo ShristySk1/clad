@@ -138,7 +138,7 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
             requireContext(),
             binding.root,
             R.layout.layout_error,
-            R.drawable.ic_cart,
+            Constants.ERROR_TEXT_DRAWABLE,
             "Error!",
             it
         )

@@ -56,7 +56,7 @@
     <color name="tab_unselect">#12121D0D</color>
     <color name="divider2">#FFC4C4C4</color>
     <color name="order_background">#FBFBFB</color>
-    <color name="gift_card_background">#4CAF50</color>
+    <color name="gift_card_background">@color/color1</color>
     <color name="thrift_color1">#80FFFFFF</color>
 
     <color name="shimmer_color">#D1D1D1</color>
@@ -66,9 +66,12 @@
     <color name="colorYellowDark">#BD770E</color>
 
     <color name="colorRedLight">#2fFF1100</color>
-    <color name="colorRedDark">#FF1100</color>
+    <color name="colorRedDark">#DF1001</color>
+    <color name="colorBlueLight">#2F03A9F4</color>
+    <color name="colorBlueDark">#039CE1</color>
 
-    <color name="recycler_view_item_swipe_left_background">#FF1100</color>
-    <color name="recycler_view_item_swipe_right_background">#FF1100</color>
+
+    <color name="recycler_view_item_swipe_left_background">#DF1001</color>
+    <color name="recycler_view_item_swipe_right_background">#DF1001</color>
 
 </resources>

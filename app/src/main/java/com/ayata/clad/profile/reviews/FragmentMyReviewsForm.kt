@@ -254,9 +254,9 @@ class FragmentMyReviewsForm : Fragment() {
                     item.reviewDetails.imageUrl.forEach {
                         img.add(
                             Image(
-                                item.reviewDetails.imageUrl.indexOf(it).toLong() + 1,
+                                it.id.toLong(),
                                 "name",
-                                it
+                                it.imageUrl
                             )
                         )
                     }

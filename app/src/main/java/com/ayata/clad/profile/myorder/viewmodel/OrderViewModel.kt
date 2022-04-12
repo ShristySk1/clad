@@ -51,10 +51,10 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
     fun observeOrderResponse(): LiveData<Resource<JsonObject>> {
         return orderResponse
     }
-    fun cancelOrderApi(token: String,orderId:Int) {
+    fun cancelOrderApi(token: String,orderId:Int,comment:String,reason:String) {
         cancelOrderResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.cancelOrder("$token",orderId)
+            val response = mainRepository.cancelOrder("$token",orderId,comment,reason)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     Log.d("profileDetailAPI", "success: " + response.body())

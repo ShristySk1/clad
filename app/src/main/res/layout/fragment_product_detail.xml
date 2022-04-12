@@ -165,15 +165,7 @@
                         app:layout_constraintBaseline_toBaselineOf="@+id/storeName"
                         app:layout_constraintEnd_toEndOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/ivGallaryView"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_gallary_filled"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView4"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/card_Wish"
-                        app:layout_constraintTop_toTopOf="@+id/textView4" />
+
                     <TextView
                         android:id="@+id/textView4"
                         style="@style/normalText"
@@ -229,6 +221,30 @@
                             android:clickable="false"
                             android:padding="10dp"
                             android:src="@drawable/ic_heart_outline" />
+
+                    </androidx.cardview.widget.CardView>
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_gallary"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="25dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/card_Wish"
+                        app:layout_constraintTop_toTopOf="@+id/textView4">
+
+                        <ImageView
+                            android:id="@+id/iv_gallary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/background_circle_with_border"
+                            android:backgroundTint="@color/colorWhite"
+                            android:clickable="false"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_gallary" />
 
                     </androidx.cardview.widget.CardView>
 
