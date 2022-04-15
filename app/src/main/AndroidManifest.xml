@@ -17,14 +17,24 @@
         android:theme="@style/Theme.Clad"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
+        <activity android:name=".brand.BrandDetailActivity"
+            android:exported="true">
+
+        </activity>
+
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="${crashlyticsEnabled}" />
-        <activity android:name=".profile.reviews.ReviewFromActivity"
-            android:exported="true"/>
-        <activity android:name=".BaseActivity"
-            android:exported="true"/>
-        <activity android:name=".story.StoryActivity" android:exported="true"/>
+
+        <activity
+            android:name=".profile.reviews.ReviewFromActivity"
+            android:exported="true" />
+        <activity
+            android:name=".BaseActivity"
+            android:exported="true" />
+        <activity
+            android:name=".story.StoryActivity"
+            android:exported="true" />
         <activity
             android:name=".SplashActivity"
             android:configChanges="orientation"
@@ -61,9 +71,9 @@
 
         </activity>
 
-        <service android:name=".notification.MyFirebaseNotificationService"
-            android:exported="true"
-            >
+        <service
+            android:name=".notification.MyFirebaseNotificationService"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.brand.BrandDetailActivity
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
@@ -73,7 +73,6 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
     private lateinit var adapterBanner: AdapterBanner
     private var listBanner = ArrayList<Slider>()
-
 
 
     override fun onCreateView(
@@ -437,12 +436,15 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     }
 
     override fun onPopularBrandsClicked(data: Brand, position: Int) {
-        val bundle = Bundle()
-        bundle.putString(Constants.FILTER_HOME, data.name)
-        val fragmentViewAllProduct = FragmentViewAllProduct()
-        fragmentViewAllProduct.arguments = bundle
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentViewAllProduct)
-            .addToBackStack(null).commit()
+//        val bundle = Bundle()
+//        bundle.putString(Constants.FILTER_HOME, data.name)
+//        val fragmentViewAllProduct = FragmentViewAllProduct()
+//        fragmentViewAllProduct.arguments = bundle
+//        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentViewAllProduct)
+//            .addToBackStack(null).commit()
+        val intent=Intent(activity, BrandDetailActivity::class.java)
+        intent.putExtra("slug",data.slug)
+        startActivity(intent)
     }
 
     override fun onJustDroppedClicked(data: ProductDetail, position: Int) {

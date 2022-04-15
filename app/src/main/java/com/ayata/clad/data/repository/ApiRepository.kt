@@ -125,8 +125,8 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun getOrder(token: String) = retrofitService.getOrder(token)
 
     //cancel order
-    suspend fun cancelOrder(token: String, orderId: Int,comment:String,reason:String) =
-        retrofitService.cancelOrder(token, orderId,comment,reason)
+    suspend fun cancelOrder(token: String, orderId: Int, comment: String, reason: String) =
+        retrofitService.cancelOrder(token, orderId, comment, reason)
 
     //search
     suspend fun searchOrder(token: String, query: String, page: Int) =
@@ -169,7 +169,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun postReviewApi(
         token: String,
         body: JsonObject
-    ) = retrofitService.postReview(token,body)
+    ) = retrofitService.postReview(token, body)
 
     //image post review
     suspend fun uploadImageReviewApi(photo: List<MultipartBody.Part>) =
@@ -177,6 +177,9 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
 
     //delete photo
     suspend fun deleteImageReviewApi(photo: Int) = retrofitService.deletePhoto(photo)
+
+    //brand detail
+    suspend fun getBrandDetail(slug: String) = retrofitService.getBrandDetail(slug)
 
 
 }

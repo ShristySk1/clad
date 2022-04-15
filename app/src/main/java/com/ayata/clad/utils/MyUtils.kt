@@ -18,11 +18,16 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ayata.clad.R
+import com.ayata.clad.brand.response.BrandDetailResponse
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
+import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 fun Context.copyToClipboard(text: CharSequence){
     val clipboard = ContextCompat.getSystemService(this, ClipboardManager::class.java)
@@ -73,5 +78,15 @@ fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
+//val jsonProducts = jsonObject.get("products").asJsonArray
+//val type: Type =
+//    object : TypeToken<ArrayList<ProductDetail?>?>() {}.type
+//val list: ArrayList<ProductDetail> = Gson().fromJson(
+//    jsonProducts,
+//    type
+//)
+
+//val brandDetail= Gson().fromJson(jsonObject.get("brand"), BrandDetailResponse::class.java)
+
 
 

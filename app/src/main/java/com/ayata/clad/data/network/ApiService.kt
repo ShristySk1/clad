@@ -242,8 +242,8 @@ interface ApiService {
     suspend fun cancelOrder(
         @Header("Authorization") token: String,
         @Field("order_id") orderId: Int,
-        @Field("reason")reason:String,
-        @Field("comment")comment:String
+        @Field("reason") reason: String,
+        @Field("comment") comment: String
     ): Response<JsonObject>
 
     //coupons
@@ -284,4 +284,11 @@ interface ApiService {
     suspend fun deletePhoto(
         @Field("image_id") image_id: Int,
     ): Response<JsonObject>
+
+    //brand detail
+    @GET("brand/details")
+    suspend fun getBrandDetail(
+        @Query("slug") slug: String
+    ): Response<JsonObject>
+
 }

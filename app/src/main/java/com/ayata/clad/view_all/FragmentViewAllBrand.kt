@@ -1,37 +1,29 @@
 package com.ayata.clad.view_all
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
+import com.ayata.clad.brand.BrandDetailActivity
 import com.ayata.clad.data.network.ApiService
-import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentViewAllBrandBinding
 import com.ayata.clad.databinding.LayoutErrorPagingBinding
 import com.ayata.clad.home.response.Brand
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.ProductLoadStateAdapter
-import com.ayata.clad.view_all.adapter.AdapterViewAllBrand
 import com.ayata.clad.view_all.paging.BrandViewAllAdapter
-import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
 import com.ayata.clad.view_all.viewmodel.BrandAllViewModel
 import com.ayata.clad.view_all.viewmodel.BrandAllViewModelFactory
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Type
 
 
 class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener {
@@ -148,6 +140,7 @@ class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener
             }
         }
     }
+
     private fun getAllTest(filter: String) {
         viewModel.searchBrandViewAll(filter, PreferenceHandler.getToken(context).toString())
         viewModel.brandList.observe(viewLifecycleOwner, {
@@ -282,7 +275,9 @@ class FragmentViewAllBrand : Fragment(), BrandViewAllAdapter.onItemClickListener
 //    }
 
     override fun onBrandClick(product: Brand?, position: Int) {
-//        TODO("Not yet implemented")
+        val intent = Intent(activity, BrandDetailActivity::class.java)
+        intent.putExtra("slug", product?.slug)
+        startActivity(intent)
     }
 
 }
