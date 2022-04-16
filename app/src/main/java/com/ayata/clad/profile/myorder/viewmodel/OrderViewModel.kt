@@ -25,8 +25,8 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
     }
     private val loading = MutableLiveData<Boolean>()
     fun getOrderApi(token: String) {
+        Log.d("testapihit", "getOrderApi: ");
         orderResponse.postValue(Resource.loading(null))
-
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
                 val response = mainRepository.getOrder("$token")

@@ -36,6 +36,8 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("testcreate", "onCreateView: here oncreate 2");
+
         // Inflate the layout for this fragment
         binding =
             FragmentGiftcardBinding.inflate(inflater, container, false)
@@ -56,7 +58,7 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
                 GiftcardViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
             )
                 .get(GiftcardViewModel::class.java)
-        viewModel.getCouponAPI(PreferenceHandler.getToken(context)!!)
+
     }
 
     private fun initRecycler() {
@@ -77,8 +79,9 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
 //                "GIFT-100gh",
 //                "Valid until 22 Feb 2022"
 //            )
-
+        viewModel.getCouponAPI(PreferenceHandler.getToken(context)!!)
         viewModel.observerGetCouponAPI().observe(viewLifecycleOwner, {
+            Log.d("testhash", "prepareGiftCard: "+hashCode()+it.status);
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.progressBar.root.visibility=View.GONE

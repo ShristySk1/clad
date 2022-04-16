@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.profile.edit.response.Details
+import com.ayata.clad.profile.reviews.utils.SingleLiveEvent
 import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -16,7 +17,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository) : 
     private val errorMessage = MutableLiveData<String>()
 
     private val profileResponse = MutableLiveData<Resource<JsonObject>>()
-    private val profileUpdateResponse = MutableLiveData<Resource<JsonObject>>()
+    private val profileUpdateResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val orderResponse = MutableLiveData<Resource<JsonObject>>()
     private val orderDetailResponse = MutableLiveData<Resource<JsonObject>>()
     private val profileDetail = MutableLiveData<Details>()
@@ -76,7 +77,7 @@ class ProfileViewModel constructor(private val mainRepository: ApiRepository) : 
         return profileResponse
     }
 
-    fun postProfileAPI(): LiveData<Resource<JsonObject>> {
+    fun postProfileAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return profileUpdateResponse
     }
 

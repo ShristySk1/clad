@@ -41,6 +41,7 @@ class FragmentMyOrder : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("testcreate", "onCreateView: here oncreate 1");
         // Inflate the layout for this fragment
         binding =
             FragmentMyorderBinding.inflate(inflater, container, false)
@@ -57,10 +58,12 @@ class FragmentMyOrder : Fragment() {
 
     private fun getOrderApi() {
         viewModel.getOrderApi(PreferenceHandler.getToken(context)!!)
+        showProgress()
+        hideError()
         viewModel.observeOrderResponse().observe(viewLifecycleOwner, {
+            Log.d("testobserve", "getOrderApi: "+it.status+hashCode());
             when (it.status) {
                 Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
                     hideProgress()
                     hideError()
                     val jsonObject = it.data
@@ -86,8 +89,7 @@ class FragmentMyOrder : Fragment() {
 
                 }
                 Status.LOADING -> {
-                    showProgress()
-                    hideError()
+
 //                    binding.spinKit.visibility = View.VISIBLE
 
                 }
@@ -177,14 +179,6 @@ class FragmentMyOrder : Fragment() {
             layoutManager =
                 LinearLayoutManager(requireContext())
             adapter = myAdapter
-//            myAdapter.items = arrayListOf(
-//                MyOrderRecyclerViewItem.Title("April 12, 2021", "Order ID: Q935-Z324"),
-//                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", "","7855","900"),
-//                MyOrderRecyclerViewItem.Divider(),
-//                MyOrderRecyclerViewItem.Title("April 12, 2021", "Order ID: Q935-Z324"),
-//                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", "","10000","800"),
-//                MyOrderRecyclerViewItem.Product("Nike Air Jordan", "Quantity: 1", "","8900","600"),
-//            )
         }
         myAdapter.setitemOrderClick {
 //            if (!it.isCancelled) {
@@ -193,50 +187,8 @@ class FragmentMyOrder : Fragment() {
                 val frag = FragmentOrderDetail()
                 frag.arguments = b
                 (activity as MainActivity).openOrderDetail(frag)
-//            } else {
-//                Toast.makeText(requireContext(), "Order was Cancelled", Toast.LENGTH_SHORT).show()
-//            }
+
         }
     }
-//    private fun groupDataIntoHashMap(chatModelList: List<ApiOrder>) {
-//        val groupedHashMap: LinkedHashMap<String, MutableSet<ApiOrder>?> =
-//            LinkedHashMap<String, MutableSet<ApiOrder>?>()
-//        var list: MutableSet<ApiOrder>? = null
-//        for (chatModel in chatModelList) {
-//            //Log.d(TAG, travelActivityDTO.toString());
-//            val hashMapKey: String = DateParser.convertDateToString(chatModel.order_date)
-//            //Log.d(TAG, "start date: " + DateParser.convertDateToString(travelActivityDTO.getStartDate()));
-//            if (groupedHashMap.containsKey(hashMapKey)) {
-//                // The key is already in the HashMap; add the pojo object
-//                // against the existing key.
-//                groupedHashMap[hashMapKey]!!.add(chatModel)
-//            } else {
-//                // The key is not there in the HashMap; create a new key-value pair
-//                list = LinkedHashSet<ApiOrder>()
-//                list!!.add(chatModel)
-//                groupedHashMap[hashMapKey] = list
-//            }
-//        }
-//        //Generate list from map
-//        generateListFromMap(groupedHashMap)
-//    }
 
-
-//    private fun generateListFromMap(groupedHashMap: LinkedHashMap<String, MutableSet<ApiOrder>?>): List<ListObject>? {
-//        // We linearly add every item into the consolidatedList.
-//        val consolidatedList: MutableList<ListObject> = ArrayList<ListObject>()
-//        for (date in groupedHashMap.keys) {
-//            val dateItem = DateObject()
-//            dateItem.setDate(date)
-//            consolidatedList.add(dateItem)
-//            for (chatModel in groupedHashMap[date]!!) {
-//                val generalItem = ChatModelObject()
-//                generalItem.setChatModel(chatModel)
-//                consolidatedList.add(generalItem)
-//            }
-//        }
-//        chatAdapter.setDataChange(consolidatedList)
-//        return consolidatedList
-//    }
-//    data class ApiOrder(val orderId:Int,val order_date:String,val productList:List<ModelProduct>)
 }

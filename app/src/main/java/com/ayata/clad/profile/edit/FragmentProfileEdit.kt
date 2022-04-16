@@ -157,6 +157,7 @@ class FragmentProfileEdit : Fragment() {
             Details(dob = dob, email, firstName = name,lastName= lastname, gender = gender, phone_no = phone)
         viewModel.profileDetailUpdateAPI(PreferenceHandler.getToken(context)!!, myViewData)
         viewModel.postProfileAPI().observe(viewLifecycleOwner, {
+            Log.d("testobserve", "saveToServer: "+it.status+hashCode());
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "saveToServer: ");

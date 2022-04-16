@@ -2,14 +2,18 @@ package com.ayata.clad.profile.reviews.utils
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
+import java.util.concurrent.atomic.AtomicBoolean
 
 /** Returns a new request body that transmits the content of this. */
 fun File.asRequestBodyWithProgress(
@@ -43,27 +47,67 @@ fun File.asRequestBodyWithProgress(
         }
     }
 }
-fun <T> LiveData<T>.observeOnce(observer: (T) -> Unit) {
-    observeForever(object: Observer<T> {
-        override fun onChanged(value: T) {
-            removeObserver(this)
-            observer(value)
+//fun <T> LiveData<T>.observeOnce(observer: (T) -> Unit) {
+//    observeForever(object: Observer<T> {
+//        override fun onChanged(value: T) {
+//            removeObserver(this)
+//            observer(value)
+//        }
+//    })
+//}
+//fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+//    observe(lifecycleOwner, object : Observer<T> {
+//        override fun onChanged(t: T?) {
+//            observer.onChanged(t)
+//            removeObserver(this)
+//        }
+//    })
+//}
+//fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
+//    observe(owner, object: Observer<T> {
+//        override fun onChanged(value: T) {
+//            removeObserver(this)
+//            observer(value)
+//        }
+//    })
+//}
+class SingleLiveEvent<T> : MutableLiveData<T>() {
+
+    private val mPending = AtomicBoolean(false)
+
+    @MainThread
+    override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
+
+        if (hasActiveObservers()) {
+            Log.w(TAG, "Multiple observers registered but only one will be notified of changes.")
         }
-    })
-}
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-    observe(lifecycleOwner, object : Observer<T> {
-        override fun onChanged(t: T?) {
-            observer.onChanged(t)
-            removeObserver(this)
-        }
-    })
-}
-fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
-    observe(owner, object: Observer<T> {
-        override fun onChanged(value: T) {
-            removeObserver(this)
-            observer(value)
-        }
-    })
+
+        // Observe the internal MutableLiveData
+        super.observe(owner, object : Observer<T> {
+            override fun onChanged(t: T?) {
+                if (mPending.compareAndSet(true, false)) {
+                    observer.onChanged(t)
+                }
+            }
+        })
+    }
+
+    @MainThread
+    override fun setValue(t: T?) {
+        mPending.set(true)
+        super.setValue(t)
+    }
+
+    /**
+     * Used for cases where T is Void, to make calls cleaner.
+     */
+    @MainThread
+    fun call() {
+        setValue(null)
+    }
+
+    companion object {
+
+        private val TAG = "SingleLiveEvent"
+    }
 }

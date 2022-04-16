@@ -21,7 +21,6 @@ import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentBrandDetailBinding
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.productlist.adapter.AdapterProductList
-import com.ayata.clad.profile.reviews.utils.observeOnce
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.view_all.viewmodel.BrandAllViewModel

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.profile.reviews.utils.SingleLiveEvent
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -14,7 +15,7 @@ import okhttp3.MultipartBody
 class ReviewViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
     private val errorMessage = MutableLiveData<String>()
-    private val reviewResponse = MutableLiveData<Resource<JsonObject>>()
+    private val reviewResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val postReviewResponse = MutableLiveData<Resource<JsonObject>>()
 
 
@@ -50,7 +51,7 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
         }
     }
 
-    fun observeGetReviewApi(): LiveData<Resource<JsonObject>> {
+    fun observeGetReviewApi(): SingleLiveEvent<Resource<JsonObject>> {
         return reviewResponse
     }
 

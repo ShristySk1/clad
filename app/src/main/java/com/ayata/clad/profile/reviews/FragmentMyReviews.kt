@@ -29,12 +29,10 @@ class FragmentMyReviews : Fragment() {
         initRecyclerView()
         return binding.root
     }
-
-
     private fun initRecyclerView() {
         val data = arguments?.getSerializable("datas") as? List<Review>
         val isFetched = arguments?.getBoolean("isFetched") as Boolean
-        Log.d("testdatas", "initRecyclerView: " + data + isFetched);
+        Log.d("testdatas", "initRecyclerView: " + data + isFetched+FragmentMyReviewsList.isApiFetched);
         hideEmpty()
         binding.rvReviews.apply {
             layoutManager = LinearLayoutManager(context)

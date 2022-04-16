@@ -20,7 +20,6 @@ import com.ayata.clad.databinding.FragmentMyReviewsListBinding
 import com.ayata.clad.profile.reviews.adapter.AdapterReviewsViewPager
 import com.ayata.clad.profile.reviews.model.ModelReview
 import com.ayata.clad.profile.reviews.model.Review
-import com.ayata.clad.profile.reviews.utils.observeOnce
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
 import com.ayata.clad.utils.Constants
@@ -66,6 +65,11 @@ class FragmentMyReviewsList : Fragment() {
             ReviewViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ReviewViewModel::class.java]
         viewModel.reviewAPI(PreferenceHandler.getToken(requireContext())!!)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isApiFetched=false
     }
 
     private fun initAppbar() {
@@ -204,7 +208,7 @@ class FragmentMyReviewsList : Fragment() {
 
         val currentPosition: Int = 0
         isFetchedApi = true
-        Log.d("testreviewlist", "setData: " + isFetchedApi);
+        Log.d("testmybooloean", "setData: " + isApiFetched);
         adapterReviewViewPager.notifyDataSetChanged()
         binding.viewPager.adapter = null
         binding.viewPager.adapter = adapterReviewViewPager

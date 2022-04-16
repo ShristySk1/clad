@@ -18,6 +18,7 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
         <activity android:name=".brand.BrandDetailActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
 
         </activity>
@@ -28,12 +29,15 @@
 
         <activity
             android:name=".profile.reviews.ReviewFromActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".BaseActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".story.StoryActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".SplashActivity"
