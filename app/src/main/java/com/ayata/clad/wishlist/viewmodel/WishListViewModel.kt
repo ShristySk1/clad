@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.profile.reviews.utils.SingleLiveEvent
 import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -16,7 +17,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
     private val errorMessage = MutableLiveData<String>()
 
     private val listResponse = MutableLiveData<Resource<JsonObject>>()
-    private val removeResponse = MutableLiveData<Resource<JsonObject>>()
+    private val removeResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
 
@@ -66,7 +67,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
                 if (response.isSuccessful) {
                     Log.d("removeFromWishAPI", "success: "+response.body())
                     removeResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
+                    loading.postValue(false)
                 } else {
                     Log.e("removeFromWishAPI", "error: $response")
                     onError("Error : ${response.message()} ")
@@ -77,7 +78,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     }
 
-    fun getRemoveFromWishAPI(): LiveData<Resource<JsonObject>> {
+    fun getRemoveFromWishAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return removeResponse
     }
     private val wishListToCart = MutableLiveData<Resource<JsonObject>>()

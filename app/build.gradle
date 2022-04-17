@@ -135,6 +135,10 @@ dependencies {
     implementation 'com.nikhilpanju.recyclerviewenhanced:recyclerviewenhanced:1.1.0'
     //image picker review
     implementation 'com.github.esafirm:android-image-picker:3.0.0-beta1'
+    //revome wishlive multiple observer problem
+    implementation 'com.rugovit.eventlivedata:eventlivedata:1.0'
+
+
 
 
 }

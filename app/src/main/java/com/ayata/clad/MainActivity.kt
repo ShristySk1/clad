@@ -2,6 +2,7 @@ package com.ayata.clad
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
@@ -44,6 +45,7 @@ import com.ayata.clad.wishlist.viewmodel.WishListViewModelFactory
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import java.util.*
@@ -603,5 +605,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
            frag
         ).addToBackStack(null).commit()
 
+    }
+    fun showSnakbarBottomOffset(message:String){
+        val snackbar = Snackbar
+            .make(binding.root, message.removeDoubleQuote(), Snackbar.LENGTH_SHORT)
+        snackbar.setActionTextColor(Color.WHITE)
+        snackbar.anchorView=binding.bottomNavigationView
+        snackbar.show()
+    }
+    fun showSnakbar(message:String){
+        Log.d(TAG, "showSnakbar: "+message);
+        val snackbar = Snackbar
+            .make(binding.root, message.removeDoubleQuote(),1000)
+        snackbar.setActionTextColor(Color.WHITE)
+//        snackbar.setAction("GO TO CART", View.OnClickListener {
+//
+//        })
+        snackbar.show()
     }
 }

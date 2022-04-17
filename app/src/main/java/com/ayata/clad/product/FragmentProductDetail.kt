@@ -7,11 +7,9 @@ import android.text.Html
 import android.util.Log
 import android.view.*
 import android.view.View.OnTouchListener
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -45,7 +43,6 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import java.io.Serializable
@@ -226,11 +223,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun showSnackBar(msg: String) {
-//        val snackbar = Snackbar
-//            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
-//        snackbar.setActionTextColor(Color.WHITE)
-//        snackbar.show()
-        requireContext().showToast(msg,true)
+        ((activity) as MainActivity).showSnakbar(msg)
+//        requireContext().showToast(msg,true)
     }
 
     private fun setWishlist(isWishList: Boolean) {
@@ -584,6 +578,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
         })
     }
+
     private fun addToWishListAPI() {
         Log.d(TAG, "addToWishListAPI: " + dynamicVarientId);
         viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)

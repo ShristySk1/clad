@@ -2,15 +2,12 @@ package com.ayata.clad.wishlist
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.cardview.widget.CardView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -389,11 +386,8 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun showSnackBar(msg: String) {
-//        val snackbar = Snackbar
-//            .make(binding.root, msg, Snackbar.LENGTH_SHORT)
-//        snackbar.setActionTextColor(Color.WHITE)
-//        snackbar.show()
-        requireContext().showToast(msg.removeDoubleQuote(), true,150)
+        ((activity) as MainActivity).showSnakbarBottomOffset(msg)
+//        requireContext().showToast(msg.removeDoubleQuote(), true,150)
 
     }
 
@@ -450,55 +444,75 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun removeWishListAPI(product: Wishlist) {
+        Log.d("testnumber", "top : "+product.product.name);
+
         viewModel.removeFromWishAPI(
             PreferenceHandler.getToken(context).toString(),
             product.wishlist_id!!
         )
         viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    progressDialog.dismiss()
-                    Log.d(TAG, "removeWishListAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        showSnackBar(msg = "Product removed from wishlist")
-                        var remove: Wishlist? = null;
-                        var position: Int? = null
-                        try {
-                            for ((index, item) in myWishList.withIndex()) {
-                                if (item.wishlist_id == product.wishlist_id) {
-                                    remove = item
-                                    position = index
+            Log.d("testnumber", "bottom middle: "+product.product.name);
+//            it?.takeIf { userVisibleHint }?.getContentIfNotHandled()?.let {
+                //DO what ever is needed
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        progressDialog.dismiss()
+                        Log.d(TAG, "removeWishListAPI response: ${it.data}")
+                        val jsonObject = it.data
+                        if (jsonObject != null) {
+                            showSnackBar(msg = "Product removed from wishlist")
+                            var remove: Wishlist? = null;
+                            var position: Int? = null
+                            try {
+                                Log.d("testnumber", "bottom : " + product.product.name);
+                                for ((index, item) in myWishList.withIndex()) {
+                                    Log.d("testnumber", "removeWishListAPI: " + item.product.name);
+                                    if (item.wishlist_id == product.wishlist_id) {
+                                        remove = item
+                                        position = index
+                                    }
                                 }
-                            }
-                            remove?.let {
-                                myWishList.remove(remove)
-                            }
-                            setUpView()
-                            position?.let {
-                                adapterWishList.notifyItemRemoved(position)
-                                MainActivity.NavCount.myWishlist =
-                                    MainActivity.NavCount.myWishlist?.minus(1)
+                                remove?.let {
+                                    myWishList.removeAt(position!!)
+                                }
+                                Log.d("mypositionfinder", "removeWishListAPI:position " + position);
+                                position?.let {
+                                    adapterWishList.notifyItemRemoved(position)
+                                    MainActivity.NavCount.myWishlist =
+                                        MainActivity.NavCount.myWishlist?.minus(1)
 
-                            }
+                                }
+                                setUpView()
 
-                        } catch (e: Exception) {
-                            Log.d(TAG, "removeWishListAPI:Error ${e.message}")
+                            } catch (e: Exception) {
+                                Log.d(TAG, "removeWishListAPI:Error ${e.message}")
+                            }
                         }
-                    }
 
+                    }
+                    Status.LOADING -> {
+                        progressDialog = ProgressDialog.newInstance("", "")
+                        val prev: Fragment? =
+                            parentFragmentManager.findFragmentByTag("remove_progress")
+                        if (prev != null) {
+                            val df: DialogFragment = prev as DialogFragment
+                            df.dismiss()
+                        }
+                        progressDialog.show(parentFragmentManager, "remove_progress")
+                    }
+                    Status.ERROR -> {
+                        progressDialog.dismiss()
+                        //Handle Error
+                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                        Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+                    }
                 }
-                Status.LOADING -> {
-                    progressDialog = ProgressDialog.newInstance("", "")
-                    progressDialog.show(parentFragmentManager, "remove_progress")
-                }
-                Status.ERROR -> {
-                    progressDialog.dismiss()
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
-                }
-            }
+//            }
+//            it.getContentIfNotHandled()?.let { // Only proceed if the event has never been handled
+//
+//            }
+
+
         })
     }
 

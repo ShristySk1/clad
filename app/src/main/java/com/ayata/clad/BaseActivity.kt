@@ -2,6 +2,7 @@ package com.ayata.clad
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -18,11 +19,13 @@ import com.ayata.clad.login.viewmodel.LoginViewModel
 import com.ayata.clad.login.viewmodel.LoginViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.ProgressDialog
+import com.ayata.clad.utils.removeDoubleQuote
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -200,5 +203,7 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
             }
         }.execute(src)
     }
+
+
 
 }

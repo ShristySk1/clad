@@ -119,7 +119,7 @@ class FragmentBrandDetail : Fragment() {
     }
 
     private fun brandDetailObserver() {
-        binding.layoutGroup.visibility=View.GONE
+//        binding.layoutGroup.visibility=View.GONE
         viewModel.getBrandDetailAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -186,10 +186,10 @@ class FragmentBrandDetail : Fragment() {
     }
 
     private fun showError(it: String) {
-        binding.layoutGroup.visibility=View.GONE
+//        binding.layoutGroup.visibility=View.GONE
         MyLayoutInflater().onAddField(
             requireContext(),
-            binding.nextRoot,
+            binding.root,
             R.layout.layout_error,
             Constants.ERROR_TEXT_DRAWABLE,
             "Error!",
@@ -199,10 +199,10 @@ class FragmentBrandDetail : Fragment() {
     }
 
     private fun hideError() {
-        binding.layoutGroup.visibility=View.VISIBLE
+//        binding.layoutGroup.visibility=View.VISIBLE
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
-                binding.nextRoot,
+                binding.root,
                 binding.root.findViewById(R.id.layout_root)
             )
         }
