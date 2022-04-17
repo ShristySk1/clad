@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.profile.edit.response.Details
-import com.ayata.clad.profile.reviews.utils.SingleLiveEvent
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.SingleLiveEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 

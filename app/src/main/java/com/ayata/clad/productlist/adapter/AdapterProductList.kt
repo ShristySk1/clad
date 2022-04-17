@@ -1,16 +1,24 @@
 package com.ayata.clad.productlist.adapter
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerProductlistBinding
+import com.ayata.clad.databinding.RecyclerHomeJustDroppedBinding
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import java.util.ArrayList
 
 class AdapterProductList(var context: Context?,
@@ -28,7 +36,7 @@ class AdapterProductList(var context: Context?,
     }
 
 
-    inner class ViewHolder(val binding: ItemRecyclerProductlistBinding) :
+    inner class ViewHolder(val binding: RecyclerHomeJustDroppedBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun clickView(item: ProductDetail) {
             itemView.setOnClickListener {
@@ -37,12 +45,34 @@ class AdapterProductList(var context: Context?,
                 }
             }
         }
-
         fun setValues(item: ProductDetail){
-            binding.company.text=item.vendor
-            Glide.with(context!!).asBitmap().load(item.imageUrl[0])
+            Glide.with(context!!).asBitmap().load(item.vendor)
+                .error(R.drawable.ic_clad_logo_grey).into(binding.imageLogo)
+            Glide.with(context!!)
+                .load(item.imageUrl[0])
+                .listener(object : RequestListener<Drawable?> {
+                    override fun onLoadFailed(
+                        @Nullable e: GlideException?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progressBar.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progressBar.visibility = View.GONE
+                        return false
+                    }
+                })
                 .error(R.drawable.shoes)
-                .placeholder(R.drawable.shoes)
                 .into(binding.image)
             binding.name.text=item.name
             if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
@@ -57,7 +87,7 @@ class AdapterProductList(var context: Context?,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemRecyclerProductlistBinding.inflate(
+        val binding = RecyclerHomeJustDroppedBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

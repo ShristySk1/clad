@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -119,7 +120,7 @@ class FragmentBrandDetail : Fragment() {
     }
 
     private fun brandDetailObserver() {
-//        binding.layoutGroup.visibility=View.GONE
+       setMainLayout(false)
         viewModel.getBrandDetailAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -129,6 +130,7 @@ class FragmentBrandDetail : Fragment() {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
+                            setMainLayout(true)
                            val brandDetail= Gson().fromJson(jsonObject, BrandDetailResponse::class.java)
                             //set rest values
                             setView(brandDetail)
@@ -161,12 +163,24 @@ class FragmentBrandDetail : Fragment() {
         })
     }
 
+    private fun setMainLayout(b: Boolean) {
+        binding.apply {
+            coverImage.isVisible=b
+            appBar.isVisible=b
+            rvProducts.isVisible=b
+            layoutEmpty.isVisible=b
+            layoutSearch.isVisible=b
+            coverGradiant.isVisible=b
+        }
+    }
+
     private fun setView(brandDetail: BrandDetailResponse?) {
         brandDetail?.brand?.apply {
             binding.apply {
                 brandAddress.setText(address?:"Kathmandu,Nepal")
                 Glide.with(requireContext()).load(brandImage).fallback(Constants.ERROR_DRAWABLE).error(Constants.ERROR_DRAWABLE).into(brandlogo)
                 Glide.with(requireContext()).load(brandCover).fallback(Constants.ERROR_DRAWABLE).error("https://www.organizedinteriors.com/blog/wp-content/uploads/2017/09/wrinkle-free-dry-cleaned-clothes.jpg").into(coverImage)
+
                 tvDesc.text=description
                 soldNo.text=itemsSold.toString()
                 reviewNo.text=totalReviews.toString()
