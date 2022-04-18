@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.utils.SingleLiveEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import org.json.JSONObject
@@ -17,12 +18,12 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
     private val errorMessage = MutableLiveData<String>()
 
     private val cartResponse = MutableLiveData<Resource<JsonObject>>()
-    private val removeCartResponse = MutableLiveData<Resource<JsonObject>>()
-    private val minusCartResponse = MutableLiveData<Resource<JsonObject>>()
-    private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
+    private val removeCartResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val minusCartResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val addCartResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
     private val quantityResponse = MutableLiveData<Resource<JsonObject>>()
-    private val cartSelectResponse = MutableLiveData<Resource<JsonObject>>()
+    private val cartSelectResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val applyCouppnResponse = MutableLiveData<Resource<JsonObject>>()
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -88,7 +89,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
 
     }
 
-    fun getRemoveFromCartAPI(): LiveData<Resource<JsonObject>> {
+    fun getRemoveFromCartAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return removeCartResponse
     }
 
@@ -120,7 +121,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
 
     }
 
-    fun getMinusFromCartAPI(): LiveData<Resource<JsonObject>> {
+    fun getMinusFromCartAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return minusCartResponse
     }
 
@@ -148,7 +149,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
         }
     }
 
-    fun getSelectCartAPI(): LiveData<Resource<JsonObject>> {
+    fun getSelectCartAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return cartSelectResponse
     }
 
@@ -176,7 +177,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
 
     }
 
-    fun getAddToCartAPI(): LiveData<Resource<JsonObject>> {
+    fun getAddToCartAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return addCartResponse
     }
 

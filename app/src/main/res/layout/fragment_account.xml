@@ -13,7 +13,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         app:SpinKit_Color="@color/colorRed" />
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -26,7 +26,8 @@
                 android:id="@+id/rv_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
+                android:paddingVertical="8dp"
+                android:clipToPadding="false"
                 android:nestedScrollingEnabled="false" />
 
             <TextView
@@ -56,5 +57,5 @@
                 android:textAlignment="textStart"
                 android:textColor="@color/colorWhite" />
         </RelativeLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

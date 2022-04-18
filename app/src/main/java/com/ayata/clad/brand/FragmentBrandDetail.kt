@@ -27,6 +27,7 @@ import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.view_all.viewmodel.BrandAllViewModel
 import com.ayata.clad.view_all.viewmodel.BrandAllViewModelFactory
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -179,7 +180,12 @@ class FragmentBrandDetail : Fragment() {
             binding.apply {
                 brandAddress.setText(address?:"Kathmandu,Nepal")
                 Glide.with(requireContext()).load(brandImage).fallback(Constants.ERROR_DRAWABLE).error(Constants.ERROR_DRAWABLE).into(brandlogo)
-                Glide.with(requireContext()).load(brandCover).fallback(Constants.ERROR_DRAWABLE).error("https://www.organizedinteriors.com/blog/wp-content/uploads/2017/09/wrinkle-free-dry-cleaned-clothes.jpg").into(coverImage)
+                Glide.with(requireContext())
+                    .load(brandCover)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error("https://www.organizedinteriors.com/blog/wp-content/uploads/2017/09/wrinkle-free-dry-cleaned-clothes.jpg")
+                    .fallback(Constants.ERROR_DRAWABLE)
+                    .into(binding.coverImage)
 
                 tvDesc.text=description
                 soldNo.text=itemsSold.toString()

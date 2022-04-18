@@ -184,13 +184,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
                     android:background="@drawable/background_outlin_dotted"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="4dp"
                     android:text="CLAD300"
+                    android:layout_marginBottom="8dp"
                     android:textAllCaps="true"
+                    android:visibility="visible"
                     android:textColor="@color/black"
                     android:textSize="8sp"
                     android:textStyle="bold" />
@@ -198,14 +199,11 @@
                 <LinearLayout
                     android:id="@+id/layout_size"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_outline_bottom2"
+                    android:layout_height="match_parent"
                     android:clickable="true"
                     android:focusable="true"
-                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="4dp">
+                    >
 
                     <TextView
                         android:id="@+id/size"
@@ -215,14 +213,14 @@
                         android:text="Size: A"
                         android:textColor="@color/colorBlack"
                         android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:textStyle="normal" />
 
-                    <ImageView
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginStart="8dp"
-                        android:src="@drawable/ic_arrow_down_angle"
-                        android:tint="@color/colorBlack" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="10dp"-->
+<!--                        android:layout_height="10dp"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:src="@drawable/ic_arrow_down_angle"-->
+<!--                        android:tint="@color/colorBlack" />-->
 
                 </LinearLayout>
 

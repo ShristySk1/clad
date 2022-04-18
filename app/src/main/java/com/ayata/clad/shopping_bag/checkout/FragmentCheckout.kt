@@ -82,6 +82,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         initRefreshLayout()
         getCartAPI()
         setAddObserver()
+        setAddObserver()
         setMinusObserver()
         setSelectObserver()
         setRemoveObserver()

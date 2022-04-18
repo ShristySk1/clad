@@ -48,6 +48,8 @@ class AdapterProductList(var context: Context?,
         fun setValues(item: ProductDetail){
             Glide.with(context!!).asBitmap().load(item.vendor)
                 .error(R.drawable.ic_clad_logo_grey).into(binding.imageLogo)
+
+
             Glide.with(context!!)
                 .load(item.imageUrl[0])
                 .listener(object : RequestListener<Drawable?> {

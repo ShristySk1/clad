@@ -47,21 +47,26 @@ const val MY_PHOTO_NUMBER = 4
 
 class FragmentMyReviewsForm : Fragment() {
     lateinit var binding: FragmentMyReviewFormBinding
+
+    //images
     lateinit var adapterImage: AdapterImageViewType
     private val images = ArrayList<Image>()
     lateinit var imagePickerLauncher: ImagePickerLauncher
-    private lateinit var viewModel: ReviewViewModel
-    lateinit var item: Review
-    val TAG = "FragmentMyReviewsForm"
     val listImage = mutableListOf<DataModel>()
-//    val imageString = ArrayList<String>()
-
     var myChosenSize = ""
     var myChosenComfort = ""
     var myChosenQuality = 50
     var isLoading = false
     var myDeletePosition = -1
     var isDisabledImagePicker = false
+    //imagaes end
+
+    private lateinit var viewModel: ReviewViewModel
+    lateinit var item: Review
+    val TAG = "FragmentMyReviewsForm"
+//    val imageString = ArrayList<String>()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -382,6 +387,20 @@ class FragmentMyReviewsForm : Fragment() {
         )[ReviewViewModel::class.java]
     }
 
+
+
+    private fun initAppbar() {
+        (activity as MainActivity).showToolbar(true)
+        (activity as MainActivity).setToolbar2(
+            isClose = false, isBack = true, isFilter = false, isClear = false,
+            textTitle = "Review",
+            textDescription = ""
+        )
+        (activity as MainActivity).showBottomNavigation(false)
+
+    }
+
+
     private fun initRecyclerview() {
         val flexboxLayoutManager = FlexboxLayoutManager(context).apply {
             flexWrap = FlexWrap.WRAP
@@ -421,28 +440,6 @@ class FragmentMyReviewsForm : Fragment() {
         }
         imagePickerLauncher?.launch(createConfig())
     }
-
-    private fun initAppbar() {
-        (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar2(
-            isClose = false, isBack = true, isFilter = false, isClear = false,
-            textTitle = "Review",
-            textDescription = ""
-        )
-        (activity as MainActivity).showBottomNavigation(false)
-
-    }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        if (resultCode == Activity.RESULT_OK && requestCode == IpCons.RC_IMAGE_PICKER && data != null) {
-//            images.clear()
-//            images.addAll(ImagePicker.getImages(data) ?: emptyList())
-//            Log.d("imhere", "onActivityResult: ");
-//            printImages(images)
-//            return
-//        }
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
 
     private fun createConfig(): ImagePickerConfig {
         val returnAfterCapture = false

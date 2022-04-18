@@ -1,6 +1,7 @@
 package com.ayata.clad.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,6 +71,7 @@ class FragmentProfile : Fragment() {
     private fun setProfile() {
         val name = PreferenceHandler.getUsername(requireContext())
         val email = PreferenceHandler.getEmail(requireContext())
+        Log.d("testemail", "setProfile: "+email);
         binding.accName.text = name
         binding.accEmail.text = email
         if (PreferenceHandler.getToken(requireContext())!!.isEmpty()) {
@@ -170,7 +172,8 @@ class FragmentProfile : Fragment() {
 //            .mapNotNull { it.firstOrNull()?.toString() }
 //            .reduce { acc, s -> acc + s }
 //        binding.profileNamePlaceholder.text = initials
-        binding.viewPager.setUserInputEnabled(false);
+        //disable swipe
+//        binding.viewPager.setUserInputEnabled(false);
 
     }
 
