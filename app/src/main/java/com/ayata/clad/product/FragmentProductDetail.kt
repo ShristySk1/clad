@@ -180,7 +180,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun productLikedListener() {
-        binding.cardWish.setOnClickListener {
+        binding.cardWish.clickWithDebounce {
             if (this::productDetail.isInitialized) {
                 if (isProductWishList) {
 //                    removeWishListAPI()
@@ -193,10 +193,10 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             }
 
         }
-        binding.cardCart.setOnClickListener {
+        binding.cardCart.clickWithDebounce {
             if (this::productDetail.isInitialized) {
                 if (isProductInCart) {
-                    showSnackBar("Product already added in cart")
+                    showSnackBar("Product already added in cart",Constants.GO_TO_CART)
                 } else {
                     if (PreferenceHandler.getToken(context) != "")
                         addToCartAPI() else (activity as MainActivity).showDialogLogin()
@@ -208,10 +208,10 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
         }
 
-        binding.detail2.ivCart.setOnClickListener {
+        binding.detail2.ivCart.clickWithDebounce {
             if (this::productDetail.isInitialized) {
                 if (isProductInCart) {
-                    showSnackBar("Product already added in cart")
+                    showSnackBar("Product already added in cart",Constants.GO_TO_CART)
                 } else {
                     if (PreferenceHandler.getToken(context) != "")
                         addToCartAPI() else (activity as MainActivity).showDialogLogin()
@@ -222,8 +222,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         }
     }
 
-    private fun showSnackBar(msg: String) {
-        ((activity) as MainActivity).showSnakbar(msg)
+    private fun showSnackBar(msg: String,flag:String) {
+        ((activity) as MainActivity).showSnakbar(msg,flag)
 //        requireContext().showToast(msg,true)
     }
 
@@ -559,7 +559,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                     if (jsonObject != null) {
                         isProductWishList = false
                         setWishlist(false)
-                        showSnackBar(msg = "Product removed from wishlist")
+                        showSnackBar(msg = "Product removed from wishlist",Constants.GO_TO_WISHLIST)
                         try {
 
                         } catch (e: Exception) {
@@ -589,7 +589,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-                            showSnackBar(jsonObject.get("message").toString().removeDoubleQuote())
+                            showSnackBar(jsonObject.get("message").toString().removeDoubleQuote(),Constants.GO_TO_WISHLIST)
                             isProductWishList = true
                             setWishlist(true)
                             MainActivity.NavCount.myWishlist =
@@ -674,7 +674,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         try {
                             isProductInCart = true
                             setCart(true)
-                            showSnackBar(jsonObject.get("message").toString().removeDoubleQuote())
+                            showSnackBar(jsonObject.get("message").toString().removeDoubleQuote(),Constants.GO_TO_CART)
                             MainActivity.NavCount.myBoolean =
                                 MainActivity.NavCount.myBoolean?.plus(1)
 

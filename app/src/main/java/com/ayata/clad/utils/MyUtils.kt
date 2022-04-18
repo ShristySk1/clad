@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -47,6 +48,18 @@ fun Context.copyToClipboard(text: CharSequence){
     val clipboard = ContextCompat.getSystemService(this, ClipboardManager::class.java)
     val clip = ClipData.newPlainText("label",text)
     clipboard?.setPrimaryClip(clip)
+}
+fun View.clickWithDebounce(debounceTime: Long = 600L, action: () -> Unit) {
+    this.setOnClickListener(object : View.OnClickListener {
+        private var lastClickTime: Long = 0
+
+        override fun onClick(v: View) {
+            if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) return
+            else action()
+
+            lastClickTime = SystemClock.elapsedRealtime()
+        }
+    })
 }
 inline fun View.snack(message:String, left:Int = 10, top:Int = 10, right:Int = 10, bottom:Int = 10, duration:Int = Snackbar.LENGTH_SHORT){
     Snackbar.make(this, message, duration).apply {
@@ -220,6 +233,7 @@ open class Event<out T>(private val content: T) {
             content
         }
     }
+
 
     /**
      * Returns the content, even if it's already been handled.

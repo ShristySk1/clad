@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.ayata.clad.brand.FragmentBrandDetail
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
@@ -28,7 +27,6 @@ import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.profile.FragmentProfile
 import com.ayata.clad.profile.myorder.order.FragmentOrderDetail
 import com.ayata.clad.profile.reviews.FragmentMyReviewsForm
-import com.ayata.clad.profile.reviews.model.ModelReview
 import com.ayata.clad.profile.reviews.model.Review
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.FragmentShop
@@ -84,6 +82,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setBadge()
 
     }
+
     private fun setUpFirebaseNotification() {
         //for orea>=
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -117,8 +116,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private fun setBadge() {
         badge = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_cart)
         badge_wishlist = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_favorite)
-        badge.badgeTextColor=ContextCompat.getColor(this@MainActivity,R.color.white)
-        badge_wishlist.badgeTextColor=ContextCompat.getColor(this@MainActivity,R.color.white)
+        badge.badgeTextColor = ContextCompat.getColor(this@MainActivity, R.color.white)
+        badge_wishlist.badgeTextColor = ContextCompat.getColor(this@MainActivity, R.color.white)
         badge.isVisible = false
         badge_wishlist.isVisible = false
         NavCount.addMyBooleanListener(object :
@@ -257,7 +256,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
-    private fun fromStory(data:ProductDetail) {
+    private fun fromStory(data: ProductDetail) {
         val bundle = Bundle()
         bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
         val fragmentProductDetail = FragmentProductDetail()
@@ -486,6 +485,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
 
     override fun onBackPressed() {
+
+
         val fm = supportFragmentManager
         for (frag in fm.fragments) {
             if (frag.isVisible) {
@@ -498,6 +499,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
         }
         Log.d("BackCheck", "onBackPressed: normal")
+
+//        if (binding.bottomNavigationView.getSelectedItemId()!= R.id.nav_home) {
+//            binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
+//
+//        } else {
+//            super.onBackPressed();
+//        }
         super.onBackPressed()
 
     }
@@ -589,7 +597,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     fun getRecommendedList(): List<ProductDetail> {
         return listRecommended
     }
-    fun openOrderDetail(frag:FragmentOrderDetail) {
+
+    fun openOrderDetail(frag: FragmentOrderDetail) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment, frag)
             .addToBackStack("order_list")
@@ -597,30 +606,52 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     fun openFragmentReviewForm(it: Review) {
-        val bundle=Bundle()
-        val frag= FragmentMyReviewsForm()
-        bundle.putSerializable("datas",it)
-        frag.arguments=bundle
-        supportFragmentManager.beginTransaction().replace(R.id.main_fragment,
-           frag
+        val bundle = Bundle()
+        val frag = FragmentMyReviewsForm()
+        bundle.putSerializable("datas", it)
+        frag.arguments = bundle
+        supportFragmentManager.beginTransaction().replace(
+            R.id.main_fragment,
+            frag
         ).addToBackStack(null).commit()
 
     }
-    fun showSnakbarBottomOffset(message:String){
+
+    fun showSnakbarBottomOffset(message: String) {
         val snackbar = Snackbar
             .make(binding.root, message.removeDoubleQuote(), Snackbar.LENGTH_SHORT)
         snackbar.setActionTextColor(Color.WHITE)
-        snackbar.anchorView=binding.bottomNavigationView
+        snackbar.anchorView = binding.bottomNavigationView
         snackbar.show()
     }
-    fun showSnakbar(message:String){
-        Log.d(TAG, "showSnakbar: "+message);
+
+    fun showSnakbar(message: String, flag: String? = null) {
+        Log.d(TAG, "showSnakbar: " + message);
         val snackbar = Snackbar
-            .make(binding.root, message.removeDoubleQuote(),1000)
-        snackbar.setActionTextColor(Color.WHITE)
-//        snackbar.setAction("GO TO CART", View.OnClickListener {
-//
-//        })
+            .make(binding.root, message.removeDoubleQuote(), 1000)
+        snackbar.setActionTextColor(Color.RED)
+        flag?.let {
+            when (it) {
+                Constants.GO_TO_CART -> {
+                    snackbar.setAction("CART", View.OnClickListener {
+
+                                                binding.bottomNavigationView.selectedItemId = R.id.nav_cart
+
+                    })
+                }
+                Constants.GO_TO_WISHLIST -> {
+                    snackbar.setAction("WISHLIST", View.OnClickListener {
+//                        supportFragmentManager.beginTransaction()
+//                            .replace(R.id.main_fragment, FragmentWishlist())
+//                            .commit()
+                        binding.bottomNavigationView.selectedItemId = R.id.nav_favorite
+
+                    })
+                }
+                else -> {
+                }
+            }
+        }
         snackbar.show()
     }
 }
