@@ -105,7 +105,8 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
             isSearch = true,
             isProfile = false,
             isClose = false,
-            isLogo = false
+            isLogo = false,
+            isFilter = true
         )
     }
 

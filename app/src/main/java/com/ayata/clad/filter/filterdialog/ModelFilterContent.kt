@@ -11,4 +11,7 @@ sealed class MyFilterContentViewItem {
     class MultipleChoice(
         val title: String, var isSelected: Boolean
     ) : MyFilterContentViewItem()
+    class MultipleChoiceColor(
+        val title: String, var isSelected: Boolean,var colorHex:String?="#000000"
+    ) : MyFilterContentViewItem()
 }

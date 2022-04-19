@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="4dp"
-    android:layout_marginRight="8dp"
-    android:backgroundTint="@color/colorWhite"
-    android:gravity="center_vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_outline_bottom"
     android:orientation="horizontal"
-    android:clickable="false"
-    android:padding="2dp">
+    android:paddingVertical="20dp">
     <RelativeLayout
         android:id="@+id/layout_circle"
         android:layout_below="@id/name"
@@ -32,16 +28,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </RelativeLayout>
-
-
     <TextView
-        android:id="@+id/color_name"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="4dp"
+        android:id="@+id/title"
+        style="@style/normalText"
+        android:layout_width="0dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_height="wrap_content"
-        style="@style/smallText"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical"
-        android:text="Blue" />
+        android:layout_weight="1"
+        android:text="Color"
+        android:textAllCaps="false" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:button="@drawable/custom_checkbox_filter"
+        android:buttonTint="@color/colorGrayText"
+        android:checked="true"
+        android:clickable="false"
+        android:minWidth="0dp"
+        android:minHeight="0dp" />
 
 </LinearLayout>

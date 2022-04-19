@@ -47,7 +47,7 @@ class AdapterFilter(data: List<ModelFilter>) :
                 items[position] as MyFilterRecyclerViewItem.Title,
                 itemFilterClick
             )
-            is HomeRecyclerViewHolder.ColorViewHolder -> holder.bind(items[position] as MyFilterRecyclerViewItem.Color)
+            is HomeRecyclerViewHolder.ColorViewHolder -> holder.bind(items[position] as MyFilterRecyclerViewItem.Color, itemFilterColorClick)
         }
     }
 
@@ -66,14 +66,14 @@ class AdapterFilter(data: List<ModelFilter>) :
 
             fun bind(
                 item: MyFilterRecyclerViewItem.Title,
-                itemFilterClick: ((MyFilterRecyclerViewItem.Title) -> Unit)?
+                itemFilterClick: ((MyFilterRecyclerViewItem.Title,Int) -> Unit)?
             ) {
                 with(item) {
                     binding.content.text = item.title
                     binding.content2.text = item.subTitle
                     itemView.setOnClickListener {
                         itemFilterClick?.let { function ->
-                            function(item)
+                            function(item,adapterPosition)
                         }
                     }
                 }
@@ -83,7 +83,7 @@ class AdapterFilter(data: List<ModelFilter>) :
 
         class ColorViewHolder(private val binding: ItemRecyclerFilterColorBinding) :
             HomeRecyclerViewHolder(binding) {
-            fun bind(item: MyFilterRecyclerViewItem.Color) {
+            fun bind(item: MyFilterRecyclerViewItem.Color,itemFilterClick: ((MyFilterRecyclerViewItem.Color,Int) -> Unit)?) {
                 with(item) {
                     binding.content.text = item.title
                     binding.rvColors.apply {
@@ -92,11 +92,10 @@ class AdapterFilter(data: List<ModelFilter>) :
                         adapter = AdapterFilterColor(item.colorList)
                         isLayoutFrozen=true
                     }
-
                     itemView.setOnClickListener {
-//                        itemFilterClick?.let { function ->
-//                            function(item)
-//                        }
+                        itemFilterClick?.let { function ->
+                            function(item,adapterPosition)
+                        }
                     }
                 }
             }
@@ -105,9 +104,14 @@ class AdapterFilter(data: List<ModelFilter>) :
 
     }
 
-    private var itemFilterClick: ((MyFilterRecyclerViewItem.Title) -> Unit)? = null
-    fun setFilterClickListener(listener: ((MyFilterRecyclerViewItem.Title) -> Unit)) {
+    private var itemFilterClick: ((MyFilterRecyclerViewItem.Title,Int) -> Unit)? = null
+    fun setFilterClickListener(listener: ((MyFilterRecyclerViewItem.Title,Int) -> Unit)) {
         itemFilterClick = listener
+    }
+
+    private var itemFilterColorClick: ((MyFilterRecyclerViewItem.Color,Int) -> Unit)? = null
+    fun setFilterColorClickListener(listener: ((MyFilterRecyclerViewItem.Color,Int) -> Unit)) {
+        itemFilterColorClick = listener
     }
 
 

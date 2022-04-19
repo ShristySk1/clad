@@ -93,6 +93,8 @@ inline fun View.snack(message:String, left:Int = 10, top:Int = 10, right:Int = 1
     toast.show()
 }
 fun String.removeDoubleQuote() = this?.let { this.replace("\"", "") }
+fun String.removeBracket()= this?.let { this.replace("[", "").replace("]", "")}
+
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
 }
@@ -240,6 +242,10 @@ open class Event<out T>(private val content: T) {
      */
     fun peekContent(): T = content
 }
+
+
+
+
 //val jsonProducts = jsonObject.get("products").asJsonArray
 //val type: Type =
 //    object : TypeToken<ArrayList<ProductDetail?>?>() {}.type

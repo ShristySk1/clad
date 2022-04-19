@@ -12,13 +12,13 @@ sealed class MyFilterRecyclerViewItem {
     class Title(
         val id:Int,
         val title: String,
-        val subTitle: String,
+        var subTitle: String,
     ) : MyFilterRecyclerViewItem()
 
     class Color(
         val id:Int,
         val title: String,
-        val colorList: List<MyColor>
+        var colorList: List<MyColor>
     ) : MyFilterRecyclerViewItem()
 }
-data class MyColor(val colorName:String,val color: Int)
+data class MyColor(val colorName:String,val color: String)

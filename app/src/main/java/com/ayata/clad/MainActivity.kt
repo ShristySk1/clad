@@ -67,6 +67,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         PreferenceHandler.setIsOnBoarding(this, false)
         setUpFirebaseNotification()
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener)
+        binding.bottomNavigationView.setOnNavigationItemReselectedListener {
+            // Nothing here to disable reselect
+        }
         if (findViewById<View?>(R.id.main_fragment) != null) {
             if (savedInstanceState != null) {
                 return
@@ -78,9 +81,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setStatusBarLight(R.color.colorWhite)
         setToolbar()
         setUpViewModel()
-
         setBadge()
-
     }
 
     private fun setUpFirebaseNotification() {
@@ -315,6 +316,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         binding.appbar.btnFilter.setOnClickListener {
             supportFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    R.anim.enter_from_right,
+                    R.anim.exit_to_left,
+                    R.anim.enter_from_left,
+                    R.anim.exit_to_right
+                )
                 .replace(R.id.main_fragment, FragmentFilter())
                 .addToBackStack(null)
                 .commit()
@@ -341,7 +348,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         isSearch: Boolean,
         isProfile: Boolean,
         isClose: Boolean,
-        isLogo: Boolean = false
+        isLogo: Boolean = false,
+        isFilter: Boolean? = false,
     ) {
         exitFullScreen()
         binding.appbar.appbar1.visibility = View.VISIBLE
@@ -372,6 +380,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         } else {
             binding.appbar.layoutLogo.visibility = View.GONE
         }
+        isFilter?.let {
+            if (isFilter) {
+                Log.d("filteractive", "setToolbar1: ");
+                binding.appbar.btnFilter.visibility = View.VISIBLE
+            } else {
+                binding.appbar.btnFilter.visibility = View.GONE
+            }
+        }
+
+
     }
 
     fun setToolbar2(
@@ -635,7 +653,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 Constants.GO_TO_CART -> {
                     snackbar.setAction("CART", View.OnClickListener {
 
-                                                binding.bottomNavigationView.selectedItemId = R.id.nav_cart
+                        binding.bottomNavigationView.selectedItemId = R.id.nav_cart
 
                     })
                 }

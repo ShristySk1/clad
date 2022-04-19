@@ -1,5 +1,6 @@
 package com.ayata.clad.filter.color
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -39,7 +40,7 @@ class AdapterFilterColor(
         with(holder) {
             with(colorList[position]) {
                 binding.color.apply {
-                    setColorFilter(ContextCompat.getColor(context, colorList[position].color));
+                    setColorFilter(Color.parseColor(colorList[position].color));
                 }
                 binding.colorName.text = colorList[position].colorName
             }
