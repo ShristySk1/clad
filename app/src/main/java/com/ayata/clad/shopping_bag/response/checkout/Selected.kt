@@ -14,6 +14,7 @@ data class Selected(
     val quantity: Int,
     val size: String,
     val sku: Int,
+    val stock_status:String,
     @SerializedName("v_dollar_total")
     val vDollarTotal: Double,
     @SerializedName("v_total")

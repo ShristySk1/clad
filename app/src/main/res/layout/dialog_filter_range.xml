@@ -35,18 +35,92 @@
         android:src="@drawable/ic_close"
         android:tint="@color/colorBlack" />
 
-    <com.ayata.clad.utils.MyCustomRangeSlider
-        style="@style/Widget.MaterialComponents.Slider"
-        app:labelBehavior="floating"
-        android:id="@+id/range_humidity_in_percentage"
+    <RelativeLayout
+        android:layout_below="@id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:valueFrom="0"
-        android:valueTo="4000"
-        android:stepSize="100"
-        android:layout_below="@id/title"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:values="@array/initial_slider_values" />
+        >
+        <LinearLayout
+            android:id="@+id/layout_1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="30dp">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Min Price"
+                    android:textSize="16sp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="false"
+                    app:hintEnabled="false"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeColor="@android:color/transparent"
+                    app:hintAnimationEnabled="false"
+                    android:background="@drawable/background_outline_gray">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:paddingHorizontal="10dp"
+                        android:gravity="center_vertical"
+                        android:hint="0"
+
+                        android:textColor="@color/black"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Max Price"
+                    android:textSize="16sp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="false"
+                    app:hintEnabled="false"
+                    app:hintAnimationEnabled="false"
+                    app:boxStrokeWidth="0dp"
+                    android:background="@drawable/background_outline_gray">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:paddingHorizontal="10dp"
+
+                        android:gravity="center_vertical"
+                        android:hint="100000+"
+                        android:textColor="@color/black"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 </RelativeLayout>

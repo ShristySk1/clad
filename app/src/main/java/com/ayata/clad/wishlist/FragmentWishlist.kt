@@ -32,6 +32,8 @@ import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.product.ModelProduct
+import com.ayata.clad.product.viewmodel.ProductViewModel
+import com.ayata.clad.product.viewmodel.ProductViewModelFactory
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
@@ -58,6 +60,7 @@ class FragmentWishlist : Fragment() {
     private lateinit var adapterWishList: AdapterWishList
     private lateinit var adapterRecommended: AdapterRecommended
     private lateinit var viewModel: WishListViewModel
+    private lateinit var viewModelCart: ProductViewModel
     private lateinit var viewModelHome: HomeViewModel
     private lateinit var progressDialog: ProgressDialog
 
@@ -72,7 +75,7 @@ class FragmentWishlist : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentWishlistBinding.inflate(inflater, container, false)
-        setUpViewModel()
+
         initAppbar()
         initRefreshLayout()
         setUpFilterListener()
@@ -82,6 +85,11 @@ class FragmentWishlist : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
+
+    }
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             this,
@@ -93,33 +101,42 @@ class FragmentWishlist : Fragment() {
             HomeViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )
             .get(HomeViewModel::class.java)
+        viewModelCart = ViewModelProvider(
+            this,
+            ProductViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
+        ).get(ProductViewModel::class.java)
+        viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
     }
 
     private fun initRefreshLayout() {
         //refresh layout on swipe
         binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-            getWishListAPI()
+            Log.d("swipehappen", "initRefreshLayout: ");
+            viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
             binding.swipeRefreshLayout.isRefreshing = false
         })
         //Adding ScrollListener to activate swipe refresh layout
+        binding.layoutContainer.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
         binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
             binding.swipeRefreshLayout.isEnabled = i1 == 0
         })
 
         // Adding ScrollListener to getting whether we're on First Item position or not
-        binding.rvWishList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                binding.swipeRefreshLayout.isEnabled =
-                    !recyclerView.canScrollVertically(-1) && dy < 0
-            }
-        })
-        binding.rvRecommendation.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                binding.swipeRefreshLayout.isEnabled = true
-            }
-        })
+//        binding.rvWishList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                binding.swipeRefreshLayout.isEnabled =
+//                    !recyclerView.canScrollVertically(-1) && dy < 0
+//            }
+//        })
+//        binding.rvRecommendation.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                binding.swipeRefreshLayout.isEnabled = true
+//            }
+//        })
 
     }
 
@@ -388,16 +405,15 @@ class FragmentWishlist : Fragment() {
     private fun showSnackBar(msg: String) {
         ((activity) as MainActivity).showSnakbarBottomOffset(msg)
 //        requireContext().showToast(msg.removeDoubleQuote(), true,150)
-
     }
 
     private fun addToCartAPI(product: Wishlist) {
         Log.d(TAG, "addToCartAPI: " + product);
-        viewModel.addToCartAPI(
+        viewModelCart.addToCartAPI(
             PreferenceHandler.getToken(context).toString(),
             product.selected.variantId
         )
-        viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
+        viewModelCart.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "addToCartAPI: ${it.data}")
@@ -518,7 +534,6 @@ class FragmentWishlist : Fragment() {
 
     private fun getWishListAPI() {
         setShimmerLayout(true)
-        viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
         viewModel.getWishListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -562,6 +577,7 @@ class FragmentWishlist : Fragment() {
                     adapterWishList.notifyDataSetChanged()
                 }
                 Status.LOADING -> {
+
                 }
                 Status.ERROR -> {
                     //Handle Error

@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.annotation.Nullable
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
-import com.ayata.clad.databinding.ItemRecyclerProductlistBinding
 import com.ayata.clad.databinding.RecyclerHomeJustDroppedBinding
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.PreferenceHandler
@@ -19,11 +19,12 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import java.util.ArrayList
+import java.util.*
 
-class AdapterProductList(var context: Context?,
-                         var productList: List<ProductDetail>,
-) : RecyclerView.Adapter<AdapterProductList.ViewHolder>(),Filterable {
+class AdapterProductList(
+    var context: Context?,
+    var productList: List<ProductDetail>,
+) : RecyclerView.Adapter<AdapterProductList.ViewHolder>(), Filterable {
 
     var filterList: ArrayList<ProductDetail>
 
@@ -31,8 +32,8 @@ class AdapterProductList(var context: Context?,
         filterList = productList as ArrayList<ProductDetail>
     }
 
-    fun setData(list:List<ProductDetail>){
-        filterList= list as ArrayList<ProductDetail>
+    fun setData(list: List<ProductDetail>) {
+        filterList = list as ArrayList<ProductDetail>
     }
 
 
@@ -45,11 +46,10 @@ class AdapterProductList(var context: Context?,
                 }
             }
         }
-        fun setValues(item: ProductDetail){
+
+        fun setValues(item: ProductDetail) {
             Glide.with(context!!).asBitmap().load(item.vendor)
                 .error(R.drawable.ic_clad_logo_grey).into(binding.imageLogo)
-
-
             Glide.with(context!!)
                 .load(item.imageUrl[0])
                 .listener(object : RequestListener<Drawable?> {
@@ -76,13 +76,17 @@ class AdapterProductList(var context: Context?,
                 })
                 .error(R.drawable.shoes)
                 .into(binding.image)
-            binding.name.text=item.name
-            if(PreferenceHandler.getCurrency(context).equals(context!!.getString(R.string.npr_case),true)){
+            binding.name.text = item.name
+            binding.name.setTextColor(ContextCompat.getColor(binding.name.context,R.color.black))
+
+            if (PreferenceHandler.getCurrency(context)
+                    .equals(context!!.getString(R.string.npr_case), true)
+            ) {
                 //nrp
-                binding.price.text="${context!!.getString(R.string.rs)} ${item.price}"
-            }else{
+                binding.price.text = "${context!!.getString(R.string.rs)} ${item.price}"
+            } else {
                 //usd
-                binding.price.text="${context!!.getString(R.string.usd)} ${item.dollar_price}"
+                binding.price.text = "${context!!.getString(R.string.usd)} ${item.dollar_price}"
             }
 
         }
@@ -128,7 +132,7 @@ class AdapterProductList(var context: Context?,
                 } else {
                     val resultList = ArrayList<ProductDetail>()
                     for (row in productList) {
-                        if (row.name.contains(charSearch,true)) {
+                        if (row.name.contains(charSearch, true)) {
                             resultList.add(row)
                         }
                     }

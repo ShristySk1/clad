@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.utils.SingleLiveEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 
@@ -14,16 +15,11 @@ class CategoryViewModel constructor(private val mainRepository: ApiRepository) :
     private val errorMessage = MutableLiveData<String>()
 
     private val categoryResponse = MutableLiveData<Resource<JsonObject>>()
-
-
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
     private val loading = MutableLiveData<Boolean>()
-    init {
-        categoryListAPI()
-    }
     fun categoryListAPI() {
         categoryResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -49,7 +45,7 @@ class CategoryViewModel constructor(private val mainRepository: ApiRepository) :
 
     }
 
-    fun getCategoryListAPI(): LiveData<Resource<JsonObject>> {
+    fun getCategoryListAPI(): MutableLiveData<Resource<JsonObject>> {
         return categoryResponse
     }
 

@@ -1,5 +1,6 @@
 package com.ayata.clad.profile.reviews
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -17,6 +19,7 @@ import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.databinding.DialogCustomBinding
 import com.ayata.clad.databinding.FragmentMyReviewFormBinding
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
@@ -65,7 +68,6 @@ class FragmentMyReviewsForm : Fragment() {
     lateinit var item: Review
     val TAG = "FragmentMyReviewsForm"
 //    val imageString = ArrayList<String>()
-
 
 
     override fun onCreateView(
@@ -182,8 +184,11 @@ class FragmentMyReviewsForm : Fragment() {
                     if (jsonObject != null) {
                         try {
                             val message = jsonObject.get("message").asString
-                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+//                            showDialog("",message )
+                            (activity as MainActivity).showSnakbar(message)
                             parentFragmentManager.popBackStackImmediate()
+
                         } catch (e: Exception) {
 
                         }
@@ -202,6 +207,29 @@ class FragmentMyReviewsForm : Fragment() {
             }
         })
 
+    }
+
+    private fun showDialog(
+        title: String,
+        message: String
+    ) {
+        val bind: DialogCustomBinding =
+            DialogCustomBinding.inflate(LayoutInflater.from(context))
+        val dialog = Dialog(requireContext(), R.style.CustomDialog)
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.setCancelable(false)
+        dialog?.setContentView(bind.root)
+        bind.textTitle.text = title
+        bind.textMsg.text =
+            message
+        bind.dialogBtnYes.text = "Ok"
+        bind.dialogBtnNo.visibility = View.GONE
+        bind.dialogBtnYes.setOnClickListener {
+            dialog?.dismiss()
+
+        }
+        dialog?.show()
     }
 
     private fun observeDeleteImageReviewApi() {
@@ -242,32 +270,34 @@ class FragmentMyReviewsForm : Fragment() {
     }
 
     private fun initBundle() {
-        arguments?.let {
-            item = it.getSerializable("datas") as Review
-            Log.d("tetstitem", "initBundle: " + item);
-            binding.name.text = item.product.name
-            binding.itemId.text = "Item ID: ${item.orderCode}"
-            Glide.with(requireContext()).load(item.product.image_url).into(binding.image)
-            binding.description.text =
-                "${item.product.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${item.product.color} / Qty: ${item.product.quantity}"
+        if (arguments != null) {
+            arguments?.let {
+                FragmentMyReviewsList.initialPositionOfTab = 1
+                item = it.getSerializable("datas") as Review
+                Log.d("tetstitem", "initBundle: " + item);
+                binding.name.text = item.product.name
+                binding.itemId.text = "Item ID: ${item.orderCode}"
+                Glide.with(requireContext()).load(item.product.image_url).into(binding.image)
+                binding.description.text =
+                    "${item.product.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${item.product.color} / Qty: ${item.product.quantity}"
 
-            if (item.reviewDetails.isReviewed) {
-                binding.tvDescription.setText(item.reviewDetails.description)
-                binding.ratingBar1.rating = item.reviewDetails.rate.toFloat()
-                val img = arrayListOf<Image>()
-                if (item.reviewDetails.imageUrl.size > 0) {
-                    item.reviewDetails.imageUrl.forEach {
-                        img.add(
-                            Image(
-                                it.id.toLong(),
-                                "name",
-                                it.imageUrl
+                if (item.reviewDetails.isReviewed) {
+                    binding.tvDescription.setText(item.reviewDetails.description)
+                    binding.ratingBar1.rating = item.reviewDetails.rate.toFloat()
+                    val img = arrayListOf<Image>()
+                    if (item.reviewDetails.imageUrl.size > 0) {
+                        item.reviewDetails.imageUrl.forEach {
+                            img.add(
+                                Image(
+                                    it.id.toLong(),
+                                    "name",
+                                    it.imageUrl
+                                )
                             )
-                        )
+                        }
                     }
-                }
-                val testImage =
-                    "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
+                    val testImage =
+                        "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
 //                for (i in 1..2) {
 //                    img.add(
 //                        Image(
@@ -277,16 +307,20 @@ class FragmentMyReviewsForm : Fragment() {
 //                        )
 //                    )
 //                }
-                formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort)
-                binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
-                myChosenQuality = item.reviewDetails.quality.toInt()
-                myChosenSize = item.reviewDetails.size
-                myChosenComfort = item.reviewDetails.comfort
+                    formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort)
+                    binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
+                    myChosenQuality = item.reviewDetails.quality.toInt()
+                    myChosenSize = item.reviewDetails.size
+                    myChosenComfort = item.reviewDetails.comfort
 //                printImages(img)
-                images.clear()
-                images.addAll(img)
-                setUpImageInList(images, null)
+                    images.clear()
+                    images.addAll(img)
+                    setUpImageInList(images, null)
+                }
             }
+
+        } else {
+            FragmentMyReviewsList.initialPositionOfTab = 0
         }
     }
 
@@ -386,7 +420,6 @@ class FragmentMyReviewsForm : Fragment() {
             ReviewViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ReviewViewModel::class.java]
     }
-
 
 
     private fun initAppbar() {

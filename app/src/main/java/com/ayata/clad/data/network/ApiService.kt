@@ -73,7 +73,7 @@ interface ApiService {
 
     @GET("products/all/")
     suspend fun categoryProductListAPI(
-        @Query("title") category_slug: String,
+        @Query("category") category_slug: String,
         @Query("page") page: Int
     ): Response<JsonObject>
 
@@ -217,7 +217,7 @@ interface ApiService {
     ): Response<JsonObject>
 
     //search
-    @GET("search/")
+    @GET("products/all/")
     suspend fun searchProduct(
         @Header("Authorization") token: String,
         @Query("query") query: String,

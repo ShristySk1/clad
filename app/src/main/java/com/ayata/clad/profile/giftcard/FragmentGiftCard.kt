@@ -95,6 +95,7 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
                                 )
                             if(couponResponse.coupons!=null) {
                                 hideError()
+                                listGiftCard.clear()
                                 listGiftCard.addAll(couponResponse.coupons)
                             }else{
                                 showError("Coupon",couponResponse.message?:"")

@@ -53,7 +53,7 @@ internal class AdapterCheckout(
         val colorHexImage = itemView.findViewById<ImageView>(R.id.ivColor)
         val brand = itemView.findViewById<TextView>(R.id.tvBrandName)
         val stock = itemView.findViewById<TextView>(R.id.stock)
-        var coupen=itemView.findViewById<TextView>(R.id.tv_text_to_copy)
+        var coupen = itemView.findViewById<TextView>(R.id.tv_text_to_copy)
 
 
         fun clickView() {
@@ -86,15 +86,21 @@ internal class AdapterCheckout(
                 onItemClickListener.onAddClick(listItems[adapterPosition], adapterPosition)
             }
             remove.setOnClickListener {
-                if(adapterPosition!=-1) {
+                if (adapterPosition != -1) {
                     try {
                         if (listItems[adapterPosition].qty == 1) {
-                            onItemClickListener.onCompleteRemove(listItems[adapterPosition], adapterPosition)
+                            onItemClickListener.onCompleteRemove(
+                                listItems[adapterPosition],
+                                adapterPosition
+                            )
                         } else {
-                            onItemClickListener.onRemove(listItems[adapterPosition], adapterPosition)
+                            onItemClickListener.onRemove(
+                                listItems[adapterPosition],
+                                adapterPosition
+                            )
                         }
-                    }catch (e:Exception){
-                        Log.d("testlog", "onBindViewHolder: "+e.message);
+                    } catch (e: Exception) {
+                        Log.d("testlog", "onBindViewHolder: " + e.message);
                     }
 
                 }
@@ -163,28 +169,28 @@ internal class AdapterCheckout(
             .fallback(Constants.ERROR_DRAWABLE)
             .into(holder.image)
         //stock calculate
-        val stock = item.stock
-        val myQuantity = item.qty
-        var textToDisplay = ""
-        if (myQuantity >= stock) {
-            textToDisplay = "Out of Stock"
-            changeColor(holder.stock, R.color.colorRedLight, R.color.colorRedDark)
-        } else if (myQuantity < stock) {
-            if ((stock - myQuantity) < STOCKLIMIT) {
-                changeColor(holder.stock, R.color.colorYellowLight, R.color.colorYellowDark)
-                textToDisplay = "${stock - myQuantity} item(s) remaining"
-            } else {
-                textToDisplay = "In stock"
-                changeColor(holder.stock, R.color.colorGreenLight, R.color.colorGreenDark)
-            }
+//        val stock = item.stock
+//        val myQuantity = item.qty
+//        var textToDisplay = ""
+//        if (myQuantity >= stock) {
+//            textToDisplay = "Out of Stock"
+//            changeColor(holder.stock, R.color.colorRedLight, R.color.colorRedDark)
+//        } else if (myQuantity < stock) {
+//            if ((stock - myQuantity) < STOCKLIMIT) {
+//                changeColor(holder.stock, R.color.colorYellowLight, R.color.colorYellowDark)
+//                textToDisplay = "${stock - myQuantity} item(s) remaining"
+//            } else {
+//                textToDisplay = "In stock"
+//                changeColor(holder.stock, R.color.colorGreenLight, R.color.colorGreenDark)
+//            }
 
-        }
-        holder.stock.setText(textToDisplay)
-        if(item.isCoupenAvailable){
-            holder.coupen.visibility=View.VISIBLE
-            holder.coupen.text=item.coupenText
-        }else{
-            holder.coupen.visibility=View.GONE
+//        }
+        holder.stock.setText(setStockStatus(item.stock, holder.stock, holder.image.context))
+        if (item.isCoupenAvailable) {
+            holder.coupen.visibility = View.VISIBLE
+            holder.coupen.text = item.coupenText
+        } else {
+            holder.coupen.visibility = View.GONE
         }
         //click
         holder.clickView()
@@ -206,7 +212,8 @@ internal class AdapterCheckout(
 
 
     }
-    fun getList()=listItems
+
+    fun getList() = listItems
 
     private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int) {
         stock.setTextColor(ContextCompat.getColor(context!!, colorDark));
@@ -214,7 +221,7 @@ internal class AdapterCheckout(
     }
 
     override fun getItemCount(): Int {
-        Log.d("testsize", "getItemCount: "+listItems.size);
+        Log.d("testsize", "getItemCount: " + listItems.size);
         return listItems.size
     }
 
@@ -239,9 +246,28 @@ internal class AdapterCheckout(
         }
     }
 
+    fun setStockStatus(stock: String, tv_stock: TextView, context: Context): String {
+        var textToDisplay = stock
+        if (stock.contains("Out of Stock", ignoreCase = true)) {
+            changeColor(tv_stock, R.color.colorRedLight, R.color.colorRedDark, context)
+        } else if (stock.contains("In stock", ignoreCase = true)) {
+            changeColor(tv_stock, R.color.colorGreenLight, R.color.colorGreenDark, context)
+
+        } else {
+            changeColor(tv_stock, R.color.colorYellowLight, R.color.colorYellowDark, context)
+        }
+        return textToDisplay
+    }
+
+    private fun changeColor(stock: TextView, colorLight: Int, colorDark: Int, context: Context) {
+        stock.setTextColor(ContextCompat.getColor(context, colorDark));
+        stock.background.setTint(ContextCompat.getColor(context, colorLight));
+    }
+
     fun getCartId(position: Int): Int {
         return listItems.get(position).cartId
     }
+
     interface OnItemClickListener {
         fun onSizeClicked(data: ModelCheckout, position: Int)
         fun onQuantityClicked(data: ModelCheckout, position: Int)

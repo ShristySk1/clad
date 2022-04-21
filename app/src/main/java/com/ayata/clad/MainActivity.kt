@@ -326,6 +326,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 .addToBackStack(null)
                 .commit()
         }
+        binding.appbar.btnFilter2.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    R.anim.enter_from_right,
+                    R.anim.exit_to_left,
+                    R.anim.enter_from_left,
+                    R.anim.exit_to_right
+                )
+                .replace(R.id.main_fragment, FragmentFilter())
+                .addToBackStack(null)
+                .commit()
+        }
 
         binding.appbar.btnProfile.setOnClickListener {
 //            if (PreferenceHandler.getToken(this) != "") {
@@ -405,9 +417,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         binding.appbar.appbar2.visibility = View.VISIBLE
 
         if (isFilter) {
-            binding.appbar.btnFilter.visibility = View.VISIBLE
+//            binding.appbar.layout2.visibility=View.VISIBLE
+            binding.appbar.btnFilter2.visibility = View.VISIBLE
         } else {
-            binding.appbar.btnFilter.visibility = View.GONE
+            binding.appbar.btnFilter2.visibility = View.GONE
         }
 
         if (isClose) {
@@ -618,6 +631,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     fun openOrderDetail(frag: FragmentOrderDetail) {
         supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+            R.anim.enter_from_right,
+            R.anim.exit_to_left,
+            R.anim.enter_from_left,
+            R.anim.exit_to_right
+        )
             .replace(R.id.main_fragment, frag)
             .addToBackStack("order_list")
             .commit()

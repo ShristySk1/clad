@@ -44,6 +44,7 @@ class FragmentMyReviewsList : Fragment() {
 
     companion object {
         var isApiFetched = false
+        var initialPositionOfTab=0
     }
 
     override fun onCreateView(
@@ -135,7 +136,6 @@ class FragmentMyReviewsList : Fragment() {
                                 )
                                 Log.d("listsixe", "observeGetReview: " + list);
                                 if (list.size > 0) {
-
                                     val unreviewed =
                                         list.filter { it.reviewDetails.isReviewed == false }
                                             .toMutableList()
@@ -144,7 +144,6 @@ class FragmentMyReviewsList : Fragment() {
                                             .toMutableList()
                                     setData(unreviewed, reviewed)
                                 } else {
-
                                     setData(arrayListOf(), arrayListOf())
                                 }
                             } catch (e: Exception) {
@@ -206,13 +205,13 @@ class FragmentMyReviewsList : Fragment() {
         Log.d("testreviewlist", "setData: reviewed " + listReviewed);
         Log.d("testreviewlist", "setData: unreviewd " + listReviewUnreviewed);
 
-        val currentPosition: Int = 0
+//        val currentPosition: Int = 0
         isFetchedApi = true
         Log.d("testmybooloean", "setData: " + isApiFetched);
         adapterReviewViewPager.notifyDataSetChanged()
         binding.viewPager.adapter = null
         binding.viewPager.adapter = adapterReviewViewPager
-        binding.viewPager.currentItem = currentPosition
+        binding.viewPager.currentItem = 0
     }
 
     private fun getMyFragment(

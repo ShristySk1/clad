@@ -56,13 +56,14 @@ class SearchViewModel constructor(private val mainRepository: ApiRepository)  : 
         auth=autho
     }
 //    fun fetchProductsViewAllLiveData(query: String, auth: String): LiveData<PagingData<ProductDetail>> {
-//        return mainRepository.getViewAllResult(query,auth)
+//        return mainRepository.getSearchResult(query,auth)
 //            .cachedIn(viewModelScope)
 //    }
+//private val currentQuery = state.getLiveData(CURRENT_QUERY, DEFAULT_QUERY)
 
     companion object {
         private const val CURRENT_QUERY = "current_query"
-        private const val DEFAULT_QUERY = "shirt"
+        private const val DEFAULT_QUERY = ""
     }
 
 

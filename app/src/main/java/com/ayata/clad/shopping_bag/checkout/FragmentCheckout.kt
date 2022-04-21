@@ -15,6 +15,8 @@ import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
@@ -72,7 +74,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         // Inflate the layout for this fragment
         binding = FragmentCartCheckoutBinding.inflate(inflater, container, false)
 
-        setUpViewModel()
+
 //        (parentFragment as FragmentShoppingBag).checkoutPage()
         initAppbar()
         initView()
@@ -88,6 +90,11 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         setRemoveObserver()
         setApplyCouponObserver()
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
     }
 
     private fun setApplyCouponObserver() {
@@ -147,9 +154,9 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private fun updateTotals(checkoutResponse: CartResponse?) {
         binding.totalPrice.text =
             if (PreferenceHandler.getCurrency(context).equals("npr", true)) {
-                "${getString(R.string.rs)} ${checkoutResponse?.cartTotalNpr}"
+                "${getString(R.string.rs)} ${checkoutResponse?.cartGrandTotalNpr}"
             } else {
-                "${getString(R.string.usd)} ${checkoutResponse?.cartTotalDollar}"
+                "${getString(R.string.usd)} ${checkoutResponse?.cartGrandTotalDollar}"
             }
 
     }
@@ -393,6 +400,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             this,
             CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[CheckoutViewModel::class.java]
+        viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
+
     }
 
 
@@ -409,23 +418,23 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private fun initRefreshLayout() {
         //refresh layout on swipe
-//        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-//            getCartAPI()
-//            binding.swipeRefreshLayout.isRefreshing = false
-//        })
-//        //Adding ScrollListener to activate swipe refresh layout
-//        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
-//            binding.swipeRefreshLayout.isEnabled = i1 == 0
-//        })
+        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
+            binding.swipeRefreshLayout.isRefreshing = false
+        })
+        //Adding ScrollListener to activate swipe refresh layout
+        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
 //
 //        // Adding ScrollListener to getting whether we're on First Item position or not
-//        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                binding.swipeRefreshLayout.isEnabled =
-//                    layoutManagerCheckout.findFirstVisibleItemPosition() == 0
-//            }
-//        })
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                binding.swipeRefreshLayout.isEnabled =
+                    layoutManagerCheckout.findFirstVisibleItemPosition() == 0
+            }
+        })
 
     }
 
@@ -540,7 +549,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     item.selected.colorName,
                     item.selected.colorHex,
                     item.productDetails.brand.name,
-                    item.selected.sku,
+                    item.selected.stock_status,
                     item.productDetails.isCouponAvailable ?: false,
                     item.productDetails.coupon?.let { it.code } ?: run { "" }
                 )
@@ -776,7 +785,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private fun getCartAPI() {
         listCheckout.clear()
         setShimmerLayout(true)
-        viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
         viewModel.getCartListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {

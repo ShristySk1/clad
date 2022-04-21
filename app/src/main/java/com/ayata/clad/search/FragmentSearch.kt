@@ -65,6 +65,10 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     )
 
     var title: String = ""
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,7 +83,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
         }
         initAppbar()
         initRecycler()
-        initViewModel()
+       searachObserver()
         initView()
         binding.etSearch.on(
             EditorInfo.IME_ACTION_SEARCH
@@ -103,15 +107,19 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
         return binding.root
     }
 
+    private fun searachObserver() {
+        viewModel.productList.observe(viewLifecycleOwner, {
+            populateRecentSearch()
+            adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
+        })
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProvider(
             this,
             SearchViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[SearchViewModel::class.java]
-        viewModel.productList.observe(viewLifecycleOwner, {
-            populateRecentSearch()
-            adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
-        })
+
     }
 
     private fun initAppbar() {

@@ -55,7 +55,8 @@ class AdapterWishList(
                         return false
                     }
                 })
-                .error(R.drawable.shoes)
+                .error(Constants.ERROR_DRAWABLE)
+                .fallback(Constants.ERROR_DRAWABLE)
                 .into(binding.image)
             if (PreferenceHandler.getCurrency(context)
                     .equals(context!!.getString(R.string.npr_case), true)

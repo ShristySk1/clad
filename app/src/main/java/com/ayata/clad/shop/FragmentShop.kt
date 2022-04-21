@@ -2,8 +2,6 @@ package com.ayata.clad.shop
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,13 +13,14 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentShopBinding
-import com.ayata.clad.productlist.FragmentProductList
 import com.ayata.clad.search.FragmentSearch
 import com.ayata.clad.shop.adapter.AdapterShopFilterable
 import com.ayata.clad.shop.response.Category
@@ -59,12 +58,48 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         // Inflate the layout for this fragment
         binding = FragmentShopBinding.inflate(inflater, container, false)
         initAppbar()
-        setUpViewModel()
         initSearchView()
         initRecycler()
 //        initTabLayout()
         getCategoryAPI()
+        initRefreshLayout()
         return binding.root
+    }
+
+    private fun initRefreshLayout() {
+        //refresh layout on swipe
+        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            viewModel.categoryListAPI()
+            binding.swipeRefreshLayout.isRefreshing = false
+        })
+        //Adding ScrollListener to activate swipe refresh layout
+        binding.rootContainer.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
+        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+            binding.swipeRefreshLayout.isEnabled = i1 == 0
+        })
+
+        // Adding ScrollListener to getting whether we're on First Item position or not
+            binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+//                val topRowVerticalPosition =
+//                    if (recyclerView == null || recyclerView.childCount === 0) 0 else recyclerView.getChildAt(
+//                        0
+//                    ).top
+//                binding.swipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0)
+                    val manager = binding.recyclerView.layoutManager as LinearLayoutManager
+                    binding.swipeRefreshLayout.isEnabled =
+                        manager.findFirstCompletelyVisibleItemPosition() == 0 // 0 is for first item position
+                }
+            })
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
     }
 
     private fun setUpViewModel() {
@@ -72,6 +107,8 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
             this,
             CategoryViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[CategoryViewModel::class.java]
+        viewModel.categoryListAPI()
+
     }
 
     private fun initAppbar() {
@@ -101,13 +138,15 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
 //        })
 
         binding.layoutSearch.setOnClickListener {
-            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
+            parentFragmentManager.beginTransaction().replace(
+                R.id.main_fragment,
                 FragmentSearch()
             )
                 .addToBackStack(null).commit()
         }
         binding.textSearch.setOnClickListener {
-            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,
+            parentFragmentManager.beginTransaction().replace(
+                R.id.main_fragment,
                 FragmentSearch()
             )
                 .addToBackStack(null).commit()
@@ -284,16 +323,18 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         val listSpecificSubCat = getSpecificCat.subCategory
         if (listSpecificSubCat.size == 0) {
             //empty list
-            MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,
-                Constants.ERROR_TEXT_DRAWABLE,"Empty!","No products available")
+            MyLayoutInflater().onAddField(
+                requireContext(), binding.rootContainer, R.layout.layout_error,
+                Constants.ERROR_TEXT_DRAWABLE, "Empty!", "No products available"
+            )
         } else {
             if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
                 MyLayoutInflater().onDelete(
-                    binding.root,
+                    binding.rootContainer,
                     binding.root.findViewById(R.id.layout_root)
                 )
             }
-                shopRecyclerList.addAll(listSpecificSubCat)
+            shopRecyclerList.addAll(listSpecificSubCat)
         }
 //        adapterShopFilterable.setData(shopRecyclerList)
         adapterShopFilterable.notifyDataSetChanged()
@@ -307,7 +348,14 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         bundle.putSerializable(SUB_CATEGORY, data)
         bundle.putString(CATEGORY_TITLE, title)
         fragmentSubCategory.arguments = bundle
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentSubCategory)
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.enter_from_right,
+                R.anim.exit_to_left,
+                R.anim.enter_from_left,
+                R.anim.exit_to_right
+            )
+            .replace(R.id.main_fragment, fragmentSubCategory)
             .addToBackStack(null).commit()
     }
 
@@ -315,6 +363,7 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
 //        setShimmerLayout(true)
 
         viewModel.getCategoryListAPI().observe(viewLifecycleOwner, {
+            Log.d("testapi", "getCartAPI: ${it.status}")
             when (it.status) {
                 Status.SUCCESS -> {
                     hideError()
@@ -367,16 +416,24 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         })
     }
 
-    private fun showError(it:String) {
+    private fun showError(it: String) {
 //        binding.rootContainer.visibility=View.GONE
-        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error, Constants.ERROR_TEXT_DRAWABLE,"Error!",it)
+        MyLayoutInflater().onAddField(
+            requireContext(),
+            binding.rootContainer,
+            R.layout.layout_error,
+            Constants.ERROR_TEXT_DRAWABLE,
+            "Error!",
+            it
+        )
 
     }
+
     private fun hideError() {
 //        binding.rootContainer.visibility=View.VISIBLE
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
-                binding.root,
+                binding.rootContainer,
                 binding.root.findViewById(R.id.layout_root)
             )
         }
@@ -385,9 +442,13 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
     private fun setShimmerLayout(isVisible: Boolean) {
         if (isVisible) {
             binding.shimmerFrameLayout.visibility = View.VISIBLE
+            binding.recyclerView.visibility=View.GONE
+            binding.tabLayout.visibility=View.GONE
             binding.shimmerFrameLayout.startShimmer()
         } else {
             binding.shimmerFrameLayout.visibility = View.GONE
+            binding.recyclerView.visibility=View.VISIBLE
+            binding.tabLayout.visibility=View.VISIBLE
             binding.shimmerFrameLayout.stopShimmer()
         }
     }

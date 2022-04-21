@@ -18,7 +18,6 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     private val listResponse = MutableLiveData<Resource<JsonObject>>()
     private val removeResponse = SingleLiveEvent<Resource<JsonObject>>()
-    private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
 
     private var job: Job? = null
@@ -53,7 +52,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     }
 
-    fun getWishListAPI(): LiveData<Resource<JsonObject>> {
+    fun getWishListAPI(): MutableLiveData<Resource<JsonObject>> {
         return listResponse
     }
 
@@ -103,29 +102,6 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     fun getWishAPIToCart(): LiveData<Resource<JsonObject>> {
         return wishListToCart
-    }
-    fun addToCartAPI(token:String,id:Int) {
-        addCartResponse.postValue(Resource.loading(null))
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-
-            val response = mainRepository.addToCartApi("$token",id)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("addToCartAPI", "success: "+response.body())
-                    addCartResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("addToCartAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    addCartResponse.postValue(Resource.error(response.message(), null))
-                }
-            }
-        }
-
-    }
-
-    fun getAddToCartAPI(): LiveData<Resource<JsonObject>> {
-        return addCartResponse
     }
 
     fun saveSizeAPI(token:String,id: Int,size:String) {

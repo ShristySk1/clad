@@ -6,12 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.SingleLiveEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
+import org.json.JSONObject
 
-class ProductViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
+class ProductViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
     private val errorMessage = MutableLiveData<String>()
 
@@ -27,15 +27,15 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
     private val loading = MutableLiveData<Boolean>()
 
 
-    fun removeFromCartAPI(token:String,id: Int) {
+    fun removeFromCartAPI(token: String, id: Int) {
         removeCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            jsonObject.addProperty("variant_id",id)
-            val response = mainRepository.removeFromCartAPI("$token",jsonObject)
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("variant_id", id)
+            val response = mainRepository.removeFromCartAPI("$token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("removeFromCartAPI", "success: "+response.body())
+                    Log.d("removeFromCartAPI", "success: " + response.body())
                     removeCartResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -52,18 +52,25 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
         return removeCartResponse
     }
 
-    fun addToCartAPI(token:String,id:Int) {
+    fun addToCartAPI(token: String, id: Int) {
         addCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            val response = mainRepository.addToCartApi("$token",id)
+            val response = mainRepository.addToCartApi("$token", id)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("addToCartAPI", "success: "+response.body())
+                    Log.d("addToCartAPI", "success: " + response.body())
                     addCartResponse.postValue(Resource.success(response.body()))
                     loading.value = false
+                } else if (response.code() == 400) {
+                    try {
+                        val jObjError = JSONObject(response.errorBody()!!.string())
+                        val message = jObjError.getString("message")
+                        onError("Error : ${message} ")
+                        addCartResponse.postValue(Resource.error(message, null))
+                    } catch (e: java.lang.Exception) {
+                        addCartResponse.postValue(Resource.error(e.message.toString(), null))
+                    }
                 } else {
-                    Log.e("addToCartAPI", "error: $response")
                     onError("Error : ${response.message()} ")
                     addCartResponse.postValue(Resource.error(response.message(), null))
                 }
@@ -76,15 +83,15 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
         return addCartResponse
     }
 
-    fun removeFromWishAPI(token:String,id: Int) {
+    fun removeFromWishAPI(token: String, id: Int) {
         removeWishResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject=JsonObject()
-            jsonObject.addProperty("variant_id",id)
-            val response = mainRepository.removeFromWishAPI("$token",jsonObject)
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("variant_id", id)
+            val response = mainRepository.removeFromWishAPI("$token", jsonObject)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    Log.d("removeFromWishAPI", "success: "+response.body())
+                    Log.d("removeFromWishAPI", "success: " + response.body())
                     removeWishResponse.postValue(Resource.success(response.body()))
                     loading.value = false
                 } else {
@@ -101,16 +108,16 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
         return removeWishResponse
     }
 
-    fun addToWishAPI(token:String,id:Int) {
+    fun addToWishAPI(token: String, id: Int) {
         addWishResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
-                val jsonObject=JsonObject()
-                jsonObject.addProperty("variant_id",id)
-                val response = mainRepository.addToWishApi("$token",jsonObject)
+                val jsonObject = JsonObject()
+                jsonObject.addProperty("variant_id", id)
+                val response = mainRepository.addToWishApi("$token", jsonObject)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        Log.d("addToWishAPI", "success: "+response.body())
+                        Log.d("addToWishAPI", "success: " + response.body())
                         addWishResponse.postValue(Resource.success(response.body()))
                         loading.value = false
                     } else {
@@ -119,7 +126,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
                         addWishResponse.postValue(Resource.error(response.message(), null))
                     }
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 addWishResponse.postValue(Resource.error(e.message.toString(), null))
 
             }
@@ -133,7 +140,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository)  :
     }
 
     private fun onError(message: String) {
-        errorMessage.postValue( message)
+        errorMessage.postValue(message)
         loading.postValue(false)
     }
 

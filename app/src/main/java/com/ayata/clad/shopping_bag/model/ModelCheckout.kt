@@ -5,7 +5,7 @@ import java.io.Serializable
 class ModelCheckout:Serializable {
 
     constructor(name:String,itemId:Int,priceNPR:Double,priceUSD:Double,size:String,qty:Int,
-                isSelected:Boolean,image:String,cartId:Int,color:String,colorHex:String,brand:String,stock:Int,coupenAvailability:Boolean,coupenString:String){
+                isSelected:Boolean,image:String,cartId:Int,color:String,colorHex:String,brand:String,stock:String,coupenAvailability:Boolean,coupenString:String){
         this.name=name
         this.isSelected=isSelected
         this.itemId=itemId
@@ -36,7 +36,7 @@ class ModelCheckout:Serializable {
     var color:String=""
     var colorHex:String=""
     var brand:String=""
-    var stock:Int=0
+    var stock:String=""
     var isCoupenAvailable:Boolean=false
     var coupenText:String=""
     override fun toString(): String {

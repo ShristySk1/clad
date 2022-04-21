@@ -1,6 +1,7 @@
 package com.ayata.clad.product
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
@@ -66,7 +67,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var viewModelHome: HomeViewModel
     var dynamicVarientId = 0
     var choosenSizePosition = 0
-
+var isStockAvailable=true
     //for color and size
     lateinit var myMaps: MutableMap<String, MutableList<Variant>>
 
@@ -83,6 +84,20 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         tapToCopyListener()
         productLikedListener()
         setUpRecyclerRecommendation()
+        binding.btnShare.setOnClickListener {
+//            https://clad.ayata.com.np/product/details/soft-fur-jacket/
+            try {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
+                val shareMessage =
+                    "https://clad.ayata.com.np/product/details/${productDetail.slug}"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+                startActivity(Intent.createChooser(shareIntent, "Share Using"))
+            } catch (e: Exception) {
+                Log.d(TAG, "onCreateView: " + e.message.toString());
+            }
+        }
         binding.imageView3.setOnClickListener {
             goToGalleryView()
         }
@@ -630,8 +645,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun addToCartAPI() {
 //        Toast.makeText(requireContext(), dynamicProductId.toString(), Toast.LENGTH_SHORT).show()
-        Log.d(TAG, "addToCartAPI: " + dynamicVarientId);
-        showDialogSize()
+      if(isStockAvailable) {
+          showDialogSize()
+      }else{
+          Toast.makeText(context,"Order out of stock",Toast.LENGTH_SHORT).show()
+      }
     }
 
     private fun showDialogSize() {
@@ -783,16 +801,46 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     fun setStockStatus(stock: String, tv_stock: TextView): String {
+
         var textToDisplay = stock
         if (stock.contains("Out of Stock", ignoreCase = true)) {
+            //TOD
+                isStockAvailable=false
+            binding.imageCart.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(),R.color.colorGray));
+
+            binding.detail2.ivCart.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorGray
+                )
+            );
             changeColor(tv_stock, R.color.colorRedDark, R.color.white, requireContext())
         } else if (stock.contains("In stock", ignoreCase = true)) {
+            binding.imageCart.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(),R.color.colorBlack));
 
+            isStockAvailable=true
+            binding.detail2.ivCart.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorBlack
+                )
+            );
             changeColor(tv_stock, R.color.colorGreenDark, R.color.white, requireContext())
 
         } else {
+            isStockAvailable=true
+            binding.imageCart.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(),R.color.colorBlack));
+
+            binding.detail2.ivCart.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorBlack
+                )
+            );
+
             changeColor(tv_stock, R.color.colorYellowDark, R.color.white, requireContext())
         }
+        tv_stock.setText(textToDisplay)
         return textToDisplay
     }
 

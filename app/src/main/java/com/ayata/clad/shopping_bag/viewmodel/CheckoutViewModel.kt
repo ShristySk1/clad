@@ -24,7 +24,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
     private val quantityResponse = MutableLiveData<Resource<JsonObject>>()
     private val cartSelectResponse = SingleLiveEvent<Resource<JsonObject>>()
-    private val applyCouppnResponse = MutableLiveData<Resource<JsonObject>>()
+    private val applyCouppnResponse = SingleLiveEvent<Resource<JsonObject>>()
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
@@ -262,7 +262,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
 
     }
 
-    fun getApplyCouponResponseAPI(): LiveData<Resource<JsonObject>> {
+    fun getApplyCouponResponseAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return applyCouppnResponse
     }
 

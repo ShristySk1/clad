@@ -22,6 +22,8 @@ class FragmentFilter : Fragment() {
     lateinit var myAdapter: AdapterFilter
     lateinit var sizeList: List<MyFilterContentViewItem.MultipleChoice>
     lateinit var colorList: List<MyFilterContentViewItem.MultipleChoiceColor>
+    lateinit var brandList: List<MyFilterContentViewItem.MultipleChoice>
+    lateinit var sortList: List<MyFilterContentViewItem.SingleChoice>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +43,12 @@ class FragmentFilter : Fragment() {
             MyFilterContentViewItem.MultipleChoiceColor("Black", false, "#ffffff"),
             MyFilterContentViewItem.MultipleChoiceColor("Red", false, "#ffffff"),
             MyFilterContentViewItem.MultipleChoiceColor("Yellow", false, "#ffffff"),
+        )
+        sortList= listOf(
+            MyFilterContentViewItem.SingleChoice("Most Popular", false),
+            MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false),
+            MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false),
+            MyFilterContentViewItem.SingleChoice("Latest", false),
         )
         setUpRecyclerView()
 
@@ -83,20 +91,7 @@ class FragmentFilter : Fragment() {
                 Log.d("testcolor", "setUpRecyclerView: " + it.id);
                 when (it.id) {
                     1 -> {//Sort by
-//                        val list = listOf(
-//                            MyFilterContentViewItem.SingleChoice("Recommended", true),
-//                            MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false),
-//                            MyFilterContentViewItem.SingleChoice(
-//                                "Most Expensive (high - low)",
-//                                false
-//                            ),
-//                        )
-//                        val list = listOf(
-//                            MyFilterContentViewItem.MultipleChoice("Recommended", true),
-//                            MyFilterContentViewItem.MultipleChoice("Price (low - high)", false),
-//                            MyFilterContentViewItem.MultipleChoice("Price (high - low)", false),
-//                        )
-//                        showDialogSingleChoice(it.title, list)
+                        showDialogSingleChoice(it.title, sortList)
                     }
                     2 -> {//Product Type
 

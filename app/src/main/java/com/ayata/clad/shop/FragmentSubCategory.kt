@@ -87,7 +87,14 @@ companion object{
         bundle.putString(CATEGORY_TITLE,title)
         val fragment=FragmentProductList()
         fragment.arguments=bundle
-        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
+        parentFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+            R.anim.enter_from_right,
+            R.anim.exit_to_left,
+            R.anim.enter_from_left,
+            R.anim.exit_to_right
+        )
+            .replace(R.id.main_fragment, fragment)
             .addToBackStack(null).commit()
     }
 

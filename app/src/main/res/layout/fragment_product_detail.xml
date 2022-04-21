@@ -37,7 +37,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="matrix"
                     android:clickable="true"
-                    android:src="@drawable/splashimage" />
+                    tools:src="@drawable/splashimage" />
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -241,6 +241,7 @@
                             android:background="@drawable/background_circle_with_border"
                             android:backgroundTint="@color/colorWhite"
                             android:clickable="false"
+                            android:tint="@color/colorBlack"
                             android:padding="10dp"
                             android:src="@drawable/ic_gallary" />
 
