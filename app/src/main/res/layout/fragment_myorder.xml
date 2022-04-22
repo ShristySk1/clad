@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ayata.clad.utils.CustomSwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".profile.account.FragmentAccount"
     android:background="@color/colorWhite">
+
+    <FrameLayout
+        android:id="@+id/rootContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        tools:context=".profile.account.FragmentAccount">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_orders"
             android:layout_width="match_parent"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
+            android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:layout_height="wrap_content"/>
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp" />
 
-<include android:id="@+id/progress_bar" layout="@layout/dialog_progress"/>
-</FrameLayout>
+        <include
+            android:id="@+id/progress_bar"
+            layout="@layout/dialog_progress" />
+    </FrameLayout>
+</com.ayata.clad.utils.CustomSwipeToRefresh>

@@ -270,9 +270,9 @@ class FragmentMyReviewsForm : Fragment() {
     }
 
     private fun initBundle() {
-        if (arguments != null) {
+        Log.d("testnumber1", "initBundle: "+FragmentMyReviewsList.initialPositionOfTab);
             arguments?.let {
-                FragmentMyReviewsList.initialPositionOfTab = 1
+//                FragmentMyReviewsList.initialPositionOfTab = 1
                 item = it.getSerializable("datas") as Review
                 Log.d("tetstitem", "initBundle: " + item);
                 binding.name.text = item.product.name
@@ -298,15 +298,6 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                     val testImage =
                         "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
-//                for (i in 1..2) {
-//                    img.add(
-//                        Image(
-//                            i.toLong(),
-//                            "name",
-//                            testImage
-//                        )
-//                    )
-//                }
                     formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort)
                     binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
                     myChosenQuality = item.reviewDetails.quality.toInt()
@@ -316,12 +307,10 @@ class FragmentMyReviewsForm : Fragment() {
                     images.clear()
                     images.addAll(img)
                     setUpImageInList(images, null)
+                }else{
+//                    FragmentMyReviewsList.initialPositionOfTab = 0
                 }
             }
-
-        } else {
-            FragmentMyReviewsList.initialPositionOfTab = 0
-        }
     }
 
     private fun setUpImageInList(

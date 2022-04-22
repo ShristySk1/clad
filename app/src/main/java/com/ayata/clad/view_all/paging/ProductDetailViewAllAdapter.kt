@@ -130,6 +130,7 @@ class ProductDetailViewAllAdapter(private val listener:onItemClickListener) : Pa
                 oldItem: ProductDetail,
                 newItem: ProductDetail
             ): Boolean {
+                Log.d("testadapter", "areContentsTheSame: "+(oldItem==newItem));
                 return oldItem == newItem
             }
 

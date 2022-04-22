@@ -8,6 +8,7 @@ import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.SingleLiveEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 

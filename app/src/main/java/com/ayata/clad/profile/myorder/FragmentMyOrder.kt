@@ -9,8 +9,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
@@ -18,7 +18,6 @@ import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentMyorderBinding
 import com.ayata.clad.profile.MyOrderRecyclerViewItem
-import com.ayata.clad.profile.account.AccountViewModel
 import com.ayata.clad.profile.myorder.order.FragmentOrderDetail
 import com.ayata.clad.profile.myorder.order.cancel.CancelViewModel
 import com.ayata.clad.profile.myorder.order.response.Detail
@@ -34,7 +33,7 @@ import com.google.gson.Gson
 class FragmentMyOrder : Fragment() {
     lateinit var binding: FragmentMyorderBinding
     private lateinit var viewModel: OrderViewModel
-    private lateinit var cancelViewModel:CancelViewModel
+    private lateinit var cancelViewModel: CancelViewModel
     val myAdapter by lazy { AdapterOrders(requireContext(), listOf()) }
 
     override fun onCreateView(
@@ -45,12 +44,19 @@ class FragmentMyOrder : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentMyorderBinding.inflate(inflater, container, false)
-
+        initRefreshLayout()
         setUpRecyclerView()
         getOrderApi()
         return binding.root
     }
 
+    private fun initRefreshLayout() {
+        //refresh layout on swipe
+        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            getOrderApi()
+
+        })
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpViewModel()
@@ -61,9 +67,10 @@ class FragmentMyOrder : Fragment() {
         showProgress()
         hideError()
         viewModel.observeOrderResponse().observe(viewLifecycleOwner, {
-            Log.d("testobserve", "getOrderApi: "+it.status+hashCode());
+            Log.d("testobserve", "getOrderApi: " + it.status + hashCode());
             when (it.status) {
                 Status.SUCCESS -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     hideProgress()
                     hideError()
                     val jsonObject = it.data
@@ -77,7 +84,7 @@ class FragmentMyOrder : Fragment() {
                             if (orderResponse.details != null) {
                                 val detail = orderResponse.details
                                 if (detail.size > 0) {
-                                    prepareOrder (detail)
+                                    prepareOrder(detail)
                                 } else {
                                     showError("Empty!", "No any order yet.")
                                 }
@@ -94,6 +101,7 @@ class FragmentMyOrder : Fragment() {
 
                 }
                 Status.ERROR -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     hideProgress()
                     showError("Error!", it.message.toString())
                     //Handle Error
@@ -124,7 +132,7 @@ class FragmentMyOrder : Fragment() {
     ) {
         MyLayoutInflater().onAddField(
             requireContext(),
-            binding.root,
+            binding.rootContainer,
             R.layout.layout_error,
             Constants.ERROR_TEXT_DRAWABLE,
             title,
@@ -136,7 +144,7 @@ class FragmentMyOrder : Fragment() {
     private fun hideError() {
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
-                binding.root,
+                binding.rootContainer,
                 binding.root.findViewById(R.id.layout_root)
             )
         }
@@ -182,11 +190,11 @@ class FragmentMyOrder : Fragment() {
         }
         myAdapter.setitemOrderClick {
 //            if (!it.isCancelled) {
-                val b = Bundle()
-                b.putSerializable("order", it.order)
-                val frag = FragmentOrderDetail()
-                frag.arguments = b
-                (activity as MainActivity).openOrderDetail(frag)
+            val b = Bundle()
+            b.putSerializable("order", it.order)
+            val frag = FragmentOrderDetail()
+            frag.arguments = b
+            (activity as MainActivity).openOrderDetail(frag)
 
         }
     }

@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
@@ -41,11 +42,17 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
         // Inflate the layout for this fragment
         binding =
             FragmentGiftcardBinding.inflate(inflater, container, false)
-
+initRefreshLayout()
         initRecycler()
         return binding.root
     }
-
+    private fun initRefreshLayout() {
+        //refresh layout on swipe
+        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            viewModel.getCouponAPI(PreferenceHandler.getToken(context)!!)
+            binding.swipeRefreshLayout.isRefreshing = false
+        })
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpViewModel()
@@ -58,6 +65,7 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
                 GiftcardViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
             )
                 .get(GiftcardViewModel::class.java)
+        viewModel.getCouponAPI(PreferenceHandler.getToken(context)!!)
 
     }
 
@@ -68,6 +76,7 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
+
         prepareGiftCard()
     }
     private fun prepareGiftCard() {
@@ -79,12 +88,11 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
 //                "GIFT-100gh",
 //                "Valid until 22 Feb 2022"
 //            )
-        viewModel.getCouponAPI(PreferenceHandler.getToken(context)!!)
         viewModel.observerGetCouponAPI().observe(viewLifecycleOwner, {
             Log.d("testhash", "prepareGiftCard: "+hashCode()+it.status);
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.progressBar.root.visibility=View.GONE
+                  binding.progressBar.root.visibility=View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -125,7 +133,7 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
     private fun showError(title:String,it: String) {
         MyLayoutInflater().onAddField(
             requireContext(),
-            binding.root,
+            binding.rootContainer,
             R.layout.layout_error,
             Constants.ERROR_TEXT_DRAWABLE,
             title,
@@ -137,7 +145,7 @@ class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
     private fun hideError() {
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
-                binding.root,
+                binding.rootContainer,
                 binding.root.findViewById(R.id.layout_root)
             )
         }

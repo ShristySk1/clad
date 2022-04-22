@@ -55,7 +55,8 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     private var listRecent = ArrayList<String>()
     var isLoading = false
     private lateinit var viewModel: SearchViewModel
-    private lateinit var adapterPaging: ProductDetailViewAllAdapter
+    private val adapterPaging by lazy {   ProductDetailViewAllAdapter(this)}
+    private var currentQuery=""
 
 
     private var listImage = arrayListOf<String>(
@@ -69,6 +70,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
         super.onCreate(savedInstanceState)
         initViewModel()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -82,9 +84,17 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
             title = bundle.getString(Constants.FILTER_HOME, "")
         }
         initAppbar()
-        initRecycler()
-       searachObserver()
+
+        searachObserver()
         initView()
+
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRecycler()
         binding.etSearch.on(
             EditorInfo.IME_ACTION_SEARCH
         ) {
@@ -103,8 +113,6 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
             hideKeyboard()
 
         }
-
-        return binding.root
     }
 
     private fun searachObserver() {
@@ -170,7 +178,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
                 job = MainScope().launch {
                     delay(500L)
                     binding.etSearch?.let {
-                        if (it.toString().isNotEmpty()) {
+                        if (it.text.toString().isNotEmpty()&&currentQuery!=it.text.toString()) {
                             getSearchProducts(s.toString())
                             Log.d("testsearch", "onViewCreated: ${it.toString()}");
                         }
@@ -192,7 +200,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     }
 
     private fun initRecycler() {
-        adapterPaging = ProductDetailViewAllAdapter(this)
+
         binding.apply {
             recyclerView.apply {
                 layoutManager = GridLayoutManager(context, 2)
@@ -344,6 +352,7 @@ class FragmentSearch : Fragment(), AdapterViewAllProduct.OnItemClickListener,
     }
 
     override fun onItemClick(product: ProductDetail, position: Int) {
+        currentQuery=binding.etSearch.text.toString()
         val bundle = Bundle()
         bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, product)
         val fragmentProductDetail = FragmentProductDetail()

@@ -265,7 +265,7 @@ class FragmentShipping : Fragment() {
             binding.addNewBtn.visibility = View.GONE
         } else {
             binding.addNewBtn.visibility = View.VISIBLE
-            binding.recyclerView.rootContainer.visibility = View.GONE
+            binding.recyclerView2.rootContainer.visibility = View.GONE
 
         }
     }

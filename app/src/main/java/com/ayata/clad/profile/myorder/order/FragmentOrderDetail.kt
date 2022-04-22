@@ -168,7 +168,7 @@ class FragmentOrderDetail : Fragment() {
         (activity as MainActivity).showBottomNavigation(false)
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar2(
-            isClose = false, isBack = true, isFilter = true, isClear = false,
+            isClose = false, isBack = true, isFilter = false, isClear = false,
             textTitle = getString(R.string.order_details),
             textDescription = "X935-12SC"
         )

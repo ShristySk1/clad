@@ -8,6 +8,7 @@ import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.profile.edit.response.Details
 import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.SingleLiveEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 
@@ -15,7 +16,7 @@ class GiftcardViewModel constructor(private val mainRepository: ApiRepository) :
 
     private val errorMessage = MutableLiveData<String>()
 
-    private val giftCardResponse = MutableLiveData<Resource<JsonObject>>()
+    private val giftCardResponse = SingleLiveEvent<Resource<JsonObject>>()
 
 
     private var job: Job? = null
@@ -49,7 +50,7 @@ class GiftcardViewModel constructor(private val mainRepository: ApiRepository) :
         }
 
     }
-    fun observerGetCouponAPI(): LiveData<Resource<JsonObject>> {
+    fun observerGetCouponAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return giftCardResponse
     }
     private fun onError(message: String) {

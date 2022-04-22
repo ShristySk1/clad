@@ -54,7 +54,7 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
 
     private lateinit var adapterProductList: AdapterProductList
     private var listProduct = ArrayList<ProductDetail>()
-    private lateinit var adapterPaging: ProductDetailViewAllAdapter
+    private val adapterPaging by lazy {  ProductDetailViewAllAdapter(this)}
 
     private var appBarTitle: String = "";
     private var appBarDesc: String = "";
@@ -76,13 +76,17 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
         // Inflate the layout for this fragment
         binding = FragmentProductListBinding.inflate(inflater, container, false)
         mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
-
-        setUpViewModel()
+        getAllTest()
         setUpRecyclerProductList()
-        getBundle()
         initAppbar()
         initSearchView()
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
+        getBundle()
     }
 
     private fun getBundle() {
@@ -93,8 +97,7 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
             appBarCount=child.product_count
             appBarDesc = requireArguments().getString(FragmentSubCategory.CATEGORY_TITLE, "")
 //            getCategoryProductListAPI(child.id,true)
-            getAllTest(child.slug)
-
+            viewModel.searchProductListFromCategory(child.slug)
         }
     }
 
@@ -160,7 +163,7 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
 //
 //    }
 
-        adapterPaging = ProductDetailViewAllAdapter(this)
+
         binding.apply {
             rvProductList.apply {
                 layoutManager = GridLayoutManager(context, 2)
@@ -236,13 +239,11 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
         }
 
     }
-    private fun getAllTest(category_slug: String) {
-        viewModel.searchProductListFromCategory(category_slug)
+    private fun getAllTest() {
         viewModel.productList.observe(viewLifecycleOwner, {
             adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
         })
     }
-
     private fun setUpEmptyView() {
 //        Toast.makeText(context,"Empty products",Toast.LENGTH_SHORT).show()
         MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,Constants.ERROR_TEXT_DRAWABLE,"Empty!","No products available")

@@ -16,6 +16,8 @@ import com.ayata.clad.filter.filterdialog.AdapterFilterContent
 import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.utils.removeBracket
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class FragmentFilter : Fragment() {
     private lateinit var binding: FragmentFilterBinding
@@ -24,6 +26,10 @@ class FragmentFilter : Fragment() {
     lateinit var colorList: List<MyFilterContentViewItem.MultipleChoiceColor>
     lateinit var brandList: List<MyFilterContentViewItem.MultipleChoice>
     lateinit var sortList: List<MyFilterContentViewItem.SingleChoice>
+    val defaultMinPrice="0"
+    val defaultMaxPrice="100000"
+    var newMax=defaultMaxPrice
+    var newMin=defaultMinPrice
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,7 +50,7 @@ class FragmentFilter : Fragment() {
             MyFilterContentViewItem.MultipleChoiceColor("Red", false, "#ffffff"),
             MyFilterContentViewItem.MultipleChoiceColor("Yellow", false, "#ffffff"),
         )
-        sortList= listOf(
+        sortList = listOf(
             MyFilterContentViewItem.SingleChoice("Most Popular", false),
             MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false),
             MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false),
@@ -76,16 +82,16 @@ class FragmentFilter : Fragment() {
                     MyFilterRecyclerViewItem.Title(1, "Sort by", "Recommended"),
 //                    MyFilterRecyclerViewItem.Title(2, "Product Type", "Shoes / Sneakers"),
                     MyFilterRecyclerViewItem.Title(3, "Brand", "Adidas Originals / Nike / Vans"),
-                    MyFilterRecyclerViewItem.Title(4, "Size", "US 10 / US 10.5 / US 11"),
+                    MyFilterRecyclerViewItem.Title(4, "Size", "All"),
                     MyFilterRecyclerViewItem.Color(
                         7, "Color", listOf(
-                            MyColor("Black", "#000000"),
-                            MyColor("Blue", "#ffffff"),
-                            MyColor("Gray", "#ffffff")
+                            MyColor("All", "#ffffff"),
+//                            MyColor("Blue", "#ffffff"),
+//                            MyColor("Gray", "#ffffff")
                         )
                     ),
 //                    MyFilterRecyclerViewItem.Title(5, "Discount", "10% and above"),
-                    MyFilterRecyclerViewItem.Title(6, "Price Range", "Rs. 1000 - Rs. 25000")
+                    MyFilterRecyclerViewItem.Title(6, "Price Range", "")
                 )
             myAdapter.setFilterClickListener { it, pos ->
                 Log.d("testcolor", "setUpRecyclerView: " + it.id);
@@ -105,7 +111,7 @@ class FragmentFilter : Fragment() {
 
                     }
                     6 -> {//Price Range
-                        showDialogRange(it.title)
+                        showDialogRange(it.title,pos,newMin,newMax)
 
                     }
                 }
@@ -147,7 +153,7 @@ class FragmentFilter : Fragment() {
         bottomSheetDialog.show()
     }
 
-        private fun showDialogMultipleChoiceColor(
+    private fun showDialogMultipleChoiceColor(
         title: String,
         list: List<MyFilterContentViewItem.MultipleChoiceColor>, pos: Int
     ) {
@@ -168,11 +174,17 @@ class FragmentFilter : Fragment() {
                     }
 
                 }
-                (myAdapter.items.get(pos) as MyFilterRecyclerViewItem.Color).colorList =
-                    list.filter { it.isSelected }
-                        .map {
-                            MyColor(it.title, it.colorHex!!)
-                        }
+                val mylist=list.filter { it.isSelected }
+                    .map {
+                        MyColor(it.title, it.colorHex!!)
+                    }
+                if(mylist.isEmpty()){
+                    (myAdapter.items.get(pos) as MyFilterRecyclerViewItem.Color).colorList= listOf(
+                        MyColor("All","#ffffff")
+                    )
+                }else{
+                (myAdapter.items.get(pos) as MyFilterRecyclerViewItem.Color).colorList =mylist}
+
                 myAdapter.notifyItemChanged(pos)
             }
         }
@@ -187,6 +199,7 @@ class FragmentFilter : Fragment() {
         }
         bottomSheetDialog.show()
     }
+
     private fun showDialogMultipleChoice(
         title: String,
         list: List<MyFilterContentViewItem.MultipleChoice>, pos: Int
@@ -206,9 +219,13 @@ class FragmentFilter : Fragment() {
                         break
                     }
                 }
-                (myAdapter.items.get(pos) as MyFilterRecyclerViewItem.Title).subTitle =
-                    list.filter { it.isSelected }
-                        .map { it.title }.toString().removeBracket()
+                val myList= list.filter { it.isSelected }
+                    .map { it.title }.toString().removeBracket()
+                if(myList.isEmpty()){
+                    (myAdapter.items.get(pos) as MyFilterRecyclerViewItem.Title).subTitle="All"
+                }else{
+                (myAdapter.items.get(pos) as MyFilterRecyclerViewItem.Title).subTitle =myList}
+
                 myAdapter.notifyItemChanged(pos)
             }
         }
@@ -225,15 +242,48 @@ class FragmentFilter : Fragment() {
     }
 
     private fun showDialogRange(
-        title: String
+        title: String,
+        pos: Int,
+        min:String,
+        max:String
     ) {
         val dialogBinding = DialogFilterRangeBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(dialogBinding.root)
         dialogBinding.title.text = title
+        dialogBinding.max.setText(newMax)
+        dialogBinding.min.setText(newMin)
         dialogBinding.btnClose.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
+
+        dialogBinding.btnOk.setOnClickListener {
+//            if(!validateTextField(dialogBinding.min) or !validateTextField(dialogBinding.max)){
+//                return@setOnClickListener
+//            }
+            newMin=dialogBinding.min.text.toString()
+             newMax=dialogBinding.max.text.toString()
+            if(newMax.isEmpty()){
+                newMax=defaultMaxPrice
+            }
+            if(newMin.isEmpty()){
+                newMin=defaultMinPrice
+            }
+            bottomSheetDialog.dismiss()
+            val newPriceRange="Rs. ${newMin} - Rs. ${newMax}"
+            (myAdapter.items.get(pos) as MyFilterRecyclerViewItem.Title).subTitle =newPriceRange
+            myAdapter.notifyItemChanged(pos)
+        }
         bottomSheetDialog.show()
+    }
+    private fun validateTextField(textField: TextInputEditText): Boolean {
+        val data = textField!!.text.toString().trim()
+        return if (data.isEmpty() or (data == " ")) {
+            textField.error = "This field can't be empty"
+            false
+        } else {
+            textField.error = null
+            true
+        }
     }
 }

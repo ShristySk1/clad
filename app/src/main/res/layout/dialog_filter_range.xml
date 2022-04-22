@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="25dp"
-            android:layout_marginBottom="30dp">
+            android:layout_marginBottom="16dp">
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_margin="5dp"
@@ -66,20 +66,21 @@
                     android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:errorEnabled="false"
-                    app:hintEnabled="false"
                     app:boxStrokeWidth="0dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:gravity="center_vertical"
+                    app:hintEnabled="false"
                     app:boxStrokeColor="@android:color/transparent"
                     app:hintAnimationEnabled="false"
                     android:background="@drawable/background_outline_gray">
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:background="@android:color/transparent"
-                        android:paddingHorizontal="10dp"
-                        android:gravity="center_vertical"
+                        android:padding="16dp"
                         android:hint="0"
-
+                        android:id="@+id/min"
+                        android:inputType="number"
                         android:textColor="@color/black"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -105,14 +106,16 @@
                     app:errorEnabled="false"
                     app:hintEnabled="false"
                     app:hintAnimationEnabled="false"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:boxStrokeWidth="0dp"
                     android:background="@drawable/background_outline_gray">
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:paddingHorizontal="10dp"
-
+                        android:padding="16dp"
+                        android:inputType="number"
+                        android:id="@+id/max"
                         android:gravity="center_vertical"
                         android:hint="100000+"
                         android:textColor="@color/black"/>
@@ -121,6 +124,13 @@
             </LinearLayout>
 
         </LinearLayout>
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_below="@id/layout_1"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="wrap_content"
+            android:text="OK"/>
 
     </RelativeLayout>
 </RelativeLayout>

@@ -11,6 +11,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
@@ -55,9 +58,31 @@ class FragmentMyReviewsList : Fragment() {
         binding =
             FragmentMyReviewsListBinding.inflate(inflater, container, false)
         initAppbar()
+        initRefreshLayout()
         setUpViewModel()
         setTabLayout()
         return binding.root
+    }
+    private fun initRefreshLayout() {
+        //refresh layout on swipe
+        binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            viewModel.reviewAPI(PreferenceHandler.getToken(requireContext())!!)
+            binding.swipeRefreshLayout.isRefreshing = false
+        })
+        //Adding ScrollListener to activate swipe refresh layout
+//        binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
+//            binding.swipeRefreshLayout.isEnabled = i1 == 0
+//        })
+//
+//        // Adding ScrollListener to getting whether we're on First Item position or not
+//        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                binding.swipeRefreshLayout.isEnabled =
+//                    layoutManagerCheckout.findFirstVisibleItemPosition() == 0
+//            }
+//        })
+
     }
 
     private fun setUpViewModel() {
@@ -103,6 +128,12 @@ class FragmentMyReviewsList : Fragment() {
                 tab.text = titles[position]
             }
         ).attach()
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                initialPositionOfTab=position
+                super.onPageSelected(position)
+            }
+        })
     }
 
     private fun getDataFromApi() {
@@ -178,7 +209,7 @@ class FragmentMyReviewsList : Fragment() {
     private fun showError(it: String) {
         MyLayoutInflater().onAddField(
             requireContext(),
-            binding.root,
+            binding.rootContainer,
             R.layout.layout_error,
             Constants.ERROR_TEXT_DRAWABLE,
             "Error!",
@@ -190,7 +221,7 @@ class FragmentMyReviewsList : Fragment() {
     private fun hideError() {
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
-                binding.root,
+                binding.rootContainer,
                 binding.root.findViewById(R.id.layout_root)
             )
         }
@@ -208,10 +239,12 @@ class FragmentMyReviewsList : Fragment() {
 //        val currentPosition: Int = 0
         isFetchedApi = true
         Log.d("testmybooloean", "setData: " + isApiFetched);
+        Log.d("testnumber", "setData: " + initialPositionOfTab);
+
         adapterReviewViewPager.notifyDataSetChanged()
         binding.viewPager.adapter = null
         binding.viewPager.adapter = adapterReviewViewPager
-        binding.viewPager.currentItem = 0
+        binding.viewPager.setCurrentItem(initialPositionOfTab,false)
     }
 
     private fun getMyFragment(

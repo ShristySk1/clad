@@ -157,5 +157,8 @@
         <item name="colorAccent">@color/black</item>
 
     </style>
+    <style name="textinputtheme" parent="TextAppearance.AppCompat">
+        <item name="colorAccent">@android:color/transparent</item>
+    </style>
 
 </resources>
