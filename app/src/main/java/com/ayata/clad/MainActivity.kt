@@ -57,6 +57,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     lateinit var viewModelCart: CheckoutViewModel
     lateinit var viewModelWishlist: WishListViewModel
 
+    //for category filter
+    var filterSlugCategory = ""
+
     //for empty view we need to show recommendation
     var listRecommended = ArrayList<ProductDetail>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -289,6 +292,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
 
+        private var itemClearAllClick: (() -> Unit)? = null
+        fun setClearAllListener(listener: (() -> Unit)) {
+            itemClearAllClick = listener
+        }
+
     private fun setToolbar() {
         binding.appbar.btnSearch.setOnClickListener {
 //            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
@@ -300,6 +308,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         binding.appbar.btnClear.setOnClickListener {
             Toast.makeText(this, "Clear All", Toast.LENGTH_SHORT).show()
+            itemClearAllClick?.let {
+                it()
+            }
         }
 
         binding.appbar.btnBack.setOnClickListener {
@@ -355,6 +366,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
+    fun setFilterSlugFromCategory(slug: String) {
+        filterSlugCategory = slug
+    }
+
+    fun getFilterSlug() =filterSlugCategory
     fun setToolbar1(
         title: String,
         isSearch: Boolean,
@@ -631,12 +647,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     fun openOrderDetail(frag: FragmentOrderDetail) {
         supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(
-            R.anim.enter_from_right,
-            R.anim.exit_to_left,
-            R.anim.enter_from_left,
-            R.anim.exit_to_right
-        )
+            .setCustomAnimations(
+                R.anim.enter_from_right,
+                R.anim.exit_to_left,
+                R.anim.enter_from_left,
+                R.anim.exit_to_right
+            )
             .replace(R.id.main_fragment, frag)
             .addToBackStack("order_list")
             .commit()

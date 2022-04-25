@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentSubCategoryBinding
+import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.productlist.FragmentProductList
 import com.ayata.clad.shop.adapter.AdapterSubCategoryFilterable
 import com.ayata.clad.shop.response.ChildCategory
@@ -34,6 +35,9 @@ companion object{
         // Inflate the layout for this fragment
         binding = FragmentSubCategoryBinding.inflate(inflater, container, false)
         listChildCategory.clear()
+        //reset filter
+        FragmentFilter.MY_LIST=FragmentFilter.giveMyOrginalList()
+        //filter end
         if (arguments != null) {
             Log.d(TAG, "onCreateView: not null");
             val bundle = arguments

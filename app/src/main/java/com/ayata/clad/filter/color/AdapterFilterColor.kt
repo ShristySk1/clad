@@ -2,6 +2,7 @@ package com.ayata.clad.filter.color
 
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -39,9 +40,14 @@ class AdapterFilterColor(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
             with(colorList[position]) {
-                binding.color.apply {
-                    setColorFilter(Color.parseColor(colorList[position].color));
-                }
+                colorList[position].color?.let {
+                    binding.layoutCircle.visibility=View.VISIBLE
+                    binding.color.apply {
+                        setColorFilter(Color.parseColor(colorList[position].color));
+                    }
+                }?:run {
+                binding.layoutCircle.visibility = View.GONE
+            }
                 binding.colorName.text = colorList[position].colorName
             }
         }

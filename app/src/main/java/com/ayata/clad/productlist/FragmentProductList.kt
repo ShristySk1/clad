@@ -9,23 +9,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.paging.LoadState
+import androidx.paging.map
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
-import com.ayata.clad.data.network.Status
-import com.ayata.clad.data.network.interceptor.EmptyException
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentProductListBinding
 import com.ayata.clad.databinding.LayoutErrorPagingBinding
@@ -35,6 +32,7 @@ import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.productlist.adapter.AdapterProductList
 import com.ayata.clad.productlist.viewmodel.ProductListViewModel
 import com.ayata.clad.productlist.viewmodel.ProductListViewModelFactory
+import com.ayata.clad.profile.account.AccountViewModel
 import com.ayata.clad.shop.FragmentSubCategory
 import com.ayata.clad.shop.response.ChildCategory
 import com.ayata.clad.utils.Constants
@@ -42,9 +40,6 @@ import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.ProductLoadStateAdapter
 import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
-import com.google.gson.Gson
-import retrofit2.HttpException
-import java.io.IOException
 
 
 class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickListener {
@@ -54,11 +49,11 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
 
     private lateinit var adapterProductList: AdapterProductList
     private var listProduct = ArrayList<ProductDetail>()
-    private val adapterPaging by lazy {  ProductDetailViewAllAdapter(this)}
+    private val adapterPaging by lazy { ProductDetailViewAllAdapter(this) }
 
     private var appBarTitle: String = "";
     private var appBarDesc: String = "";
-    private var appBarCount:Int=0
+    private var appBarCount: Int = 0
 
     //paging
     val QUERY_PAGE = 16
@@ -68,6 +63,8 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
     var isFirstTime = true
 
     private lateinit var viewModel: ProductListViewModel
+    private lateinit var testViewModel: AccountViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,10 +91,14 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
             val child =
                 requireArguments().getSerializable(FragmentSubCategory.CHILD_CATEGORY) as ChildCategory
             appBarTitle = child.title
-            appBarCount=child.product_count
+            appBarCount = child.product_count
             appBarDesc = requireArguments().getString(FragmentSubCategory.CATEGORY_TITLE, "")
 //            getCategoryProductListAPI(child.id,true)
-            viewModel.searchProductListFromCategory(child.slug)
+            viewModel.searchProductListFromCategory(
+                PreferenceHandler.getToken(requireContext())!!,
+                child.slug, "", "", "", "", "", ""
+            )
+            (activity as MainActivity).filterSlugCategory = child.slug
         }
     }
 
@@ -106,6 +107,8 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
             this,
             ProductListViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ProductListViewModel::class.java]
+        testViewModel = ViewModelProviders.of(requireActivity()).get(AccountViewModel::class.java)
+        testViewModel.clear()
     }
 
     private fun initAppbar() {
@@ -218,38 +221,62 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
 //                    }
 //                    is IOException->{/* Handle IO exceptions */}
 //                }
-                    mergeBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
-                    rvProductList.isVisible = loadState.source.refresh is LoadState.NotLoading
-                    mergeBinding.textViewError.isVisible = loadState.source.refresh is LoadState.Error
-                    mergeBinding.buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
-                    //for empty view
-                    if (loadState.source.refresh is LoadState.NotLoading
-                        && loadState.append.endOfPaginationReached
-                        && adapterPaging.itemCount < 1
-                    ) {
-                        rvProductList.isVisible = false
-                        mergeBinding.textViewEmpty.isVisible = true
+                mergeBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                rvProductList.isVisible = loadState.source.refresh is LoadState.NotLoading
+                mergeBinding.textViewError.isVisible = loadState.source.refresh is LoadState.Error
+                mergeBinding.buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                //for empty view
+                if (loadState.source.refresh is LoadState.NotLoading
+                    && loadState.append.endOfPaginationReached
+                    && adapterPaging.itemCount < 1
+                ) {
+                    rvProductList.isVisible = false
+                    mergeBinding.textViewEmpty.isVisible = true
 
-                    } else {
-                        mergeBinding.textViewEmpty.isVisible = false
-                    }
-
+                } else {
+                    mergeBinding.textViewEmpty.isVisible = false
+                }
 
             }
         }
-
     }
+
     private fun getAllTest() {
-        viewModel.productList.observe(viewLifecycleOwner, {
-            adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
+        testViewModel.getData()?.let {
+            viewModel.searchProductListFromCategory(
+                PreferenceHandler.getToken(requireContext())!!,
+                it.filterSlug,
+                it.refactorAllFromList,
+                it.refactorAllFromList1,
+                it.refactorAllFromList2,
+                it.mysortByFilter,
+                it.newMin,
+                it.newMax
+            )
+        }
+        Log.d(TAG, "getAllTest: " + testViewModel.getData())
+        viewModel.productList?.observe(viewLifecycleOwner, {
+            viewModel.getCurrent()
+            adapterPaging.submitData(this.lifecycle, it)
+            it.map { Log.d(TAG, "getAllTest: " + it.name) }
+
         })
     }
+
     private fun setUpEmptyView() {
 //        Toast.makeText(context,"Empty products",Toast.LENGTH_SHORT).show()
-        MyLayoutInflater().onAddField(requireContext(), binding.root, R.layout.layout_error,Constants.ERROR_TEXT_DRAWABLE,"Empty!","No products available")
+        MyLayoutInflater().onAddField(
+            requireContext(),
+            binding.root,
+            R.layout.layout_error,
+            Constants.ERROR_TEXT_DRAWABLE,
+            "Empty!",
+            "No products available"
+        )
 
     }
-    private fun removeEmptyView(){
+
+    private fun removeEmptyView() {
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
             MyLayoutInflater().onDelete(
                 binding.root,
@@ -275,14 +302,14 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
 //    }
 
     override fun onItemClick(product: ProductDetail, position: Int) {
-                        Log.d("testmyfilter", "setUpRecyclerRecommendation: $product")
-                val bundle=Bundle()
-                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,product)
-                val fragmentProductDetail=FragmentProductDetail()
-                fragmentProductDetail.arguments=bundle
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.main_fragment, fragmentProductDetail)
-                    .addToBackStack(null).commit()
+        Log.d("testmyfilter", "setUpRecyclerRecommendation: $product")
+        val bundle = Bundle()
+        bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, product)
+        val fragmentProductDetail = FragmentProductDetail()
+        fragmentProductDetail.arguments = bundle
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment, fragmentProductDetail)
+            .addToBackStack(null).commit()
     }
 
     override fun onWishListClick(product: ProductDetail, position: Int) {

@@ -122,7 +122,6 @@ class AdapterProductList(
     fun setProductClickListener(listener: ((ProductDetail) -> Unit)) {
         itemProductClick = listener
     }
-
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {

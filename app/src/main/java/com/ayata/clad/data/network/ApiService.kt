@@ -73,8 +73,9 @@ interface ApiService {
 
     @GET("products/all/")
     suspend fun categoryProductListAPI(
-        @Query("category") category_slug: String,
-        @Query("page") page: Int
+        @Header("Authorization") token: String,
+        @QueryMap map: Map<String,String>,
+        @Query("page") page: Int,
     ): Response<JsonObject>
 
     //user wishlist
@@ -289,6 +290,16 @@ interface ApiService {
     @GET("brand/details")
     suspend fun getBrandDetail(
         @Query("slug") slug: String
+    ): Response<JsonObject>
+
+    //order filter
+    @GET("products/all/")
+    suspend fun getOrderFilter(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int,
+        @Query("size") size: String,
+        @Query("color") colorHex: String,
+        @Query("brand") brand: String
     ): Response<JsonObject>
 
 }

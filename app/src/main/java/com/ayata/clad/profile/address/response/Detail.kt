@@ -13,6 +13,6 @@ data class Detail(
     @SerializedName("street_name")
     val streetName: String,
     val title: String,
-    @SerializedName("zip_code")
+    @SerializedName("postal_code")
     val zipCode: String
 ) : Serializable

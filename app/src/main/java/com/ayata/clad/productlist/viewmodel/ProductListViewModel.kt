@@ -7,15 +7,15 @@ import androidx.paging.cachedIn
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.home.response.ProductDetail
-import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
+import java.util.*
 
-class ProductListViewModel constructor(private val mainRepository: ApiRepository)  : ViewModel(){
+
+class ProductListViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
     val errorMessage = MutableLiveData<String>()
-
-    private val listResponse = MutableLiveData<Resource<JsonObject>>()
 
     var job: Job? = null
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -23,75 +23,78 @@ class ProductListViewModel constructor(private val mainRepository: ApiRepository
     }
     val loading = MutableLiveData<Boolean>()
 
-    fun productListApi(token:String) {
-        listResponse.postValue(Resource.loading(null))
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.productListApi("${Constants.Bearer} $token")
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("productListApi", "success: "+response.body())
-                    listResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("productListApi", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    listResponse.postValue(Resource.error(response.message(), null))
-                }
-            }
-        }
 
-    }
-
-    fun getProductListAPI(): LiveData<Resource<JsonObject>> {
-        return listResponse
-    }
-    var currentPage = 1
-    private var shouldFetchAgain: Boolean
-    init {
-        shouldFetchAgain = true
-        Log.d("initcalled", ": calledinit ");
-    }
     private val categoryProductResponse = MutableLiveData<Resource<JsonObject>>()
-    fun categoryProductListAPI(categoryId: String) {
-        if (shouldFetchAgain) {
-        categoryProductResponse.postValue(Resource.loading(null))
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.categoryProductListAPI(categoryId,currentPage)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    currentPage++
-                    Log.d("categoryListAPI", "success: "+response.body())
-                    categoryProductResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                    shouldFetchAgain=false
-                } else {
-                    Log.e("categoryListAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    shouldFetchAgain=false
-                    categoryProductResponse.postValue(Resource.error(response.message(), null))
-                }
-            }
-        }
-    }}
     private val currentQuery = MutableLiveData(DEFAULT_QUERY)
+    private val testQuery = MutableLiveData<String>()
+    private var myViewmodelToken: String = ""
+    private var size: String = ""
+    private var brand: String = ""
+    private var color: String = ""
+    private var sortBy: String = ""
+    private var priceFrom: String = ""
+    private var priceTo: String = ""
+    fun setQuesry(string: String) {
+        testQuery.value = string
+    }
+
+    fun getQuesry() = testQuery.value
 
     val productList: LiveData<PagingData<ProductDetail>> = currentQuery.switchMap { categoryId ->
-        mainRepository.searchProductListFromCategory(categoryId).cachedIn(viewModelScope)
+        val data: MutableMap<String, String> = HashMap()
+        if (size.isNotEmpty())
+            data["size"] = size
+        if (brand.isNotEmpty())
+            data["brand"] = brand
+        if (color.isNotEmpty())
+            data["color"] = color
+        if (sortBy.isNotEmpty())
+            data["sort_by"] = sortBy
+        if (priceFrom.isNotEmpty())
+            data["price_from"] = priceFrom
+        if (priceTo.isNotEmpty())
+            data["price_to"] = priceTo
+        if (categoryId.isNotEmpty())
+            data["category"] = categoryId
+        mainRepository.searchProductListFromCategory(
+            myViewmodelToken,
+            data
+        ).cachedIn(viewModelScope)
     }
+
     //productlist
-    fun searchProductListFromCategory(category_slug: String) {
+    fun searchProductListFromCategory(
+        token: String,
+        category_slug: String,
+        msize: String,
+        mbrand: String,
+        mcolor: String,
+        msortBy: String,
+        mpriceFrom: String,
+        mpriceTo: String
+    ) {
+        myViewmodelToken = token
+        size = msize
+        brand = mbrand
+        color = mcolor
+        sortBy = msortBy
+        priceFrom = mpriceFrom
+        priceTo = mpriceTo
         currentQuery.value = category_slug
+        Log.d("current", "searchProductListFromCategory: " + currentQuery.value);
     }
+
+    fun getCurrent() {
+        Log.d("testcurrent", "getCurrent: " + currentQuery.value);
+    }
+
     companion object {
-        private const val CURRENT_QUERY =1
+        private const val CURRENT_QUERY = 1
         private const val DEFAULT_QUERY = ""
     }
 
-    fun getCategoryProductListAPI(): LiveData<Resource<JsonObject>> {
-        return categoryProductResponse
-    }
     private fun onError(message: String) {
-        errorMessage.postValue( message)
+        errorMessage.postValue(message)
         loading.postValue(false)
     }
 

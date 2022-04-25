@@ -13,6 +13,7 @@ sealed class MyFilterRecyclerViewItem {
         val id:Int,
         val title: String,
         var subTitle: String,
+        var slug: String?=null
     ) : MyFilterRecyclerViewItem()
 
     class Color(
@@ -21,4 +22,4 @@ sealed class MyFilterRecyclerViewItem {
         var colorList: List<MyColor>
     ) : MyFilterRecyclerViewItem()
 }
-data class MyColor(val colorName:String,val color: String)
+data class MyColor(val colorName:String,val color: String?)

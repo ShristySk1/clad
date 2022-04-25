@@ -27,8 +27,6 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun login(token: String) = retrofitService.loginGoogle(token)
     suspend fun dashboardAPI(token: String) = retrofitService.dashboardAPI(token)
     suspend fun categoryListAPI() = retrofitService.categoryListAPI()
-    suspend fun categoryProductListAPI(category_slug: String, page: Int) =
-        retrofitService.categoryProductListAPI(category_slug, page)
 
     suspend fun wishListApi(token: String) = retrofitService.wishListAPI(token)
     suspend fun addToWishApi(token: String, jsonObject: JsonObject) =
@@ -91,7 +89,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
 
         return Pager(
             config = PagingConfig(
-                pageSize = 2,
+                pageSize = 4,
                 maxSize = 100,
                 initialLoadSize = 2,
                 enablePlaceholders = false
@@ -105,7 +103,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
         Log.d("calledheretwo", "getViewAllResult: ");
         return Pager(
             config = PagingConfig(
-                pageSize = 2,
+                pageSize = 4,
                 maxSize = 100,
                 initialLoadSize = 2,
                 enablePlaceholders = false
@@ -136,7 +134,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
         Log.d("tet5stcall", "getViewAllResult: ");
         return Pager(
             config = PagingConfig(
-                pageSize = 2,
+                pageSize = 4,
                 maxSize = 100,
                 enablePlaceholders = false
             ),
@@ -145,15 +143,24 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     }
 
     //product list from category
-    fun searchProductListFromCategory(category_slug: String): LiveData<PagingData<ProductDetail>> {
+    fun searchProductListFromCategory(
+        token: String,
+        map:Map<String,String>
+    ): LiveData<PagingData<ProductDetail>> {
         Log.d("tet5stcall", "getViewAllResult: ");
         return Pager(
             config = PagingConfig(
-                pageSize = 2,
+                pageSize = 4,
                 maxSize = 100,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { CategoryPagingDataSource(category_slug, retrofitService) }
+            pagingSourceFactory = {
+                CategoryPagingDataSource(
+                    token,
+                    map,
+                    retrofitService
+                )
+            }
         ).liveData
     }
 
@@ -181,5 +188,13 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     //brand detail
     suspend fun getBrandDetail(slug: String) = retrofitService.getBrandDetail(slug)
 
+    //order filter
+    suspend fun getOrderFilter(
+        token: String,
+        page: Int,
+        size: String,
+        color: String,
+        brand: String
+    ) = retrofitService.getOrderFilter(token, page, size, color, brand)
 
 }
