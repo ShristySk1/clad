@@ -6,8 +6,25 @@ import java.io.Serializable
 
 data class Brand(
     @SerializedName("brand_image")
-    val brandImage: String,
-    val id: Int,
-    val name: String,
-    val slug:String
+    val brandImage: String="",
+    val id: Int=0,
+    val name: String="",
+    val slug:String=""
 ):Serializable
+
+//{
+//    companion object {
+//        operator fun invoke(
+//             brandImage: String?=null,
+//              id: Int?=null,
+//            name: String? = null,
+//              slug:String?=null
+//        ) = Brand(
+//            brandImage?:"",
+//            id?:0,
+//             name?: "",
+//            slug?:""
+//
+//        )
+//    }
+//}

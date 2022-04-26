@@ -1,5 +1,6 @@
 package com.ayata.clad.brand
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -14,13 +15,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.brand.response.BrandDetailResponse
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentBrandDetailBinding
+import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.product.FragmentProductDetail
 import com.ayata.clad.productlist.adapter.AdapterProductList
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
@@ -97,6 +101,12 @@ class FragmentBrandDetail : Fragment() {
                 setHasFixedSize(true)
                 adapter = myAdapter
             }
+        }
+        myAdapter.setProductClickListener {data->
+//            val i = Intent(activity, MainActivity::class.java)
+//            i.putExtra(Constants.FROM_STORY, true)
+//            i.putExtra("data",data as ProductDetail)
+//            startActivity(i)
         }
         myAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {

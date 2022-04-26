@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class ProductDetail(
-    val brand: Brand,
+    val brand: Brand=Brand(),
     val categories: List<Category>,
     val coupon: Coupon?=null,
     val description: String,
@@ -43,7 +43,7 @@ data class ProductDetail(
     val productWeight: String,
     @SerializedName("reference_code")
     val referenceCode: String,
-    val reviews: Reviews,
+    val reviews: Reviews?,
     @SerializedName("seo_description")
     val seoDescription: String,
     @SerializedName("seo_keywords")

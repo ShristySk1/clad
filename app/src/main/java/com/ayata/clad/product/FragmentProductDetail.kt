@@ -28,6 +28,7 @@ import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.adapter.AdapterRecommended
 import com.ayata.clad.home.response.HomeResponse
 import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.home.response.Reviews
 import com.ayata.clad.home.response.Variant
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
@@ -171,19 +172,22 @@ var isStockAvailable=true
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         //reviews
         if (productDetail.reviews != null) {
+            binding.detail2.linearLayout5.visibility=View.VISIBLE
             setUpTabChoose(
-                productDetail.reviews.size,
-                productDetail.reviews.width,
-                productDetail.reviews.quality,
-                productDetail.reviews.comfort
+                productDetail.reviews!!.size,
+                productDetail.reviews!!.width,
+                productDetail.reviews!!.quality,
+                productDetail.reviews!!.comfort
             )
+        }else{
+binding.detail2.linearLayout5.visibility=View.GONE
         }
         val colorsize = setHashMapColorSize()
         setUpRecyclerColor(colorsize.keys)
 //        setCurrentVariant()
 
         binding.detail2.tvViewAllReview.setOnClickListener {
-            val fragment = FragmentReview.newInstance(productDetail.reviews)
+            val fragment = FragmentReview.newInstance(productDetail.reviews?: Reviews(null,0.0,0.0,"0",null,0,null,null))
             parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
                 .addToBackStack(null)
                 .commit()
@@ -408,14 +412,14 @@ var isStockAvailable=true
         binding.detail2.progressBarQuality.progress = Math.round(quality).toInt()
         //total reviews
         binding.detail2.tvReviewNumber.text =
-            productDetail.reviews.totalReview.toString() + " REVIEWS"
+            productDetail.reviews?.totalReview.toString() + " REVIEWS"
         //rating
-        binding.detail2.tvRatingNumber.text = productDetail.reviews.rating.toString()
-        binding.detail2.ratingBar.rating = productDetail.reviews.rating.toFloat()
-        binding.ratingBar1.rating = productDetail.reviews.rating.toFloat()
+        binding.detail2.tvRatingNumber.text = productDetail.reviews?.rating.toString()
+        binding.detail2.ratingBar.rating = productDetail.reviews?.rating!!.toFloat()
+        binding.ratingBar1.rating = productDetail.reviews?.rating!!.toFloat()
         //recommended
         binding.detail2.tvRecommended.text =
-            productDetail.reviews.recommendedBy?.let { it.equals("")?.let { "0" } + "%" }
+            productDetail.reviews?.recommendedBy?.let { it.equals("")?.let { "0" } + "%" }
                 ?: run { "0%" }
 
     }

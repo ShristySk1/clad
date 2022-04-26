@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.PagerAdapter
@@ -19,6 +20,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.github.ybq.android.spinkit.SpinKitView
+import com.igreenwood.loupe.Loupe
 
 
 class FragmentProductDetailFull2 : Fragment() {
@@ -100,6 +102,8 @@ class FragmentProductDetailFull2 : Fragment() {
             val v: View = getLayoutInflater().inflate(R.layout.thumb_item, container, false)
             val imgSlider = v.findViewById<ImageView>(R.id.imgSlider)
             val progress=v.findViewById<SpinKitView>(R.id.defaultProgress)
+            val top=v.findViewById<FrameLayout>(R.id.top)
+
             progress.visibility=View.VISIBLE
             Glide.with(container.context).load(mUrls?.get(position))
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -128,6 +132,32 @@ class FragmentProductDetailFull2 : Fragment() {
                 }
 
             }).into(imgSlider)
+
+            val loupe = Loupe.create(imgSlider, top) { // imageView is your ImageView
+                useFlingToDismissGesture = false
+                useDragToDismiss=false
+
+                onViewTranslateListener = object : Loupe.OnViewTranslateListener {
+                    override fun onStart(view: ImageView) {
+                        // called when the view starts moving
+                    }
+
+                    override fun onViewTranslate(view: ImageView, amount: Float) {
+                        // called whenever the view position changed
+                    }
+
+                    override fun onRestore(view: ImageView) {
+                        // called when the view drag gesture ended
+                    }
+
+                    override fun onDismiss(view: ImageView) {
+                        // called when the view drag gesture ended
+
+                        }
+                    }
+                }
+
+
             container.addView(v)
             return v
         }

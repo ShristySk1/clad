@@ -135,7 +135,9 @@ dependencies {
     implementation 'com.nikhilpanju.recyclerviewenhanced:recyclerviewenhanced:1.1.0'
     //image picker review
     implementation 'com.github.esafirm:android-image-picker:3.0.0-beta1'
-    //revome wishlive multiple observer problem
+    //image viewwer review
+    implementation 'io.github.igreenwood.loupe:loupe:1.2.2'
+
 
 
 

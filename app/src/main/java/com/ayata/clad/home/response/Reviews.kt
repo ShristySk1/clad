@@ -7,7 +7,7 @@ import java.io.Serializable
 data class Reviews(
     val comfort: String?,
     val quality: Double,
-    val rating: Double,
+    val rating: Double?=0.0,
     @SerializedName("recommended_by")
     val recommendedBy: String,
     val size: String?,

@@ -1,19 +1,28 @@
 package com.ayata.clad.product.reviews
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentReviewBinding
 import com.ayata.clad.home.response.Reviews
 import com.ayata.clad.product.reviews.adapter.AdapterReview
+import com.ayata.clad.productlist.ItemOffsetDecoration
+import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
+import com.ayata.clad.profile.reviews.imageswipe.FragmentImageSwiper
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import java.io.Serializable
 
 private const val ARG_PARAM1 = "param1"
@@ -21,6 +30,7 @@ private const val ARG_PARAM1 = "param1"
 class FragmentReview : Fragment() {
     private lateinit var binding: FragmentReviewBinding
     private lateinit var param1: Reviews
+    private lateinit var myAdapter:AdapterReview
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -39,6 +49,7 @@ class FragmentReview : Fragment() {
         return binding.root
     }
 
+
     private fun initView() {
         (activity as MainActivity).showToolbar(true)
         (activity as MainActivity).setToolbar2(
@@ -46,30 +57,37 @@ class FragmentReview : Fragment() {
             textTitle = "",
             textDescription = ""
         )
-        (activity as MainActivity).showBottomNavigation(true)
+        (activity as MainActivity).showBottomNavigation(false)
 
         //set total rating
         binding.tvTotalReview.text = "${param1.totalReview} REVIEWS"
-        binding.ratingBar1.rating = param1.rating.toFloat()
+        binding.ratingBar1.rating = param1.rating!!.toFloat()
         binding.tvRating.text = "${param1.rating}/5"
     }
 
     private fun inirRecyclerView() {
+        myAdapter=param1?.let {
+            it.review_details.let { it1 ->
+                AdapterReview(context, it1?: listOf())
+            }
+        }
         binding.rvReviews.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = param1?.let { it?.review_details?.let { it1 -> AdapterReview(context, it1) } }
+            adapter = myAdapter
         }
-        param1?.let {
-            it?.review_details?.let {
-                if (it.size > 0) {
+        myAdapter.setReviewClickListener { image, i ->
+            Log.d("testimage", "inirRecyclerView: "+image.size);
+            val frag=FragmentImageSwiper.newInstance(image.map { it.image },i)
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,frag).addToBackStack(null).commit()
+        }
+                if (myAdapter.itemCount > 0) {
                     hideError()
 
                 } else {
-                    showError("Empty Reviews","No Reviews has been added yet.")
+                    showError("Empty Reviews", "No Reviews has been added yet.")
                 }
 
-            }
-        }
+
     }
 
     companion object {
@@ -82,7 +100,7 @@ class FragmentReview : Fragment() {
             }
     }
 
-    private fun showError(title:String,it: String) {
+    private fun showError(title: String, it: String) {
         binding.rvReviews.visibility = View.GONE
         MyLayoutInflater().onAddField(
             requireContext(),

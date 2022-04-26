@@ -59,7 +59,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     //for category filter
     var filterSlugCategory = ""
-
     //for empty view we need to show recommendation
     var listRecommended = ArrayList<ProductDetail>()
     override fun onCreate(savedInstanceState: Bundle?) {

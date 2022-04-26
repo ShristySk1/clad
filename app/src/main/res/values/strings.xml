@@ -73,9 +73,9 @@
     <string name="wl_case3">Change Size</string>
     <string name="save">Save</string>
 
-        <array name="initial_slider_values">
-            <item>300.0</item>
-            <item>1000.0</item>
-        </array>
+    <array name="initial_slider_values">
+        <item>300.0</item>
+        <item>1000.0</item>
+    </array>
 
 </resources>
