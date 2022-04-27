@@ -16,6 +16,7 @@ import com.ayata.clad.home.response.Reviews
 import com.ayata.clad.product.reviews.adapter.AdapterReview
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
+import com.ayata.clad.profile.reviews.adapter.DataModel
 import com.ayata.clad.profile.reviews.imageswipe.FragmentImageSwiper
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
@@ -75,7 +76,8 @@ class FragmentReview : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = myAdapter
         }
-        myAdapter.setReviewClickListener { image, i ->
+        myAdapter.setReviewClickListener { imageList, i ->
+            val image=imageList as List<DataModel.ImageOnly>
             Log.d("testimage", "inirRecyclerView: "+image.size);
             val frag=FragmentImageSwiper.newInstance(image.map { it.image },i)
             parentFragmentManager.beginTransaction().replace(R.id.main_fragment,frag).addToBackStack(null).commit()

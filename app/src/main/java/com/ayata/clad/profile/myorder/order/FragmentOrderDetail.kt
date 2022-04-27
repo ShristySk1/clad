@@ -15,6 +15,7 @@ import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentOrderDetailBinding
+import com.ayata.clad.profile.myorder.order.`return`.FragmentReturnForm
 import com.ayata.clad.profile.myorder.order.cancel.CancelViewModel
 import com.ayata.clad.profile.myorder.order.cancel.FragmentCancelForm
 import com.ayata.clad.profile.myorder.order.response.Order
@@ -52,7 +53,9 @@ class FragmentOrderDetail : Fragment() {
             val bundle = Bundle()
             bundle.putSerializable("order", o)
             val frag = FragmentCancelForm()
+            val fragReturn=FragmentReturnForm()
             frag.arguments = bundle
+            fragReturn.arguments=bundle
             if (o.is_cancellable) {
                 parentFragmentManager.beginTransaction()
                     .setCustomAnimations(
@@ -77,7 +80,7 @@ class FragmentOrderDetail : Fragment() {
                     )
                     .replace(
                         R.id.main_fragment,
-                        frag
+                        fragReturn
                     ).addToBackStack(null).commit()
             }
 
@@ -170,7 +173,7 @@ class FragmentOrderDetail : Fragment() {
         (activity as MainActivity).setToolbar2(
             isClose = false, isBack = true, isFilter = false, isClear = false,
             textTitle = getString(R.string.order_details),
-            textDescription = "X935-12SC"
+            textDescription = ""
         )
     }
 

@@ -18,7 +18,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository) : 
     private val removeWishResponse = MutableLiveData<Resource<JsonObject>>()
     private val addWishResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val removeCartResponse = MutableLiveData<Resource<JsonObject>>()
-    private val addCartResponse = MutableLiveData<Resource<JsonObject>>()
+    private val addCartResponse = SingleLiveEvent<Resource<JsonObject>>()
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -79,7 +79,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository) : 
 
     }
 
-    fun getAddToCartAPI(): LiveData<Resource<JsonObject>> {
+    fun getAddToCartAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return addCartResponse
     }
 

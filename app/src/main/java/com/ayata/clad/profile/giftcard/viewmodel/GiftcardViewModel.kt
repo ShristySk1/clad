@@ -16,7 +16,7 @@ class GiftcardViewModel constructor(private val mainRepository: ApiRepository) :
 
     private val errorMessage = MutableLiveData<String>()
 
-    private val giftCardResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val giftCardResponse = MutableLiveData<Resource<JsonObject>>()
 
 
     private var job: Job? = null
@@ -50,7 +50,7 @@ class GiftcardViewModel constructor(private val mainRepository: ApiRepository) :
         }
 
     }
-    fun observerGetCouponAPI(): SingleLiveEvent<Resource<JsonObject>> {
+    fun observerGetCouponAPI(): LiveData<Resource<JsonObject>> {
         return giftCardResponse
     }
     private fun onError(message: String) {

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class ProductDetail(
-    val brand: Brand=Brand(),
+    val brand: Brand?,
     val categories: List<Category>,
     val coupon: Coupon?=null,
     val description: String,
@@ -61,4 +61,6 @@ data class ProductDetail(
     val vatIncluded: Boolean,
     val vendor: String,
     val visibility: Boolean,
-) : Serializable
+) : Serializable{
+    val _bname: Brand= brand?: Brand("",0,"","")
+}

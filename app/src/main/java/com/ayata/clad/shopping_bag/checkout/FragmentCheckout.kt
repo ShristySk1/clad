@@ -534,7 +534,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         Log.d(TAG, "prepareList: " + apiCartList.size);
 
         for (item in apiCartList) {
-            Log.d(TAG, "prepareList: loop" + item.productDetails.coupon?.code);
             listCheckout.add(
                 ModelCheckout(
                     item.productDetails?.name ?: "",
@@ -548,7 +547,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     item.cartId ?: 0,
                     item.selected.colorName,
                     item.selected.colorHex,
-                    item.productDetails.brand.name,
+                    item.productDetails.brand?.name?:"",
                     item.selected.stock_status,
                     item.productDetails.isCouponAvailable ?: false,
                     item.productDetails.coupon?.let { it.code } ?: run { "" }

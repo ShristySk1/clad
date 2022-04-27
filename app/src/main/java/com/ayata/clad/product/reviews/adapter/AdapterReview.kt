@@ -81,8 +81,8 @@ internal class AdapterReview(
         return listItems.size
     }
 
-    private var itemReviewClick: ((List<DataModel.ImageOnly>,Int) -> Unit)? = null
-    fun setReviewClickListener(listener: ((List<DataModel.ImageOnly>,Int) -> Unit)) {
+    private var itemReviewClick: ((List<DataModel>,Int) -> Unit)? = null
+    fun setReviewClickListener(listener: ((List<DataModel>,Int) -> Unit)) {
         itemReviewClick = listener
     }
 

@@ -120,7 +120,17 @@ class FragmentFilter : Fragment() {
         )
         brandList = listOf(
             MyFilterContentViewItem.MultipleChoice("Goldstar", false, "goldstar"),
-        )
+            MyFilterContentViewItem.MultipleChoice("Bishrom", false, "bishrom"),
+            MyFilterContentViewItem.MultipleChoice("Hills & Clouds", false, "hills-and-clouds"),
+            MyFilterContentViewItem.MultipleChoice("Newmew", false, "newmew"),
+            MyFilterContentViewItem.MultipleChoice("Phalano Luga", false, "phalano-luga"),
+            MyFilterContentViewItem.MultipleChoice("Fibro", false, "fibro"),
+            MyFilterContentViewItem.MultipleChoice("Creative Touch", false, "creative-touch"),
+            MyFilterContentViewItem.MultipleChoice("Caliber", false, "caliber"),
+            MyFilterContentViewItem.MultipleChoice("Fuloo", false, "fuloo"),
+            MyFilterContentViewItem.MultipleChoice("Gofi", false, "gofi"),
+
+            )
         setUpRecyclerView()
         (activity as MainActivity).setClearAllListener {
             Log.d("testclear", "onCreateView: here clear one"+myAdapter.items);

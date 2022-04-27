@@ -24,6 +24,7 @@ import com.ayata.clad.databinding.FragmentMyReviewFormBinding
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
 import com.ayata.clad.profile.reviews.adapter.DataModel
+import com.ayata.clad.profile.reviews.imageswipe.FragmentImageSwiper
 import com.ayata.clad.profile.reviews.model.Review
 import com.ayata.clad.profile.reviews.response.Detail
 import com.ayata.clad.profile.reviews.response.ImageUploadResponse
@@ -438,6 +439,7 @@ class FragmentMyReviewsForm : Fragment() {
             addItemDecoration(itemDecoration)
             setItemAnimator(null)
         }
+        //for adding image
         adapterImage.setReviewAddClickListener {
             if (!isDisabledImagePicker)
                 openGalleryForImages()
@@ -447,6 +449,13 @@ class FragmentMyReviewsForm : Fragment() {
                     "Image upload is limited to 4 photos",
                     Toast.LENGTH_SHORT
                 ).show()
+        }
+        //for viewing image
+        adapterImage.setReviewClickListener { imageList, i ->
+            val image=imageList as List<DataModel.Image>
+            Log.d("testimage", "inirRecyclerView: "+image.size);
+            val frag= FragmentImageSwiper.newInstance(image.map { it.image },i)
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,frag).addToBackStack(null).commit()
         }
         adapterImage.setReviewDeleteClickListener { it, pos ->
             myDeletePosition = pos

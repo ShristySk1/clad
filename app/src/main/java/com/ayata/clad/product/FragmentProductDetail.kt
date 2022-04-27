@@ -63,6 +63,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var productDetail: ProductDetail
     lateinit var galleryBundle: List<String>
     private var listRecommendation = ArrayList<ProductDetail>()
+    private lateinit var progressDialog: ProgressDialog
+
 
     private lateinit var adapterRecommended: AdapterRecommended
     private lateinit var viewModelHome: HomeViewModel
@@ -145,16 +147,16 @@ var isStockAvailable=true
 
     private fun setProductData() {
         choosenSizePosition = 0
-        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
-            binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
-            binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.oldPrice}"
-            binding.detail2.price.text = getString(R.string.rs) + " ${productDetail.price}"
-
-        } else {
-            binding.price.text = getString(R.string.usd) + " ${productDetail.price}"
-            binding.oldPrice.text = getString(R.string.usd) + " ${productDetail.oldPrice}"
-            binding.detail2.price.text = getString(R.string.usd) + " ${productDetail.price}"
-        }
+//        if (PreferenceHandler.getCurrency(context).equals(getString(R.string.npr_case), true)) {
+//            binding.price.text = getString(R.string.rs) + " ${productDetail.price}"
+//            binding.oldPrice.text = getString(R.string.rs) + " ${productDetail.oldPrice}"
+//            binding.detail2.price.text = getString(R.string.rs) + " ${productDetail.price}"
+//
+//        } else {
+//            binding.price.text = getString(R.string.usd) + " ${productDetail.dollar_price}"
+//            binding.oldPrice.text = getString(R.string.usd) + " ${productDetail.old_dollar_price}"
+//            binding.detail2.price.text = getString(R.string.usd) + " ${productDetail.dollar_price}"
+//        }
         if (productDetail.isCouponAvailable) {
             binding.detail2.constraintLayout.visibility = View.VISIBLE
             binding.detail2.couponTitle.text = productDetail.coupon?.title
@@ -482,16 +484,17 @@ binding.detail2.linearLayout5.visibility=View.GONE
         adapterCircleText = AdapterCircleText(context, listText).also { adapter ->
             adapter.setCircleClickListener { data ->
                 //change price according to size
-                changePrice(data)
                 for (item in listText) {
                     item.isSelected = item.equals(data)
                     if (item.isSelected) {
                         dynamicVarientId = data.productId
                     }
-                    setCurrentVariant()
-                    adapterCircleText.notifyDataSetChanged()
+
                     Log.d(TAG, "setUpRecyclerSize: " + item.title);
                 }
+                changePrice(data)
+                setCurrentVariant()
+                adapterCircleText.notifyDataSetChanged()
             }
         }
         binding.detail2.rvSize.apply {
@@ -615,6 +618,7 @@ binding.detail2.linearLayout5.visibility=View.GONE
         viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    progressDialog.dismiss()
                     Log.d(TAG, "addToWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -636,8 +640,11 @@ binding.detail2.linearLayout5.visibility=View.GONE
 
                 }
                 Status.LOADING -> {
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "like_progress")
                 }
                 Status.ERROR -> {
+                    progressDialog.dismiss()
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToWishListAPI:Error ${it.message}")
@@ -704,6 +711,7 @@ binding.detail2.linearLayout5.visibility=View.GONE
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    progressDialog.dismiss()
                     Log.d(TAG, "addToCartAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -724,8 +732,11 @@ binding.detail2.linearLayout5.visibility=View.GONE
 
                 }
                 Status.LOADING -> {
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "add_progress")
                 }
                 Status.ERROR -> {
+                    progressDialog.dismiss()
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToCartAPI:Error ${it.message}")
@@ -778,7 +789,12 @@ binding.detail2.linearLayout5.visibility=View.GONE
             setWishlist(isProductWishList)
             setCart(isProductInCart)
             setStockStatus(myCurrentVarient.stockStatus, binding.stock)
+//            setImageGallary(listOf())
         }
+    }
+
+    private fun setImageGallary(imageUrlList: List<String>) {
+        galleryBundle = imageUrlList
     }
 
     fun setStockStatus(

@@ -475,6 +475,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             binding.appbar.root.visibility = View.GONE
         }
     }
+    fun showToolbarVisibility(show: Boolean) {
+        exitFullScreen()
+        if (show) {
+            binding.appbar.root.slideVisibilityToolbar(true)
+
+        } else {
+            binding.appbar.root.visibility = View.GONE
+        }
+    }
 
     private fun setStatusBarLight(color: Int) {
         val window: Window = this.window
@@ -495,6 +504,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
         TransitionManager.beginDelayedTransition(this.parent as ViewGroup, transition)
         this.isVisible = visibility
+    }
+    private fun View.slideVisibilityToolbar(visibility: Boolean, durationTime: Long = 500) {
+//        val transition = Fade()
+//        transition.apply {
+//            duration = durationTime
+//            addTarget(this@slideVisibilityToolbar)
+//        }
+//        TransitionManager.beginDelayedTransition(this.parent as ViewGroup, transition)
+        this.isVisible = visibility
+
     }
 
     private val navListener =
