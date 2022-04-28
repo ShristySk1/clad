@@ -13,6 +13,7 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentMyReviewsBinding
 import com.ayata.clad.product.adapter.AdapterMyReviews
 import com.ayata.clad.profile.reviews.model.Review
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 
@@ -31,6 +32,7 @@ class FragmentMyReviews : Fragment() {
     }
     private fun initRecyclerView() {
         val data = arguments?.getSerializable("datas") as? List<Review>
+        Log.d("testreviewunreview", "initRecyclerView: "+data.toString());
         val isFetched = arguments?.getBoolean("isFetched") as Boolean
         Log.d("testdatas", "initRecyclerView: " + data + isFetched+FragmentMyReviewsList.isApiFetched);
         hideEmpty()
@@ -65,23 +67,21 @@ class FragmentMyReviews : Fragment() {
     }
 
     private fun showEmpty(it: String) {
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.root,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            "Empty!",
-            it
-        )
+//        MyLayoutInflater().onAddField(
+//            requireContext(),
+//            binding.root,
+//            R.layout.layout_error,
+//            Constants.ERROR_TEXT_DRAWABLE,
+//            "Empty!",
+//            it
+//        )
+        Caller().empty("Empty",it,requireContext(),binding.root)
+
     }
 
     private fun hideEmpty() {
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.root,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+        Caller().hideErrorEmpty(binding.root)
+
     }
 
 }

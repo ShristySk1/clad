@@ -12,7 +12,11 @@ object Constants {
      const val Bearer="Token"
      const val ERROR_DRAWABLE= R.drawable.ic_clad_logo_grey
      const val ERROR_TEXT_DRAWABLE=R.drawable.ic_clad_logo_grey
-     const val SHOP_DRAWABLE=R.drawable.ic_image_shopping_empty
+
+     const val ERROR_SERVER=R.drawable.ic_warning
+     const val EMPTY_LIST=R.drawable.ic_clad_logo_grey
+     const val ERROR_TEXT="Error!"
+     const val SHOP_DRAWABLE=R.drawable.ic_clad_logo_grey
 
      const val GO_TO_WISHLIST="Go to wishlist"
      const val GO_TO_CART="Go to cart"

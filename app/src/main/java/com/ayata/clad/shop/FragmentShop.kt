@@ -28,6 +28,7 @@ import com.ayata.clad.shop.response.CategoryResponse
 import com.ayata.clad.shop.response.SubCategory
 import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CategoryViewModelFactory
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.google.android.material.tabs.TabLayout
@@ -231,89 +232,6 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
     }
 
     private fun prepareCategoryTabList(category: String) {
-//        val listWomen = ArrayList<ModelShop>()
-//        val listMen = ArrayList<ModelShop>()
-//        val listKids = ArrayList<ModelShop>()
-//
-//        listWomen.add(
-//            ModelShop(
-//                "New Arrivals",
-//                "Upcoming: June 2021",
-//                "https://www.coverstory.co.in/media/cms/home/category/work.jpg"
-//            )
-//        )
-//        listWomen.add(
-//            ModelShop(
-//                "On Sale",
-//                "Up to 40% off",
-//                "https://www.coverstory.co.in/media/cms/home/category/work.jpg"
-//            )
-//        )
-//        listWomen.add(
-//            ModelShop(
-//                "Clothing",
-//                "",
-//                "https://www.coverstory.co.in/media/cms/home/category/work.jpg"
-//            )
-//        )
-//        listWomen.add(
-//            ModelShop(
-//                "Accessories",
-//                "",
-//                "https://www.coverstory.co.in/media/cms/home/category/work.jpg"
-//            )
-//        )
-//        listWomen.add(
-//            ModelShop(
-//                "Kurthas",
-//                "",
-//                "https://www.coverstory.co.in/media/cms/home/category/work.jpg"
-//            )
-//        )
-//
-//        listMen.add(
-//            ModelShop(
-//                "New Arrivals",
-//                "Upcoming: June 2021",
-//                "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-//            )
-//        )
-//        listMen.add(
-//            ModelShop(
-//                "On Sale",
-//                "Up to 30% off",
-//                "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-//            )
-//        )
-//        listMen.add(
-//            ModelShop(
-//                "Shoes",
-//                "",
-//                "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-//            )
-//        )
-//
-//        listKids.add(
-//            ModelShop(
-//                "New Arrivals",
-//                "Upcoming: June 2021",
-//                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSklPj6OR9Qecp-ilpT0UH3yzfx-ngRbADw3g&usqp=CAU"
-//            )
-//        )
-//        listKids.add(
-//            ModelShop(
-//                "On Sale",
-//                "Up to 80% off",
-//                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSklPj6OR9Qecp-ilpT0UH3yzfx-ngRbADw3g&usqp=CAU"
-//            )
-//        )
-//        listKids.add(
-//            ModelShop(
-//                "Toys",
-//                "",
-//                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSklPj6OR9Qecp-ilpT0UH3yzfx-ngRbADw3g&usqp=CAU"
-//            )
-//        )
         title = category
         shopRecyclerList.clear()
 
@@ -323,17 +241,21 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
         val listSpecificSubCat = getSpecificCat.subCategory
         if (listSpecificSubCat.size == 0) {
             //empty list
-            MyLayoutInflater().onAddField(
-                requireContext(), binding.rootContainer, R.layout.layout_error,
-                Constants.ERROR_TEXT_DRAWABLE, "Empty!", "No products available"
-            )
+//            MyLayoutInflater().onAddField(
+//                requireContext(), binding.rootContainer, R.layout.layout_error,
+//                Constants.ERROR_TEXT_DRAWABLE, "Empty!", "No products available"
+//            )
+            Caller().empty("Empty","No products available",requireContext(),binding.rootContainer)
+
         } else {
-            if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-                MyLayoutInflater().onDelete(
-                    binding.rootContainer,
-                    binding.root.findViewById(R.id.layout_root)
-                )
-            }
+//            if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+//                MyLayoutInflater().onDelete(
+//                    binding.rootContainer,
+//                    binding.root.findViewById(R.id.layout_root)
+//                )
+//            }
+            Caller().hideErrorEmpty(binding.rootContainer)
+
             shopRecyclerList.addAll(listSpecificSubCat)
         }
 //        adapterShopFilterable.setData(shopRecyclerList)
@@ -417,26 +339,15 @@ class FragmentShop : Fragment(), AdapterShopFilterable.OnSearchClickListener {
     }
 
     private fun showError(it: String) {
-//        binding.rootContainer.visibility=View.GONE
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.rootContainer,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            "Error!",
-            it
-        )
+
+        Caller().error(Constants.ERROR_TEXT,it,requireContext(),binding.rootContainer)
+
 
     }
 
     private fun hideError() {
-//        binding.rootContainer.visibility=View.VISIBLE
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.rootContainer,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+        Caller().hideErrorEmpty(binding.rootContainer)
+
     }
 
     private fun setShimmerLayout(isVisible: Boolean) {

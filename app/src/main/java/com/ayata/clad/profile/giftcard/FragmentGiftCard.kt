@@ -21,10 +21,7 @@ import com.ayata.clad.profile.giftcard.response.CouponReponse
 import com.ayata.clad.profile.giftcard.viewmodel.GiftcardViewModel
 import com.ayata.clad.profile.giftcard.viewmodel.GiftcardViewModelFactory
 import com.ayata.clad.profile.viewmodel.ProfileViewModelFactory
-import com.ayata.clad.utils.Constants
-import com.ayata.clad.utils.MyLayoutInflater
-import com.ayata.clad.utils.PreferenceHandler
-import com.ayata.clad.utils.copyToClipboard
+import com.ayata.clad.utils.*
 import com.google.gson.Gson
 
 class FragmentGiftCard : Fragment(), AdapterGiftCard.OnItemClickListener {
@@ -131,24 +128,28 @@ initRefreshLayout()
 
     }
     private fun showError(title:String,it: String) {
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.rootContainer,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            title,
-            it
-        )
+//        MyLayoutInflater().onAddField(
+//            requireContext(),
+//            binding.rootContainer,
+//            R.layout.layout_error,
+//            Constants.ERROR_TEXT_DRAWABLE,
+//            title,
+//            it
+//        )
+        Caller().error(title,it,requireContext(),binding.rootContainer)
+
 
     }
 
     private fun hideError() {
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.rootContainer,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+//        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+//            MyLayoutInflater().onDelete(
+//                binding.rootContainer,
+//                binding.root.findViewById(R.id.layout_root)
+//            )
+//        }
+        Caller().hideErrorEmpty(binding.rootContainer)
+
     }
     override fun onGiftCardClick(data: Coupon, position: Int) {
         val text =

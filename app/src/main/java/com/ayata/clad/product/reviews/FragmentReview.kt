@@ -18,6 +18,8 @@ import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
 import com.ayata.clad.profile.reviews.adapter.DataModel
 import com.ayata.clad.profile.reviews.imageswipe.FragmentImageSwiper
+import com.ayata.clad.utils.AbstractEmptyError
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.google.android.flexbox.AlignItems
@@ -28,7 +30,7 @@ import java.io.Serializable
 
 private const val ARG_PARAM1 = "param1"
 
-class FragmentReview : Fragment() {
+ class FragmentReview : Fragment() {
     private lateinit var binding: FragmentReviewBinding
     private lateinit var param1: Reviews
     private lateinit var myAdapter:AdapterReview
@@ -84,12 +86,9 @@ class FragmentReview : Fragment() {
         }
                 if (myAdapter.itemCount > 0) {
                     hideError()
-
                 } else {
-                    showError("Empty Reviews", "No Reviews has been added yet.")
+                    showEmpty("Empty Reviews", "No Reviews has been added yet.")
                 }
-
-
     }
 
     companion object {
@@ -102,26 +101,13 @@ class FragmentReview : Fragment() {
             }
     }
 
-    private fun showError(title: String, it: String) {
+    private fun showEmpty(title: String, it: String) {
         binding.rvReviews.visibility = View.GONE
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.root,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            title,
-            it
-        )
-
+        Caller().empty(title,it,requireContext(),binding.root)
     }
 
     private fun hideError() {
         binding.rvReviews.visibility = View.VISIBLE
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.root,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+        Caller().hideErrorEmpty(binding.root)
     }
 }

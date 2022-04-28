@@ -592,27 +592,23 @@ class FragmentWishlist : Fragment() {
 
     private fun showError(it: String) {
         binding.layoutFilled.visibility = View.GONE
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.layoutContainer,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            "Error!",
-            it
-        )
+//        MyLayoutInflater().onAddField(
+//            requireContext(),
+//            binding.layoutContainer,
+//            R.layout.layout_error,
+//            Constants.ERROR_TEXT_DRAWABLE,
+//            "Error!",
+//            it
+//        )
+        Caller().error(Constants.ERROR_TEXT,it,requireContext(),binding.layoutContainer)
+
 
     }
 
     private fun hideError() {
         binding.layoutFilled.visibility = View.VISIBLE
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.layoutContainer,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+        Caller().hideErrorEmpty(binding.layoutContainer)
     }
-
     private fun setDataToView(wishlist: List<Wishlist>) {
         myWishList.clear()
         myWishList.addAll(wishlist)
@@ -726,34 +722,4 @@ class FragmentWishlist : Fragment() {
         bottomSheetDialog.show()
     }
 
-    private fun saveSizeAPI(product: ModelProduct, sizeSelected: String) {
-        viewModel.saveSizeAPI(
-            PreferenceHandler.getToken(context).toString(),
-            product.id,
-            sizeSelected
-        )
-        viewModel.getSizeAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "saveSizeAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        showSnackBar("Size Updated")
-                        try {
-
-                        } catch (e: Exception) {
-                            Log.d(TAG, "saveSizeAPI:Error ${e.message}")
-                        }
-                    }
-                }
-                Status.LOADING -> {
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "saveSizeAPI:Error ${it.message}")
-                }
-            }
-        })
-    }
 }

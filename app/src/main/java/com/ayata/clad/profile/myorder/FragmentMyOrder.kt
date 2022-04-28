@@ -24,6 +24,7 @@ import com.ayata.clad.profile.myorder.order.response.Detail
 import com.ayata.clad.profile.myorder.order.response.OrderResponse
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModel
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModelFactory
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
@@ -86,7 +87,7 @@ class FragmentMyOrder : Fragment() {
                                 if (detail.size > 0) {
                                     prepareOrder(detail)
                                 } else {
-                                    showError("Empty!", "No any order yet.")
+                                    showEmpty("Empty!", "No any order yet.")
                                 }
                             }
                         } catch (e: Exception) {
@@ -122,6 +123,20 @@ class FragmentMyOrder : Fragment() {
         binding.progressBar.rootContainer.visibility = View.VISIBLE
 
     }
+    private fun showEmpty(
+        title: String, it: String
+    ) {
+//        MyLayoutInflater().onAddField(
+//            requireContext(),
+//            binding.rootContainer,
+//            R.layout.layout_error,
+//            Constants.ERROR_TEXT_DRAWABLE,
+//            title,
+//            it
+//        )
+        Caller().empty(title,it,requireContext(),binding.rootContainer)
+
+    }
 
     fun hideProgress() {
         binding.progressBar.rootContainer.visibility = View.GONE
@@ -130,24 +145,28 @@ class FragmentMyOrder : Fragment() {
     private fun showError(
         title: String, it: String
     ) {
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.rootContainer,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            title,
-            it
-        )
+//        MyLayoutInflater().onAddField(
+//            requireContext(),
+//            binding.rootContainer,
+//            R.layout.layout_error,
+//            Constants.ERROR_TEXT_DRAWABLE,
+//            title,
+//            it
+//        )
+        Caller().error(title,it,requireContext(),binding.rootContainer)
 
     }
 
     private fun hideError() {
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.rootContainer,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+//        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+//            MyLayoutInflater().onDelete(
+//                binding.rootContainer,
+//                binding.root.findViewById(R.id.layout_root)
+//            )
+//        }
+
+        Caller().hideErrorEmpty(binding.rootContainer)
+
     }
 
     private fun prepareOrder(detail: List<Detail>) {

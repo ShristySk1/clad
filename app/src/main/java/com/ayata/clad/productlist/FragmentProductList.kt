@@ -35,10 +35,7 @@ import com.ayata.clad.productlist.viewmodel.ProductListViewModelFactory
 import com.ayata.clad.profile.account.AccountViewModel
 import com.ayata.clad.shop.FragmentSubCategory
 import com.ayata.clad.shop.response.ChildCategory
-import com.ayata.clad.utils.Constants
-import com.ayata.clad.utils.MyLayoutInflater
-import com.ayata.clad.utils.PreferenceHandler
-import com.ayata.clad.utils.ProductLoadStateAdapter
+import com.ayata.clad.utils.*
 import com.ayata.clad.view_all.paging.ProductDetailViewAllAdapter
 
 
@@ -76,7 +73,6 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
         getAllTest()
         setUpRecyclerProductList()
         initAppbar()
-        initSearchView()
         return binding.root
     }
 
@@ -120,53 +116,7 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
             textDescription = "$appBarCount results"
         )
     }
-
-    private fun initSearchView() {
-
-        binding.searchText.editText!!.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                adapterProductList?.let {  adapterProductList.filter.filter(p0) }
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-//                adapterProductList?.let {  it.filter.filter(p0)}
-            }
-        })
-
-    }
-
     private fun setUpRecyclerProductList() {
-//        adapterProductList = AdapterProductList(
-//            context,
-//            listProduct
-//        ).also {
-//            it.setProductClickListener { recommendedProduct ->
-//                Log.d("testmyfilter", "setUpRecyclerRecommendation: $recommendedProduct")
-//                val bundle=Bundle()
-//                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL,recommendedProduct)
-//                val fragmentProductDetail=FragmentProductDetail()
-//                fragmentProductDetail.arguments=bundle
-//                parentFragmentManager.beginTransaction()
-//                    .replace(R.id.main_fragment, fragmentProductDetail)
-//                    .addToBackStack(null).commit()
-//            }
-//        }
-//
-//        binding.rvProductList.apply {
-//            layoutManager =
-//                GridLayoutManager(requireContext(), 2)
-//            adapter = adapterProductList
-////            val itemDecoration = ItemOffsetDecoration(context, R.dimen.item_offset)
-////            addItemDecoration(itemDecoration)
-//            initScrollListener()
-//
-//    }
-
-
         binding.apply {
             rvProductList.apply {
                 layoutManager = GridLayoutManager(context, 2)
@@ -190,37 +140,6 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
         //load state
         adapterPaging.addLoadStateListener { loadState ->
             binding.apply {
-//                defaultProgress.isVisible = loadState.source.refresh is LoadState.Loading
-//                rvProductList.isVisible = loadState.source.refresh is LoadState.NotLoading
-////                textViewError.isVisible = loadState.source.refresh is LoadState.Error
-////                buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
-//                //for empty view
-//                if (loadState.source.refresh is LoadState.NotLoading
-//                    && loadState.append.endOfPaginationReached
-//                    && adapterPaging.itemCount < 1
-//                ) {
-//                    rvProductList.isVisible = false
-////                    textViewEmpty.isVisible = true
-//
-//                } else {
-////                    textViewEmpty.isVisible = false
-//                }
-//                //handle view according to error
-//                val errorState = when {
-//                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
-//                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
-//                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
-//                    else -> null
-//                }
-//
-//                when (val throwable = errorState?.error) {
-//                    is EmptyException -> { setUpEmptyView() }
-//                    is HttpException -> {
-//                        if (throwable.code() == 401) { /* Handle HTTP 401 */ }
-//                        else { /* Do something else */ }
-//                    }
-//                    is IOException->{/* Handle IO exceptions */}
-//                }
                 mergeBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                 rvProductList.isVisible = loadState.source.refresh is LoadState.NotLoading
                 mergeBinding.textViewError.isVisible = loadState.source.refresh is LoadState.Error
@@ -263,18 +182,6 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
         })
     }
 
-    private fun setUpEmptyView() {
-//        Toast.makeText(context,"Empty products",Toast.LENGTH_SHORT).show()
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.root,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            "Empty!",
-            "No products available"
-        )
-
-    }
 
     private fun removeEmptyView() {
         if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
@@ -284,23 +191,6 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
             )
         }
     }
-//    fun showProgress() {
-//        isLoading = true
-//        if (isFirstTime) {
-//            binding.defaultProgress.visibility = View.VISIBLE
-//        } else {
-//            binding.loadMoreProgress.visibility = View.VISIBLE
-//        }
-//    }
-//    fun hideProgress() {
-//        isLoading = false
-//        if (isFirstTime) {
-//            binding.defaultProgress.visibility = View.GONE
-//        } else {
-//            binding.loadMoreProgress.visibility = View.GONE
-//        }
-//    }
-
     override fun onItemClick(product: ProductDetail, position: Int) {
         Log.d("testmyfilter", "setUpRecyclerRecommendation: $product")
         val bundle = Bundle()

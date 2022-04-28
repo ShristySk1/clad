@@ -32,6 +32,7 @@ import com.ayata.clad.profile.reviews.utils.CustomImagePickerComponents
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProgressDialog
 import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
@@ -51,6 +52,7 @@ const val MY_PHOTO_NUMBER = 4
 
 class FragmentMyReviewsForm : Fragment() {
     lateinit var binding: FragmentMyReviewFormBinding
+    private lateinit var progressDialog: ProgressDialog
 
     //images
     lateinit var adapterImage: AdapterImageViewType
@@ -179,8 +181,9 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observePostReviewApi().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    progressDialog.dismiss()
                     isLoading = false
-                    binding.progressBar.rootContainer.visibility = View.GONE
+//                    binding.progressBar.rootContainer.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -197,11 +200,15 @@ class FragmentMyReviewsForm : Fragment() {
                 }
                 Status.LOADING -> {
                     isLoading = true
-                    binding.progressBar.rootContainer.visibility = View.VISIBLE
+//                    binding.progressBar.rootContainer.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "post_progress")
                 }
                 Status.ERROR -> {
                     isLoading = false
-                    binding.progressBar.rootContainer.visibility = View.GONE
+                    progressDialog.dismiss()
+
+//                    binding.progressBar.rootContainer.visibility = View.GONE
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }

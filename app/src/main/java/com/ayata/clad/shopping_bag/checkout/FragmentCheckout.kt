@@ -34,6 +34,7 @@ import com.ayata.clad.shopping_bag.response.checkout.Selected
 import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
@@ -844,25 +845,27 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private fun showError(it: String) {
         binding.layoutMain.visibility = View.GONE
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.layoutContainer,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            "Error!",
-            it
-        )
-
+//        MyLayoutInflater().onAddField(
+//            requireContext(),
+//            binding.layoutContainer,
+//            R.layout.layout_error,
+//            Constants.ERROR_TEXT_DRAWABLE,
+//            "Error!",
+//            it
+//        )
+        Caller().error("Error!",it,requireContext(),binding.layoutContainer)
     }
 
     private fun hideError() {
         binding.layoutMain.visibility = View.VISIBLE
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.layoutContainer,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+//        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
+//            MyLayoutInflater().onDelete(
+//                binding.layoutContainer,
+//                binding.root.findViewById(R.id.layout_root)
+//            )
+//        }
+        Caller().hideErrorEmpty(binding.layoutContainer)
+
     }
 
 //    private fun saveSizeAPI(product: ModelCheckout, sizeSelected: String) {

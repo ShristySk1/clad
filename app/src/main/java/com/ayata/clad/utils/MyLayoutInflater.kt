@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.core.view.contains
 import com.ayata.clad.R
 
-class MyLayoutInflater {
+class MyLayoutInflater  {
     fun onDelete(parentView: ViewGroup, childView: View) {
         parentView!!.removeView(childView)
 

@@ -136,7 +136,7 @@ var isStockAvailable=true
             val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL)
             if (data != null) {
                 productDetail = data as ProductDetail
-                galleryBundle = data.imageUrl
+//                galleryBundle = data.imageUrl
                 setProductData()
             }
 //            galleryBundle = bundle
@@ -771,7 +771,7 @@ binding.detail2.linearLayout5.visibility=View.GONE
         myMaps.keys.forEach {
             if (key == it) {
                 Log.d(TAG, "getImageUrlFromColorKey: " + myMaps[key]?.get(0).toString());
-                return myMaps[key]?.get(0)?.imageUrl
+                return myMaps[key]?.get(0)?.imageUrl?.get(0)
             }
         }
         return ""
@@ -789,7 +789,7 @@ binding.detail2.linearLayout5.visibility=View.GONE
             setWishlist(isProductWishList)
             setCart(isProductInCart)
             setStockStatus(myCurrentVarient.stockStatus, binding.stock)
-//            setImageGallary(listOf())
+            setImageGallary(myCurrentVarient.imageUrl)
         }
     }
 

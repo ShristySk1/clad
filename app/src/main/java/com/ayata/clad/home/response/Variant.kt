@@ -20,7 +20,7 @@ data class Variant(
     @SerializedName("grand_total")
     val grandTotal: Double,
     @SerializedName("image_url")
-    val imageUrl: String,
+    val imageUrl: List<String>,
     @SerializedName("old_price")
     val oldPrice: Double,
     val price: Double,

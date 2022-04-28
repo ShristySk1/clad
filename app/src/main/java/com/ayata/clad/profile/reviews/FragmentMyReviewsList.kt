@@ -25,6 +25,7 @@ import com.ayata.clad.profile.reviews.model.ModelReview
 import com.ayata.clad.profile.reviews.model.Review
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
@@ -207,24 +208,22 @@ class FragmentMyReviewsList : Fragment() {
     }
 
     private fun showError(it: String) {
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.rootContainer,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            "Error!",
-            it
-        )
+//        MyLayoutInflater().onAddField(
+//            requireContext(),
+//            binding.rootContainer,
+//            R.layout.layout_error,
+//            Constants.ERROR_TEXT_DRAWABLE,
+//            "Error!",
+//            it
+//        )
+
+        Caller().error(Constants.ERROR_TEXT,it,requireContext(),binding.rootContainer)
 
     }
 
     private fun hideError() {
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.rootContainer,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+        Caller().hideErrorEmpty(binding.rootContainer)
+
     }
 
     private fun setData(unreviewed: MutableList<Review>, reviewed: MutableList<Review>) {
@@ -244,7 +243,9 @@ class FragmentMyReviewsList : Fragment() {
         adapterReviewViewPager.notifyDataSetChanged()
         binding.viewPager.adapter = null
         binding.viewPager.adapter = adapterReviewViewPager
-        binding.viewPager.setCurrentItem(initialPositionOfTab,false)
+        if(initialPositionOfTab==1) {
+            binding.viewPager.setCurrentItem(initialPositionOfTab, false)
+        }
     }
 
     private fun getMyFragment(

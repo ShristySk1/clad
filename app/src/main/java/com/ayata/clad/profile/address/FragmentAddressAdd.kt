@@ -45,12 +45,16 @@ class FragmentAddressAdd : Fragment() {
         setSpinner()
 
         binding.btnSave.setOnClickListener {
-            validateTextField(binding.textInputTitle)
-            validateTextField(binding.textInputAddress)
-            validateTextField(binding.textInputCity)
-            validateTextField(binding.textInputPhone)
+           val p1= validateTextField(binding.textInputTitle)
+           val p2= validateTextField(binding.textInputAddress)
+           val p3= validateTextField(binding.textInputCity)
+           val p4= validateTextField(binding.textInputPhone)
 //            validateTextField(binding.textInputState)
-            validateTextField(binding.textInputZip)
+            val p5=validateTextField(binding.textInputZip)
+
+            if(!p1 or !p2 or !p3 or !p4 or !p5){
+                return@setOnClickListener
+            }
             //save api
             if (isShipApi) {
                 saveAddressShippingApi()

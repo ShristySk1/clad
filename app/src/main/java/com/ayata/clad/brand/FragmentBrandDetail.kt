@@ -221,7 +221,7 @@ class FragmentBrandDetail : Fragment() {
             requireContext(),
             binding.root,
             R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
+            Constants.ERROR_SERVER,
             "Error!",
             it
         )

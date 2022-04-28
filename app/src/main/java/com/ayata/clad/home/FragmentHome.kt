@@ -250,97 +250,36 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     private fun prepareDataForStory(stories: List<Story>) {
         listStory.clear()
         listStory.addAll(stories)
-//        val list2 = arrayListOf<String>(
-//            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
-//            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
-//        )
-//        listStory.add(
-//            ModelStory(
-//                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK4RVHQArXcaTvfasa8QGHYGFMPk3zJG1nfA&usqp=CAU",
-//                "Summer",
-//                "Description 2",
-//                list2
-//            )
-//        )
-//
-//        val listString = arrayListOf<String>(
-//            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
-//            "https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg",
-//            "https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"
-//        )
-//        listStory.add(
-//            ModelStory(
-//                "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg",
-//                "New In",
-//                "Description 1",
-//                listString
-//            )
-//        )
-//
-//        val list3 = ArrayList<String>()
-//        list3.add("https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg")
-//        list3.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
-//        listStory.add(
-//            ModelStory(
-//                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBLdseom0mOn2lIbAdoDxwVdEJo4_SxzWpLA&usqp=CAU",
-//                "Activewear",
-//                "Description 3",
-//                list3
-//            )
-//        )
-//
-//        val list4 = ArrayList<String>()
-//        list4.add(
-//            0,
-//            "https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"
-//        )
-//        list4.add("https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg")
-//
-//        listStory.add(
-//            ModelStory(
-//                "https://media.istockphoto.com/photos/beautiful-lady-overjoyed-by-warm-spring-breeze-dream-of-romantic-date-picture-id1170648040?k=20&m=1170648040&s=612x612&w=0&h=eOMcjFL2qyKnfvkH3IbIYkAKWXtQXCScCE12ahhqX_w=",
-//                "Basic", "Description 4", list4
-//            )
-//        )
-//
-//        val list5 = ArrayList<String>()
-//        list5.add("https://i.pinimg.com/originals/71/4b/cc/714bcc5b6c5171cb82a5cea81e176b89.webp")
-//        listStory.add(
-//            ModelStory(
-//                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs81HZC1Hbu-KVtCSbnyYX3J7CcSYFek0WO-OsK1AdZ3ahJr6E3AHgvKKy8-n08w9qC_U&usqp=CAU",
-//                "Couple Wear", "Description 5", list5
-//            )
-//        )
-
         adapterStories.notifyDataSetChanged()
 
     }
 
     private fun prepareDataForPopularMonth(listGiven: List<ProductDetail>?) {
         listPopularMonth.clear()
-//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","7000.0","10","https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
-//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","3000.0","50","https://www.hergazette.com/wp-content/uploads/2020/01/Stylish-Photography-Poses-For-Girls-11.jpg"))
-//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","8000.0","20","https://asda.scene7.com/is/image/Asda/5059186277411?hei=684&wid=516&qlt=85&fmt=pjpg&resmode=sharp&op_usm=1.1,0.5,0,0&defaultimage=default_details_George_rd"))
-//        listPopularMonth.add(ModelPopularMonth("Cashmere Jacket","9200.0","40","https://anninc.scene7.com/is/image/LO/575769_6857?\$plp\$"))
 
         if (listGiven != null) {
             listPopularMonth.addAll(listGiven)
         }
-        adapterPopularMonth.notifyDataSetChanged()
+        if (listPopularMonth.size > 0) {
 
+            adapterPopularMonth.notifyDataSetChanged()
+        } else {
+            binding.text1.visibility = View.GONE
+            binding.popularViewBtn.visibility = View.GONE
+        }
     }
 
     private fun prepareDataForRecommended(listGiven: List<ProductDetail>?) {
         listRecommended.clear()
-//        listRecommended.add(ModelRecommended("Sportswear (Red)","“Sporty clothes”","4500.0","30.0",
-//            "https://i.pinimg.com/236x/43/c9/58/43c958dc53796581e037d67e0e2025b8.jpg"))
-//        listRecommended.add(ModelRecommended("Cashmere Jacket","Casual Wear","7890.0","70.0",
-//            "https://image.made-in-china.com/202f0j00gqjRIDFdribc/Autumn-and-Winter-Hand-Made-Double-Sided-Woolen-Cashmere-Ladies-Wool-Coat.jpg"))
-
         if (listGiven != null) {
             listRecommended.addAll(listGiven)
         }
-        adapterRecommended.notifyDataSetChanged()
+        if (listRecommended.size > 0) {
+
+            adapterRecommended.notifyDataSetChanged()
+        } else {
+
+        }
 
     }
 
@@ -358,62 +297,47 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     )
 
     private fun prepareDataForPopularBrands(listGiven: List<Brand>?) {
-//        listDrawable.shuffle()
+
         listPopularBrands.clear()
-//        for(i in listDrawable){
-//            listPopularBrands.add(ModelPopularBrands(i,"Brand Name","All 106"))
-//        }
         if (listGiven != null) {
             listPopularBrands.addAll(listGiven)
         }
-        adapterPopularBrands.notifyDataSetChanged()
+        if (listPopularBrands.size > 0) {
+            adapterPopularBrands.notifyDataSetChanged()
+        } else {
+            //set visibility gone for title and view all
+
+        }
 
     }
 
     private fun prepareDataForJustDropped(listGiven: List<ProductDetail>?) {
         listJustDropped.clear()
-//        listJustDropped.add(ModelJustDropped("https://freepngimg.com/thumb/categories/627.png",
-//            "Nike ISPA Overreact Sail Multi","5000","50",
-//        "https://p7.hiclipart.com/preview/595/571/731/swoosh-nike-logo-just-do-it-adidas-nike.jpg"))
-//        listJustDropped.add(ModelJustDropped("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-//            "adidas Yeezy Boost 700 MNVN Bone","5000","45",
-//            "https://www.pngkit.com/png/full/436-4366026_adidas-stripes-png-adidas-logo-without-name.png"))
-//        listJustDropped.add(ModelJustDropped("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-//            "Jordan 11 Retro Low White Concord (W) ","5000","65",
-//        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
 
         if (listGiven != null) {
             listJustDropped.addAll(listGiven)
         }
+        if (listJustDropped.size > 0) {
 
-        adapterJustDropped.notifyDataSetChanged()
+
+            adapterJustDropped.notifyDataSetChanged()
+        } else {
+
+        }
 
     }
 
     private fun prepareDataForMostPopular(listGiven: List<ProductDetail>?) {
         listMostPopular.clear()
-//        listMostPopular.add(
-//            ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
-//            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","50",
-//            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
-//        )
-//        listMostPopular.add(ModelMostPopular("https://www.pngkit.com/png/full/70-704028_running-shoes-png-image-running-shoes-clipart-transparent.png",
-//            "adidas Yeezy Boost 700 MNVN Bone","Lowest Ask","8000","80",
-//        "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
-//
-//        listMostPopular.add(ModelMostPopular("https://images.squarespace-cdn.com/content/v1/566e100d0e4c116bdc11b2c2/1473302788755-FL48S6YFWHYC9KU18K52/245282-ceb4145ac7b646889a16b6f5dbd2f455.png?format=750w",
-//            "Jordan 14 Retro Gym Red Toro","Lowest Ask","8000","65",
-//            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png"))
-//
-//        listMostPopular.add(ModelMostPopular("https://freepngimg.com/thumb/categories/627.png",
-//            "Jordan 5 Retro Alternate Grape","Lowest Ask","5000","45",
-//            "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png")
-//        )
         if (listGiven != null) {
             listMostPopular.addAll(listGiven)
         }
+        if (listMostPopular.size > 0) {
 
-        adapterMostPopular.notifyDataSetChanged()
+            adapterMostPopular.notifyDataSetChanged()
+        } else {
+
+        }
 
     }
 
@@ -436,14 +360,8 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     }
 
     override fun onPopularBrandsClicked(data: Brand, position: Int) {
-//        val bundle = Bundle()
-//        bundle.putString(Constants.FILTER_HOME, data.name)
-//        val fragmentViewAllProduct = FragmentViewAllProduct()
-//        fragmentViewAllProduct.arguments = bundle
-//        parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentViewAllProduct)
-//            .addToBackStack(null).commit()
-        val intent=Intent(activity, BrandDetailActivity::class.java)
-        intent.putExtra("slug",data.slug)
+        val intent = Intent(activity, BrandDetailActivity::class.java)
+        intent.putExtra("slug", data.slug)
         startActivity(intent)
     }
 
@@ -568,7 +486,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
                                 prepareDataForStory(detail.stories)
                             }
                         } catch (e: Exception) {
-                            Log.d(TAG, "prepareAPI: ${e.toString()}")
+                            showError(e.message.toString())
                         }
                     }
 
@@ -594,8 +512,8 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     private fun showError(message: String) {
         binding.relativeLayout.visibility = View.GONE
         binding.layoutError.visibility = View.VISIBLE
+        binding.error.errorImage.setImageResource(Constants.ERROR_SERVER)
         binding.error.errorDescription.text = message
-
     }
 
     override fun onBannerClicked(data: Slider) {

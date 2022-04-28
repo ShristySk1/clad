@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="@string/opf_text2"
+        android:text="Thank you!"
         android:layout_marginHorizontal="30dp"
         android:layout_above="@id/text_date"
         android:textColor="@color/colorBlack"/>

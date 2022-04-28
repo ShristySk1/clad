@@ -20,6 +20,7 @@ import com.ayata.clad.profile.address.response.Detail
 import com.ayata.clad.profile.address.viewmodel.AddressViewModel
 import com.ayata.clad.profile.address.viewmodel.AddressViewModelFactory
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
@@ -104,13 +105,6 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
             adapter = adapterAddress
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-//        if (listAddress.size >= 2) {
-//            binding.addNewBtn.visibility = View.GONE
-//            binding.llAddAddress.visibility = View.GONE
-//        } else {
-//            binding.addNewBtn.visibility = View.GONE
-//            binding.llAddAddress.visibility = View.VISIBLE
-//        }
     }
 
     private fun prepareListAddress(details: List<Detail>) {
@@ -134,24 +128,13 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
         adapterAddress.notifyDataSetChanged()
     }
     private fun showError(it: String) {
-        MyLayoutInflater().onAddField(
-            requireContext(),
-            binding.root,
-            R.layout.layout_error,
-            Constants.ERROR_TEXT_DRAWABLE,
-            "Error!",
-            it
-        )
+        Caller().empty("Error!",it,requireContext(),binding.root)
 
     }
 
     private fun hideError() {
-        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-            MyLayoutInflater().onDelete(
-                binding.root,
-                binding.root.findViewById(R.id.layout_root)
-            )
-        }
+        Caller().hideErrorEmpty(binding.root)
+
     }
     override fun onEditClicked(data: ModelShippingAddress, position: Int) {
         val fragment = FragmentAddressAdd()
