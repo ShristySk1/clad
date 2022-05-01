@@ -52,7 +52,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     }
 
-    fun getWishListAPI(): MutableLiveData<Resource<JsonObject>> {
+    fun getWishListAPI(): LiveData<Resource<JsonObject>> {
         return listResponse
     }
 

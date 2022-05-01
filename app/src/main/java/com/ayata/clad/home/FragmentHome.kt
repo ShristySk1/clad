@@ -80,13 +80,22 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        setUpViewModel()
+
         initRefreshLayout()
         prepareAPI()
         initButtonClick()
         initAppbar()
         initRecyclerView()
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
+        Log.d("wishlilshcaleed", "onCreate home: ");
+        viewModel.dashboardAPI(
+            PreferenceHandler.getToken(requireContext()) ?: ""
+        )
     }
 
     private fun initAppbar() {
@@ -104,8 +113,13 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     private fun initRefreshLayout() {
         //refresh layout on swipe
         binding.swipeRefreshLayout.setOnRefreshListener(OnRefreshListener {
-            prepareAPI()
+//            prepareAPI()
+            viewModel.dashboardAPI(
+                PreferenceHandler.getToken(requireContext()) ?: ""
+            )
             binding.swipeRefreshLayout.isRefreshing = false
+            setShimmerLayout(true)
+
         })
         //Adding ScrollListener to activate swipe refresh layout
         binding.mainLayout.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
@@ -278,7 +292,8 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
             adapterRecommended.notifyDataSetChanged()
         } else {
-
+            binding.text2.visibility = View.GONE
+            binding.recommendedViewBtn.visibility = View.GONE
         }
 
     }
@@ -306,7 +321,8 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
             adapterPopularBrands.notifyDataSetChanged()
         } else {
             //set visibility gone for title and view all
-
+            binding.text4.visibility = View.GONE
+            binding.popularBrandViewBtn.visibility = View.GONE
         }
 
     }
@@ -322,7 +338,8 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
             adapterJustDropped.notifyDataSetChanged()
         } else {
-
+            binding.text5.visibility = View.GONE
+            binding.justDroppedViewBtn.visibility = View.GONE
         }
 
     }
@@ -336,7 +353,8 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
             adapterMostPopular.notifyDataSetChanged()
         } else {
-
+            binding.text6.visibility = View.GONE
+            binding.mostPopularViewBtn.visibility = View.GONE
         }
 
     }
@@ -445,7 +463,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     }
 
     private fun prepareAPI() {
-        setShimmerLayout(true)
+
 
 //        GlobalScope.launch(Dispatchers.IO) {
 //            DataStoreManager(requireContext()).getToken().catch { e ->
@@ -458,10 +476,9 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 //            }
 //        }
 //
-        viewModel.dashboardAPI(
-            PreferenceHandler.getToken(requireContext()) ?: ""
-        )
+        setShimmerLayout(true)
         viewModel.getDashboardAPI().observe(viewLifecycleOwner, {
+            Log.d("tesshimmer", "home: "+it.status);
             when (it.status) {
                 Status.SUCCESS -> {
                     setShimmerLayout(false)
@@ -492,6 +509,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
                 }
                 Status.LOADING -> {
+
                 }
                 Status.ERROR -> {
                     //Handle Error

@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import com.ayata.clad.data.preference.DataStoreManager
 import com.ayata.clad.databinding.ActivitySplashBinding
 import com.ayata.clad.onboarding.ActivityOnboarding
@@ -102,7 +103,7 @@ class SplashActivity : AppCompatActivity() {
             AppCompatDelegate.MODE_NIGHT_NO
         }
         if(currentMode!=AppCompatDelegate.getDefaultNightMode()){
-            if(PreferenceHandler.isThemeDark(this)!!){
+            if(isDarkMode){
                 AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate
                         .MODE_NIGHT_YES)

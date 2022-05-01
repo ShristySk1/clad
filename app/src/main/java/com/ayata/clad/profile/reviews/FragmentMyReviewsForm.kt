@@ -174,7 +174,8 @@ class FragmentMyReviewsForm : Fragment() {
 
             }
         })
-
+        myChosenSize=tabSize.getTabAt(tabSize.selectedTabPosition)?.text.toString()
+        myChosenComfort=tabComfort.getTabAt(tabComfort.selectedTabPosition)?.text.toString()
     }
 
     private fun observePostReviewApi() {
@@ -190,8 +191,12 @@ class FragmentMyReviewsForm : Fragment() {
                             val message = jsonObject.get("message").asString
 //                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 //                            showDialog("",message )
-                            (activity as MainActivity).showSnakbar(message)
-                            parentFragmentManager.popBackStackImmediate()
+                            if(message.contains("Thank you",ignoreCase = true)) {
+                                (activity as MainActivity).showSnakbar(message)
+                                parentFragmentManager.popBackStackImmediate()
+                            }else{
+                                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                            }
 
                         } catch (e: Exception) {
 
@@ -278,7 +283,6 @@ class FragmentMyReviewsForm : Fragment() {
     }
 
     private fun initBundle() {
-        Log.d("testnumber1", "initBundle: "+FragmentMyReviewsList.initialPositionOfTab);
             arguments?.let {
 //                FragmentMyReviewsList.initialPositionOfTab = 1
                 item = it.getSerializable("datas") as Review
@@ -306,7 +310,7 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                     val testImage =
                         "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
-                    formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort)
+                    formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort?:"Uncomfortable")
                     binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
                     myChosenQuality = item.reviewDetails.quality.toInt()
                     myChosenSize = item.reviewDetails.size

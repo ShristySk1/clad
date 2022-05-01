@@ -301,5 +301,15 @@ interface ApiService {
         @Query("color") colorHex: String,
         @Query("brand") brand: String
     ): Response<JsonObject>
+    //faq
+    @GET("")
+    suspend fun getFAQ(
+        @Query("slug") slug: String
+    ): Response<JsonObject>
+    @GET("product/details/")
+    suspend fun getProduct(
+        @Header("Authorization") token: String,
+        @Query("product_id") productId: Int
+    ): Response<JsonObject>
 
 }

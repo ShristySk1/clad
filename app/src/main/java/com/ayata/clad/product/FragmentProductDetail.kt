@@ -47,7 +47,9 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.Serializable
+import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -70,7 +72,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var viewModelHome: HomeViewModel
     var dynamicVarientId = 0
     var choosenSizePosition = 0
-var isStockAvailable=true
+    var isStockAvailable = true
+
     //for color and size
     lateinit var myMaps: MutableMap<String, MutableList<Variant>>
 
@@ -83,6 +86,7 @@ var isStockAvailable=true
         setUpViewModel()
         initView()
         getBundle()
+        observeProductApi()
         setUpFullScreen()
         tapToCopyListener()
         productLikedListener()
@@ -107,8 +111,44 @@ var isStockAvailable=true
         binding.cardGallary.setOnClickListener {
             goToGalleryView()
         }
-
         return binding.root
+    }
+
+    private fun observeProductApi() {
+        viewModel.getProductAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    setShimmerLayout(false)
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val jsonProducts = jsonObject.get("details").asJsonArray
+                            val type: Type =
+                                object : TypeToken<ArrayList<ProductDetail?>?>() {}.type
+                            val list: ArrayList<ProductDetail> = Gson().fromJson(
+                                jsonProducts,
+                                type
+                            )
+                            productDetail = list.first()
+                            setProductData()
+                        } catch (e: Exception) {
+                            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                    setShimmerLayout(true)
+                }
+                Status.ERROR -> {
+                    setShimmerLayout(false)
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
+                }
+            }
+
+        })
     }
 
     private fun goToGalleryView() {
@@ -132,16 +172,20 @@ var isStockAvailable=true
     private fun getBundle() {
         val bundle = arguments
         if (bundle != null) {
-            Log.d(TAG, "getBundle: ");
-            val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL)
+            val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL) as ProductDetail
             if (data != null) {
-                productDetail = data as ProductDetail
-//                galleryBundle = data.imageUrl
-                setProductData()
+                //bundle
+                // productDetail = data as ProductDetail
+                //setProductData()
+                //api
+                viewModel.productAPI(PreferenceHandler.getToken(context)!!, data.productId)
+            }else{
+                binding.mainLayout.visibility=View.GONE
             }
-//            galleryBundle = bundle
         } else {
             Log.d(TAG, "getBundle:null ");
+            binding.mainLayout.visibility=View.GONE
+
         }
     }
 
@@ -174,22 +218,33 @@ var isStockAvailable=true
 //        Glide.with(requireContext()).load(productDetail.image_url).into(binding.imageView3)
         //reviews
         if (productDetail.reviews != null) {
-            binding.detail2.linearLayout5.visibility=View.VISIBLE
+            binding.detail2.linearLayout5.visibility = View.VISIBLE
             setUpTabChoose(
                 productDetail.reviews!!.size,
                 productDetail.reviews!!.width,
                 productDetail.reviews!!.quality,
                 productDetail.reviews!!.comfort
             )
-        }else{
-binding.detail2.linearLayout5.visibility=View.GONE
+        } else {
+            binding.detail2.linearLayout5.visibility = View.GONE
         }
         val colorsize = setHashMapColorSize()
         setUpRecyclerColor(colorsize.keys)
 //        setCurrentVariant()
 
         binding.detail2.tvViewAllReview.setOnClickListener {
-            val fragment = FragmentReview.newInstance(productDetail.reviews?: Reviews(null,0.0,0.0,"0",null,0,null,null))
+            val fragment = FragmentReview.newInstance(
+                productDetail.reviews ?: Reviews(
+                    null,
+                    0.0,
+                    0.0,
+                    "0",
+                    null,
+                    0,
+                    null,
+                    null
+                )
+            )
             parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
                 .addToBackStack(null)
                 .commit()
@@ -363,7 +418,6 @@ binding.detail2.linearLayout5.visibility=View.GONE
     private fun initView() {
         (activity as MainActivity).showToolbar(false)
         (activity as MainActivity).showBottomNavigation(false)
-
         setProductImage(binding.imageView3)
         binding.btnBack.setOnClickListener {
             (activity as MainActivity).onBackPressed()
@@ -656,11 +710,11 @@ binding.detail2.linearLayout5.visibility=View.GONE
 
     private fun addToCartAPI() {
 //        Toast.makeText(requireContext(), dynamicProductId.toString(), Toast.LENGTH_SHORT).show()
-      if(isStockAvailable) {
-          showDialogSize()
-      }else{
-          Toast.makeText(context,"Order out of stock",Toast.LENGTH_SHORT).show()
-      }
+        if (isStockAvailable) {
+            showDialogSize()
+        } else {
+            Toast.makeText(context, "Order out of stock", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showDialogSize() {
@@ -825,8 +879,13 @@ binding.detail2.linearLayout5.visibility=View.GONE
         var textToDisplay = stock
         if (stock.contains("Out of Stock", ignoreCase = true)) {
             //TOD
-                isStockAvailable=false
-            binding.imageCart.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(),R.color.colorGray));
+            isStockAvailable = false
+            binding.imageCart.setBackgroundTintList(
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    R.color.colorGray
+                )
+            );
 
             binding.detail2.ivCart.setColorFilter(
                 ContextCompat.getColor(
@@ -836,9 +895,14 @@ binding.detail2.linearLayout5.visibility=View.GONE
             );
             changeColor(tv_stock, R.color.colorRedDark, R.color.white, requireContext())
         } else if (stock.contains("In stock", ignoreCase = true)) {
-            binding.imageCart.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(),R.color.colorBlack));
+            binding.imageCart.setBackgroundTintList(
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    R.color.colorBlack
+                )
+            );
 
-            isStockAvailable=true
+            isStockAvailable = true
             binding.detail2.ivCart.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
@@ -848,8 +912,13 @@ binding.detail2.linearLayout5.visibility=View.GONE
             changeColor(tv_stock, R.color.colorGreenDark, R.color.white, requireContext())
 
         } else {
-            isStockAvailable=true
-            binding.imageCart.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(),R.color.colorBlack));
+            isStockAvailable = true
+            binding.imageCart.setBackgroundTintList(
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    R.color.colorBlack
+                )
+            );
 
             binding.detail2.ivCart.setColorFilter(
                 ContextCompat.getColor(
@@ -868,6 +937,16 @@ binding.detail2.linearLayout5.visibility=View.GONE
         stock.setTextColor(ContextCompat.getColor(context, colorDark));
         stock.background.setTint(ContextCompat.getColor(context, colorLight));
     }
-
+    private fun setShimmerLayout(isVisible: Boolean) {
+        if (isVisible) {
+            binding.mainLayout.visibility = View.GONE
+            binding.shimmerFrameLayout.visibility = View.VISIBLE
+            binding.shimmerFrameLayout.startShimmer()
+        } else {
+            binding.mainLayout.visibility = View.VISIBLE
+            binding.shimmerFrameLayout.visibility = View.GONE
+            binding.shimmerFrameLayout.stopShimmer()
+        }
+    }
 
 }

@@ -145,7 +145,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     //product list from category
     fun searchProductListFromCategory(
         token: String,
-        map:Map<String,String>
+        map: Map<String, String>
     ): LiveData<PagingData<ProductDetail>> {
         Log.d("tet5stcall", "getViewAllResult: ");
         return Pager(
@@ -197,4 +197,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
         brand: String
     ) = retrofitService.getOrderFilter(token, page, size, color, brand)
 
+    //faq
+    suspend fun getFAQ(slug: String) = retrofitService.getFAQ(slug)
+    suspend fun getProduct(token:String,productId: Int) = retrofitService.getProduct(token,productId)
 }

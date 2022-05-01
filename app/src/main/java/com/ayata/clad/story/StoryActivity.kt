@@ -53,11 +53,17 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
     private lateinit var adapterStoryProduct: AdapterStoryProduct
     private var listProduct = ArrayList<ProductDetail>()
+    private val i by lazy {   Intent(this, MainActivity::class.java)
+    }
 
     private lateinit var binding: ActivityStoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        //default
+        i.putExtra(Constants.FROM_STORY, false)
+        i.putExtra("data","")
+        //end default
         binding = ActivityStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         GlobalScope.launch(Dispatchers.IO) {
@@ -322,7 +328,6 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     }
 
     override fun onProductClick(data: ProductDetail, position: Int) {
-        val i = Intent(this, MainActivity::class.java)
         i.putExtra(Constants.FROM_STORY, true)
         i.putExtra("data",data as ProductDetail)
         startActivity(i)

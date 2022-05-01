@@ -38,8 +38,8 @@
 
             <ImageView
                 android:id="@+id/image_logo"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginStart="9dp"
                 android:src="@drawable/background_gray"

@@ -40,6 +40,7 @@ class ProgressDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
+        isCancelable=false
         setupClickListeners(view)
     }
 
@@ -51,6 +52,7 @@ class ProgressDialog : DialogFragment() {
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
+
     }
 
     private fun setupView(view: View) {

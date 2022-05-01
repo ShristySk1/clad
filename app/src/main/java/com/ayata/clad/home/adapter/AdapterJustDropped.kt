@@ -81,7 +81,8 @@ internal class AdapterJustDropped(private var context:Context?,
             .error(R.drawable.shoes)
             .into(holder.image)
 
-        Glide.with(context!!).asBitmap().load(item.vendor).error(R.drawable.ic_clad_logo_grey)
+        Glide.with(context!!).asBitmap().load(item.brand?.brandImage)
+            .error(R.drawable.ic_clad_logo_grey)
             .into(holder.logo)
 
         holder.clickView()

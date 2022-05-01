@@ -84,7 +84,7 @@ internal class AdapterMostPopular(private var context:Context?,
             .error(R.drawable.shoes)
             .into(holder.image)
 
-        Glide.with(context!!).asBitmap().load(item.vendor)
+        Glide.with(context!!).asBitmap().load(item.brand?.brandImage)
             .error(R.drawable.ic_clad_logo_grey).into(holder.imageLogo)
 
         holder.clickView()

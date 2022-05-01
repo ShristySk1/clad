@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.home.response.SingleReview
+import com.ayata.clad.utils.SingleLiveEvent
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import retrofit2.http.Query
@@ -19,7 +21,7 @@ class HomeViewModel constructor(private val mainRepository: ApiRepository)  : Vi
     private val homeResponse = MutableLiveData<Resource<JsonObject>>()
 //    private val sharedRecommendation=MutableLiveData<List<ProductDetail>>()
 
-//    private var job: Job? = null
+    private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
@@ -27,7 +29,7 @@ class HomeViewModel constructor(private val mainRepository: ApiRepository)  : Vi
 
     fun dashboardAPI(token: String) {
         homeResponse.postValue(Resource.loading(null))
-         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        job= CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try{
                 val response = mainRepository.dashboardAPI(token)
                 withContext(Dispatchers.Main) {
@@ -59,8 +61,8 @@ class HomeViewModel constructor(private val mainRepository: ApiRepository)  : Vi
         loading.postValue(false)
     }
 
-//    override fun onCleared() {
-//        super.onCleared()
-//        job?.cancel()
-//    }
+    override fun onCleared() {
+        super.onCleared()
+        job?.cancel()
+    }
 }

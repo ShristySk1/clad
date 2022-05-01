@@ -102,7 +102,7 @@ class FragmentAccount : Fragment() {
         listAccount.add(ModelAccount(2, 1, "APP SETTINGS"))
         listAccount.add(ModelAccount(4, 2, "NOTIFICATION"))
         listAccount.add(ModelAccount(8, 2, "THEME"))
-        listAccount.add(ModelAccount(9, 2, "CURRENCY"))
+//        listAccount.add(ModelAccount(9, 2, "CURRENCY"))
         listAccount.add(ModelAccount(5, 1, "GUIDE"))
         listAccount.add(ModelAccount(6, 2, "TERMS AND CONDITIONS"))
         listAccount.add(ModelAccount(7, 2, "PRIVACY POLICY"))

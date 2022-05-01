@@ -48,8 +48,9 @@ class FragmentMyReviewsList : Fragment() {
 
     companion object {
         var isApiFetched = false
-        var initialPositionOfTab=0
     }
+    var initialPositionOfTab=0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

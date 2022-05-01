@@ -422,6 +422,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         binding.swipeRefreshLayout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
             viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
             binding.swipeRefreshLayout.isRefreshing = false
+            setShimmerLayout(true)
         })
         //Adding ScrollListener to activate swipe refresh layout
         binding.shimmerView.root.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->

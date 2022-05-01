@@ -19,6 +19,8 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository) : 
     private val addWishResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val removeCartResponse = MutableLiveData<Resource<JsonObject>>()
     private val addCartResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val productResponse= SingleLiveEvent<Resource<JsonObject>>()
+
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -138,7 +140,27 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository) : 
     fun getAddToWishAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return addWishResponse
     }
+    fun productAPI(token: String, id: Int) {
+        productResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.getProduct(token, id)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Log.d("removeFromCartAPI", "success: " + response.body())
+                    productResponse.postValue(Resource.success(response.body()))
+                    loading.value = false
+                } else {
+                    Log.e("removeFromCartAPI", "error: $response")
+                    onError("Error : ${response.message()} ")
+                    productResponse.postValue(Resource.error(response.message(), null))
+                }
+            }
+        }
+    }
 
+    fun getProductAPI(): SingleLiveEvent<Resource<JsonObject>> {
+        return productResponse
+    }
     private fun onError(message: String) {
         errorMessage.postValue(message)
         loading.postValue(false)

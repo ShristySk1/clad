@@ -103,7 +103,7 @@ initRefreshLayout()
                                 listGiftCard.clear()
                                 listGiftCard.addAll(couponResponse.coupons)
                             }else{
-                                showError("Coupon",couponResponse.message?:"")
+                                Caller().empty("Coupon",couponResponse.message?:"",requireContext(),binding.rootContainer)
                             }
                         } catch (e: Exception) {
                             Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()

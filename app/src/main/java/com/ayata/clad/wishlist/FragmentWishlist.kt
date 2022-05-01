@@ -78,21 +78,23 @@ class FragmentWishlist : Fragment() {
 
         initAppbar()
         initRefreshLayout()
+        getWishListAPI()
         setUpFilterListener()
         setUpRecyclerProductList()
-        getWishListAPI()
+
 
         return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("wishlilshcaleed", "onCreate: ");
         setUpViewModel()
 
     }
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
-            this,
+            requireActivity(),
             WishListViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         ).get(WishListViewModel::class.java)
 
@@ -114,6 +116,7 @@ class FragmentWishlist : Fragment() {
             Log.d("swipehappen", "initRefreshLayout: ");
             viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
             binding.swipeRefreshLayout.isRefreshing = false
+            setShimmerLayout(true)
         })
         //Adding ScrollListener to activate swipe refresh layout
         binding.layoutContainer.setOnScrollChangeListener(View.OnScrollChangeListener { view, i, i1, i2, i3 ->
@@ -535,6 +538,7 @@ class FragmentWishlist : Fragment() {
     private fun getWishListAPI() {
         setShimmerLayout(true)
         viewModel.getWishListAPI().observe(viewLifecycleOwner, {
+            Log.d("tesshimmer", "wishlist: ${it.status}")
             when (it.status) {
                 Status.SUCCESS -> {
                     setShimmerLayout(false)

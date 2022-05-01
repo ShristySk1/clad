@@ -5,11 +5,13 @@ import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -62,9 +64,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     //for empty view we need to show recommendation
     var listRecommended = ArrayList<ProductDetail>()
     override fun onCreate(savedInstanceState: Bundle?) {
+        setAppMode()
         super.onCreate(savedInstanceState)
+        Log.d("oncreatedaata", "onCreate: ");
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setToolbar()
         //set login
         PreferenceHandler.setIsOnBoarding(this, false)
         setUpFirebaseNotification()
@@ -81,9 +87,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 .commit()
         }
         setStatusBarLight(R.color.colorWhite)
-        setToolbar()
         setUpViewModel()
         setBadge()
+    }
+    private fun setAppMode(){
+        val isDarkMode=PreferenceHandler.isThemeDark(this)!!
+        Log.d(TAG, "setAppMode: "+isDarkMode);
+        val currentMode= if(isDarkMode){
+            AppCompatDelegate.MODE_NIGHT_YES
+        }else{
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        Log.d("testmode", "setAppMode: "+AppCompatDelegate.getDefaultNightMode());
+        if(currentMode!= AppCompatDelegate.getDefaultNightMode()){
+            if(isDarkMode){
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate
+                        .MODE_NIGHT_YES)
+            }else{
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate
+                        .MODE_NIGHT_NO)
+            }
+        }
     }
 
     private fun setUpFirebaseNotification() {
@@ -251,22 +277,32 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         super.onStart()
         val extras = intent.extras
         if (extras != null) {
+            Log.d("testintent", "onStart: "+extras.getBoolean(Constants.FROM_STORY));
             val value = extras.getBoolean(Constants.FROM_STORY, false)
-            val data = extras.getSerializable("data") as ProductDetail
-            if (value) {
+            val data = extras.getSerializable("data") as ProductDetail?
+            if (value&&data!=null) {
                 fromStory(data)
             }
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+        Log.d("oncreatedaata", "onCreate: ");
+    }
+
     private fun fromStory(data: ProductDetail) {
+        Log.d("testintent", "fromStory: "+data);
         val bundle = Bundle()
         bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
         val fragmentProductDetail = FragmentProductDetail()
         fragmentProductDetail.arguments = bundle
         supportFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentProductDetail)
             .addToBackStack(null).commit()
-
+        intent.replaceExtras(Bundle())
+        intent.action = ""
+        intent.data = null
+        intent.flags = 0
     }
 
     fun showBottomNavigation(show: Boolean) {
