@@ -19,7 +19,7 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository) : 
     private val addWishResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val removeCartResponse = MutableLiveData<Resource<JsonObject>>()
     private val addCartResponse = SingleLiveEvent<Resource<JsonObject>>()
-    private val productResponse= SingleLiveEvent<Resource<JsonObject>>()
+    private var productResponse = MutableLiveData<Resource<JsonObject>>()
 
 
     private var job: Job? = null
@@ -29,54 +29,35 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository) : 
     private val loading = MutableLiveData<Boolean>()
 
 
-    fun removeFromCartAPI(token: String, id: Int) {
-        removeCartResponse.postValue(Resource.loading(null))
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val jsonObject = JsonObject()
-            jsonObject.addProperty("variant_id", id)
-            val response = mainRepository.removeFromCartAPI("$token", jsonObject)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("removeFromCartAPI", "success: " + response.body())
-                    removeCartResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("removeFromCartAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    removeCartResponse.postValue(Resource.error(response.message(), null))
-                }
-            }
-        }
-
-    }
-
-    fun getRemoveFromCartAPI(): LiveData<Resource<JsonObject>> {
-        return removeCartResponse
-    }
-
     fun addToCartAPI(token: String, id: Int) {
         addCartResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.addToCartApi("$token", id)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("addToCartAPI", "success: " + response.body())
-                    addCartResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else if (response.code() == 400) {
-                    try {
-                        val jObjError = JSONObject(response.errorBody()!!.string())
-                        val message = jObjError.getString("message")
-                        onError("Error : ${message} ")
-                        addCartResponse.postValue(Resource.error(message, null))
-                    } catch (e: java.lang.Exception) {
-                        addCartResponse.postValue(Resource.error(e.message.toString(), null))
+
+            try {
+                val response = mainRepository.addToCartApi("$token", id)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("addToCartAPI", "success: " + response.body())
+                        addCartResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else if (response.code() == 400) {
+                        try {
+                            val jObjError = JSONObject(response.errorBody()!!.string())
+                            val message = jObjError.getString("message")
+                            onError("Error : ${message} ")
+                            addCartResponse.postValue(Resource.error(message, null))
+                        } catch (e: java.lang.Exception) {
+                            addCartResponse.postValue(Resource.error(e.message.toString(), null))
+                        }
+                    } else {
+                        onError("Error : ${response.message()} ")
+                        addCartResponse.postValue(Resource.error(response.message(), null))
                     }
-                } else {
-                    onError("Error : ${response.message()} ")
-                    addCartResponse.postValue(Resource.error(response.message(), null))
                 }
+            } catch (e: Exception) {
+                addCartResponse.postValue(Resource.error(e.message.toString(), null))
             }
+
         }
 
     }
@@ -140,27 +121,35 @@ class ProductViewModel constructor(private val mainRepository: ApiRepository) : 
     fun getAddToWishAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return addWishResponse
     }
+
     fun productAPI(token: String, id: Int) {
         productResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getProduct(token, id)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("removeFromCartAPI", "success: " + response.body())
-                    productResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("removeFromCartAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    productResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.getProduct(token, id)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("removeFromCartAPI", "success: " + response.body())
+                        productResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+//                    productResponse=(MutableLiveData<Resource<JsonObject>>())
+                    } else {
+                        Log.e("removeFromCartAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        productResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            } catch (e: Exception) {
+                productResponse.postValue(Resource.error(e.message.toString(), null))
             }
+
         }
     }
 
-    fun getProductAPI(): SingleLiveEvent<Resource<JsonObject>> {
+    fun getProductAPI(): MutableLiveData<Resource<JsonObject>> {
         return productResponse
     }
+
     private fun onError(message: String) {
         errorMessage.postValue(message)
         loading.postValue(false)

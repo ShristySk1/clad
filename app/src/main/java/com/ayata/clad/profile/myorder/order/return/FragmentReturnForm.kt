@@ -27,9 +27,10 @@ import com.ayata.clad.profile.myorder.order.cancel.CancelViewModel
 import com.ayata.clad.profile.myorder.order.response.Order
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModel
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModelFactory
-import com.ayata.clad.profile.reviews.MY_PHOTO_NUMBER
 import com.ayata.clad.profile.reviews.adapter.AdapterImageViewType
 import com.ayata.clad.profile.reviews.adapter.DataModel
+import com.ayata.clad.profile.reviews.imageswipe.FragmentImageSwiper
+import com.ayata.clad.profile.reviews.response.Detail
 import com.ayata.clad.profile.reviews.response.ImageUploadResponse
 import com.ayata.clad.profile.reviews.utils.CustomImagePickerComponents
 import com.ayata.clad.utils.PreferenceHandler
@@ -47,6 +48,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
+const val MY_PHOTO_NUMBER = 4
 
 class FragmentReturnForm : Fragment() {
     private val TAG: String="FragmentReturnForm"
@@ -62,9 +64,6 @@ class FragmentReturnForm : Fragment() {
     private val images = ArrayList<Image>()
     lateinit var imagePickerLauncher: ImagePickerLauncher
     val listImage = mutableListOf<DataModel>()
-    var myChosenSize = ""
-    var myChosenComfort = ""
-    var myChosenQuality = 50
     var isLoading = false
     var myDeletePosition = -1
     var isDisabledImagePicker = false
@@ -80,22 +79,30 @@ class FragmentReturnForm : Fragment() {
         setSpinner()
         initView()
         setUpViewModel()
+        initRecyclerview()
         observeCancelOrder()
+        observeImageUploadApi()
+        observeDeleteImageReviewApi()
         binding.btnReturnOrder.setOnClickListener {
+            if(!isLoading) {
 //            val comment = binding.tvDescription.text.toString()
+                val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
+                Log.d(TAG, "onCreateView: " + imageFromModel);
+                val imgIds = imageFromModel.map { (it).id }
+                Log.d("myimageids", "onCreateView: " + imgIds);
 //            viewModel.cancelOrderApi(
 //                PreferenceHandler.getToken(context)!!,
 //                o.orderId,
 //                reason_,
 //                comment
 //            )
-            Toast.makeText(requireContext(),"Api in progress",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Api in progress", Toast.LENGTH_SHORT).show()
+            }
         }
         return binding.root
     }
 
     private fun observeCancelOrder() {
-
         viewModel.observeCancelOrderResponse().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -164,6 +171,18 @@ class FragmentReturnForm : Fragment() {
             binding.description.text =
                 "${o.products.variant.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${o.products.variant.color} / Qty: ${o.products.quantity}"
         }
+        //image
+        binding.llUploadImage.setOnClickListener {
+            if (!isDisabledImagePicker)
+                openGalleryForImages()
+            else
+                Toast.makeText(
+                    requireContext(),
+                    "Image upload is limited to 4 photos",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+        }
     }
 
     private fun setSpinner() {
@@ -186,7 +205,7 @@ class FragmentReturnForm : Fragment() {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     reason_ = listReason[position].state
                 }
@@ -228,7 +247,14 @@ class FragmentReturnForm : Fragment() {
         }
         adapterImage.setReviewDeleteClickListener { it, pos ->
             myDeletePosition = pos
-//            viewModel.imageDeleteAPI(it.id)
+            viewModel.imageDeleteAPI(it.id)
+        }
+        //for viewing image
+        adapterImage.setReviewClickListener { imageList, i ->
+            val image=imageList as List<DataModel.Image>
+            Log.d("testimage", "inirRecyclerView: "+image.size);
+            val frag= FragmentImageSwiper.newInstance(image.map { it.image },i)
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,frag).addToBackStack(null).commit()
         }
     }
 
@@ -318,59 +344,130 @@ class FragmentReturnForm : Fragment() {
                 )
             )
         }
-//        viewModel.imageUploadAPI(fileList)
+        viewModel.imageUploadAPI(fileList)
     }
 
 
     private fun observeImageUploadApi() {
-//        viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
-//            when (it.status) {
-//                Status.SUCCESS -> {
-//                    binding.progressBarPhoto.visibility = View.GONE
-//                    val jsonObject = it.data
-//                    if (jsonObject != null) {
-//                        try {
-//                            val imageResponse =
-//                                Gson().fromJson(jsonObject, ImageUploadResponse::class.java)
-//                            if (imageResponse.details != null) {
-//                                setUpImageInList(null, imageResponse.details)
-////                                listImage.clear()
-////                                imageResponse.details.forEach {
-////                                    listImage.add(DataModel.Image(it.id, it.imageUrl))
-////                                }
-//                            }
-////                            val camera = DataModel.Camera(
-////                                R.drawable.ic_camera,
-////                                true
-////                            )
-////                            listImage.add(camera)
-////                            checkIfCamera()
-////                            adapterImage.notifyDataSetChanged()
-//
-//
-//                        } catch (e: Exception) {
-//
-//                        }
-//                    }
-//                }
-//                Status.LOADING -> {
-//                    binding.progressBarPhoto.visibility = View.VISIBLE
-//                    binding.llUploadImage.visibility = View.GONE
-//
-//                }
-//                Status.ERROR -> {
-//                    //Handle Error
-//                    binding.llUploadImage.visibility = View.VISIBLE
-//                    binding.progressBarPhoto.visibility = View.GONE
-//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        })
+        viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    isLoading=false
+                    binding.progressBarPhoto.visibility = View.GONE
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val imageResponse =
+                                Gson().fromJson(jsonObject, ImageUploadResponse::class.java)
+                            if (imageResponse.details != null) {
+                                setUpImageInList(null, imageResponse.details)
+                            }
+                        } catch (e: Exception) {
+
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                    binding.progressBarPhoto.visibility = View.VISIBLE
+                    binding.llUploadImage.visibility = View.GONE
+                    isLoading=true
+
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    isLoading=false
+                    binding.llUploadImage.visibility = View.VISIBLE
+                    binding.progressBarPhoto.visibility = View.GONE
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+    }
+
+    private fun setUpImageInList(
+        imagesFromBundle: java.util.ArrayList<Image>?,
+        imagesFromApi: List<Detail>?
+    ) {
+        if (imagesFromBundle != null) {
+            //from bundle
+            if (images.size > 0) {
+                binding.llUploadImage.visibility = View.GONE
+                listImage.clear()
+                images.forEach {
+                    listImage.add(DataModel.Image(it.id.toInt(), it.path))
+                }
+            }
+        } else {
+            //from api
+//            listImage.clear() //to clear if response sends all images
+            if (listImage.size > 0) {
+                var shouldAddCamera = true
+                val lastData = listImage.get(listImage.size - 1)
+                val lastPos = listImage.size - 1
+                if (lastData is DataModel.Camera) {
+                    shouldAddCamera = false
+                }
+                if (!shouldAddCamera) {
+                    listImage.removeAt(lastPos)
+                }
+            }
+            imagesFromApi?.forEach {
+                listImage.add(DataModel.Image(it.id, it.imageUrl))
+            }
+        }
+        if (!(listImage.size == 0)) {
+            binding.llUploadImage.visibility = View.GONE
+            val camera = DataModel.Camera(
+                R.drawable.ic_camera,
+                true
+            )
+            listImage.add(camera)
+            checkIfCamera()
+
+            adapterImage.notifyDataSetChanged()
+        } else {
+            binding.llUploadImage.visibility = View.VISIBLE
+        }
+    }
+    private fun observeDeleteImageReviewApi() {
+        viewModel.observeDeleteUploadAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    isLoading = false
+                    binding.progressBarPhoto.visibility = View.GONE
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val message = jsonObject.get("message").asString
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                            listImage.removeAt(myDeletePosition)
+                            checkIfCamera()
+                            adapterImage.notifyItemChanged(myDeletePosition)
+                            adapterImage.notifyItemChanged(listImage.size)
+                            images.removeAt(myDeletePosition)
+                        } catch (e: Exception) {
+
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                    isLoading = true
+                    binding.progressBarPhoto.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+                    isLoading = false
+                    binding.progressBarPhoto.visibility = View.GONE
+
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
 
     }
 
     private fun checkIfCamera() {
-//        (listImage[listImage.size - 1] as DataModel.Camera).isEnabled = listImage.size < 5
         isDisabledImagePicker = !(listImage.size < 5)
 
     }

@@ -30,6 +30,7 @@ import com.ayata.clad.R
 import com.ayata.clad.brand.response.BrandDetailResponse
 import com.ayata.clad.databinding.DialogShoppingSizeBinding
 import com.ayata.clad.home.response.ProductDetail
+import com.ayata.clad.profile.reviews.adapter.DataModel
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -112,6 +113,24 @@ fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
         override fun onChanged(value: T) {
             removeObserver(this)
             observer(value)
+        }
+    })
+}
+fun <T> LiveData<T>.observeOnceAfterInit(owner: LifecycleOwner, observer: (T) -> Unit) {
+    var firstObservation = true
+
+    observe(owner, object: Observer<T>
+    {
+        override fun onChanged(value: T) {
+            if(firstObservation)
+            {
+                firstObservation = false
+            }
+            else
+            {
+                removeObserver(this)
+                observer(value)
+            }
         }
     })
 }
@@ -236,13 +255,28 @@ open class Event<out T>(private val content: T) {
         }
     }
 
-
     /**
      * Returns the content, even if it's already been handled.
      */
     fun peekContent(): T = content
 }
+/**
+ * An [Observer] for [Event]s, simplifying the pattern of checking if the [Event]'s content has
+ * already been handled.
+ *
+ * [onEventUnhandledContent] is *only* called if the [Event]'s contents has not been handled.
+ */
+class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>> {
+    override fun onChanged(event: Event<T>?) {
+        event?.getContentIfNotHandled()?.let { value ->
+            onEventUnhandledContent(value)
+        }
+    }
+}
 
+
+//val subClasses = DataModel::class.sealedSubclasses.filter { clazz -> clazz == DataModel.Image::class }
+//val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
 
 
 

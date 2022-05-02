@@ -2,6 +2,7 @@ package com.ayata.clad.profile.myorder.order.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Products(
     @SerializedName("image_url")
@@ -11,4 +12,4 @@ data class Products(
     val productId: Int,
     val quantity: Int,
     val variant: Variant
-)
+):Serializable

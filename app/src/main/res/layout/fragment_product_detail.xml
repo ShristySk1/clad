@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
         android:fitsSystemWindows="false"
+        android:visibility="gone"
         android:theme="@style/Base.Theme.DesignDemo">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -96,7 +97,7 @@
                             android:isIndicator="true"
                             android:numStars="5"
                             android:progressDrawable="@drawable/custom_rating_star"
-                            android:rating="3.5"
+                            android:rating="0.0"
                             android:stepSize="0.5"
                             app:layout_constraintStart_toStartOf="@+id/storeName"
                             app:layout_constraintTop_toBottomOf="@+id/storeName" />
@@ -309,6 +310,6 @@
         <include
             android:id="@+id/shimmerView"
             layout="@layout/shimmer_product_detail"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
     </com.facebook.shimmer.ShimmerFrameLayout>
 </FrameLayout>

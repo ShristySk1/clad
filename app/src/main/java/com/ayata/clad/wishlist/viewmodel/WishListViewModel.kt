@@ -16,7 +16,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     private val errorMessage = MutableLiveData<String>()
 
-    private val listResponse = MutableLiveData<Resource<JsonObject>>()
+    private val listResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val removeResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
 
@@ -52,7 +52,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     }
 
-    fun getWishListAPI(): LiveData<Resource<JsonObject>> {
+    fun getWishListAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return listResponse
     }
 
@@ -61,18 +61,24 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val jsonObject=JsonObject()
             jsonObject.addProperty("wishlist_id",id)
-            val response = mainRepository.removeFromWishAPI("$token",jsonObject)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("removeFromWishAPI", "success: "+response.body())
-                    removeResponse.postValue(Resource.success(response.body()))
-                    loading.postValue(false)
-                } else {
-                    Log.e("removeFromWishAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    removeResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.removeFromWishAPI("$token",jsonObject)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("removeFromWishAPI", "success: "+response.body())
+                        removeResponse.postValue(Resource.success(response.body()))
+                        loading.postValue(false)
+                    } else {
+                        Log.e("removeFromWishAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        removeResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            }catch (e:Exception){
+                removeResponse.postValue(Resource.error(e.message.toString(), null))
+
             }
+
         }
 
     }

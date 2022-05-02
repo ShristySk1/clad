@@ -5,9 +5,10 @@
    >
 <ImageView
     android:layout_width="70dp"
-    android:background="@color/colorBlack"
+    android:background="@drawable/background_curve_black2"
     android:src="@drawable/splashimage"
     android:id="@+id/image"
+    android:clipToOutline="true"
     android:layout_marginTop="8dp"
     android:layout_height="70dp"/>
     <ImageView

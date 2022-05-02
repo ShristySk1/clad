@@ -67,6 +67,12 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
+        val bundle = arguments
+        if (bundle != null) {
+            title = bundle.getString(Constants.FILTER_HOME, "")
+        }
+        viewModel.searchProductViewAll(title, PreferenceHandler.getToken(context).toString())
+
     }
 
     override fun onCreateView(
@@ -76,15 +82,10 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
         // Inflate the layout for this fragment
         binding = FragmentViewAllProductBinding.inflate(inflater, container, false)
         mergeBinding = LayoutErrorPagingBinding.bind(binding.root)
-
-        val bundle = arguments
-        if (bundle != null) {
-            title = bundle.getString(Constants.FILTER_HOME, "")
-        }
         initAppbar()
         initRecycler()
         listItem.clear()
-        getAllTest(title)
+        getAllTest()
 
 
         return binding.root
@@ -183,8 +184,7 @@ class FragmentViewAllProduct : Fragment(), AdapterViewAllProduct2.OnItemClickLis
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun getAllTest(filter: String) {
-        viewModel.searchProductViewAll(filter, PreferenceHandler.getToken(context).toString())
+    private fun getAllTest() {
         viewModel.productList.observe(viewLifecycleOwner, {
             adapterPaging.submitData(viewLifecycleOwner.lifecycle, it)
             adapterPaging.snapshot().items

@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="16dp"
+        android:paddingVertical="12dp"
         android:background="@drawable/background_outline_bottom"
         android:orientation="vertical">
 
@@ -46,8 +46,9 @@
             android:id="@+id/tv_totalReview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="33 Reviews"
+            android:textSize="12sp"
             android:textColor="@color/colorGrayText2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -18,7 +18,7 @@ data class ProductDetail(
     val isComingSoon: Boolean,
     val isCouponAvailable: Boolean,
     @SerializedName("is_in_cart")
-    val isInCart: Boolean,
+    var isInCart: Boolean,
     @SerializedName("is_in_wishlist")
     var isInWishlist: Boolean,
     @SerializedName("is_new")

@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -73,9 +74,15 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     var dynamicVarientId = 0
     var choosenSizePosition = 0
     var isStockAvailable = true
+    var makeMainLayoutVisible = true
 
     //for color and size
     lateinit var myMaps: MutableMap<String, MutableList<Variant>>
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
+        getBundle()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,10 +90,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProductDetailBinding.inflate(inflater, container, false)
-        setUpViewModel()
         initView()
-        getBundle()
         observeProductApi()
+        if(this::productDetail.isInitialized) {
+            Log.d("testproduct", "onCreateView: " + productDetail);
+            setShimmerLayout(false)
+            setProductData()
+        }
         setUpFullScreen()
         tapToCopyListener()
         productLikedListener()
@@ -115,38 +125,41 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun observeProductApi() {
-        viewModel.getProductAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    setShimmerLayout(false)
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        try {
-                            val jsonProducts = jsonObject.get("details").asJsonArray
-                            val type: Type =
-                                object : TypeToken<ArrayList<ProductDetail?>?>() {}.type
-                            val list: ArrayList<ProductDetail> = Gson().fromJson(
-                                jsonProducts,
-                                type
-                            )
-                            productDetail = list.first()
-                            setProductData()
-                        } catch (e: Exception) {
-                            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+        viewModel.getProductAPI().observeOnceAfterInit(viewLifecycleOwner, {
+            if(it!=null){
+                Log.d("testproocutapi", "observeProductApi: "+it.status);
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        setShimmerLayout(false)
+                        val jsonObject = it.data
+                        if (jsonObject != null) {
+                            try {
+                                val jsonProducts = jsonObject.get("details").asJsonArray
+                                val type: Type =
+                                    object : TypeToken<ArrayList<ProductDetail?>?>() {}.type
+                                val list: ArrayList<ProductDetail> = Gson().fromJson(
+                                    jsonProducts,
+                                    type
+                                )
+                                productDetail = list.first()
+                                setProductData()
+                            } catch (e: Exception) {
+                                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
-
-                }
-                Status.LOADING -> {
-                    setShimmerLayout(true)
-                }
-                Status.ERROR -> {
-                    setShimmerLayout(false)
-                    //Handle Error
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
+                    Status.LOADING -> {
+                        setShimmerLayout(true)
+                    }
+                    Status.ERROR -> {
+                        setShimmerLayout(false)
+                        //Handle Error
+                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                        Log.d(TAG, "addToCartAPI:Error ${it.message}")
+                    }
                 }
             }
+
 
         })
     }
@@ -179,13 +192,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 //setProductData()
                 //api
                 viewModel.productAPI(PreferenceHandler.getToken(context)!!, data.productId)
-            }else{
-                binding.mainLayout.visibility=View.GONE
+            } else {
+                makeMainLayoutVisible = false
             }
         } else {
             Log.d(TAG, "getBundle:null ");
-            binding.mainLayout.visibility=View.GONE
-
+            makeMainLayoutVisible = false
         }
     }
 
@@ -315,8 +327,10 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         //from api
         if (isWishList) {
             binding.ivHeart.setImageResource(R.drawable.ic_heart_filled)
+            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInWishlist=true
         } else {
             binding.ivHeart.setImageResource(R.drawable.ic_heart_outline)
+            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInWishlist=false
         }
     }
 
@@ -325,9 +339,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         if (isCart) {
             binding.imageCart.setImageResource(R.drawable.ic_bag_filled)
             binding.detail2.ivCart.setImageResource(R.drawable.ic_bag_filled)
+            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInCart=true
         } else {
             binding.imageCart.setImageResource(R.drawable.ic_cart)
             binding.detail2.ivCart.setImageResource(R.drawable.ic_cart)
+            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInCart=false
         }
     }
 
@@ -439,7 +455,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //            binding.detail2.payPrice.text = getString(R.string.usd) + " 80"
 //        }
 
-
+        if (!makeMainLayoutVisible) {
+            binding.mainLayout.visibility = View.GONE
+        }
     }
 
     private fun setProductImage(imageView: PercentageCropImageView) {
@@ -668,10 +686,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun addToWishListAPI() {
         Log.d(TAG, "addToWishListAPI: " + dynamicVarientId);
+        binding.imageView3.isClickable=false
         viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+
                     progressDialog.dismiss()
                     Log.d(TAG, "addToWishListAPI: ${it.data}")
                     val jsonObject = it.data
@@ -683,22 +703,33 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                             )
                             isProductWishList = true
                             setWishlist(true)
+                            binding.imageView3.isClickable=true
                             MainActivity.NavCount.myWishlist =
                                 MainActivity.NavCount.myWishlist?.plus(1)
 
                         } catch (e: Exception) {
+                            binding.imageView3.isClickable=true
                             Log.d(TAG, "addToWishListAPI:Error ${e.message}")
                             Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                         }
+                    }else{
+                        binding.imageView3.isClickable=true
                     }
 
                 }
                 Status.LOADING -> {
                     progressDialog = ProgressDialog.newInstance("", "")
+                    val prev: Fragment? =
+                        parentFragmentManager.findFragmentByTag("like_progress")
+                    if (prev != null) {
+                        val df: DialogFragment = prev as DialogFragment
+                        df.dismiss()
+                    }
                     progressDialog.show(parentFragmentManager, "like_progress")
                 }
                 Status.ERROR -> {
                     progressDialog.dismiss()
+                    binding.imageView3.isClickable=true
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToWishListAPI:Error ${it.message}")
@@ -761,6 +792,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun addCart() {
 //        Toast.makeText(context, dynamicVarientId.toString(), Toast.LENGTH_SHORT).show()
+        binding.imageView3.isClickable=false
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -772,6 +804,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         try {
                             isProductInCart = true
                             setCart(true)
+                            binding.imageView3.isClickable=true
                             showSnackBar(
                                 jsonObject.get("message").toString().removeDoubleQuote(),
                                 Constants.GO_TO_CART
@@ -780,17 +813,27 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                                 MainActivity.NavCount.myBoolean?.plus(1)
 
                         } catch (e: Exception) {
+                            binding.imageView3.isClickable=true
                             Log.d(TAG, "addToCartAPI:Error ${e.message}")
                         }
+                    }else{
+                        binding.imageView3.isClickable=true
                     }
 
                 }
                 Status.LOADING -> {
                     progressDialog = ProgressDialog.newInstance("", "")
+                    val prev: Fragment? =
+                        parentFragmentManager.findFragmentByTag("add_progress")
+                    if (prev != null) {
+                        val df: DialogFragment = prev as DialogFragment
+                        df.dismiss()
+                    }
                     progressDialog.show(parentFragmentManager, "add_progress")
                 }
                 Status.ERROR -> {
                     progressDialog.dismiss()
+                    binding.imageView3.isClickable=true
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToCartAPI:Error ${it.message}")
@@ -937,6 +980,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         stock.setTextColor(ContextCompat.getColor(context, colorDark));
         stock.background.setTint(ContextCompat.getColor(context, colorLight));
     }
+
     private fun setShimmerLayout(isVisible: Boolean) {
         if (isVisible) {
             binding.mainLayout.visibility = View.GONE

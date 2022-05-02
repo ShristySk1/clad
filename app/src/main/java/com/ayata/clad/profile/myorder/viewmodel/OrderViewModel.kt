@@ -10,6 +10,7 @@ import com.ayata.clad.profile.edit.response.Details
 import com.ayata.clad.utils.Constants
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
+import okhttp3.MultipartBody
 
 class OrderViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
@@ -17,7 +18,6 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
 
     private val orderResponse = MutableLiveData<Resource<JsonObject>>()
     private val cancelOrderResponse = MutableLiveData<Resource<JsonObject>>()
-
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -72,6 +72,63 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
     fun observeCancelOrderResponse(): LiveData<Resource<JsonObject>> {
         return cancelOrderResponse
     }
+
+    private val imageUploadResponse = MutableLiveData<Resource<JsonObject>>()
+    private val imageDeleteResponse = MutableLiveData<Resource<JsonObject>>()
+    fun imageUploadAPI(images: List<MultipartBody.Part>) {
+        imageUploadResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.uploadImageReviewApi(images)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        imageUploadResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        imageUploadResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            } catch (e: Exception) {
+                imageUploadResponse.postValue(Resource.error(e.message.toString(), null))
+            }
+
+        }
+    }
+
+    fun observeimageUploadAPI(): LiveData<Resource<JsonObject>> {
+        return imageUploadResponse
+    }
+
+    fun imageDeleteAPI(image_id: Int) {
+        imageDeleteResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.deleteImageReviewApi(image_id)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        imageDeleteResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        imageDeleteResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            } catch (e: Exception) {
+                imageDeleteResponse.postValue(Resource.error(e.message.toString(), null))
+            }
+
+        }
+    }
+
+    fun observeDeleteUploadAPI(): LiveData<Resource<JsonObject>> {
+        return imageDeleteResponse
+    }
+
 
     private fun onError(message: String) {
         errorMessage.postValue(message)

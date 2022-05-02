@@ -183,7 +183,6 @@ class FragmentMyReviewsForm : Fragment() {
             when (it.status) {
                 Status.SUCCESS -> {
                     progressDialog.dismiss()
-                    isLoading = false
 //                    binding.progressBar.rootContainer.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -204,13 +203,13 @@ class FragmentMyReviewsForm : Fragment() {
                     }
                 }
                 Status.LOADING -> {
-                    isLoading = true
+
 //                    binding.progressBar.rootContainer.visibility = View.VISIBLE
                     progressDialog = ProgressDialog.newInstance("", "")
                     progressDialog.show(parentFragmentManager, "post_progress")
                 }
                 Status.ERROR -> {
-                    isLoading = false
+
                     progressDialog.dismiss()
 
 //                    binding.progressBar.rootContainer.visibility = View.GONE
@@ -402,6 +401,7 @@ class FragmentMyReviewsForm : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //image
         binding.llUploadImage.setOnClickListener {
             if (!isDisabledImagePicker)
                 openGalleryForImages()
@@ -573,6 +573,7 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    isLoading=false
                     binding.progressBarPhoto.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -603,10 +604,12 @@ class FragmentMyReviewsForm : Fragment() {
                 Status.LOADING -> {
                     binding.progressBarPhoto.visibility = View.VISIBLE
                     binding.llUploadImage.visibility = View.GONE
+                    isLoading=true
 
                 }
                 Status.ERROR -> {
                     //Handle Error
+                    isLoading=false
                     binding.llUploadImage.visibility = View.VISIBLE
                     binding.progressBarPhoto.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()

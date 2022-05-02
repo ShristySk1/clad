@@ -12,7 +12,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="8dp">
+            android:layout_marginVertical="4dp">
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/image_brand"
@@ -56,9 +56,10 @@
             android:id="@+id/ratingBar1"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:layout_marginTop="16dp"
             android:isIndicator="true"
             android:numStars="5"
+            android:layout_marginTop="2dp"
+            android:layout_alignTop="@id/layout_image"
             android:layout_marginRight="16dp"
             android:layout_alignParentEnd="true"
             android:progressDrawable="@drawable/custom_rating_star_theme"

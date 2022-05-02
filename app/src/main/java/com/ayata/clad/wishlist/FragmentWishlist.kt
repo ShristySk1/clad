@@ -5,14 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
@@ -31,7 +29,6 @@ import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
-import com.ayata.clad.product.ModelProduct
 import com.ayata.clad.product.viewmodel.ProductViewModel
 import com.ayata.clad.product.viewmodel.ProductViewModelFactory
 import com.ayata.clad.productlist.ItemOffsetDecoration
@@ -63,6 +60,7 @@ class FragmentWishlist : Fragment() {
     private lateinit var viewModelCart: ProductViewModel
     private lateinit var viewModelHome: HomeViewModel
     private lateinit var progressDialog: ProgressDialog
+    private lateinit var currentproduct:Wishlist
 
 
     //size dialog
@@ -78,12 +76,133 @@ class FragmentWishlist : Fragment() {
 
         initAppbar()
         initRefreshLayout()
+        viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
         getWishListAPI()
         setUpFilterListener()
         setUpRecyclerProductList()
-
-
+        observeRemoveWishlistApi()
+        observeAddCartApi()
         return binding.root
+    }
+
+    private fun observeAddCartApi() {
+        viewModelCart.getAddToCartAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.d(TAG, "addToCartAPI: ${it.data}")
+                    val jsonObject = it.data
+                    progressDialog.dismiss()
+                    if (jsonObject != null) {
+                        showSnackBar(jsonObject.get("message").toString())
+                        MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
+                        var pos = 0
+                        for (item in myWishList) {
+                            if (item.wishlist_id == currentproduct.wishlist_id) {
+                                pos = myWishList.indexOf(item)
+                                break
+                            }
+                        }
+                        val data =
+                            myWishList[pos].product.variants.filter { myWishList[pos].selected.variantId == it.variantId }
+                                .single()
+
+                        data.isInCart = true
+                        adapterWishList.notifyItemChanged(pos)
+
+                        //                        myWishList.removeAt(pos)
+//                        adapterWishList.notifyItemRemoved(pos)
+//                        MainActivity.NavCount.myWishlist =
+//                            MainActivity.NavCount.myWishlist?.minus(1)
+                    }
+
+
+                }
+                Status.LOADING -> {
+//                    binding.spinKit.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "add_progress")
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    progressDialog.dismiss()
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
+                }
+            }
+        })
+
+    }
+
+    private fun observeRemoveWishlistApi() {
+
+        viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
+            Log.d("teststatus", "test status: " + it.status);
+//            it?.takeIf { userVisibleHint }?.getContentIfNotHandled()?.let {
+            //DO what ever is needed
+            when (it.status) {
+                Status.SUCCESS -> {
+                    if (this::progressDialog.isInitialized) {
+                        progressDialog.dismiss()
+                    }
+                    Log.d(TAG, "removeWishListAPI response: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            showSnackBar(msg = "Product removed from wishlist")
+                            var remove: Wishlist? = null;
+                            var position: Int? = null
+                            Log.d("testnumber", "bottom : " + currentproduct.product.name);
+                            for ((index, item) in myWishList.withIndex()) {
+                                Log.d("testnumber", "removeWishListAPI: " + item.product.name);
+                                if (item.wishlist_id == currentproduct.wishlist_id) {
+                                    remove = item
+                                    position = index
+                                }
+                            }
+                            remove?.let {
+                                myWishList.removeAt(position!!)
+                            }
+                            Log.d("mypositionfinder", "removeWishListAPI:position " + position);
+                            position?.let {
+                                adapterWishList.notifyItemRemoved(position)
+                                MainActivity.NavCount.myWishlist =
+                                    MainActivity.NavCount.myWishlist?.minus(1)
+
+                            }
+                            setUpView()
+
+                        } catch (e: Exception) {
+                            Log.d(TAG, "removeWishListAPI:Error ${e.message}")
+                        }
+                    }
+
+                }
+                Status.LOADING -> {
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    val prev: Fragment? =
+                        parentFragmentManager.findFragmentByTag("remove_progress")
+                    if (prev != null) {
+                        val df: DialogFragment = prev as DialogFragment
+                        df.dismiss()
+                    }
+                    progressDialog.show(parentFragmentManager, "remove_progress")
+                }
+                Status.ERROR -> {
+                    if (this::progressDialog.isInitialized) {
+                        progressDialog.dismiss()
+                    }
+                    //Handle Error
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
+                }
+            }
+//            }
+//            it.getContentIfNotHandled()?.let { // Only proceed if the event has never been handled
+//
+//            }
+
+
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +211,7 @@ class FragmentWishlist : Fragment() {
         setUpViewModel()
 
     }
+
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
             requireActivity(),
@@ -107,7 +227,6 @@ class FragmentWishlist : Fragment() {
             this,
             ProductViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         ).get(ProductViewModel::class.java)
-        viewModel.wishListAPI(PreferenceHandler.getToken(context).toString())
     }
 
     private fun initRefreshLayout() {
@@ -411,132 +530,27 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun addToCartAPI(product: Wishlist) {
+        currentproduct=product
         Log.d(TAG, "addToCartAPI: " + product);
         viewModelCart.addToCartAPI(
             PreferenceHandler.getToken(context).toString(),
             product.selected.variantId
         )
-        viewModelCart.getAddToCartAPI().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.d(TAG, "addToCartAPI: ${it.data}")
-                    val jsonObject = it.data
-                    progressDialog.dismiss()
-                    if (jsonObject != null) {
-                        showSnackBar(jsonObject.get("message").toString())
-                        MainActivity.NavCount.myBoolean = MainActivity.NavCount.myBoolean?.plus(1)
-                        var pos = 0
-                        for (item in myWishList) {
-                            if (item.wishlist_id == product.wishlist_id) {
-                                pos = myWishList.indexOf(item)
-                                break
-                            }
-                        }
-                        val data =
-                            myWishList[pos].product.variants.filter { myWishList[pos].selected.variantId == it.variantId }
-                                .single()
-
-                        data.isInCart = true
-                        adapterWishList.notifyItemChanged(pos)
-
-                        //                        myWishList.removeAt(pos)
-//                        adapterWishList.notifyItemRemoved(pos)
-//                        MainActivity.NavCount.myWishlist =
-//                            MainActivity.NavCount.myWishlist?.minus(1)
-                    }
 
 
-                }
-                Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
-                    progressDialog = ProgressDialog.newInstance("", "")
-                    progressDialog.show(parentFragmentManager, "add_progress")
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    progressDialog.dismiss()
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "addToCartAPI:Error ${it.message}")
-                }
-            }
-        })
     }
 
     private fun removeWishListAPI(product: Wishlist) {
-        Log.d("testnumber", "top : "+product.product.name);
-
+        Log.d("testnumber", "top : " + product.product.name);
+        currentproduct=product
         viewModel.removeFromWishAPI(
             PreferenceHandler.getToken(context).toString(),
             product.wishlist_id!!
         )
-        viewModel.getRemoveFromWishAPI().observe(viewLifecycleOwner, {
-            Log.d("testnumber", "bottom middle: "+product.product.name);
-//            it?.takeIf { userVisibleHint }?.getContentIfNotHandled()?.let {
-                //DO what ever is needed
-                when (it.status) {
-                    Status.SUCCESS -> {
-                        progressDialog.dismiss()
-                        Log.d(TAG, "removeWishListAPI response: ${it.data}")
-                        val jsonObject = it.data
-                        if (jsonObject != null) {
-                            showSnackBar(msg = "Product removed from wishlist")
-                            var remove: Wishlist? = null;
-                            var position: Int? = null
-                            try {
-                                Log.d("testnumber", "bottom : " + product.product.name);
-                                for ((index, item) in myWishList.withIndex()) {
-                                    Log.d("testnumber", "removeWishListAPI: " + item.product.name);
-                                    if (item.wishlist_id == product.wishlist_id) {
-                                        remove = item
-                                        position = index
-                                    }
-                                }
-                                remove?.let {
-                                    myWishList.removeAt(position!!)
-                                }
-                                Log.d("mypositionfinder", "removeWishListAPI:position " + position);
-                                position?.let {
-                                    adapterWishList.notifyItemRemoved(position)
-                                    MainActivity.NavCount.myWishlist =
-                                        MainActivity.NavCount.myWishlist?.minus(1)
 
-                                }
-                                setUpView()
-
-                            } catch (e: Exception) {
-                                Log.d(TAG, "removeWishListAPI:Error ${e.message}")
-                            }
-                        }
-
-                    }
-                    Status.LOADING -> {
-                        progressDialog = ProgressDialog.newInstance("", "")
-                        val prev: Fragment? =
-                            parentFragmentManager.findFragmentByTag("remove_progress")
-                        if (prev != null) {
-                            val df: DialogFragment = prev as DialogFragment
-                            df.dismiss()
-                        }
-                        progressDialog.show(parentFragmentManager, "remove_progress")
-                    }
-                    Status.ERROR -> {
-                        progressDialog.dismiss()
-                        //Handle Error
-                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                        Log.d(TAG, "removeWishListAPI:Error ${it.message}")
-                    }
-                }
-//            }
-//            it.getContentIfNotHandled()?.let { // Only proceed if the event has never been handled
-//
-//            }
-
-
-        })
     }
 
     private fun getWishListAPI() {
-        setShimmerLayout(true)
         viewModel.getWishListAPI().observe(viewLifecycleOwner, {
             Log.d("tesshimmer", "wishlist: ${it.status}")
             when (it.status) {
@@ -581,7 +595,7 @@ class FragmentWishlist : Fragment() {
                     adapterWishList.notifyDataSetChanged()
                 }
                 Status.LOADING -> {
-
+                    setShimmerLayout(true)
                 }
                 Status.ERROR -> {
                     //Handle Error
@@ -604,7 +618,7 @@ class FragmentWishlist : Fragment() {
 //            "Error!",
 //            it
 //        )
-        Caller().error(Constants.ERROR_TEXT,it,requireContext(),binding.layoutContainer)
+        Caller().error(Constants.ERROR_TEXT, it, requireContext(), binding.layoutContainer)
 
 
     }
@@ -613,6 +627,7 @@ class FragmentWishlist : Fragment() {
         binding.layoutFilled.visibility = View.VISIBLE
         Caller().hideErrorEmpty(binding.layoutContainer)
     }
+
     private fun setDataToView(wishlist: List<Wishlist>) {
         myWishList.clear()
         myWishList.addAll(wishlist)
