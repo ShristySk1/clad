@@ -2,6 +2,7 @@ package com.ayata.clad.product.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.databinding.ItemRecyclerToBeReviewedBinding
@@ -17,7 +18,9 @@ class AdapterMyReviews(val context:Context,
         RecyclerView.ViewHolder(binding.root) {
         fun clickView(item: Review) {
             if(item.reviewDetails.isReviewed){
+                binding.ratingBar.visibility=View.VISIBLE
                 binding.tvReview.text="Edit"
+                binding.ratingBar.rating=item.reviewDetails.rate.toFloat()
             }
 
             binding.name.text = item.product.name

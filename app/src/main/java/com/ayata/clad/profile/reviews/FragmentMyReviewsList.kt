@@ -61,9 +61,15 @@ class FragmentMyReviewsList : Fragment() {
             FragmentMyReviewsListBinding.inflate(inflater, container, false)
         initAppbar()
         initRefreshLayout()
-        setUpViewModel()
+        viewModel.reviewAPI(PreferenceHandler.getToken(requireContext())!!)
         setTabLayout()
+        observeGetReview()
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpViewModel()
     }
     private fun initRefreshLayout() {
         //refresh layout on swipe
@@ -92,7 +98,6 @@ class FragmentMyReviewsList : Fragment() {
             this,
             ReviewViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[ReviewViewModel::class.java]
-        viewModel.reviewAPI(PreferenceHandler.getToken(requireContext())!!)
     }
 
     override fun onResume() {
@@ -144,7 +149,7 @@ class FragmentMyReviewsList : Fragment() {
         val dataUnreviewed = mutableListOf<ModelReview>(ModelReview("B", false))
         listReviewUnreviewed = arrayListOf()
         listReviewed = arrayListOf()
-        observeGetReview()
+
 //        setData(dataUnreviewed, listReviewUnreviewed)
 //        setData(dataReviewed, listReviewed)
     }
@@ -153,6 +158,7 @@ class FragmentMyReviewsList : Fragment() {
         val livedata = viewModel.observeGetReviewApi()
         livedata
             .observe(viewLifecycleOwner) {
+                Log.d("teststatus", "observeGetReview: "+it.status);
                 when (it.status) {
                     Status.SUCCESS -> {
                         hideProgress()
@@ -175,6 +181,7 @@ class FragmentMyReviewsList : Fragment() {
                                     val reviewed =
                                         list.filter { it.reviewDetails.isReviewed == true }
                                             .toMutableList()
+                                    Log.d("calledme", "setting reviewed and unreviewd: ");
                                     setData(unreviewed, reviewed)
                                 } else {
                                     setData(arrayListOf(), arrayListOf())
@@ -240,7 +247,6 @@ class FragmentMyReviewsList : Fragment() {
         isFetchedApi = true
         Log.d("testmybooloean", "setData: " + isApiFetched);
         Log.d("testnumber", "setData: " + initialPositionOfTab);
-
         adapterReviewViewPager.notifyDataSetChanged()
         binding.viewPager.adapter = null
         binding.viewPager.adapter = adapterReviewViewPager

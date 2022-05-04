@@ -1,5 +1,6 @@
 package com.ayata.clad.profile.reviews.adapter
 
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -163,6 +164,7 @@ sealed class DataModel {
     data class Image(
         val id: Int,
         val image: String,
+        var deviceImageUri:Uri?=null
     ) : DataModel()
 
     data class ImageOnly(

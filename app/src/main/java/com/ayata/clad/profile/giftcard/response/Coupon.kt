@@ -2,6 +2,7 @@ package com.ayata.clad.profile.giftcard.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Coupon(
     val code: String,
@@ -22,4 +23,4 @@ data class Coupon(
     val validTo: String,
     @SerializedName("validity_count")
     val validityCount: Int
-)
+):Serializable

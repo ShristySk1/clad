@@ -401,10 +401,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             this,
             CheckoutViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[CheckoutViewModel::class.java]
-        viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
 
     }
-
 
     private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(true)
@@ -452,6 +450,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     }
 
     private fun initView() {
+        viewModel.cartListAPI(PreferenceHandler.getToken(context).toString())
+
         binding.textTotal.text =
             SpannableStringBuilder().bold { append("Total ") }.append("(incl. VAT)")
 
@@ -552,7 +552,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     item.productDetails.brand?.name?:"",
                     item.selected.stock_status,
                     item.productDetails.isCouponAvailable ?: false,
-                    item.productDetails.coupon?.let { it.code } ?: run { "" }
+                    item.productDetails.coupon?.let { it.code } ?: run { "" },
+                    item.selected.sku
                 )
             )
         }
@@ -785,7 +786,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private fun getCartAPI() {
         listCheckout.clear()
-        setShimmerLayout(true)
+
         viewModel.getCartListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -830,6 +831,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     adapterCheckout.notifyDataSetChanged()
                 }
                 Status.LOADING -> {
+                    setShimmerLayout(true)
                 }
                 Status.ERROR -> {
                     //Handle Error

@@ -15,8 +15,8 @@ import okhttp3.MultipartBody
 class ReviewViewModel constructor(private val mainRepository: ApiRepository) : ViewModel() {
 
     private val errorMessage = MutableLiveData<String>()
-    private val reviewResponse = SingleLiveEvent<Resource<JsonObject>>()
-    private val postReviewResponse = MutableLiveData<Resource<JsonObject>>()
+    private val reviewResponse = MutableLiveData<Resource<JsonObject>>()
+    private val postReviewResponse = SingleLiveEvent<Resource<JsonObject>>()
 
 
     private val imageUploadResponse = MutableLiveData<Resource<JsonObject>>()
@@ -51,7 +51,7 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
         }
     }
 
-    fun observeGetReviewApi(): SingleLiveEvent<Resource<JsonObject>> {
+    fun observeGetReviewApi(): LiveData<Resource<JsonObject>> {
         return reviewResponse
     }
 
@@ -161,7 +161,7 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
         }
     }
 
-    fun observePostReviewApi(): LiveData<Resource<JsonObject>> {
+    fun observePostReviewApi(): SingleLiveEvent<Resource<JsonObject>> {
         return postReviewResponse
     }
 

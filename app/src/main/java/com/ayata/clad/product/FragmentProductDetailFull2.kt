@@ -40,12 +40,15 @@ class FragmentProductDetailFull2 : Fragment() {
 
     private fun initView() {
         (activity as MainActivity).showToolbar(true)
-        (activity as MainActivity).setToolbar2(
-            isClose = false, isBack = true, isFilter = false, isClear = false,
-            textTitle = "",
-            textDescription = ""
-        )
         (activity as MainActivity).showBottomNavigation(false)
+        arguments?.let {
+            val title = it.getString("title") as String
+            (activity as MainActivity).setToolbar2(
+                isClose = false, isBack = true, isFilter = false, isClear = false,
+                textTitle = title,
+                textDescription = ""
+            )
+        }
     }
 
     private fun getBundle(): ArrayList<String> {

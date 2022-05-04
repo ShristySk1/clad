@@ -18,7 +18,6 @@ import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.databinding.FragmentCancelFormBinding
 import com.ayata.clad.databinding.FragmentReturnFormBinding
 import com.ayata.clad.productlist.ItemOffsetDecoration
 import com.ayata.clad.profile.address.CustomArrayAdapter
@@ -35,6 +34,7 @@ import com.ayata.clad.profile.reviews.response.ImageUploadResponse
 import com.ayata.clad.profile.reviews.utils.CustomImagePickerComponents
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.ProgressDialog
+import com.ayata.clad.utils.removeDoubleQuote
 import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
@@ -51,10 +51,9 @@ import java.io.File
 const val MY_PHOTO_NUMBER = 4
 
 class FragmentReturnForm : Fragment() {
-    private val TAG: String="FragmentReturnForm"
+    private val TAG: String = "FragmentReturnForm"
     lateinit var binding: FragmentReturnFormBinding
     private lateinit var viewModel: OrderViewModel
-    lateinit var cancelViewmodel: CancelViewModel
     lateinit var o: Order
     private var reason_ = "";
     lateinit var progressDialog: ProgressDialog
@@ -80,43 +79,40 @@ class FragmentReturnForm : Fragment() {
         initView()
         setUpViewModel()
         initRecyclerview()
-        observeCancelOrder()
+        observeReturnOrder()
         observeImageUploadApi()
         observeDeleteImageReviewApi()
         binding.btnReturnOrder.setOnClickListener {
-            if(!isLoading) {
-//            val comment = binding.tvDescription.text.toString()
+            if (!isLoading) {
+                val comment = binding.tvDescription.text.toString()
                 val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
                 Log.d(TAG, "onCreateView: " + imageFromModel);
                 val imgIds = imageFromModel.map { (it).id }
                 Log.d("myimageids", "onCreateView: " + imgIds);
-//            viewModel.cancelOrderApi(
-//                PreferenceHandler.getToken(context)!!,
-//                o.orderId,
-//                reason_,
-//                comment
-//            )
-                Toast.makeText(requireContext(), "Api in progress", Toast.LENGTH_SHORT).show()
+                viewModel.returnOrderApi(
+                    PreferenceHandler.getToken(context)!!,
+                    o.orderId,
+                    comment,
+                    reason_,
+                    imgIds
+                )
             }
         }
         return binding.root
     }
 
-    private fun observeCancelOrder() {
-        viewModel.observeCancelOrderResponse().observe(viewLifecycleOwner, {
+    private fun observeReturnOrder() {
+        viewModel.observeReturnOrderResponse().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
-
                             Toast.makeText(
                                 requireContext(),
-                                jsonObject.get("message").toString(),
+                                jsonObject.get("message").toString().removeDoubleQuote(),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            cancelViewmodel.setCancelDetails(true)
                             progressDialog.dismiss()
                             //directly go to order list fragment
                             parentFragmentManager.popBackStack(
@@ -130,7 +126,7 @@ class FragmentReturnForm : Fragment() {
                 }
                 Status.LOADING -> {
                     progressDialog = ProgressDialog.newInstance("", "")
-                    progressDialog.show(parentFragmentManager, "cancel_progress")
+                    progressDialog.show(parentFragmentManager, "return_progress")
 
                 }
                 Status.ERROR -> {
@@ -153,7 +149,6 @@ class FragmentReturnForm : Fragment() {
             this,
             OrderViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         )[OrderViewModel::class.java]
-        cancelViewmodel = ViewModelProviders.of(requireActivity()).get(CancelViewModel::class.java)
 
     }
 
@@ -189,7 +184,9 @@ class FragmentReturnForm : Fragment() {
         val listReason =
             arrayListOf<ModelTest>(
                 ModelTest(arrayListOf(), "Damaged Product"),
-                ModelTest(arrayListOf(), "Wrong Product")
+                ModelTest(arrayListOf(), "Shipped Wrong Product"),
+                ModelTest(arrayListOf(), "Shipped Wrong Size"),
+                ModelTest(arrayListOf(), "Product Did Not Meet Customer Expectation")
             )
         if (binding.spinner != null) {
             val adapter =
@@ -251,10 +248,11 @@ class FragmentReturnForm : Fragment() {
         }
         //for viewing image
         adapterImage.setReviewClickListener { imageList, i ->
-            val image=imageList as List<DataModel.Image>
-            Log.d("testimage", "inirRecyclerView: "+image.size);
-            val frag= FragmentImageSwiper.newInstance(image.map { it.image },i)
-            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,frag).addToBackStack(null).commit()
+            val image = imageList as List<DataModel.Image>
+            Log.d("testimage", "inirRecyclerView: " + image.size);
+            val frag = FragmentImageSwiper.newInstance(image.map { it.image }, i)
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment, frag)
+                .addToBackStack(null).commit()
         }
     }
 
@@ -335,15 +333,24 @@ class FragmentReturnForm : Fragment() {
 
     private fun setModelData() {
         val fileList = arrayListOf<MultipartBody.Part>()
+        val img = listImage.filterIsInstance<DataModel.Image>()
+        val deviceImageUri = img.map { it.deviceImageUri }
+        Log.d("testlist", "setModelData: " + img);
         images.forEach {
-            fileList.add(
-                MultipartBody.Part.createFormData(
-                    "images",
-                    "img_" + images.indexOf(it) + ".jpg",
-                    RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
+            if (deviceImageUri.contains(it.uri)) {
+                //already uploaded
+            } else {
+                fileList.add(
+                    MultipartBody.Part.createFormData(
+                        "images",
+                        "img_" + images.indexOf(it) + ".jpg",
+                        RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
+                    )
                 )
-            )
+            }
         }
+        Log.d("testimagenumber", "setModelData: " + fileList.size);
+
         viewModel.imageUploadAPI(fileList)
     }
 
@@ -352,7 +359,7 @@ class FragmentReturnForm : Fragment() {
         viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    isLoading=false
+                    isLoading = false
                     binding.progressBarPhoto.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -370,12 +377,12 @@ class FragmentReturnForm : Fragment() {
                 Status.LOADING -> {
                     binding.progressBarPhoto.visibility = View.VISIBLE
                     binding.llUploadImage.visibility = View.GONE
-                    isLoading=true
+                    isLoading = true
 
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    isLoading=false
+                    isLoading = false
                     binding.llUploadImage.visibility = View.VISIBLE
                     binding.progressBarPhoto.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
@@ -395,7 +402,7 @@ class FragmentReturnForm : Fragment() {
                 binding.llUploadImage.visibility = View.GONE
                 listImage.clear()
                 images.forEach {
-                    listImage.add(DataModel.Image(it.id.toInt(), it.path))
+                    listImage.add(DataModel.Image(it.id.toInt(), it.path, it.uri))
                 }
             }
         } else {
@@ -412,8 +419,13 @@ class FragmentReturnForm : Fragment() {
                     listImage.removeAt(lastPos)
                 }
             }
+            //set data from url
             imagesFromApi?.forEach {
                 listImage.add(DataModel.Image(it.id, it.imageUrl))
+            }
+            //set uri from device images
+            images.forEachIndexed { index, image ->
+                listImage.filterIsInstance<DataModel.Image>().get(index).deviceImageUri = image.uri
             }
         }
         if (!(listImage.size == 0)) {
@@ -430,6 +442,7 @@ class FragmentReturnForm : Fragment() {
             binding.llUploadImage.visibility = View.VISIBLE
         }
     }
+
     private fun observeDeleteImageReviewApi() {
         viewModel.observeDeleteUploadAPI().observe(viewLifecycleOwner, {
             when (it.status) {

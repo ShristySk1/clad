@@ -174,8 +174,8 @@ class FragmentMyReviewsForm : Fragment() {
 
             }
         })
-        myChosenSize=tabSize.getTabAt(tabSize.selectedTabPosition)?.text.toString()
-        myChosenComfort=tabComfort.getTabAt(tabComfort.selectedTabPosition)?.text.toString()
+        myChosenSize = tabSize.getTabAt(tabSize.selectedTabPosition)?.text.toString()
+        myChosenComfort = tabComfort.getTabAt(tabComfort.selectedTabPosition)?.text.toString()
     }
 
     private fun observePostReviewApi() {
@@ -190,10 +190,10 @@ class FragmentMyReviewsForm : Fragment() {
                             val message = jsonObject.get("message").asString
 //                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 //                            showDialog("",message )
-                            if(message.contains("Thank you",ignoreCase = true)) {
+                            if (message.contains("Thank you", ignoreCase = true)) {
                                 (activity as MainActivity).showSnakbar(message)
                                 parentFragmentManager.popBackStackImmediate()
-                            }else{
+                            } else {
                                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                             }
 
@@ -282,46 +282,46 @@ class FragmentMyReviewsForm : Fragment() {
     }
 
     private fun initBundle() {
-            arguments?.let {
+        arguments?.let {
 //                FragmentMyReviewsList.initialPositionOfTab = 1
-                item = it.getSerializable("datas") as Review
-                Log.d("tetstitem", "initBundle: " + item);
-                binding.name.text = item.product.name
-                binding.itemId.text = "Item ID: ${item.orderCode}"
-                Glide.with(requireContext()).load(item.product.image_url).into(binding.image)
-                binding.description.text =
-                    "${item.product.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${item.product.color} / Qty: ${item.product.quantity}"
+            item = it.getSerializable("datas") as Review
+            Log.d("tetstitem", "initBundle: " + item);
+            binding.name.text = item.product.name
+            binding.itemId.text = "Item ID: ${item.orderCode}"
+            Glide.with(requireContext()).load(item.product.image_url).into(binding.image)
+            binding.description.text =
+                "${item.product.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${item.product.color} / Qty: ${item.product.quantity}"
 
-                if (item.reviewDetails.isReviewed) {
-                    binding.tvDescription.setText(item.reviewDetails.description)
-                    binding.ratingBar1.rating = item.reviewDetails.rate.toFloat()
-                    val img = arrayListOf<Image>()
-                    if (item.reviewDetails.imageUrl.size > 0) {
-                        item.reviewDetails.imageUrl.forEach {
-                            img.add(
-                                Image(
-                                    it.id.toLong(),
-                                    "name",
-                                    it.imageUrl
-                                )
+            if (item.reviewDetails.isReviewed) {
+                binding.tvDescription.setText(item.reviewDetails.description)
+                binding.ratingBar1.rating = item.reviewDetails.rate.toFloat()
+                val img = arrayListOf<Image>()
+                if (item.reviewDetails.imageUrl.size > 0) {
+                    item.reviewDetails.imageUrl.forEach {
+                        img.add(
+                            Image(
+                                it.id.toLong(),
+                                "name",
+                                it.imageUrl
                             )
-                        }
+                        )
                     }
-                    val testImage =
-                        "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
-                    formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort?:"Uncomfortable")
-                    binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
-                    myChosenQuality = item.reviewDetails.quality.toInt()
-                    myChosenSize = item.reviewDetails.size
-                    myChosenComfort = item.reviewDetails.comfort
-//                printImages(img)
-                    images.clear()
-                    images.addAll(img)
-                    setUpImageInList(images, null)
-                }else{
-//                    FragmentMyReviewsList.initialPositionOfTab = 0
                 }
+                val testImage =
+                    "https://images.unsplash.com/photo-1612151855475-877969f4a6cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&w=1000&q=80"
+                formatMyTab(item.reviewDetails.size, item.reviewDetails.comfort ?: "Uncomfortable")
+                binding.progressBarQuality.value = item.reviewDetails.quality.toFloat()
+                myChosenQuality = item.reviewDetails.quality.toInt()
+                myChosenSize = item.reviewDetails.size
+                myChosenComfort = item.reviewDetails.comfort
+//                printImages(img)
+                images.clear()
+                images.addAll(img)
+                setUpImageInList(images, null)
+            } else {
+//                    FragmentMyReviewsList.initialPositionOfTab = 0
             }
+        }
     }
 
     private fun setUpImageInList(
@@ -334,7 +334,7 @@ class FragmentMyReviewsForm : Fragment() {
                 binding.llUploadImage.visibility = View.GONE
                 listImage.clear()
                 images.forEach {
-                    listImage.add(DataModel.Image(it.id.toInt(), it.path))
+                    listImage.add(DataModel.Image(it.id.toInt(), it.path, it.uri))
                 }
             }
         } else {
@@ -351,8 +351,13 @@ class FragmentMyReviewsForm : Fragment() {
                     listImage.removeAt(lastPos)
                 }
             }
+            //set data from url
             imagesFromApi?.forEach {
                 listImage.add(DataModel.Image(it.id, it.imageUrl))
+            }
+            //set uri from device images
+            images.forEachIndexed { index, image ->
+                listImage.filterIsInstance<DataModel.Image>().get(index).deviceImageUri = image.uri
             }
         }
         if (!(listImage.size == 0)) {
@@ -463,10 +468,11 @@ class FragmentMyReviewsForm : Fragment() {
         }
         //for viewing image
         adapterImage.setReviewClickListener { imageList, i ->
-            val image=imageList as List<DataModel.Image>
-            Log.d("testimage", "inirRecyclerView: "+image.size);
-            val frag= FragmentImageSwiper.newInstance(image.map { it.image },i)
-            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,frag).addToBackStack(null).commit()
+            val image = imageList as List<DataModel.Image>
+            Log.d("testimage", "inirRecyclerView: " + image.size);
+            val frag = FragmentImageSwiper.newInstance(image.map { it.image }, i)
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment, frag)
+                .addToBackStack(null).commit()
         }
         adapterImage.setReviewDeleteClickListener { it, pos ->
             myDeletePosition = pos
@@ -556,15 +562,23 @@ class FragmentMyReviewsForm : Fragment() {
 
     private fun setModelData() {
         val fileList = arrayListOf<MultipartBody.Part>()
+        val img = listImage.filterIsInstance<DataModel.Image>()
+        val deviceImageUri = img.map { it.deviceImageUri }
+        Log.d("testlist", "setModelData: " + img);
         images.forEach {
-            fileList.add(
-                MultipartBody.Part.createFormData(
-                    "images",
-                    "img_" + images.indexOf(it) + ".jpg",
-                    RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
+            if (deviceImageUri.contains(it.uri)) {
+                //already uploaded
+            } else {
+                fileList.add(
+                    MultipartBody.Part.createFormData(
+                        "images",
+                        "img_" + images.indexOf(it) + ".jpg",
+                        RequestBody.create("image/*".toMediaTypeOrNull(), File(it.path))
+                    )
                 )
-            )
+            }
         }
+        Log.d("testimageno", "setModelData: " + fileList.size);
         viewModel.imageUploadAPI(fileList)
     }
 
@@ -573,7 +587,7 @@ class FragmentMyReviewsForm : Fragment() {
         viewModel.observeimageUploadAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    isLoading=false
+                    isLoading = false
                     binding.progressBarPhoto.visibility = View.GONE
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -604,12 +618,12 @@ class FragmentMyReviewsForm : Fragment() {
                 Status.LOADING -> {
                     binding.progressBarPhoto.visibility = View.VISIBLE
                     binding.llUploadImage.visibility = View.GONE
-                    isLoading=true
+                    isLoading = true
 
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    isLoading=false
+                    isLoading = false
                     binding.llUploadImage.visibility = View.VISIBLE
                     binding.progressBarPhoto.visibility = View.GONE
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()

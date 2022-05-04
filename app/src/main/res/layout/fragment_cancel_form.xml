@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:spinnerMode="dialog"
             android:background="@null"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp" />>
         <TextView
             android:id="@+id/text10"
             android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/background_curve_gray"
             android:gravity="start"
-            android:hint="(Optional)"
+            android:hint="Write your comment"
             android:inputType="textMultiLine"
             android:minHeight="180dp"
             android:padding="13dp"

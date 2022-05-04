@@ -32,6 +32,7 @@
         android:id="@+id/product"
         android:layout_marginTop="8dp"
         android:layout_marginHorizontal="16dp"
+
         app:layout_constraintTop_toBottomOf="@id/tv_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,6 +42,7 @@
             android:id="@+id/image"
             android:layout_width="100dp"
             android:layout_height="80dp"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/background_curve_gray"
             android:padding="0dp"
             android:scaleType="centerCrop"
@@ -59,6 +61,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:text="Nike Air Max"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:textColor="@color/colorBlack"
                 android:textSize="14sp" />
 
@@ -96,11 +100,27 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <com.ayata.clad.utils.SvgRatingBarReviewSmallest
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="12dp"
+                android:visibility="gone"
+                android:layout_gravity="end"
+                android:isIndicator="true"
+                android:layout_marginTop="4dp"
+                android:numStars="5"
+                android:layout_alignTop="@id/layout_image"
+                android:layout_alignParentEnd="true"
+                android:progressDrawable="@drawable/custom_rating_star_smallest"
+                android:rating="3.5"
+                android:stepSize="0.5"
+                />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:textAlignment="textEnd"
                 android:gravity="bottom"
+                android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginBottom="8dp"
                 android:layout_height="wrap_content"

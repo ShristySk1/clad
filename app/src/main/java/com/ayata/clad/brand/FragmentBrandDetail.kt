@@ -103,10 +103,10 @@ class FragmentBrandDetail : Fragment() {
             }
         }
         myAdapter.setProductClickListener {data->
-//            val i = Intent(activity, MainActivity::class.java)
-//            i.putExtra(Constants.FROM_STORY, true)
-//            i.putExtra("data",data as ProductDetail)
-//            startActivity(i)
+            val i = Intent(activity, MainActivity::class.java)
+            i.putExtra(Constants.FROM_STORY, true)
+            i.putExtra("data",data as ProductDetail)
+            startActivity(i)
         }
         myAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
@@ -150,7 +150,7 @@ class FragmentBrandDetail : Fragment() {
                             if (brandDetail.brand.products.size > 0) {
                                 listProduct.addAll(brandDetail.brand.products)
                             } else {
-                                Toast.makeText(context, "Empty Products", Toast.LENGTH_LONG).show()
+//                                Toast.makeText(context, "Empty Products", Toast.LENGTH_LONG).show()
                             }
                             myAdapter.notifyDataSetChanged()
                         } catch (e: Exception) {
@@ -199,7 +199,7 @@ class FragmentBrandDetail : Fragment() {
 
                 tvDesc.text=description
                 soldNo.text=itemsSold.toString()
-                reviewNo.text=totalReviews.toString()
+//                reviewNo.text=totalReviews.toString()
                 brandTitle.text=name
             }
 

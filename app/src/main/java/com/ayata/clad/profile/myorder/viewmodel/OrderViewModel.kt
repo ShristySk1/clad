@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
-import com.ayata.clad.profile.edit.response.Details
-import com.ayata.clad.utils.Constants
+import com.ayata.clad.utils.SingleLiveEvent
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import okhttp3.MultipartBody
@@ -17,7 +17,8 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
     private val errorMessage = MutableLiveData<String>()
 
     private val orderResponse = MutableLiveData<Resource<JsonObject>>()
-    private val cancelOrderResponse = MutableLiveData<Resource<JsonObject>>()
+    private val cancelOrderResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val returnOrderResponse = SingleLiveEvent<Resource<JsonObject>>()
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -41,37 +42,86 @@ class OrderViewModel constructor(private val mainRepository: ApiRepository) : Vi
                         orderResponse.postValue(Resource.error(response.message(), null))
                     }
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 orderResponse.postValue(Resource.error(e.message.toString(), null))
             }
 
         }
 
     }
+
     fun observeOrderResponse(): LiveData<Resource<JsonObject>> {
         return orderResponse
     }
-    fun cancelOrderApi(token: String,orderId:Int,comment:String,reason:String) {
+
+    fun cancelOrderApi(token: String, orderId: Int, comment: String, reason: String) {
         cancelOrderResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.cancelOrder("$token",orderId,comment,reason)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Log.d("profileDetailAPI", "success: " + response.body())
-                    cancelOrderResponse.postValue(Resource.success(response.body()))
-                    loading.value = false
-                } else {
-                    Log.e("profileDetailAPI", "error: $response")
-                    onError("Error : ${response.message()} ")
-                    cancelOrderResponse.postValue(Resource.error(response.message(), null))
+            try {
+                val response = mainRepository.cancelOrder("$token", orderId, comment, reason)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        cancelOrderResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        cancelOrderResponse.postValue(Resource.error(response.message(), null))
+                    }
                 }
+            } catch (e: Exception) {
+                cancelOrderResponse.postValue(Resource.error(e.message.toString(), null))
             }
+
         }
 
     }
-    fun observeCancelOrderResponse(): LiveData<Resource<JsonObject>> {
+
+    fun observeCancelOrderResponse(): SingleLiveEvent<Resource<JsonObject>> {
         return cancelOrderResponse
     }
+
+    fun returnOrderApi(
+        token: String,
+        orderId: Int,
+        comment: String,
+        reason: String,
+        images: List<Int>
+    ) {
+        returnOrderResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val jsonObject = JsonObject()
+                jsonObject.addProperty("order_id", orderId)
+                jsonObject.addProperty("reason", reason)
+                jsonObject.addProperty("comment", comment)
+                jsonObject.add("image_id", Gson().toJsonTree(images).getAsJsonArray())
+                val response = mainRepository.returnOrder("$token", jsonObject)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("profileDetailAPI", "success: " + response.body())
+                        returnOrderResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("profileDetailAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        returnOrderResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            } catch (e: Exception) {
+                returnOrderResponse.postValue(Resource.error(e.message.toString(), null))
+
+            }
+
+        }
+
+    }
+
+    fun observeReturnOrderResponse(): SingleLiveEvent<Resource<JsonObject>> {
+        return returnOrderResponse
+    }
+
 
     private val imageUploadResponse = MutableLiveData<Resource<JsonObject>>()
     private val imageDeleteResponse = MutableLiveData<Resource<JsonObject>>()

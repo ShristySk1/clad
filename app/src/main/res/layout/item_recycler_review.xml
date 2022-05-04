@@ -52,17 +52,17 @@
                 android:textSize="12sp"/>
         </RelativeLayout>
 
-        <com.ayata.clad.utils.SvgRatingBar
+        <com.ayata.clad.utils.SvgRatingBarReviewSmallest
             android:id="@+id/ratingBar1"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="12dp"
             android:isIndicator="true"
             android:numStars="5"
             android:layout_marginTop="2dp"
             android:layout_alignTop="@id/layout_image"
             android:layout_marginRight="16dp"
             android:layout_alignParentEnd="true"
-            android:progressDrawable="@drawable/custom_rating_star_theme"
+            android:progressDrawable="@drawable/custom_rating_star_smallest"
             android:rating="3.5"
             android:stepSize="0.5"
             />

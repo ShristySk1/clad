@@ -62,5 +62,4 @@ data class ProductDetail(
     val vendor: String,
     val visibility: Boolean,
 ) : Serializable{
-    val _bname: Brand= brand?: Brand("",0,"","")
 }

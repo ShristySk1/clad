@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.ayata.clad.MainActivity
+import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentOrderPlacedBinding
+import com.ayata.clad.profile.myorder.order.FragmentOrderDetail
 
 
 class FragmentOrderPlaced : Fragment() {
@@ -22,6 +23,7 @@ class FragmentOrderPlaced : Fragment() {
         binding = FragmentOrderPlacedBinding.inflate(inflater, container, false)
         initAppbar()
         initView()
+
         return binding.root
     }
 
@@ -37,6 +39,13 @@ class FragmentOrderPlaced : Fragment() {
 //            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             (activity as MainActivity).openHomePage()
 
+        }
+        binding.btnViewOrder.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(
+                R.id.main_fragment,
+                FragmentOrderDetail()
+            )
+                .addToBackStack(null).commit()
         }
     }
 

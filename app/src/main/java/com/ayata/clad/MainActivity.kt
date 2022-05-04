@@ -61,8 +61,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     //for category filter
     var filterSlugCategory = ""
+
     //for empty view we need to show recommendation
     var listRecommended = ArrayList<ProductDetail>()
+
+    //back button
+    var isSureExit=false
+    var isFromSameActivity=true
     override fun onCreate(savedInstanceState: Bundle?) {
         setAppMode()
         super.onCreate(savedInstanceState)
@@ -90,24 +95,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setUpViewModel()
         setBadge()
     }
-    private fun setAppMode(){
-        val isDarkMode=PreferenceHandler.isThemeDark(this)!!
-        Log.d(TAG, "setAppMode: "+isDarkMode);
-        val currentMode= if(isDarkMode){
+
+    private fun setAppMode() {
+        val isDarkMode = PreferenceHandler.isThemeDark(this)!!
+        Log.d(TAG, "setAppMode: " + isDarkMode);
+        val currentMode = if (isDarkMode) {
             AppCompatDelegate.MODE_NIGHT_YES
-        }else{
+        } else {
             AppCompatDelegate.MODE_NIGHT_NO
         }
-        Log.d("testmode", "setAppMode: "+AppCompatDelegate.getDefaultNightMode());
-        if(currentMode!= AppCompatDelegate.getDefaultNightMode()){
-            if(isDarkMode){
+        Log.d("testmode", "setAppMode: " + AppCompatDelegate.getDefaultNightMode());
+        if (currentMode != AppCompatDelegate.getDefaultNightMode()) {
+            if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate
-                        .MODE_NIGHT_YES)
-            }else{
+                        .MODE_NIGHT_YES
+                )
+            } else {
                 AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate
-                        .MODE_NIGHT_NO)
+                        .MODE_NIGHT_NO
+                )
             }
         }
     }
@@ -277,12 +285,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         super.onStart()
         val extras = intent.extras
         if (extras != null) {
-            Log.d("testintent", "onStart: "+extras.getBoolean(Constants.FROM_STORY));
+            Log.d("testintent", "onStart: " + extras.getBoolean(Constants.FROM_STORY));
             val value = extras.getBoolean(Constants.FROM_STORY, false)
             val data = extras.getSerializable("data") as ProductDetail?
-            if (value&&data!=null) {
+            if (value && data != null) {
                 fromStory(data)
+            }else{
+                isFromSameActivity=true
             }
+        }else{
+            isFromSameActivity=true
         }
     }
 
@@ -292,13 +304,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun fromStory(data: ProductDetail) {
-        Log.d("testintent", "fromStory: "+data);
+        isFromSameActivity=false
+        Log.d("testintent", "fromStory: " + data);
         val bundle = Bundle()
         bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
         val fragmentProductDetail = FragmentProductDetail()
         fragmentProductDetail.arguments = bundle
         supportFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentProductDetail)
-            .addToBackStack(null).commit()
+            .commit()
         intent.replaceExtras(Bundle())
         intent.action = ""
         intent.data = null
@@ -327,10 +340,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
 
-        private var itemClearAllClick: (() -> Unit)? = null
-        fun setClearAllListener(listener: (() -> Unit)) {
-            itemClearAllClick = listener
-        }
+    private var itemClearAllClick: (() -> Unit)? = null
+    fun setClearAllListener(listener: (() -> Unit)) {
+        itemClearAllClick = listener
+    }
 
     private fun setToolbar() {
         binding.appbar.btnSearch.setOnClickListener {
@@ -405,7 +418,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         filterSlugCategory = slug
     }
 
-    fun getFilterSlug() =filterSlugCategory
+    fun getFilterSlug() = filterSlugCategory
     fun setToolbar1(
         title: String,
         isSearch: Boolean,
@@ -511,6 +524,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             binding.appbar.root.visibility = View.GONE
         }
     }
+
     fun showToolbarVisibility(show: Boolean) {
         exitFullScreen()
         if (show) {
@@ -541,6 +555,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         TransitionManager.beginDelayedTransition(this.parent as ViewGroup, transition)
         this.isVisible = visibility
     }
+
     private fun View.slideVisibilityToolbar(visibility: Boolean, durationTime: Long = 500) {
 //        val transition = Fade()
 //        transition.apply {
@@ -577,6 +592,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 }
                 R.id.nav_rader -> selectedFragment = FragmentPreorder()
             }
+            isSureExit=false
             if (changeFragment) {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.main_fragment, selectedFragment!!)
@@ -599,7 +615,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 }
             }
         }
-        Log.d("BackCheck", "onBackPressed: normal")
+        Log.d("BackCheck", "onBackPressed: normal"+supportFragmentManager.backStackEntryCount)
 
 //        if (binding.bottomNavigationView.getSelectedItemId()!= R.id.nav_home) {
 //            binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
@@ -607,6 +623,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //        } else {
 //            super.onBackPressed();
 //        }
+        if(!isSureExit&&isFromSameActivity) {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                Toast.makeText(this, "Press back again to exit.", Toast.LENGTH_SHORT).show()
+                isSureExit = true
+                return
+            }
+        }
         super.onBackPressed()
 
     }

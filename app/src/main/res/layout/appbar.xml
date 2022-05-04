@@ -173,6 +173,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="xxx.xxx"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/colorBlack"

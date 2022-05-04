@@ -21,8 +21,7 @@ import com.ayata.clad.profile.address.ModelTest
 import com.ayata.clad.profile.myorder.order.response.Order
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModel
 import com.ayata.clad.profile.myorder.viewmodel.OrderViewModelFactory
-import com.ayata.clad.utils.PreferenceHandler
-import com.ayata.clad.utils.ProgressDialog
+import com.ayata.clad.utils.*
 import com.bumptech.glide.Glide
 
 
@@ -46,6 +45,10 @@ class FragmentCancelForm : Fragment() {
         observeCancelOrder()
         binding.btnCancelOrder.setOnClickListener {
             val comment = binding.tvDescription.text.toString()
+            //validate comment
+//            if (!binding.tvDescription.validateEditText()) {
+//                return@setOnClickListener
+//            }
             //send comment and reason in post request
 //            Handler().postDelayed({
 //                progressDialog.dismiss()
@@ -54,12 +57,11 @@ class FragmentCancelForm : Fragment() {
 //                    FragmentManager.POP_BACK_STACK_INCLUSIVE
 //                )
 //            }, 3000)
-
             viewModel.cancelOrderApi(
                 PreferenceHandler.getToken(context)!!,
                 o.orderId,
+                comment,
                 reason_,
-                comment
             )
         }
         return binding.root
@@ -85,7 +87,7 @@ class FragmentCancelForm : Fragment() {
 //                                }
                             Toast.makeText(
                                 requireContext(),
-                                jsonObject.get("message").toString(),
+                                jsonObject.get("message").toString().removeDoubleQuote(),
                                 Toast.LENGTH_SHORT
                             ).show()
                             cancelViewmodel.setCancelDetails(true)
@@ -144,6 +146,7 @@ class FragmentCancelForm : Fragment() {
             binding.description.text =
                 "${o.products.variant.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${o.products.variant.color} / Qty: ${o.products.quantity}"
         }
+//        binding.text10.setDifferentColor(requireContext(), "Comment", " *")
     }
 
     private fun setSpinner() {

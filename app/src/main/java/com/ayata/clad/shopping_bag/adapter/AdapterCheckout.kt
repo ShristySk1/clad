@@ -7,10 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -19,6 +16,7 @@ import com.ayata.clad.R
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.setImageButtonEnabled
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -30,8 +28,6 @@ internal class AdapterCheckout(
     private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<AdapterCheckout.MyViewHolder>() {
 
-
-    private val STOCKLIMIT: Int = 6
 
     internal inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -46,14 +42,15 @@ internal class AdapterCheckout(
         val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         val progressBar = itemView.findViewById<ProgressBar>(R.id.progressBar)
         val cardViewImage = itemView.findViewById<CardView>(R.id.cardView)
-        val add = itemView.findViewById<ImageView>(R.id.ivAdd)
-        val remove = itemView.findViewById<ImageView>(R.id.ivRemove)
+        val add = itemView.findViewById<ImageButton>(R.id.ivAdd)
+        val remove = itemView.findViewById<ImageButton>(R.id.ivRemove)
         val number = itemView.findViewById<TextView>(R.id.number)
         val color = itemView.findViewById<TextView>(R.id.color)
         val colorHexImage = itemView.findViewById<ImageView>(R.id.ivColor)
         val brand = itemView.findViewById<TextView>(R.id.tvBrandName)
         val stock = itemView.findViewById<TextView>(R.id.stock)
         var coupen = itemView.findViewById<TextView>(R.id.tv_text_to_copy)
+        var disableView = itemView.findViewById<View>(R.id.disableView)
 
 
         fun clickView() {
@@ -131,6 +128,10 @@ internal class AdapterCheckout(
         } else {
             holder.layoutSize.visibility = View.GONE
         }
+        //hangle disable and enability of plus minus buttons
+        setImageButtonEnabled(context!!,item.qty != 1,holder.remove,R.drawable.ic_minus)
+        setImageButtonEnabled(context!!,item.qty < item.stockQty,holder.add,R.drawable.ic_add)
+        /////
         holder.quantity.text = "QTY: " + item.qty
         holder.itemId.text = "Item ID: " + item.itemId
         holder.checkBox.isChecked = item.isSelected
@@ -164,28 +165,22 @@ internal class AdapterCheckout(
                     return false
                 }
             })
-//            .placeholder(R.drawable.ic_launcher_background)
             .error(Constants.ERROR_DRAWABLE)
             .fallback(Constants.ERROR_DRAWABLE)
             .into(holder.image)
-        //stock calculate
-//        val stock = item.stock
-//        val myQuantity = item.qty
-//        var textToDisplay = ""
-//        if (myQuantity >= stock) {
-//            textToDisplay = "Out of Stock"
-//            changeColor(holder.stock, R.color.colorRedLight, R.color.colorRedDark)
-//        } else if (myQuantity < stock) {
-//            if ((stock - myQuantity) < STOCKLIMIT) {
-//                changeColor(holder.stock, R.color.colorYellowLight, R.color.colorYellowDark)
-//                textToDisplay = "${stock - myQuantity} item(s) remaining"
-//            } else {
-//                textToDisplay = "In stock"
-//                changeColor(holder.stock, R.color.colorGreenLight, R.color.colorGreenDark)
-//            }
-
-//        }
         holder.stock.setText(setStockStatus(item.stock, holder.stock, holder.image.context))
+        val s = "Out of stock"
+        if (holder.stock.text.toString().toLowerCase().equals(s.toLowerCase())) {
+            holder.disableView.visibility = View.VISIBLE
+            holder.add.visibility = View.GONE
+            holder.remove.visibility = View.GONE
+            holder.checkBox.visibility=View.GONE
+        } else {
+            holder.checkBox.visibility=View.VISIBLE
+            holder.add.visibility = View.VISIBLE
+            holder.remove.visibility = View.VISIBLE
+            holder.disableView.visibility = View.GONE
+        }
         if (item.isCoupenAvailable) {
             holder.coupen.visibility = View.VISIBLE
             holder.coupen.text = item.coupenText
@@ -194,23 +189,6 @@ internal class AdapterCheckout(
         }
         //click
         holder.clickView()
-//        holder.remove.setOnClickListener {
-//            if(position!=-1) {
-//                try {
-//                    if (item.qty == 1) {
-//                        onItemClickListener.onCompleteRemove(listItems[position], position)
-//                    } else {
-//                        onItemClickListener.onRemove(listItems[position], position)
-//                    }
-//                }catch (e:Exception){
-//                    Log.d("testlog", "onBindViewHolder: "+e.message);
-//                }
-//
-//            }
-//
-//        }
-
-
     }
 
     fun getList() = listItems
@@ -249,6 +227,7 @@ internal class AdapterCheckout(
     fun setStockStatus(stock: String, tv_stock: TextView, context: Context): String {
         var textToDisplay = stock
         if (stock.contains("Out of Stock", ignoreCase = true)) {
+
             changeColor(tv_stock, R.color.colorRedLight, R.color.colorRedDark, context)
         } else if (stock.contains("In stock", ignoreCase = true)) {
             changeColor(tv_stock, R.color.colorGreenLight, R.color.colorGreenDark, context)

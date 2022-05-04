@@ -16,7 +16,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     private val errorMessage = MutableLiveData<String>()
 
-    private val listResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val listResponse = MutableLiveData<Resource<JsonObject>>()
     private val removeResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val sizeResponse = MutableLiveData<Resource<JsonObject>>()
 
@@ -52,7 +52,7 @@ class WishListViewModel constructor(private val mainRepository: ApiRepository)  
 
     }
 
-    fun getWishListAPI(): SingleLiveEvent<Resource<JsonObject>> {
+    fun getWishListAPI(): LiveData<Resource<JsonObject>> {
         return listResponse
     }
 

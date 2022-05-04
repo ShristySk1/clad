@@ -102,11 +102,7 @@ class FragmentWishlist : Fragment() {
                                 break
                             }
                         }
-                        val data =
-                            myWishList[pos].product.variants.filter { myWishList[pos].selected.variantId == it.variantId }
-                                .single()
-
-                        data.isInCart = true
+                            myWishList[pos].selected.isInCart=true
                         adapterWishList.notifyItemChanged(pos)
 
                         //                        myWishList.removeAt(pos)
@@ -214,7 +210,7 @@ class FragmentWishlist : Fragment() {
 
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
-            requireActivity(),
+            this,
             WishListViewModelFactory(ApiRepository(ApiService.getInstance(requireContext())))
         ).get(WishListViewModel::class.java)
 
@@ -551,6 +547,7 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun getWishListAPI() {
+        setShimmerLayout(true)
         viewModel.getWishListAPI().observe(viewLifecycleOwner, {
             Log.d("tesshimmer", "wishlist: ${it.status}")
             when (it.status) {
@@ -595,7 +592,7 @@ class FragmentWishlist : Fragment() {
                     adapterWishList.notifyDataSetChanged()
                 }
                 Status.LOADING -> {
-                    setShimmerLayout(true)
+
                 }
                 Status.ERROR -> {
                     //Handle Error

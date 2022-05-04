@@ -20,5 +20,7 @@ data class Selected(
     @SerializedName("v_total")
     val vTotal: Double,
     @SerializedName("variant_id")
-    val variantId: Int
+    val variantId: Int,
+    @SerializedName("is_in_cart")
+    var isInCart: Boolean
 ):Serializable

@@ -243,8 +243,14 @@ interface ApiService {
     suspend fun cancelOrder(
         @Header("Authorization") token: String,
         @Field("order_id") orderId: Int,
-        @Field("reason") reason: String,
-        @Field("comment") comment: String
+        @Field("comment") comment: String,
+        @Field("reason") reason: String
+    ): Response<JsonObject>
+    //return order
+    @POST("return-order/")
+    suspend fun returnOrder(
+        @Header("Authorization") token: String,
+        @Body json: JsonObject
     ): Response<JsonObject>
 
     //coupons

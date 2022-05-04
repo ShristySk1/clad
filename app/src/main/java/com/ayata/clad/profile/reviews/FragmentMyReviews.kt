@@ -32,7 +32,7 @@ class FragmentMyReviews : Fragment() {
     }
     private fun initRecyclerView() {
         val data = arguments?.getSerializable("datas") as? List<Review>
-        Log.d("testreviewunreview", "initRecyclerView: "+data.toString());
+        Log.d("calledme", "writing to recycler "+data.toString());
         val isFetched = arguments?.getBoolean("isFetched") as Boolean
         Log.d("testdatas", "initRecyclerView: " + data + isFetched+FragmentMyReviewsList.isApiFetched);
         hideEmpty()

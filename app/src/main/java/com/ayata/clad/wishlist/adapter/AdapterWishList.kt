@@ -12,6 +12,7 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerWishlistBinding
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.setStockStatus
 import com.ayata.clad.wishlist.response.get.Wishlist
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -30,7 +31,8 @@ class AdapterWishList(
         RecyclerView.ViewHolder(binding.root) {
         fun clickView(item: Wishlist) {
             binding.progressBar.visibility = View.VISIBLE
-            val image=if(item.selected.imageUrl.isEmpty()) Constants.ERROR_DRAWABLE else item.selected.imageUrl
+            val image =
+                if (item.selected.imageUrl.isEmpty()) Constants.ERROR_DRAWABLE else item.selected.imageUrl
             Glide.with(binding.image.context)
                 .load(image)
                 .listener(object : RequestListener<Drawable?> {
@@ -65,10 +67,14 @@ class AdapterWishList(
                 binding.price.text = "${context!!.getString(R.string.rs)} ${item.selected.vTotal}"
             } else {
                 //usd
-                binding.price.text = "${context!!.getString(R.string.usd)} ${item.selected.vDollarTotal}"
+                binding.price.text =
+                    "${context!!.getString(R.string.usd)} ${item.selected.vDollarTotal}"
             }
-           val varient= item.product.variants.filter { item.selected.variantId==it.variantId }.single()
-            if(varient.isInCart){setCart(binding.imageView4)}
+//            val varient =
+//                item.product.variants.filter { item.selected.variantId == it.variantId }.single()
+            if (item.selected.isInCart) {
+                setCart(binding.imageView4)
+            }
 
             binding.image.setOnClickListener {
                 itemProductClick?.let { function ->
@@ -98,11 +104,13 @@ class AdapterWishList(
 
         }
     }
+
     private fun setCart(image: ImageView) {
         //from api
-            image.setImageResource(R.drawable.ic_bag_filled)
+        image.setImageResource(R.drawable.ic_bag_filled)
 
     }
+
     // inside the onCreateViewHolder inflate the view of SingleItemBinding
     // and return new ViewHolder object containing this layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -124,6 +132,7 @@ class AdapterWishList(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
             with(productList[position]) {
+                holder.binding.stock.setStockStatus(selected.stock_status,context)
                 holder.clickView(productList[position])
             }
         }

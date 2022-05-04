@@ -301,7 +301,7 @@
                     android:background="@drawable/tab_background_selector_product"
                     android:clickable="false"
                     app:tabGravity="fill"
-                    app:tabIndicatorColor="@color/colorBlack"
+                    app:tabIndicatorColor="@color/colorGray"
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="top"
                     app:tabIndicatorHeight="3dp"
@@ -391,11 +391,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/tab_background_selector_product"
-                    app:tabIndicatorColor="@color/colorBlack"
+                    app:tabIndicatorColor="@color/colorGray"
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="top"
                     app:tabIndicatorHeight="3dp"
-                    app:tabSelectedTextColor="@color/colorBlack"
+                    app:tabSelectedTextColor="@color/black"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
                     app:tabTextColor="#BDBDBD">
 
@@ -439,6 +439,7 @@
                     android:layout_marginTop="20dp"
                     android:indeterminate="false"
                     android:progress="80"
+                    android:progressTint="@color/colorGray"
                     android:progressDrawable="@drawable/progressbar_custom" />
 
                 <LinearLayout

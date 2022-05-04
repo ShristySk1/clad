@@ -168,6 +168,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         val fragment = FragmentProductDetailFull2()
         val bundle = Bundle()
         bundle.putSerializable("gallary", galleryBundle as Serializable)
+        bundle.putString("title",productDetail.name)
         fragment.arguments = bundle
         parentFragmentManager.beginTransaction()
 //            .setCustomAnimations(

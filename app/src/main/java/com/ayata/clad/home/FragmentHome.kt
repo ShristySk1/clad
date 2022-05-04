@@ -378,6 +378,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     }
 
     override fun onPopularBrandsClicked(data: Brand, position: Int) {
+        (activity as MainActivity).isFromSameActivity=false
         val intent = Intent(activity, BrandDetailActivity::class.java)
         intent.putExtra("slug", data.slug)
         startActivity(intent)
@@ -410,6 +411,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
     override fun onStoryClick(data: Story, position: Int) {
         //story
+        (activity as MainActivity).isFromSameActivity=false
         StoryActivity.storyIndex = position
         StoryActivity.listStory.clear()
         StoryActivity.listStory.addAll(listStory)

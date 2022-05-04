@@ -2,6 +2,7 @@ package com.ayata.clad.home.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Content(
     val description: String,
@@ -9,4 +10,4 @@ data class Content(
     val imageUrl: String,
     val products: List<ProductDetail>,
     val title: String
-)
+):Serializable

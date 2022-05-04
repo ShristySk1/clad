@@ -25,7 +25,7 @@ import com.ayata.clad.utils.PreferenceHandler
 import com.bumptech.glide.Glide
 
 class FragmentOrderDetail : Fragment() {
-    private lateinit var list_orderTrack: ArrayList<ModelOrderTrack>
+    private  var list_orderTrack= ArrayList<ModelOrderTrack>()
     lateinit var binding: FragmentOrderDetailBinding
     private lateinit var viewModel: OrderViewModel
     private lateinit var cancelviewModel: CancelViewModel
@@ -42,7 +42,7 @@ class FragmentOrderDetail : Fragment() {
         initAppbar()
         setUpViewModel()
         populateData()
-        checkForShowingRespectiveButton()
+
         observeCancelFormPost()
 //        observeCancelOrder()
         binding.recyclerOrderTracker.apply {
@@ -50,38 +50,42 @@ class FragmentOrderDetail : Fragment() {
             adapter = AdapterOrderTrack(requireContext(), list_orderTrack)
         }
         binding.btnCancelOrder.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable("order", o)
-            val frag = FragmentCancelForm()
-            val fragReturn=FragmentReturnForm()
-            frag.arguments = bundle
-            fragReturn.arguments=bundle
-            if (o.is_cancellable) {
-                parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.enter_from_right,
-                        R.anim.exit_to_left,
-                        R.anim.enter_from_left,
-                        R.anim.exit_to_right
-                    )
-                    .replace(
-                        R.id.main_fragment,
-                        frag
-                    ).addToBackStack(null).commit()
+            if(this::o.isInitialized) {
+                val bundle = Bundle()
+                bundle.putSerializable("order", o)
+                val frag = FragmentCancelForm()
+                val fragReturn = FragmentReturnForm()
+                frag.arguments = bundle
+                fragReturn.arguments = bundle
+                if (o.is_cancellable) {
+                    parentFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left,
+                            R.anim.enter_from_left,
+                            R.anim.exit_to_right
+                        )
+                        .replace(
+                            R.id.main_fragment,
+                            frag
+                        ).addToBackStack(null).commit()
 
-            }
-            if (o.is_returnable) {
-                parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.enter_from_right,
-                        R.anim.exit_to_left,
-                        R.anim.enter_from_left,
-                        R.anim.exit_to_right
-                    )
-                    .replace(
-                        R.id.main_fragment,
-                        fragReturn
-                    ).addToBackStack(null).commit()
+                }
+                if (o.is_returnable) {
+                    parentFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left,
+                            R.anim.enter_from_left,
+                            R.anim.exit_to_right
+                        )
+                        .replace(
+                            R.id.main_fragment,
+                            fragReturn
+                        ).addToBackStack(null).commit()
+                }
+            }else{
+                Log.d("testerror", "onCreateView: ");
             }
 
 
@@ -178,8 +182,8 @@ class FragmentOrderDetail : Fragment() {
     }
 
     private fun populateData() {
-
-        arguments.let {
+        Log.d("testarguments", "populateData: " + arguments);
+        arguments?.let {
             o = it?.getSerializable("order") as Order
             binding.address.text = o.shippingAddress
             binding.titleAddress.text = "Receiver: ${o.receiverName}"
@@ -208,11 +212,11 @@ class FragmentOrderDetail : Fragment() {
             Glide.with(requireContext()).load(o.products.imageUrl).into(binding.include.image)
             binding.include.description.text =
                 "${o.products.variant.size?.let { "Size: " + it + "/ " } ?: run { "" }}Colour: ${o.products.variant.color} / Qty: ${o.products.quantity}"
-        }
 
-        //order status
-        conditionalStatus = ModelOrderTrack.ORDER_TYPE_PLACED
-        list_orderTrack = ArrayList<ModelOrderTrack>()
+
+            //order status
+            conditionalStatus = ModelOrderTrack.ORDER_TYPE_PLACED
+            list_orderTrack = ArrayList<ModelOrderTrack>()
 //        val titles = arrayOf(
 //            ModelOrderTrack.ORDER_TYPE_PLACED,
 //            ModelOrderTrack.ORDER_TYPE_DISPATCHED,
@@ -232,56 +236,60 @@ class FragmentOrderDetail : Fragment() {
 //            "",
 //            ""
 //        )
-        val title = arrayListOf<String>()
-        val desc = arrayListOf<String>()
-        try {
-            for (i in 0 until o.orderStatus.size) {
-                title.add(o.orderStatus[i].status)
-                desc.add(o.orderStatus[i].date ?: "")
+            val title = arrayListOf<String>()
+            val desc = arrayListOf<String>()
+            try {
+                for (i in 0 until o.orderStatus.size) {
+                    title.add(o.orderStatus[i].status)
+                    desc.add(o.orderStatus[i].date ?: "")
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()
             }
-        } catch (e: Exception) {
-            Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()
-        }
 
-        conditionalStatus = o.currentStatus
-        Log.d("statusonditional", "populateData: " + conditionalStatus);
+            conditionalStatus = o.currentStatus
+            Log.d("statusonditional", "populateData: " + conditionalStatus);
 
-        title.reverse()
-        desc.reverse()
+            title.reverse()
+            desc.reverse()
 
 
-        val colorInComplete: Int = R.color.colorGray
-        val colorCompleted: Int = R.color.colorGray
-        val colorCurrent: Int = R.color.colorBlack
-        var setNone = false
-        for (i in title.indices) {
-            if (title[i].toLowerCase().trim { it <= ' ' } != conditionalStatus.toLowerCase()
-                    .trim { it <= ' ' }) {
-                if (setNone) {
-                    //set rest to grayed out
-                    list_orderTrack.add(
-                        ModelOrderTrack(
-                            title[i],
-                            desc[i], ModelOrderTrack.ORDER_TYPE_NONE, colorInComplete, false
+            val colorInComplete: Int = R.color.colorGray
+            val colorCompleted: Int = R.color.colorGray
+            val colorCurrent: Int = R.color.colorBlack
+            var setNone = false
+            for (i in title.indices) {
+                if (title[i].toLowerCase().trim { it <= ' ' } != conditionalStatus.toLowerCase()
+                        .trim { it <= ' ' }) {
+                    if (setNone) {
+                        //set rest to grayed out
+                        list_orderTrack.add(
+                            ModelOrderTrack(
+                                title[i],
+                                desc[i], ModelOrderTrack.ORDER_TYPE_NONE, colorInComplete, false
+                            )
                         )
-                    )
+                    } else {
+                        list_orderTrack.add(
+                            ModelOrderTrack(
+                                title[i],
+                                desc[i], title[i], colorCompleted, false
+                            )
+                        )
+                    }
                 } else {
                     list_orderTrack.add(
                         ModelOrderTrack(
                             title[i],
-                            desc[i], title[i], colorCompleted, false
+                            desc[i], title[i], colorCurrent, true
                         )
                     )
+                    setNone = true //set it to true after we found the exact title
                 }
-            } else {
-                list_orderTrack.add(
-                    ModelOrderTrack(
-                        title[i],
-                        desc[i], title[i], colorCurrent, true
-                    )
-                )
-                setNone = true //set it to true after we found the exact title
             }
+
+            checkForShowingRespectiveButton()
         }
+
     }
 }

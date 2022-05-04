@@ -8,11 +8,13 @@ import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -20,36 +22,28 @@ import androidx.annotation.MainThread
 import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.text.color
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import com.ayata.clad.R
-import com.ayata.clad.brand.response.BrandDetailResponse
-import com.ayata.clad.databinding.DialogShoppingSizeBinding
-import com.ayata.clad.home.response.ProductDetail
-import com.ayata.clad.profile.reviews.adapter.DataModel
-import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
-import com.ayata.clad.shopping_bag.model.ModelCheckout
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.google.android.material.textfield.TextInputLayout
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
-import java.lang.reflect.Type
 import java.util.concurrent.atomic.AtomicBoolean
 
-fun Context.copyToClipboard(text: CharSequence){
+fun Context.copyToClipboard(text: CharSequence) {
     val clipboard = ContextCompat.getSystemService(this, ClipboardManager::class.java)
-    val clip = ClipData.newPlainText("label",text)
+    val clip = ClipData.newPlainText("label", text)
     clipboard?.setPrimaryClip(clip)
 }
+
 fun View.clickWithDebounce(debounceTime: Long = 600L, action: () -> Unit) {
     this.setOnClickListener(object : View.OnClickListener {
         private var lastClickTime: Long = 0
@@ -62,19 +56,31 @@ fun View.clickWithDebounce(debounceTime: Long = 600L, action: () -> Unit) {
         }
     })
 }
-inline fun View.snack(message:String, left:Int = 10, top:Int = 10, right:Int = 10, bottom:Int = 10, duration:Int = Snackbar.LENGTH_SHORT){
+
+inline fun View.snack(
+    message: String,
+    left: Int = 10,
+    top: Int = 10,
+    right: Int = 10,
+    bottom: Int = 10,
+    duration: Int = Snackbar.LENGTH_SHORT
+) {
     Snackbar.make(this, message, duration).apply {
 
-        val params = CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT )
+        val params = CoordinatorLayout.LayoutParams(
+            CoordinatorLayout.LayoutParams.MATCH_PARENT,
+            CoordinatorLayout.LayoutParams.WRAP_CONTENT
+        )
         params.setMargins(left, top, right, bottom)
         params.gravity = Gravity.BOTTOM
         params.anchorGravity = Gravity.BOTTOM
-            setActionTextColor(Color.WHITE)
+        setActionTextColor(Color.WHITE)
         view.layoutParams = params
         show()
     }
 }
- fun Context.showToast(message: String, isSuccess: Boolean,yOffset:Int=0,xOffset:Int=0) {
+
+fun Context.showToast(message: String, isSuccess: Boolean, yOffset: Int = 0, xOffset: Int = 0) {
     val toast = Toast(this)
     val view: View = LayoutInflater.from(this)
         .inflate(R.layout.custom_toast, null)
@@ -93,8 +99,9 @@ inline fun View.snack(message:String, left:Int = 10, top:Int = 10, right:Int = 1
     toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, xOffset, yOffset)
     toast.show()
 }
+
 fun String.removeDoubleQuote() = this?.let { this.replace("\"", "") }
-fun String.removeBracket()= this?.let { this.replace("[", "").replace("]", "")}
+fun String.removeBracket() = this?.let { this.replace("[", "").replace("]", "") }
 
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
@@ -108,32 +115,31 @@ fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
+
 fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
-    observe(owner, object: Observer<T> {
+    observe(owner, object : Observer<T> {
         override fun onChanged(value: T) {
             removeObserver(this)
             observer(value)
         }
     })
 }
+
 fun <T> LiveData<T>.observeOnceAfterInit(owner: LifecycleOwner, observer: (T) -> Unit) {
     var firstObservation = true
 
-    observe(owner, object: Observer<T>
-    {
+    observe(owner, object : Observer<T> {
         override fun onChanged(value: T) {
-            if(firstObservation)
-            {
+            if (firstObservation) {
                 firstObservation = false
-            }
-            else
-            {
+            } else {
                 removeObserver(this)
                 observer(value)
             }
         }
     })
 }
+
 /** Returns a new request body that transmits the content of this. */
 fun File.asRequestBodyWithProgress(
     contentType: MediaType? = null,
@@ -166,6 +172,7 @@ fun File.asRequestBodyWithProgress(
         }
     }
 }
+
 //fun <T> LiveData<T>.observeOnce(observer: (T) -> Unit) {
 //    observeForever(object: Observer<T> {
 //        override fun onChanged(value: T) {
@@ -235,6 +242,7 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
         private val TAG = "SingleLiveEvent"
     }
 }
+
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.
  */
@@ -260,6 +268,7 @@ open class Event<out T>(private val content: T) {
      */
     fun peekContent(): T = content
 }
+
 /**
  * An [Observer] for [Event]s, simplifying the pattern of checking if the [Event]'s content has
  * already been handled.
@@ -274,10 +283,58 @@ class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Obser
     }
 }
 
+fun validateTextField(textField: TextInputLayout): Boolean {
+    val data = textField.editText!!.text.toString().trim()
+    return if (data.isEmpty() or (data == " ")) {
+        textField.error = "This field can't be empty"
+        false
+    } else {
+        textField.error = null
+        true
+    }
+}
+
+fun EditText.validateEditText(): Boolean {
+    if (this.getText().toString().trim().equals("")) {
+        this.setError("This field can not be blank");
+        return false
+    }
+    return true
+}
+
+fun TextView.setDifferentColor(
+    context: Context,
+    firstLetter: String,
+    secondLetter: String,
+    firstColor: Int = R.color.black,
+    secondColor: Int = R.color.colorRed
+) {
+    this.text = SpannableStringBuilder()
+        .color(ContextCompat.getColor(context, firstColor)) { append(firstLetter) }
+        .color(ContextCompat.getColor(context, secondColor)) { append(secondLetter) }
+}
+
+fun TextView.changeColor(colorLight: Int, colorDark: Int, context: Context) {
+    this.setTextColor(ContextCompat.getColor(context, colorDark));
+    this.background.setTint(ContextCompat.getColor(context, colorLight));
+}
+
+fun TextView.setStockStatus(stock: String, context: Context) {
+    var textToDisplay = stock
+    if (stock.contains("Out of Stock", ignoreCase = true)) {
+        this.changeColor(R.color.colorRedDark, R.color.white, context)
+    } else if (stock.contains("In stock", ignoreCase = true)) {
+//        this.changeColor( R.color.colorGreenDark, R.color.white, context)
+        this.visibility = View.GONE
+    } else {
+        this.changeColor(R.color.colorYellowDark, R.color.white, context)
+    }
+    this.setText(textToDisplay)
+}
+
 
 //val subClasses = DataModel::class.sealedSubclasses.filter { clazz -> clazz == DataModel.Image::class }
 //val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
-
 
 
 //val jsonProducts = jsonObject.get("products").asJsonArray

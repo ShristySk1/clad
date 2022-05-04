@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <LinearLayout
         android:id="@+id/rowBG"
         android:layout_width="wrap_content"
@@ -51,6 +52,7 @@
         </RelativeLayout></LinearLayout>
 
     <RelativeLayout
+
         android:background="@color/colorWhite"
         android:id="@+id/layout1"
         android:paddingHorizontal="16dp"
@@ -124,6 +126,7 @@
                 android:text="Item Id: 788455"
                 android:textColor="@color/colorGrayText"
                 android:textSize="12sp"
+                android:layout_marginTop="2dp"
                 android:textStyle="normal" />
 
             <TextView
@@ -272,14 +275,15 @@
                 android:orientation="vertical"
                 android:paddingRight="12dp">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/ivAdd"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:background="@drawable/background_circle"
                     android:foreground="@drawable/background_ripple"
-                    android:padding="6dp"
                     android:src="@drawable/ic_add"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
                     android:tint="@color/black"/>
 
                 <TextView
@@ -294,13 +298,14 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/ivRemove"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:background="@drawable/background_circle"
                     android:foreground="@drawable/background_ripple"
                     android:padding="6dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_minus"
                     android:tint="@color/black"/>
             </LinearLayout>
@@ -342,5 +347,10 @@
         android:layout_height="1dp"
         android:layout_below="@id/layout1"
         android:background="@color/divider2" />
-
+    <View
+        android:id="@+id/disableView"
+        android:layout_width="match_parent"
+        android:background="#5BC4C4C4"
+        android:visibility="gone"
+        android:layout_height="190dp"/>
 </RelativeLayout>
