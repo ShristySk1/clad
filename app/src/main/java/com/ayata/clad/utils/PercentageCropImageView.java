@@ -8,7 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-public class PercentageCropImageView extends ImageView{
+import androidx.appcompat.widget.AppCompatImageView;
+
+public class PercentageCropImageView extends AppCompatImageView {
 
     private Float mCropYCenterOffsetPct;
     private Float mCropXCenterOffsetPct;

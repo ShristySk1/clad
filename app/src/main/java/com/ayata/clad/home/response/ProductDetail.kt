@@ -9,9 +9,9 @@ data class ProductDetail(
     val brand: Brand?,
 //    val category: List<Category>,
     val coupon: Coupon?=null,
-    val description: String,
+    val description: String="",
     @SerializedName("discount_percent")
-    val discountPercent: Double,
+    val discountPercent: Double=0.0,
     @SerializedName("image_url")
     val imageUrl: List<String>,
     @SerializedName("is_coming_soon")
@@ -62,4 +62,5 @@ data class ProductDetail(
     val vendor: String,
     val visibility: Boolean,
 ) : Serializable{
+
 }

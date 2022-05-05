@@ -15,11 +15,11 @@
         android:roundIcon="@mipmap/ic_logo_app_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clad"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
         tools:replace="android:theme">
         <activity android:name=".brand.BrandDetailActivity"
             android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="false">
 
         </activity>
 
@@ -34,11 +34,11 @@
         <activity
             android:name=".BaseActivity"
             android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".story.StoryActivity"
             android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".SplashActivity"
             android:configChanges="orientation"
@@ -58,7 +58,7 @@
         <activity
             android:name=".onboarding.ActivityOnboarding"
             android:configChanges="orientation"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
@@ -72,12 +72,23 @@
 
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="www.cladayata.com"
+                    android:scheme="http" />
+                <data
+                    android:host="www.cladayata.com"
+                    android:scheme="https" />
+            </intent-filter>
 
         </activity>
 
         <service
             android:name=".notification.MyFirebaseNotificationService"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

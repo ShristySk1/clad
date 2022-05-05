@@ -53,8 +53,6 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
     private var appBarCount: Int = 0
 
     //paging
-    val QUERY_PAGE = 16
-    var isLoading = false
     var isLastPage = false
     var isScrolling = false
     var isFirstTime = true

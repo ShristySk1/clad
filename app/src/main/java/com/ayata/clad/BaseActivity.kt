@@ -44,7 +44,6 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
         setUpGoogle()
         setupViewModel()
     }
-
     protected fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, 100)
@@ -52,7 +51,7 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
 
     private fun setUpGoogle() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("886011284473-bb0c1cfjkaq8rt2grjlktlhsrq6kvde6.apps.googleusercontent.com")
+            .requestIdToken(BuildConfig.GOOGLE_API_KEY)
             .requestEmail()
             .build()
         // Initialize lateinit vars

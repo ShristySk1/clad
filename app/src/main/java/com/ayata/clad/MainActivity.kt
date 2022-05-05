@@ -3,6 +3,7 @@ package com.ayata.clad
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -46,6 +47,8 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import java.util.*
@@ -66,8 +69,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     var listRecommended = ArrayList<ProductDetail>()
 
     //back button
-    var isSureExit=false
-    var isFromSameActivity=true
+    var isSureExit = false
+    var isFromSameActivity = true
     override fun onCreate(savedInstanceState: Bundle?) {
         setAppMode()
         super.onCreate(savedInstanceState)
@@ -76,6 +79,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setToolbar()
+        handleDynamicLink()
         //set login
         PreferenceHandler.setIsOnBoarding(this, false)
         setUpFirebaseNotification()
@@ -94,6 +98,43 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setStatusBarLight(R.color.colorWhite)
         setUpViewModel()
         setBadge()
+    }
+
+    private fun handleDynamicLink() {
+        Firebase.dynamicLinks
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                // Get deep link from result (may be null if no link is found)
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                    Log.d("TAG", "==> ${deepLink.toString()}")
+                    if (deepLink?.getBooleanQueryParameter("product_id", false) == true) {
+//                         deepLink.getQueryParameter("product_id")
+                        //open fragment product
+                        val bundle = Bundle()
+                        deepLink.getQueryParameter("product_id")?.let {
+                            bundle.putInt(FragmentHome.PRODUCT_DETAIL_ID,
+                                it?.toInt()
+                            )
+                        }
+                        val fragmentProductDetail = FragmentProductDetail()
+                        fragmentProductDetail.arguments = bundle
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_fragment, fragmentProductDetail)
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                }
+
+                // Handle the deep link. For example, open the linked
+                // content, or apply promotional credit to the user's
+                // account.
+                // ...
+
+                // ...
+            }
+            .addOnFailureListener(this) { e -> Log.w("TAG", "getDynamicLink:onFailure", e) }
     }
 
     private fun setAppMode() {
@@ -290,11 +331,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             val data = extras.getSerializable("data") as ProductDetail?
             if (value && data != null) {
                 fromStory(data)
-            }else{
-                isFromSameActivity=true
+            } else {
+                isFromSameActivity = true
             }
-        }else{
-            isFromSameActivity=true
+        } else {
+            isFromSameActivity = true
         }
     }
 
@@ -304,7 +345,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun fromStory(data: ProductDetail) {
-        isFromSameActivity=false
+        isFromSameActivity = false
         Log.d("testintent", "fromStory: " + data);
         val bundle = Bundle()
         bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, data)
@@ -592,7 +633,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 }
                 R.id.nav_rader -> selectedFragment = FragmentPreorder()
             }
-            isSureExit=false
+            isSureExit = false
             if (changeFragment) {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.main_fragment, selectedFragment!!)
@@ -615,7 +656,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 }
             }
         }
-        Log.d("BackCheck", "onBackPressed: normal"+supportFragmentManager.backStackEntryCount)
+        Log.d("BackCheck", "onBackPressed: normal" + supportFragmentManager.backStackEntryCount)
 
 //        if (binding.bottomNavigationView.getSelectedItemId()!= R.id.nav_home) {
 //            binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
@@ -623,7 +664,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //        } else {
 //            super.onBackPressed();
 //        }
-        if(!isSureExit&&isFromSameActivity) {
+        if (!isSureExit && isFromSameActivity) {
             if (supportFragmentManager.backStackEntryCount == 0) {
                 Toast.makeText(this, "Press back again to exit.", Toast.LENGTH_SHORT).show()
                 isSureExit = true
@@ -732,6 +773,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             )
             .replace(R.id.main_fragment, frag)
             .addToBackStack("order_list")
+            .commit()
+    }
+
+    fun openOrderList(frag: FragmentProfile) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment, frag)
             .commit()
     }
 

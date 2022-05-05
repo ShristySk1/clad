@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.CreateLinkViewModel
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
@@ -75,6 +76,9 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     var choosenSizePosition = 0
     var isStockAvailable = true
     var makeMainLayoutVisible = true
+    private val createLinkViewModel by lazy {
+        ViewModelProvider(this).get(CreateLinkViewModel::class.java)
+    }
 
     //for color and size
     lateinit var myMaps: MutableMap<String, MutableList<Variant>>
@@ -92,7 +96,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding = FragmentProductDetailBinding.inflate(inflater, container, false)
         initView()
         observeProductApi()
-        if(this::productDetail.isInitialized) {
+        if (this::productDetail.isInitialized) {
             Log.d("testproduct", "onCreateView: " + productDetail);
             setShimmerLayout(false)
             setProductData()
@@ -103,17 +107,26 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         setUpRecyclerRecommendation()
         binding.btnShare.setOnClickListener {
 //            https://clad.ayata.com.np/product/details/soft-fur-jacket/
-            try {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
-                val shareMessage =
-                    "https://clad.ayata.com.np/product/details/${productDetail.slug}"
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
-                startActivity(Intent.createChooser(shareIntent, "Share Using"))
-            } catch (e: Exception) {
-                Log.d(TAG, "onCreateView: " + e.message.toString());
-            }
+//            try {
+//                val shareIntent = Intent(Intent.ACTION_SEND)
+//                shareIntent.type = "text/plain"
+//                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
+//                val shareMessage =
+//                    "https://clad.ayata.com.np/product/details/${productDetail.slug}"
+//                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+//                startActivity(Intent.createChooser(shareIntent, "Share Using"))
+//            } catch (e: Exception) {
+//                Log.d(TAG, "onCreateView: " + e.message.toString());
+//            }
+
+            //test
+            createLinkViewModel.refferCode.value=productDetail.productId
+            createLinkViewModel.onCreateLinkClick()
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT, createLinkViewModel.shortLink.value)
+            startActivity(Intent.createChooser(intent, "Share Product"))
+
         }
         binding.imageView3.setOnClickListener {
             goToGalleryView()
@@ -126,8 +139,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun observeProductApi() {
         viewModel.getProductAPI().observeOnceAfterInit(viewLifecycleOwner, {
-            if(it!=null){
-                Log.d("testproocutapi", "observeProductApi: "+it.status);
+            if (it != null) {
+                Log.d("testproocutapi", "observeProductApi: " + it.status);
                 when (it.status) {
                     Status.SUCCESS -> {
                         setShimmerLayout(false)
@@ -168,7 +181,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         val fragment = FragmentProductDetailFull2()
         val bundle = Bundle()
         bundle.putSerializable("gallary", galleryBundle as Serializable)
-        bundle.putString("title",productDetail.name)
+        bundle.putString("title", productDetail.name)
         fragment.arguments = bundle
         parentFragmentManager.beginTransaction()
 //            .setCustomAnimations(
@@ -186,7 +199,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun getBundle() {
         val bundle = arguments
         if (bundle != null) {
-            val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL) as ProductDetail
+            val id=bundle.getInt(FragmentHome.PRODUCT_DETAIL_ID)
+            Log.d(TAG, "getBundle: "+id);
+            if(id!=0){
+                viewModel.productAPI(PreferenceHandler.getToken(context)!!, id)
+            }else{
+                val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL) as ProductDetail
             if (data != null) {
                 //bundle
                 // productDetail = data as ProductDetail
@@ -196,6 +214,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             } else {
                 makeMainLayoutVisible = false
             }
+            }
+
         } else {
             Log.d(TAG, "getBundle:null ");
             makeMainLayoutVisible = false
@@ -328,10 +348,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         //from api
         if (isWishList) {
             binding.ivHeart.setImageResource(R.drawable.ic_heart_filled)
-            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInWishlist=true
+            productDetail.variants.filter { dynamicVarientId == it.variantId }
+                .single().isInWishlist = true
         } else {
             binding.ivHeart.setImageResource(R.drawable.ic_heart_outline)
-            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInWishlist=false
+            productDetail.variants.filter { dynamicVarientId == it.variantId }
+                .single().isInWishlist = false
         }
     }
 
@@ -340,11 +362,13 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         if (isCart) {
             binding.imageCart.setImageResource(R.drawable.ic_bag_filled)
             binding.detail2.ivCart.setImageResource(R.drawable.ic_bag_filled)
-            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInCart=true
+            productDetail.variants.filter { dynamicVarientId == it.variantId }.single().isInCart =
+                true
         } else {
             binding.imageCart.setImageResource(R.drawable.ic_cart)
             binding.detail2.ivCart.setImageResource(R.drawable.ic_cart)
-            productDetail.variants.filter { dynamicVarientId==it.variantId }.single().isInCart=false
+            productDetail.variants.filter { dynamicVarientId == it.variantId }.single().isInCart =
+                false
         }
     }
 
@@ -687,7 +711,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun addToWishListAPI() {
         Log.d(TAG, "addToWishListAPI: " + dynamicVarientId);
-        binding.imageView3.isClickable=false
+        binding.imageView3.isClickable = false
         viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -704,17 +728,17 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                             )
                             isProductWishList = true
                             setWishlist(true)
-                            binding.imageView3.isClickable=true
+                            binding.imageView3.isClickable = true
                             MainActivity.NavCount.myWishlist =
                                 MainActivity.NavCount.myWishlist?.plus(1)
 
                         } catch (e: Exception) {
-                            binding.imageView3.isClickable=true
+                            binding.imageView3.isClickable = true
                             Log.d(TAG, "addToWishListAPI:Error ${e.message}")
                             Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                         }
-                    }else{
-                        binding.imageView3.isClickable=true
+                    } else {
+                        binding.imageView3.isClickable = true
                     }
 
                 }
@@ -730,7 +754,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
                 Status.ERROR -> {
                     progressDialog.dismiss()
-                    binding.imageView3.isClickable=true
+                    binding.imageView3.isClickable = true
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToWishListAPI:Error ${it.message}")
@@ -793,7 +817,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun addCart() {
 //        Toast.makeText(context, dynamicVarientId.toString(), Toast.LENGTH_SHORT).show()
-        binding.imageView3.isClickable=false
+        binding.imageView3.isClickable = false
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -805,7 +829,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         try {
                             isProductInCart = true
                             setCart(true)
-                            binding.imageView3.isClickable=true
+                            binding.imageView3.isClickable = true
                             showSnackBar(
                                 jsonObject.get("message").toString().removeDoubleQuote(),
                                 Constants.GO_TO_CART
@@ -814,11 +838,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                                 MainActivity.NavCount.myBoolean?.plus(1)
 
                         } catch (e: Exception) {
-                            binding.imageView3.isClickable=true
+                            binding.imageView3.isClickable = true
                             Log.d(TAG, "addToCartAPI:Error ${e.message}")
                         }
-                    }else{
-                        binding.imageView3.isClickable=true
+                    } else {
+                        binding.imageView3.isClickable = true
                     }
 
                 }
@@ -834,7 +858,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
                 Status.ERROR -> {
                     progressDialog.dismiss()
-                    binding.imageView3.isClickable=true
+                    binding.imageView3.isClickable = true
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToCartAPI:Error ${it.message}")

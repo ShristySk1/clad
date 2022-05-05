@@ -22,6 +22,7 @@ import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentCartPaymentBinding
+import com.ayata.clad.profile.myorder.order.response.Order
 import com.ayata.clad.shopping_bag.adapter.AdapterPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
@@ -32,10 +33,12 @@ import com.ayata.clad.shopping_bag.payment.viewmodel.PaymentViewModelFactory
 import com.ayata.clad.shopping_bag.response.checkout.CartResponse
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.khalti.checkout.helper.Config
 import com.khalti.checkout.helper.KhaltiCheckOut
 import com.khalti.checkout.helper.OnCheckOutListener
 import com.khalti.utils.Constant
+import java.lang.reflect.Type
 
 
 class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
@@ -64,7 +67,55 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         initRecycler()
         getPaymentApi()
         setTermText()
+        observeCheckout()
         return binding.root
+    }
+
+    private fun observeCheckout() {
+        viewModel.observeCheckoutOrder().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    binding.spinKit.rootContainer.visibility = View.GONE
+                    Log.d("testdata", "addToWishListAPI: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val jsonProducts = jsonObject.get("orders").asJsonArray
+                            val type: Type =
+                                object : TypeToken<ArrayList<Order?>?>() {}.type
+                            val list: ArrayList<Order> = Gson().fromJson(
+                                jsonProducts,
+                                type
+                            )
+                            parentFragmentManager.popBackStack(
+                                "checkout",
+                                FragmentManager.POP_BACK_STACK_INCLUSIVE
+                            )
+                            val bundle = Bundle()
+                            val frag = FragmentOrderPlaced()
+                            bundle.putSerializable("order", list)
+                            frag.arguments = bundle
+                            parentFragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment, frag)
+                                .addToBackStack(null)
+                                .commit()
+                        } catch (e: Exception) {
+                            Log.d("testdata", "addToWishListAPI:Error ${e.message}")
+                            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                Status.LOADING -> {
+                    binding.spinKit.rootContainer.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    binding.spinKit.rootContainer.visibility = View.GONE
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    Log.d("testdata", "addToWishListAPI:Error ${it.message}")
+                }
+            }
+        })
     }
 
     private fun getPaymentApi() {
@@ -125,6 +176,7 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
         )
     }
 
+
     private fun initView() {
         binding.btnConfirm.setOnClickListener {
             //get address get carts
@@ -151,8 +203,9 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
 
     private fun checkoutOrder(addressId: Int, addressType: String, carts: List<ModelCheckout>) {
         val cartIdList = carts.map { it.cartId }
-        if(PAYMENTID.isEmpty()){
-            Toast.makeText(context,"Select at least one payment gateway.",Toast.LENGTH_SHORT).show()
+        if (PAYMENTID.isEmpty()) {
+            Toast.makeText(context, "Select at least one payment gateway.", Toast.LENGTH_SHORT)
+                .show()
             return
         }
         viewModel.checkoutOrder(
@@ -164,39 +217,7 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
             addressType,
             cartResponse.cartGrandTotalNpr
         )
-        viewModel.observeCheckoutOrder().observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    binding.spinKit.rootContainer.visibility = View.GONE
-                    Log.d("testdata", "addToWishListAPI: ${it.data}")
-                    val jsonObject = it.data
-                    if (jsonObject != null) {
-                        try {
-                            parentFragmentManager.popBackStack(
-                                "checkout",
-                                FragmentManager.POP_BACK_STACK_INCLUSIVE
-                            )
-                            parentFragmentManager.beginTransaction()
-                                .replace(R.id.main_fragment, FragmentOrderPlaced())
-                                .addToBackStack(null)
-                                .commit()
-                        } catch (e: Exception) {
-                            Log.d("testdata", "addToWishListAPI:Error ${e.message}")
-                            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                Status.LOADING -> {
-                    binding.spinKit.rootContainer.visibility = View.VISIBLE
-                }
-                Status.ERROR -> {
-                    //Handle Error
-                    binding.spinKit.rootContainer.visibility = View.GONE
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d("testdata", "addToWishListAPI:Error ${it.message}")
-                }
-            }
-        })
+
     }
 
 

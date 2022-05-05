@@ -50,12 +50,20 @@ class FragmentProfile : Fragment() {
             listOf(FragmentAccount(), FragmentMyOrder(), FragmentGiftCard()),
             arrayListOf("Accounts", "Orders", "Gift Card")
         )
-        initView()
+        initBundle()
         initAppbar()
 
         return binding.root
     }
 
+    private fun initBundle() {
+        arguments?.let {
+            val isFromCheckout=it.getBoolean("showOrder")
+            if(isFromCheckout){
+                binding.viewPager.setCurrentItem(1,false)
+            }
+        }
+    }
 
     private fun setUpViewModel() {
         viewModel =
@@ -89,73 +97,8 @@ class FragmentProfile : Fragment() {
         Glide.with(requireContext()).asBitmap()
             .load(PreferenceHandler.getImageDecoded(requireContext()))
             .into(binding.ivProfileImage)
-//        val detail: Details = Details(
-//            PreferenceHandler.getDOB(requireContext()),
-//            PreferenceHandler.getEmail(requireContext()) ?: "",
-//            PreferenceHandler.getUsername(requireContext()) ?: "",
-//            PreferenceHandler.getGender(requireContext()),
-//            PreferenceHandler.getPhone(requireContext())
-//        )
-//        accountiewModel.setAccountDetail(detail)
-    }
 
-//    private fun setPreviousData() {
-//        viewModel.profileDetailAPI(PreferenceHandler.getToken(context)!!)
-//        viewModel.getProfileAPI().observe(viewLifecycleOwner, {
-//            when (it.status) {
-//                Status.SUCCESS -> {
-//                    binding.spinKit.visibility = View.GONE
-//                    val jsonObject = it.data
-//                    if (jsonObject != null) {
-//                        try {
-//                            val profileResponse =
-//                                Gson().fromJson<UserProfileResponse>(
-//                                    jsonObject,
-//                                    UserProfileResponse::class.java
-//                                )
-//                            if (profileResponse.details != null) {
-//                                val detail = profileResponse.details
-//                                setDataToView(detail)
-//
-//                            }
-//                        } catch (e: Exception) {
-//                            Log.d("", "prepareAPI: ${e.message}")
-//                        }
-//                    }
-//
-//                }
-//                Status.LOADING -> {
-//                    binding.spinKit.visibility = View.VISIBLE
-//
-//                }
-//                Status.ERROR -> {
-//                    //Handle Error
-//                    binding.spinKit.visibility = View.GONE
-//                    if (it.message.equals("Unauthorized")) {
-//
-//                    } else {
-//                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-//
-//                    }
-//                    Log.d("", "home: ${it.message}")
-//                }
-//            }
-//        })
-//    }
-//
-//    private fun setDataToView(detail: Details) {
-//        accountiewModel.setAccountDetail(detail)
-////        bundle = Bundle()
-////        bundle.putSerializable(Constants.EDIT_PROFILE, detail)
-//        binding.accEmail.setText(detail.email)
-//        binding.accName.setText(detail.fullName)
-//        val initials = detail.fullName
-//            .split(' ')
-//            .mapNotNull { it.firstOrNull()?.toString() }
-//            .reduce { acc, s -> acc + s }
-//        binding.profileNamePlaceholder.text = initials
-//
-//    }
+    }
 
     private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(false)
@@ -168,16 +111,6 @@ class FragmentProfile : Fragment() {
         )
     }
 
-    private fun initView() {
-//        val initials = "Ronesh Shrestha"
-//            .split(' ')
-//            .mapNotNull { it.firstOrNull()?.toString() }
-//            .reduce { acc, s -> acc + s }
-//        binding.profileNamePlaceholder.text = initials
-        //disable swipe
-//        binding.viewPager.setUserInputEnabled(false);
-
-    }
 
     private fun setTabLayout(list: List<Fragment>, myTitles: ArrayList<String>) {
         listFragment = ArrayList<Fragment>()
@@ -205,34 +138,10 @@ class FragmentProfile : Fragment() {
                 }
             }
         ).attach()
-//        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-//            override fun onTabSelected(tab: TabLayout.Tab?) {
-//                if ((tab?.view?.isEnabled)!!) {
-//                    //needs login
-//                    binding.viewPager.currentItem = tab.position
-//                }else{
-//
-//                }
-//            }
-//
-//            override fun onTabUnselected(tab: TabLayout.Tab?) {
-//
-//            }
-//
-//            override fun onTabReselected(tab: TabLayout.Tab?) {
-//
-//            }
-//
-//        })
     }
 
     private fun getDataFromApi() {
-//        list.addAll(data)
-//        val currentPosition: Int = binding.viewPager.getCurrentItem()
-//        adapterMarketViewPager.notifyDataSetChanged()
-//        binding.viewPager.adapter = null
-//        binding.viewPager.adapter = adapterMarketViewPager
-//        binding.viewPager.currentItem = currentPosition
+
     }
 
 }

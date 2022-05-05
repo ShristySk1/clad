@@ -26,6 +26,8 @@ import com.ayata.clad.home.response.*
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.FragmentProductDetail
+import com.ayata.clad.productlist.FragmentProductList
+import com.ayata.clad.shop.FragmentSubCategory
 import com.ayata.clad.story.StoryActivity
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
@@ -43,6 +45,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     AdapterBanner.OnItemClickListener {
 
     companion object {
+        val PRODUCT_DETAIL_ID: String="product id"
         private const val TAG = "FragmentHome"
         const val PRODUCT_DETAIL = "product detail"
     }
@@ -97,6 +100,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
             PreferenceHandler.getToken(requireContext()) ?: ""
         )
     }
+
 
     private fun initAppbar() {
         (activity as MainActivity).showBottomNavigation(true)
@@ -378,7 +382,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     }
 
     override fun onPopularBrandsClicked(data: Brand, position: Int) {
-        (activity as MainActivity).isFromSameActivity=false
+        (activity as MainActivity).isFromSameActivity = false
         val intent = Intent(activity, BrandDetailActivity::class.java)
         intent.putExtra("slug", data.slug)
         startActivity(intent)
@@ -411,7 +415,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 
     override fun onStoryClick(data: Story, position: Int) {
         //story
-        (activity as MainActivity).isFromSameActivity=false
+        (activity as MainActivity).isFromSameActivity = false
         StoryActivity.storyIndex = position
         StoryActivity.listStory.clear()
         StoryActivity.listStory.addAll(listStory)
@@ -480,7 +484,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 //
         setShimmerLayout(true)
         viewModel.getDashboardAPI().observe(viewLifecycleOwner, {
-            Log.d("tesshimmer", "home: "+it.status);
+            Log.d("tesshimmer", "home: " + it.status);
             when (it.status) {
                 Status.SUCCESS -> {
                     setShimmerLayout(false)
@@ -543,5 +547,30 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 //        fragmentViewAllProduct.arguments=bundle
 //        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
 //            .addToBackStack(null).commit()
+        val bundle=Bundle()
+        when (data.sliderType) {
+            "Category" -> {
+                bundle.putSerializable(FragmentSubCategory.CHILD_CATEGORY,data.category)
+                bundle.putString(FragmentSubCategory.CATEGORY_TITLE,data.title)
+                val fragment= FragmentProductList()
+                fragment.arguments=bundle
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, fragment)
+                    .addToBackStack(null).commit()
+            }
+            "Product" -> {
+                bundle.putSerializable(PRODUCT_DETAIL, data.product)
+                val fragmentProductDetail = FragmentProductDetail()
+                fragmentProductDetail.arguments = bundle
+                parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentProductDetail)
+                    .addToBackStack(null).commit()
+            }
+            "Brand" -> {
+                (activity as MainActivity).isFromSameActivity = false
+                val intent = Intent(activity, BrandDetailActivity::class.java)
+                intent.putExtra("slug", data.brand.slug)
+                startActivity(intent)
+            }
+        }
     }
 }

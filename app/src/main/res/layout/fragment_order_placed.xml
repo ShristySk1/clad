@@ -30,12 +30,12 @@
         android:layout_height="match_parent"/>
 
     <Button
-        android:id="@+id/btnViewOrder"
         style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/btnViewOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="View Order Detail"
+        android:text="shop more"
         android:layout_marginHorizontal="30dp"
         android:layout_above="@id/text_date"
         android:textColor="@color/colorBlack"/>
