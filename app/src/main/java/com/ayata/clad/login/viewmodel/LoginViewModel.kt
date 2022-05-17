@@ -67,11 +67,11 @@ class LoginViewModel constructor(private val mainRepository: ApiRepository) : Vi
 
     }
 
-    fun login(token: String) {
+    fun login(token: String,code:String) {
         loginGoogleResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
-                val response = mainRepository.login(token)
+                val response = mainRepository.login(token,code)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("otpResponse", "otp: " + response.body().toString())

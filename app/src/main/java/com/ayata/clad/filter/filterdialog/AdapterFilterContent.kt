@@ -10,13 +10,12 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.ItemRecyclerFilterDialogcontentTypeColorBinding
 import com.ayata.clad.databinding.ItemRecyclerFilterDialogcontentTypeText2Binding
 import com.ayata.clad.databinding.ItemRecyclerFilterDialogcontentTypeTextBinding
+import com.ayata.clad.databinding.ItemRecyclerFilterDialogcontentTypeTitleBinding
 
 internal class AdapterFilterContent(
     private var context: Context?,
     private var listItems: List<MyFilterContentViewItem>
 ) : RecyclerView.Adapter<AdapterFilterContent.HomeRecyclerViewHolder>() {
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecyclerViewHolder {
 
         return when (viewType) {
@@ -41,6 +40,13 @@ internal class AdapterFilterContent(
                     false
                 )
             )
+            R.layout.item_recycler_filter_dialogcontent_type_title -> HomeRecyclerViewHolder.TitleViewHolder(
+                ItemRecyclerFilterDialogcontentTypeTitleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw IllegalArgumentException("Invalid ViewType Provided")
         }
     }
@@ -60,6 +66,9 @@ internal class AdapterFilterContent(
                 listItems[position] as MyFilterContentViewItem.MultipleChoiceColor,
                 itemFilterContentMultipleColorClick
             )
+            is HomeRecyclerViewHolder.TitleViewHolder -> holder.bind(
+                listItems[position] as MyFilterContentViewItem.Title
+            )
         }
     }
 
@@ -68,6 +77,8 @@ internal class AdapterFilterContent(
             is MyFilterContentViewItem.SingleChoice -> R.layout.item_recycler_filter_dialogcontent_type_text
             is MyFilterContentViewItem.MultipleChoice -> R.layout.item_recycler_filter_dialogcontent_type_text2
             is MyFilterContentViewItem.MultipleChoiceColor -> R.layout.item_recycler_filter_dialogcontent_type_color
+            is MyFilterContentViewItem.Title -> R.layout.item_recycler_filter_dialogcontent_type_title
+
         }
     }
 
@@ -135,6 +146,16 @@ internal class AdapterFilterContent(
                             function(item)
                         }
                     }
+                }
+            }
+        }
+        class TitleViewHolder(private val binding: ItemRecyclerFilterDialogcontentTypeTitleBinding) :
+            HomeRecyclerViewHolder(binding) {
+            fun bind(
+                item: MyFilterContentViewItem.Title
+            ) {
+                with(item) {
+                    binding.title.text = item.title
                 }
             }
         }

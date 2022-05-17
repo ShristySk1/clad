@@ -25,10 +25,7 @@ import com.ayata.clad.profile.reviews.model.ModelReview
 import com.ayata.clad.profile.reviews.model.Review
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModel
 import com.ayata.clad.profile.reviews.viewmodel.ReviewViewModelFactory
-import com.ayata.clad.utils.Caller
-import com.ayata.clad.utils.Constants
-import com.ayata.clad.utils.MyLayoutInflater
-import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.*
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
@@ -157,7 +154,7 @@ class FragmentMyReviewsList : Fragment() {
     private fun observeGetReview() {
         val livedata = viewModel.observeGetReviewApi()
         livedata
-            .observe(viewLifecycleOwner) {
+            .observeOnceAfterInit(viewLifecycleOwner) {
                 Log.d("teststatus", "observeGetReview: "+it.status);
                 when (it.status) {
                     Status.SUCCESS -> {

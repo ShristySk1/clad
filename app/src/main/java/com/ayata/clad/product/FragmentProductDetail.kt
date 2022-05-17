@@ -50,6 +50,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.noowenz.showmoreless.ShowMoreLess
 import java.io.Serializable
 import java.lang.reflect.Type
 import java.util.*
@@ -76,6 +77,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     var choosenSizePosition = 0
     var isStockAvailable = true
     var makeMainLayoutVisible = true
+    val MAX_TEXT_CHARACTER=200
+    val MAX_TEXT_LINES=5
     private val createLinkViewModel by lazy {
         ViewModelProvider(this).get(CreateLinkViewModel::class.java)
     }
@@ -107,25 +110,26 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         setUpRecyclerRecommendation()
         binding.btnShare.setOnClickListener {
 //            https://clad.ayata.com.np/product/details/soft-fur-jacket/
-//            try {
-//                val shareIntent = Intent(Intent.ACTION_SEND)
-//                shareIntent.type = "text/plain"
-//                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
-//                val shareMessage =
-//                    "https://clad.ayata.com.np/product/details/${productDetail.slug}"
-//                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
-//                startActivity(Intent.createChooser(shareIntent, "Share Using"))
-//            } catch (e: Exception) {
-//                Log.d(TAG, "onCreateView: " + e.message.toString());
-//            }
+            try {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
+                val shareMessage =
+                    "https://clad.ayata.com.np/product/details/${productDetail.slug}"
+//                    "http://192.168.1.67:3000/product/12/aamayra-kurtha"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+                startActivity(Intent.createChooser(shareIntent, "Share Using"))
+            } catch (e: Exception) {
+                Log.d(TAG, "onCreateView: " + e.message.toString());
+            }
 
             //test
-            createLinkViewModel.refferCode.value=productDetail.productId
-            createLinkViewModel.onCreateLinkClick()
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "text/plain"
-            intent.putExtra(Intent.EXTRA_TEXT, createLinkViewModel.shortLink.value)
-            startActivity(Intent.createChooser(intent, "Share Product"))
+//            createLinkViewModel.refferCode.value=productDetail.productId
+//            createLinkViewModel.onCreateLinkClick()
+//            val intent = Intent(Intent.ACTION_SEND)
+//            intent.type = "text/plain"
+//            intent.putExtra(Intent.EXTRA_TEXT, createLinkViewModel.shortLink.value)
+//            startActivity(Intent.createChooser(intent, "Share Product"))
 
         }
         binding.imageView3.setOnClickListener {
@@ -199,21 +203,21 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun getBundle() {
         val bundle = arguments
         if (bundle != null) {
-            val id=bundle.getInt(FragmentHome.PRODUCT_DETAIL_ID)
-            Log.d(TAG, "getBundle: "+id);
-            if(id!=0){
+            val id = bundle.getInt(FragmentHome.PRODUCT_DETAIL_ID)
+            Log.d(TAG, "getBundle: " + id);
+            if (id != 0) {
                 viewModel.productAPI(PreferenceHandler.getToken(context)!!, id)
-            }else{
-                val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL) as ProductDetail
-            if (data != null) {
-                //bundle
-                // productDetail = data as ProductDetail
-                //setProductData()
-                //api
-                viewModel.productAPI(PreferenceHandler.getToken(context)!!, data.productId)
             } else {
-                makeMainLayoutVisible = false
-            }
+                val data = bundle.getSerializable(FragmentHome.PRODUCT_DETAIL) as ProductDetail
+                if (data != null) {
+                    //bundle
+                    // productDetail = data as ProductDetail
+                    //setProductData()
+                    //api
+                    viewModel.productAPI(PreferenceHandler.getToken(context)!!, data.productId)
+                } else {
+                    makeMainLayoutVisible = false
+                }
             }
 
         } else {
@@ -245,6 +249,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         binding.name.text = productDetail.name
         binding.storeName.text = productDetail.vendor
         binding.description.text = Html.fromHtml(productDetail.description)
+        if (productDetail.description.length < MAX_TEXT_CHARACTER) {
+
+        } else {
+            initViews()
+        }
+
         binding.detail2.name.text = productDetail.name
 //        isProductWishList = productDetail.isInWishlist
 //        isProductInCart = productDetail.isInCart
@@ -282,6 +292,45 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 .addToBackStack(null)
                 .commit()
         }
+    }
+    private fun initViews() {
+        ShowMoreLess.Builder(requireContext())
+            /*.textLengthAndLengthType(
+                    length = 100,
+                    textLengthType = ShowMoreLess.TYPE_CHARACTER
+            )*/
+            .textLengthAndLengthType(
+                length = MAX_TEXT_LINES,
+                textLengthType = ShowMoreLess.TYPE_LINE
+            )
+            .showMoreLabel("See more")
+            .showLessLabel("See less")
+            .showMoreLabelColor(Color.GRAY)
+            .showLessLabelColor(Color.GRAY)
+            .labelUnderLine(labelUnderLine = true)
+            .labelBold(labelBold = true)
+            .expandAnimation(expandAnimation = true)
+            .enableLinkify(linkify = false)
+            .textClickable(
+                textClickableInExpand = true,
+                textClickableInCollapse = true
+            )
+            .build().apply {
+                addShowMoreLess(
+                    textView = binding.description,
+                    text = binding.description.text,
+                    isContentExpanded = false
+                )
+                setListener(object : ShowMoreLess.OnShowMoreLessClickedListener {
+                    override fun onShowMoreClicked() {
+                        //We can handle or save show more state
+                    }
+
+                    override fun onShowLessClicked() {
+                        //We can handle or save show less state
+                    }
+                })
+            }
     }
 
     private fun setUpViewModel() {

@@ -1,5 +1,6 @@
 package com.ayata.clad.filter
 
+import com.ayata.clad.productlist.response.MySize
 import java.io.Serializable
 
 data class ModelFilter(
@@ -10,10 +11,11 @@ data class ModelFilter(
 
 sealed class MyFilterRecyclerViewItem {
     class Title(
-        val id:Int,
+        var id:Int,
         val title: String,
         var subTitle: String,
-        var slug: String?=null
+        var slug: String?=null,
+        var listOfIdsOfSlug:String?=null
     ) : MyFilterRecyclerViewItem()
 
     class Color(
@@ -22,4 +24,4 @@ sealed class MyFilterRecyclerViewItem {
         var colorList: List<MyColor>
     ) : MyFilterRecyclerViewItem()
 }
-data class MyColor(val colorName:String,val color: String?)
+data class MyColor(val colorName:String,val color: String?=null,val id:Int?=null)

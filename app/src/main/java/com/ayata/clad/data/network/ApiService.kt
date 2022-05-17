@@ -61,7 +61,7 @@ interface ApiService {
     //google login
     @POST("oauth/google/")
     @FormUrlEncoded
-    suspend fun loginGoogle(@Field("auth_token") auth_token: String): Response<JsonObject>
+    suspend fun loginGoogle(@Field("auth_token") auth_token: String,@Field("refer_code") referCode:String): Response<JsonObject>
 
     //dashboard
     @GET("home/")
@@ -74,7 +74,7 @@ interface ApiService {
     @GET("products/all/")
     suspend fun categoryProductListAPI(
         @Header("Authorization") token: String,
-        @QueryMap map: Map<String,String>,
+        @QueryMap(encoded = true) map: Map<String,String>,
         @Query("page") page: Int,
     ): Response<JsonObject>
 

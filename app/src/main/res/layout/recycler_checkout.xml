@@ -334,7 +334,7 @@
                 android:text="In stock"
                 android:textColor="@color/colorYellowDark"
                 android:textSize="10sp"
-                android:textStyle="italic|bold" />
+                android:textStyle="normal|bold" />
 
         </RelativeLayout>
 

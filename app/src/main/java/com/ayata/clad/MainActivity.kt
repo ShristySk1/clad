@@ -2,8 +2,8 @@ package com.ayata.clad
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
@@ -47,8 +49,6 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import java.util.*
@@ -101,42 +101,95 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun handleDynamicLink() {
-        Firebase.dynamicLinks
-            .getDynamicLink(intent)
-            .addOnSuccessListener(this) { pendingDynamicLinkData ->
-                // Get deep link from result (may be null if no link is found)
-                var deepLink: Uri? = null
-                if (pendingDynamicLinkData != null) {
-                    deepLink = pendingDynamicLinkData.link
-                    Log.d("TAG", "==> ${deepLink.toString()}")
-                    if (deepLink?.getBooleanQueryParameter("product_id", false) == true) {
-//                         deepLink.getQueryParameter("product_id")
-                        //open fragment product
-                        val bundle = Bundle()
-                        deepLink.getQueryParameter("product_id")?.let {
-                            bundle.putInt(FragmentHome.PRODUCT_DETAIL_ID,
-                                it?.toInt()
-                            )
-                        }
-                        val fragmentProductDetail = FragmentProductDetail()
-                        fragmentProductDetail.arguments = bundle
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.main_fragment, fragmentProductDetail)
-                            .addToBackStack(null)
-                            .commit()
-                    }
-                }
-
-                // Handle the deep link. For example, open the linked
-                // content, or apply promotional credit to the user's
-                // account.
-                // ...
-
-                // ...
-            }
-            .addOnFailureListener(this) { e -> Log.w("TAG", "getDynamicLink:onFailure", e) }
+        val data = this.intent.data
+//        Log.d("testparams0", "handleDynamicLink: "+intent.extras);
+//        val parametros = intent.extras
+//
+//        if (parametros != null) {
+//            val productId: Int = parametros.getInt("product_id")
+//            if (productId != null) {
+//                //do whatever you have to
+//                //...
+//                Log.d("testproductId", "handleDynamicLink: "+productId);
+//            }
+//        } else {
+//            //no extras, get over it!!
+//            Log.d("testproductId", "handleDynamicLink: null");
+//
+//        }
+//        if (data != null && data.isHierarchical) {
+//            Log.d("testparams", "handleDynamicLink: "+data);
+//            if (data.getQueryParameter("product_id") != null) {
+//                val param = data.getQueryParameter("product_id")
+//                Log.d("theparamis", param!!)
+//                //do something here
+//                val bundle = Bundle()
+//                bundle.putInt(
+//                    FragmentHome.PRODUCT_DETAIL_ID,
+//                    param.toInt()
+//                )
+//                val fragmentProductDetail = FragmentProductDetail()
+//                fragmentProductDetail.arguments = bundle
+//                supportFragmentManager.beginTransaction()
+//                    .replace(R.id.main_fragment, fragmentProductDetail)
+//                    .addToBackStack(null)
+//                    .commit()
+//            }
+//        }
+//        Firebase.dynamicLinks
+//            .getDynamicLink(intent)
+//            .addOnSuccessListener(this) { pendingDynamicLinkData ->
+//                // Get deep link from result (may be null if no link is found)
+//                var deepLink: Uri? = null
+//                if (pendingDynamicLinkData != null) {
+//                    deepLink = pendingDynamicLinkData.link
+//                    Log.d("TAG", "==> ${deepLink.toString()}")
+//                    if (deepLink?.getBooleanQueryParameter("product_id", false) == true) {
+////                         deepLink.getQueryParameter("product_id")
+//                        //open fragment product
+//                        val bundle = Bundle()
+//                        deepLink.getQueryParameter("product_id")?.let {
+//                            bundle.putInt(FragmentHome.PRODUCT_DETAIL_ID,
+//                                it?.toInt()
+//                            )
+//                        }
+//                        val fragmentProductDetail = FragmentProductDetail()
+//                        fragmentProductDetail.arguments = bundle
+//                        supportFragmentManager.beginTransaction()
+//                            .replace(R.id.main_fragment, fragmentProductDetail)
+//                            .addToBackStack(null)
+//                            .commit()
+//                    }
+//                }
+//
+//                // Handle the deep link. For example, open the linked
+//                // content, or apply promotional credit to the user's
+//                // account.
+//                // ...
+//
+//                // ...
+//            }
+//            .addOnFailureListener(this) { e -> Log.w("TAG", "getDynamicLink:onFailure", e) }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val parametros = intent?.extras
+        if (parametros != null) {
+            val productId: Int = parametros.getInt("product_id")
+            if (productId != null) {
+                //do whatever you have to
+                //...
+                Log.d("testproductId", "handleDynamicLink: "+productId);
+            }
+        } else {
+            //no extras, get over it!!
+            Log.d("testproductId", "handleDynamicLink: null");
+
+        }
+
+
+    }
     private fun setAppMode() {
         val isDarkMode = PreferenceHandler.isThemeDark(this)!!
         Log.d(TAG, "setAppMode: " + isDarkMode);
@@ -407,7 +460,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
 
         binding.appbar.btnClose.setOnClickListener {
+            FragmentFilter.MY_LIST=FragmentFilter.MY_OLD_LIST
             onBackPressed()
+//            hideAndShowFragment(true)
         }
 
         binding.appbar.btnCloseProfile.setOnClickListener {
@@ -427,6 +482,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 .commit()
         }
         binding.appbar.btnFilter2.setOnClickListener {
+//            hideAndShowFragment(false)
             supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.enter_from_right,
@@ -454,7 +510,33 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 .commit()
         }
     }
+    fun hideAndShowFragment(hide: Boolean) {
+        val fm: FragmentManager = supportFragmentManager
+        val ft: FragmentTransaction = fm.beginTransaction()
+        val pf: FragmentFilter? =
+            fm.findFragmentByTag("filter") as FragmentFilter?
+        ft.setCustomAnimations(
+            R.anim.enter_from_right,
+            R.anim.exit_to_left,
+            R.anim.enter_from_left,
+            R.anim.exit_to_right
+        )
+        if (hide) {
+            Log.d("testshow", "hideAndShowFragment: "+hide);
+            pf?.let {
+                ft.hide(pf).commit()
+            }
+        } else {
+            Log.d("testshow", "hideAndShowFragment: "+hide);
+            pf?.let {
+                ft.show(pf).commit()
+            }?: kotlin.run {
+                ft.add(R.id.main_fragment, FragmentFilter(), "filter").commit();
 
+            }
+
+        }
+    }
     fun setFilterSlugFromCategory(slug: String) {
         filterSlugCategory = slug
     }

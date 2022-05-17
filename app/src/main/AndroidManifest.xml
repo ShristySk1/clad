@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_logo_app_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clad"
-        android:usesCleartextTraffic="false"
+        android:usesCleartextTraffic="true"
         tools:replace="android:theme">
         <activity android:name=".brand.BrandDetailActivity"
             android:screenOrientation="portrait"
@@ -45,9 +45,20 @@
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
+<!--                <data android:scheme="https"-->
+<!--                    android:host="www.clad.com.np"-->
+<!--                    android:pathPrefix="/api/user_verify" />-->
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="clad" />
+                <data
+                    android:scheme="clad" />
             </intent-filter>
         </activity>
         <activity
@@ -77,11 +88,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="www.cladayata.com"
-                    android:scheme="http" />
+                    android:scheme="clad" />
                 <data
-                    android:host="www.cladayata.com"
-                    android:scheme="https" />
+                    android:host="192.168.1.67:3000"
+                    android:scheme="clad" />
             </intent-filter>
 
         </activity>

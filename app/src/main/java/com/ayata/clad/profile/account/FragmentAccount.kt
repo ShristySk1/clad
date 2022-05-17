@@ -67,29 +67,34 @@ class FragmentAccount : Fragment() {
         binding.btnLogOut.setOnClickListener{
             //api logout
             PreferenceHandler.getToken(context)?.let { it1 -> loginViewModel.logout(it1) }
-            loginViewModel.dologout().observe(viewLifecycleOwner, {
-                when (it.status) {
-                    Status.SUCCESS -> {
-                        binding.defaultProgress.visibility = View.GONE
-                        Log.d(TAG, "login: ${it.data}")
-
-                            PreferenceHandler.logout(requireContext())
-                            startActivity(
-                                Intent(context, ActivityOnboarding::class.java)
-                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            )
-                    }
-                    Status.LOADING -> {
-                        binding.defaultProgress.visibility = View.VISIBLE
-                    }
-                    Status.ERROR -> {
-                        //Handle Error
-                        binding.defaultProgress.visibility = View.GONE
-                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-
-                    }
-                }
-            })
+//            loginViewModel.dologout().observe(viewLifecycleOwner, {
+//                when (it.status) {
+//                    Status.SUCCESS -> {
+//                        binding.defaultProgress.visibility = View.GONE
+//                        Log.d(TAG, "login: ${it.data}")
+//
+//                            PreferenceHandler.logout(requireContext())
+//                            startActivity(
+//                                Intent(context, ActivityOnboarding::class.java)
+//                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                            )
+//                    }
+//                    Status.LOADING -> {
+//                        binding.defaultProgress.visibility = View.VISIBLE
+//                    }
+//                    Status.ERROR -> {
+//                        //Handle Error
+//                        binding.defaultProgress.visibility = View.GONE
+//                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//
+//                    }
+//                }
+//            })
+            PreferenceHandler.logout(requireContext())
+            startActivity(
+                Intent(context, ActivityOnboarding::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            )
 
         }
     }

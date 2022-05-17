@@ -145,6 +145,10 @@ dependencies {
     implementation 'io.github.igreenwood.loupe:loupe:1.2.2'
     //firebase dynamic link library
     implementation 'com.google.firebase:firebase-dynamic-links-ktx'
+    //show more text
+    implementation 'com.github.mahimrocky:ShowMoreText:1.0.2'
+    implementation 'com.github.noowenz:ShowMoreLess:1.0.3'
+
 
 
 

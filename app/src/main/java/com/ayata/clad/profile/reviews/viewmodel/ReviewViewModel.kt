@@ -19,8 +19,8 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
     private val postReviewResponse = SingleLiveEvent<Resource<JsonObject>>()
 
 
-    private val imageUploadResponse = MutableLiveData<Resource<JsonObject>>()
-    private val imageDeleteResponse = MutableLiveData<Resource<JsonObject>>()
+    private val imageUploadResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val imageDeleteResponse = SingleLiveEvent<Resource<JsonObject>>()
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -78,7 +78,7 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
         }
     }
 
-    fun observeimageUploadAPI(): LiveData<Resource<JsonObject>> {
+    fun observeimageUploadAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return imageUploadResponse
     }
 
@@ -105,7 +105,7 @@ class ReviewViewModel constructor(private val mainRepository: ApiRepository) : V
         }
     }
 
-    fun observeDeleteUploadAPI(): LiveData<Resource<JsonObject>> {
+    fun observeDeleteUploadAPI(): SingleLiveEvent<Resource<JsonObject>> {
         return imageDeleteResponse
     }
 

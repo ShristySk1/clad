@@ -24,7 +24,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     suspend fun otpVerification(jsonObject: JsonObject) =
         retrofitService.otpVerification(jsonObject)
 
-    suspend fun login(token: String) = retrofitService.loginGoogle(token)
+    suspend fun login(token: String,code:String) = retrofitService.loginGoogle(token,code)
     suspend fun dashboardAPI(token: String) = retrofitService.dashboardAPI(token)
     suspend fun categoryListAPI() = retrofitService.categoryListAPI()
 

@@ -81,10 +81,12 @@ class FragmentMyReviewsForm : Fragment() {
         binding =
             FragmentMyReviewFormBinding.inflate(inflater, container, false)
         initAppbar()
+
         setUpViewModel()
         setTab(binding.tabSize, binding.tabComfort)
         initRecyclerview()
         initBundle()
+
         observePostReviewApi()
         observeImageUploadApi()
         observeDeleteImageReviewApi()
