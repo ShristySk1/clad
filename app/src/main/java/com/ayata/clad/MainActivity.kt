@@ -180,7 +180,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             if (productId != null) {
                 //do whatever you have to
                 //...
-                Log.d("testproductId", "handleDynamicLink: "+productId);
+                Log.d("testproductId", "handleDynamicLink: " + productId);
             }
         } else {
             //no extras, get over it!!
@@ -190,6 +190,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
 
     }
+
     private fun setAppMode() {
         val isDarkMode = PreferenceHandler.isThemeDark(this)!!
         Log.d(TAG, "setAppMode: " + isDarkMode);
@@ -460,8 +461,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
 
         binding.appbar.btnClose.setOnClickListener {
-            FragmentFilter.MY_LIST=FragmentFilter.MY_OLD_LIST
+//            FragmentFilter.MY_OLD_LIST.forEach {
+//                Log.d("testoldlist", "onCreateView: " + it);
+//            }
+
             onBackPressed()
+
+//            FragmentFilter.MY_LIST = FragmentFilter.MY_OLD_LIST.toCollection(mutableListOf()).toList()
 //            hideAndShowFragment(true)
         }
 
@@ -510,6 +516,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 .commit()
         }
     }
+
     fun hideAndShowFragment(hide: Boolean) {
         val fm: FragmentManager = supportFragmentManager
         val ft: FragmentTransaction = fm.beginTransaction()
@@ -522,21 +529,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             R.anim.exit_to_right
         )
         if (hide) {
-            Log.d("testshow", "hideAndShowFragment: "+hide);
+            Log.d("testshow", "hideAndShowFragment: " + hide);
             pf?.let {
                 ft.hide(pf).commit()
             }
         } else {
-            Log.d("testshow", "hideAndShowFragment: "+hide);
+            Log.d("testshow", "hideAndShowFragment: " + hide);
             pf?.let {
                 ft.show(pf).commit()
-            }?: kotlin.run {
+            } ?: kotlin.run {
                 ft.add(R.id.main_fragment, FragmentFilter(), "filter").commit();
 
             }
 
         }
     }
+
     fun setFilterSlugFromCategory(slug: String) {
         filterSlugCategory = slug
     }
@@ -912,5 +920,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
         }
         snackbar.show()
+    }
+
+    fun isFilter(b: Boolean) {
+        if(b)binding.appbar.btnFilter2.visibility = View.VISIBLE else binding.appbar.btnFilter2.visibility = View.GONE
     }
 }

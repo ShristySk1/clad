@@ -36,7 +36,8 @@ companion object{
         binding = FragmentSubCategoryBinding.inflate(inflater, container, false)
         listChildCategory.clear()
         //reset filter
-        FragmentFilter.MY_LIST=FragmentFilter.giveMyOrginalList()
+//        FragmentFilter.MY_LIST=FragmentFilter.giveMyOrginalList()
+//        FragmentFilter.MY_OLD_LIST=(FragmentFilter.giveMyOrginalList().toMutableList())
         //filter end
         if (arguments != null) {
             Log.d(TAG, "onCreateView: not null");

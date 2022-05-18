@@ -51,7 +51,6 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
     private var appBarTitle: String = "";
     private var appBarDesc: String = "";
     private var appBarCount: Int = 0
-
     //paging
     var isLastPage = false
     var isScrolling = false
@@ -171,12 +170,13 @@ class FragmentProductList : Fragment(), ProductDetailViewAllAdapter.onItemClickL
                 it.newMax
             )
         }
+        (activity as MainActivity).isFilter(false)
         Log.d(TAG, "getAllTest: " + testViewModel.getData())
         viewModel.productList?.observe(viewLifecycleOwner, {
             viewModel.getCurrent()
             adapterPaging.submitData(this.lifecycle, it)
+            (activity as MainActivity).isFilter(true)
             it.map { Log.d(TAG, "getAllTest: " + it.name) }
-
         })
     }
 
