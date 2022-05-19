@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_logo_app_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clad"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
         tools:replace="android:theme">
         <activity android:name=".brand.BrandDetailActivity"
             android:screenOrientation="portrait"
@@ -34,7 +34,8 @@
         <activity
             android:name=".BaseActivity"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".story.StoryActivity"
             android:screenOrientation="portrait"
@@ -51,15 +52,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="clad" />
-                <data
-                    android:scheme="clad" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <data-->
+<!--                    android:scheme="clad" />-->
+<!--                <data-->
+<!--                    android:scheme="clad" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".login.LoginActivity"
@@ -83,16 +84,16 @@
 
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="clad" />
-                <data
-                    android:host="192.168.1.67:3000"
-                    android:scheme="clad" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <data-->
+<!--                    android:scheme="clad" />-->
+<!--                <data-->
+<!--                    android:host="192.168.1.67:3000"-->
+<!--                    android:scheme="clad" />-->
+<!--            </intent-filter>-->
 
         </activity>
 

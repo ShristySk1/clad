@@ -30,7 +30,8 @@ interface ApiService {
         fun getInstance(context: Context): ApiService {
             if (retrofitService == null) {
                 val client: OkHttpClient =
-                    OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
+                    OkHttpClient.Builder()
+//                        .addInterceptor(httpLoggingInterceptor)
                         .addInterceptor(NetworkConnectionInterceptor(context))
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)

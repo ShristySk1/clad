@@ -109,23 +109,27 @@ class FragmentAddressDetail : Fragment(), AdapterAddress.OnItemClickListener {
 
     private fun prepareListAddress(details: List<Detail>) {
         listAddress.clear()
-        userData = details[0]
-        for (detail in details) {
-            listAddress.add(
-                ModelShippingAddress(
-                    detail.title,
-                    "${detail.state},\n${detail.city},${detail.state}",
-                    false
+        if(details.size>0) {
+            userData = details[0]
+            for (detail in details) {
+                listAddress.add(
+                    ModelShippingAddress(
+                        detail.title,
+                        "${detail.state},\n${detail.city},${detail.state}",
+                        false
+                    )
                 )
-            )
 //        listAddress.add(ModelShippingAddress("Office","Kuleshwor - 12,\nLalitpur, Nepal",false))
-        }
-        if(details.size>=1){
-            binding.llAddAddress.visibility=View.GONE
+            }
+            if (details.size >= 1) {
+                binding.llAddAddress.visibility = View.GONE
+            } else {
+                binding.llAddAddress.visibility = View.VISIBLE
+            }
+            adapterAddress.notifyDataSetChanged()
         }else{
-            binding.llAddAddress.visibility=View.VISIBLE
+            binding.llAddAddress.visibility = View.VISIBLE
         }
-        adapterAddress.notifyDataSetChanged()
     }
     private fun showError(it: String) {
         Caller().empty("Error!",it,requireContext(),binding.root)

@@ -79,7 +79,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setToolbar()
-        handleDynamicLink()
+//        handleDynamicLink()
         //set login
         PreferenceHandler.setIsOnBoarding(this, false)
         setUpFirebaseNotification()
@@ -172,24 +172,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //            .addOnFailureListener(this) { e -> Log.w("TAG", "getDynamicLink:onFailure", e) }
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        val parametros = intent?.extras
-        if (parametros != null) {
-            val productId: Int = parametros.getInt("product_id")
-            if (productId != null) {
-                //do whatever you have to
-                //...
-                Log.d("testproductId", "handleDynamicLink: " + productId);
-            }
-        } else {
-            //no extras, get over it!!
-            Log.d("testproductId", "handleDynamicLink: null");
-
-        }
-
-
-    }
+//    override fun onNewIntent(intent: Intent?) {
+//        super.onNewIntent(intent)
+//        val parametros = intent?.extras
+//        if (parametros != null) {
+//            val productId: Int = parametros.getInt("product_id")
+//            if (productId != null) {
+//                //do whatever you have to
+//                //...
+//                Log.d("testproductId", "handleDynamicLink: " + productId);
+//            }
+//        } else {
+//            //no extras, get over it!!
+//            Log.d("testproductId", "handleDynamicLink: null");
+//
+//        }
+//
+//
+//    }
 
     private fun setAppMode() {
         val isDarkMode = PreferenceHandler.isThemeDark(this)!!
