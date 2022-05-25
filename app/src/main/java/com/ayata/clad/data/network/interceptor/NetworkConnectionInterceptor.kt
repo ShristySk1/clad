@@ -4,28 +4,36 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import okhttp3.Interceptor
+import okhttp3.Protocol
 import okhttp3.Response
 import java.io.IOException
-import java.lang.ref.WeakReference
 import java.net.InetSocketAddress
+import java.net.ProtocolException
 import java.net.Socket
 
 class NetworkConnectionInterceptor(private val mContext: Context) :
     Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-//        if (!isConnected) {
-//            throw NoConnectivityException()
-//            // Throwing our custom exception 'NoConnectivityException'
-//        }
-//        val builder: Request.Builder = chain.request().newBuilder()
-//        return chain.proceed(builder.build())
         return if (!isConnectionOn()) {
             throw NoConnectivityException()
         } else if (!isInternetAvailable()) {
             throw NoInternetException()
         } else {
-            chain.proceed(chain.request())
+//            var response: Response
+//            response = try {
+//                chain.proceed(chain.request())
+//
+//            } catch (p: ProtocolException) {
+//                Response.Builder()
+//                    .request(chain.request())
+//                    .code(200)
+//                            .protocol(Protocol.HTTP_1_1)
+//                    .build()
+//            }
+//            response
+                            chain.proceed(chain.request())
+
         }
     }
 

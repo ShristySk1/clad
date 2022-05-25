@@ -12,6 +12,7 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.FragmentSubCategoryBinding
 import com.ayata.clad.filter.FragmentFilter
 import com.ayata.clad.productlist.FragmentProductList
+import com.ayata.clad.productlist.response.Color
 import com.ayata.clad.shop.adapter.AdapterSubCategoryFilterable
 import com.ayata.clad.shop.response.ChildCategory
 import com.ayata.clad.shop.response.SubCategory
@@ -38,6 +39,8 @@ companion object{
         //reset filter
 //        FragmentFilter.MY_LIST=FragmentFilter.giveMyOrginalList()
 //        FragmentFilter.MY_OLD_LIST=(FragmentFilter.giveMyOrginalList().toMutableList())
+        FragmentFilter.setMyColorListFromApi(ArrayList<Color>())
+        FragmentFilter.setMySizeListFromApi(null)
         //filter end
         if (arguments != null) {
             Log.d(TAG, "onCreateView: not null");

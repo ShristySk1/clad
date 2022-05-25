@@ -34,14 +34,14 @@ class FragmentFilter : Fragment() {
         val defaultMinPrice = "0"
         val defaultMaxPrice = "100000"
 
-        private lateinit var apiColor: ArrayList<Color>
-        private lateinit var apiSize: Map<String, List<MySize>>
+        private  var apiColor: ArrayList<Color>?=null
+        private  var apiSize: Map<String, List<MySize>>?=null
 //        var MY_LIST = giveMyOrginalList()
 
 
         fun giveMyColorListFromApi(): ArrayList<MyFilterContentViewItem.MultipleChoiceColor> {
             val list = ArrayList<MyFilterContentViewItem.MultipleChoiceColor>()
-            apiColor.forEach {
+            apiColor?.forEach {
                 list.add(
                     MyFilterContentViewItem.MultipleChoiceColor(
                         it.id,
@@ -60,7 +60,7 @@ class FragmentFilter : Fragment() {
 
         fun giveMySizeListFromApi(): ArrayList<MyFilterContentViewItem> {
             val list = ArrayList<MyFilterContentViewItem>()
-            apiSize.forEach {
+            apiSize?.forEach {
                 list.add(MyFilterContentViewItem.Title(it.key))
                 it.value.forEach { size ->
                     list.add(
@@ -77,7 +77,7 @@ class FragmentFilter : Fragment() {
         }
 
         //
-        fun setMySizeListFromApi(size: Map<String, List<MySize>>) {
+        fun setMySizeListFromApi(size: Map<String, List<MySize>>?) {
             apiSize = size
         }
 
@@ -109,37 +109,6 @@ class FragmentFilter : Fragment() {
         super.onCreate(savedInstanceState)
         setUpViewModel()
         Log.d("testmyoriginal", "onCreate: ");
-
-
-//        sizeList = listOf(
-//
-//            MyFilterContentViewItem.MultipleChoice(
-//                "m",
-//                false,
-//                id = 1
-//            ),
-//            MyFilterContentViewItem.MultipleChoice(
-//                "l",
-//                false,
-//                id = 2
-//            ),
-//        )
-//        colorList = listOf(
-//            MyFilterContentViewItem.MultipleChoiceColor(
-//                11,
-//                "color",
-//                false,
-//                "#000000"
-//            ),
-//            MyFilterContentViewItem.MultipleChoiceColor(
-//                22,
-//                "color2",
-//                false,
-//                "#ffffff"
-//            )
-//        )
-
-
     }
 
     override fun onCreateView(
@@ -394,7 +363,7 @@ fun giveMySortList()=listOf(
     ) {
         val onlySelectableChoices =
             list.filterIsInstance(MyFilterContentViewItem.MultipleChoice::class.java)
-        Log.d("testsize", "onCreateView: " + onlySelectableChoices.get(0).isSelected.toString());
+//        Log.d("testsize", "onCreateView: " + onlySelectableChoices.get(0).isSelected.toString());
 
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
