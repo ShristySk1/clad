@@ -31,5 +31,7 @@ data class CartResponse(
     val cartPromoDiscountNpr: Double,
     @SerializedName("promo_discount_dollar")
     val cartPromoDiscountDollar: Double,
-
+    //coupon_code
+    @SerializedName("coupon_code")
+    val coupon_code:String?,
 ):Serializable

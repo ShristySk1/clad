@@ -31,10 +31,8 @@ class CategoryPagingDataSource(
         val response = api.categoryProductListAPI(token, queryMap, position)
         return try {
             Log.d("calledme", "load: ");
-
-
-            if (response.code() == 200){
-                Log.d("calledme", "200: ");
+//            if (response.code() == 200){
+//                Log.d("calledme", "200: ");
                 try {
                     val gson = Gson()
                     val type: Type =
@@ -73,7 +71,11 @@ class CategoryPagingDataSource(
                         }
                     } else {
                         Log.d("calledme", "load: empty");
-                        LoadResult.Error(EmptyException(response.body()?.get("message").toString()))
+                        LoadResult.Page(
+                            data = productList,
+                            prevKey = if (position == 1) null else position - 1,
+                            nextKey = null
+                        )
                     }
                 } catch (e: Exception) {
                     try {
@@ -94,10 +96,10 @@ class CategoryPagingDataSource(
                     }
                 }
 
-        }else{
-            Log.d("testdataerro", "load: ");
-                LoadResult.Error(EmptyException(response.body()?.get("message").toString()))
-            }
+//        }else{
+//            Log.d("testdataerro", "load: ");
+//                LoadResult.Error(EmptyException(response.body()?.get("message").toString()))
+//            }
         } catch (exception: IOException) {
             Log.d("myexception", "load: exception" + response.code());
 

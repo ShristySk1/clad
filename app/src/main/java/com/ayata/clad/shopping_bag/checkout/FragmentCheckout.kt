@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.text.bold
 import androidx.fragment.app.Fragment
@@ -35,8 +34,6 @@ import com.ayata.clad.shopping_bag.shipping.FragmentShipping
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.Caller
-import com.ayata.clad.utils.Constants
-import com.ayata.clad.utils.MyLayoutInflater
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -90,6 +87,9 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         setSelectObserver()
         setRemoveObserver()
         setApplyCouponObserver()
+        binding.deleteCoupon.setOnClickListener {
+            //delete api
+        }
         return binding.root
     }
 
@@ -125,6 +125,12 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                 //coupon successfully applied
                                 listContainingGrandtotal = checkoutResponse
                                 updateTotals(checkoutResponse)
+                                checkoutResponse.coupon_code?.let {
+                                    showCoupon(checkoutResponse.coupon_code)
+                                } ?: kotlin.run {
+                                    hideCoupon()
+                                }
+
                                 showSnackBar(checkoutResponse.message)
                             } else {
                                 if (checkoutResponse.message != null) {
@@ -549,7 +555,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     item.cartId ?: 0,
                     item.selected.colorName,
                     item.selected.colorHex,
-                    item.productDetails.brand?.name?:"",
+                    item.productDetails.brand?.name ?: "",
                     item.selected.stock_status,
                     item.productDetails.isCouponAvailable ?: false,
                     item.productDetails.coupon?.let { it.code } ?: run { "" },
@@ -786,7 +792,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private fun getCartAPI() {
         listCheckout.clear()
-
         viewModel.getCartListAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -816,7 +821,12 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                         prepareList(
                                             cartlist
                                         )
-
+                                        //set coupon
+                                        checkoutResponse.coupon_code?.let {
+                                            showCoupon(checkoutResponse.coupon_code)
+                                        } ?: kotlin.run {
+                                            hideCoupon()
+                                        }
 
                                     } else {
                                         setUpView()
@@ -846,17 +856,20 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         })
     }
 
+    private fun hideCoupon() {
+        binding.layoutCoupon.visibility = View.GONE
+        binding.couponLayout.visibility = View.VISIBLE
+    }
+
+    private fun showCoupon(couponCode: String) {
+        binding.layoutCoupon.visibility = View.VISIBLE
+        binding.code.text = couponCode
+        binding.couponLayout.visibility = View.GONE
+    }
+
     private fun showError(it: String) {
         binding.layoutMain.visibility = View.GONE
-//        MyLayoutInflater().onAddField(
-//            requireContext(),
-//            binding.layoutContainer,
-//            R.layout.layout_error,
-//            Constants.ERROR_TEXT_DRAWABLE,
-//            "Error!",
-//            it
-//        )
-        Caller().error("Error!",it,requireContext(),binding.layoutContainer)
+        Caller().error("Error!", it, requireContext(), binding.layoutContainer)
     }
 
     private fun hideError() {
@@ -870,68 +883,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         Caller().hideErrorEmpty(binding.layoutContainer)
 
     }
-
-//    private fun saveSizeAPI(product: ModelCheckout, sizeSelected: String) {
-//        viewModel.saveSizeAPI(
-//            PreferenceHandler.getToken(context).toString(),
-//            product.itemId,
-//            sizeSelected
-//        )
-//        viewModel.getSizeAPI().observe(viewLifecycleOwner, {
-//            when (it.status) {
-//                Status.SUCCESS -> {
-//                    Log.d(TAG, "saveSizeAPI: ${it.data}")
-//                    val jsonObject = it.data
-//                    if (jsonObject != null) {
-//                        showSnackBar("Size Updated")
-//                        try {
-//
-//                        } catch (e: Exception) {
-//                            Log.d(TAG, "saveSizeAPI:Error ${e.message}")
-//                        }
-//                    }
-//                }
-//                Status.LOADING -> {
-//                }
-//                Status.ERROR -> {
-//                    //Handle Error
-//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-//                    Log.d(TAG, "saveSizeAPI:Error ${it.message}")
-//                }
-//            }
-//        })
-//    }
-//
-//    private fun saveQuantityAPI(product: ModelCheckout, quantitySelected: String) {
-//        viewModel.saveQuantityAPI(
-//            PreferenceHandler.getToken(context).toString(),
-//            product.itemId,
-//            quantitySelected
-//        )
-//        viewModel.getQuantityAPI().observe(viewLifecycleOwner, {
-//            when (it.status) {
-//                Status.SUCCESS -> {
-//                    Log.d(TAG, "saveQuantityAPI: ${it.data}")
-//                    val jsonObject = it.data
-//                    if (jsonObject != null) {
-//                        showSnackBar("Quantity Updated")
-//                        try {
-//
-//                        } catch (e: Exception) {
-//                            Log.d(TAG, "saveQuantityAPI:Error ${e.message}")
-//                        }
-//                    }
-//                }
-//                Status.LOADING -> {
-//                }
-//                Status.ERROR -> {
-//                    //Handle Error
-//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-//                    Log.d(TAG, "saveQuantityAPI:Error ${it.message}")
-//                }
-//            }
-//        })
-//    }
 
     private fun showSnackBar(msg: String) {
         val snackbar = Snackbar

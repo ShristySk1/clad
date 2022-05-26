@@ -59,6 +59,7 @@ class FragmentFilter : Fragment() {
         }
 
         fun giveMySizeListFromApi(): ArrayList<MyFilterContentViewItem> {
+//            val u= MY_LIST
             val list = ArrayList<MyFilterContentViewItem>()
             apiSize?.forEach {
                 list.add(MyFilterContentViewItem.Title(it.key))
