@@ -235,16 +235,22 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             listContainingGrandtotal = checkoutResponse
                             if (cartArray != null) {
 //                                    updateCartAtPosition(cartArray.selected,cartArray.is_selected,updatePosition,p_npr,p_dollar)
-
                                 //update cart
-                                updateCartAtPosition(
-                                    cartArray[0].selected,
-                                    cartArray[0].is_selected,
-                                    updatePosition,
-                                    p_npr,
-                                    p_dollar
-                                )
-
+                                if (cartArray.size == 1) {
+                                    updateCartAtPosition(
+                                        cartArray[0].selected,
+                                        cartArray[0].is_selected,
+                                        updatePosition,
+                                        p_npr,
+                                        p_dollar
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Cart size = ${cartArray.size}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
@@ -297,13 +303,22 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                             listContainingGrandtotal = checkoutResponse
                             if (cartArray != null) {
                                 //update cart
-                                updateCartAtPosition(
-                                    cartArray[0].selected,
-                                    cartArray[0].is_selected,
-                                    updatePosition,
-                                    p_npr,
-                                    p_dollar
-                                )
+                                if (cartArray.size == 1) {
+                                    updateCartAtPosition(
+                                        cartArray[0].selected,
+                                        cartArray[0].is_selected,
+                                        updatePosition,
+                                        p_npr,
+                                        p_dollar
+                                    )
+                                } else {
+
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Cart size = ${cartArray.size}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
 
 
@@ -359,12 +374,20 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                 listContainingGrandtotal = checkoutResponse
                                 //update cart
                                 Log.d("imhere", "addToCartAPI: ");
+                                if (cartArray.size == 1) {
+                                    updateCartAtPosition(
+                                        cartArray[0].selected,
+                                        cartArray[0].is_selected,
+                                        updatePosition, p_npr, p_dollar
+                                    )
+                                } else {
 
-                                updateCartAtPosition(
-                                    cartArray[0].selected,
-                                    cartArray[0].is_selected,
-                                    updatePosition, p_npr, p_dollar
-                                )
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Cart size = ${cartArray.size}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             } catch (e: Exception) {
                                 Log.d(TAG, "getCartAPI:Error ${e.message}")
                                 try {
