@@ -37,8 +37,12 @@ companion object{
         binding = FragmentSubCategoryBinding.inflate(inflater, container, false)
         listChildCategory.clear()
         //reset filter
-//        FragmentFilter.MY_LIST=FragmentFilter.giveMyOrginalList()
-//        FragmentFilter.MY_OLD_LIST=(FragmentFilter.giveMyOrginalList().toMutableList())
+        FragmentFilter.MY_LIST=FragmentFilter.giveMyOrginalList()
+        FragmentFilter.OLD_LIST=(FragmentFilter.giveMyOrginalList().toMutableList())
+//        FragmentFilter.MY_COLOR_LIST=FragmentFilter.giveMyColorListFromApi()
+//        FragmentFilter.MY_OLD_COLOR_LIST=FragmentFilter.giveMyColorListFromApi().toList()
+//        FragmentFilter.MY_SIZE_LIST=FragmentFilter.giveMySizeListFromApi()
+//        FragmentFilter.MY_OLD_SIZE_LIST=FragmentFilter.giveMySizeListFromApi()
         FragmentFilter.setMyColorListFromApi(ArrayList<Color>())
         FragmentFilter.setMySizeListFromApi(null)
         //filter end

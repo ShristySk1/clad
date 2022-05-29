@@ -4,23 +4,23 @@ import java.io.Serializable
 
 data class ModelFilterContent(val title: String, var isSelected: Boolean) : Serializable
 sealed class MyFilterContentViewItem {
-    class SingleChoice(
+   data class SingleChoice(
         val title: String,
         var isSelected: Boolean,
         val slug: String?=null
     ) : MyFilterContentViewItem()
 
-    class MultipleChoice(
+   data class MultipleChoice(
         val title: String, var isSelected: Boolean,
         val slug: String?=null,
         val id:Int=0,
     ) : MyFilterContentViewItem()
-    class MultipleChoiceColor(
+   data class MultipleChoiceColor(
         val id:Int,
         val title: String, var isSelected: Boolean,var colorHex:String?="#000000",
 
     ) : MyFilterContentViewItem()
-    class Title(
+   data class Title(
         val title: String
     ) : MyFilterContentViewItem()
 }

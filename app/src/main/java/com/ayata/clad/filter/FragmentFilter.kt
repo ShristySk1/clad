@@ -34,10 +34,26 @@ class FragmentFilter : Fragment() {
         val defaultMinPrice = "0"
         val defaultMaxPrice = "100000"
 
-        private  var apiColor: ArrayList<Color>?=null
-        private  var apiSize: Map<String, List<MySize>>?=null
-//        var MY_LIST = giveMyOrginalList()
+        private var apiColor: ArrayList<Color>? = null
+        private var apiSize: Map<String, List<MySize>>? = null
 
+                var MY_LIST = giveMyOrginalList()
+        var OLD_LIST = MY_LIST.map { it }
+//        var MY_COLOR_LIST= giveMyColorListFromApi()
+//        var MY_OLD_COLOR_LIST= MY_COLOR_LIST.map { it }
+//        var MY_SIZE_LIST= giveMySizeListFromApi()
+//        var MY_OLD_SIZE_LIST= MY_SIZE_LIST.map { it }
+        fun giveMyOrginalList() = listOf(
+            MyFilterRecyclerViewItem.Title(1, "Sort by", "All"),
+            MyFilterRecyclerViewItem.Title(3, "Brand", "All"),
+            MyFilterRecyclerViewItem.Title(4, "Size", "All"),
+            MyFilterRecyclerViewItem.Color(7, "Color", listOf(MyColor("All"))),
+            MyFilterRecyclerViewItem.Title(
+                6,
+                "Price Range",
+                "Rs. ${defaultMinPrice} - Rs. ${defaultMaxPrice}"
+            )
+        )
 
         fun giveMyColorListFromApi(): ArrayList<MyFilterContentViewItem.MultipleChoiceColor> {
             val list = ArrayList<MyFilterContentViewItem.MultipleChoiceColor>()
@@ -79,21 +95,23 @@ class FragmentFilter : Fragment() {
 
         //
         fun setMySizeListFromApi(size: Map<String, List<MySize>>?) {
+            Log.d("testmyoriginal", "setMySizeListFromApi: "+size?.size);
             apiSize = size
         }
 
     }
-    fun giveMyOrginalList() = listOf(
-        MyFilterRecyclerViewItem.Title(1, "Sort by", "All"),
-        MyFilterRecyclerViewItem.Title(3, "Brand", "All"),
-        MyFilterRecyclerViewItem.Title(4, "Size", "All"),
-        MyFilterRecyclerViewItem.Color(7, "Color", listOf(MyColor("All"))),
-        MyFilterRecyclerViewItem.Title(
-            6,
-            "Price Range",
-            "Rs. ${defaultMinPrice} - Rs. ${defaultMaxPrice}"
-        )
-    )
+
+    //    fun giveMyOrginalList() = listOf(
+//        MyFilterRecyclerViewItem.Title(1, "Sort by", "All"),
+//        MyFilterRecyclerViewItem.Title(3, "Brand", "All"),
+//        MyFilterRecyclerViewItem.Title(4, "Size", "All"),
+//        MyFilterRecyclerViewItem.Color(7, "Color", listOf(MyColor("All"))),
+//        MyFilterRecyclerViewItem.Title(
+//            6,
+//            "Price Range",
+//            "Rs. ${defaultMinPrice} - Rs. ${defaultMaxPrice}"
+//        )
+//    )
     private lateinit var binding: FragmentFilterBinding
     lateinit var myAdapter: AdapterFilter
     lateinit var myCurrentFilterList: ArrayList<MyFilterRecyclerViewItem>
@@ -120,9 +138,26 @@ class FragmentFilter : Fragment() {
         binding = FragmentFilterBinding.inflate(inflater, container, false)
         initAppbar()
         binding.btnApplyFilter.setOnClickListener {
-
-
-//            MY_LIST = myCurrentFilterList.toList()
+            OLD_LIST = myCurrentFilterList.map {
+                when (it) {
+                    is MyFilterRecyclerViewItem.Title -> it.copy()
+                    is MyFilterRecyclerViewItem.Color -> it.copy()
+                }
+            }
+//            MY_OLD_COLOR_LIST = ArrayList(colorList.map {
+//                when (it) {
+//                    is MyFilterContentViewItem.MultipleChoiceColor -> it.copy()
+//                    else -> it.copy()
+//                }
+//            })
+//            MY_OLD_SIZE_LIST = ArrayList(sizeList.map {
+//                when (it) {
+//                    is MyFilterContentViewItem.Title -> it.copy()
+//                    is MyFilterContentViewItem.MultipleChoice -> it.copy()
+//                    is MyFilterContentViewItem.MultipleChoiceColor -> it.copy()
+//                    is MyFilterContentViewItem.SingleChoice ->it.copy()
+//                }
+//            })
             val listColor =
                 (myAdapter.items).filterIsInstance(MyFilterRecyclerViewItem.Color::class.java)
             var mycolorFilter = ""
@@ -165,8 +200,8 @@ class FragmentFilter : Fragment() {
         }
         //set initial value
         myCurrentFilterList = arrayListOf<MyFilterRecyclerViewItem>()
-        myCurrentFilterList.addAll(giveMyOrginalList())
-        Log.d("testmyoriginal", "onCreate view: " + myCurrentFilterList);
+//        myCurrentFilterList.addAll(giveMyOrginalList())
+        myCurrentFilterList.addAll(MY_LIST)
         sizeList = giveMySizeListFromApi()
         colorList = giveMyColorListFromApi()
 
@@ -175,25 +210,27 @@ class FragmentFilter : Fragment() {
         setUpRecyclerView()
 
         (activity as MainActivity).setClearAllListener {
-            myAdapter.items=giveMyOrginalList()
-            sizeList= giveMySizeListFromApi()
-            colorList= giveMyColorListFromApi()
-            sortList=giveMySortList()
-            brandList=giveMyBrandList()
+            myAdapter.items = giveMyOrginalList()
+            sizeList = giveMySizeListFromApi()
+            colorList = giveMyColorListFromApi()
+            sortList = giveMySortList()
+            brandList = giveMyBrandList()
             myAdapter.notifyDataSetChanged()
             Log.d("testclear", "onCreateView: here clear" + Gson().toJson(myAdapter.items));
 
         }
         return binding.root
     }
-fun giveMySortList()=listOf(
-    MyFilterContentViewItem.SingleChoice("All", true, "most_popular"),
-    MyFilterContentViewItem.SingleChoice("Most Popular", false, "most_popular"),
-    MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false, "cheapest"),
-    MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false, "expensive"),
-    MyFilterContentViewItem.SingleChoice("Latest", false, "latest"),
-)
-    fun giveMyBrandList() =listOf(
+
+    fun giveMySortList() = listOf(
+        MyFilterContentViewItem.SingleChoice("All", true, "most_popular"),
+        MyFilterContentViewItem.SingleChoice("Most Popular", false, "most_popular"),
+        MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false, "cheapest"),
+        MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false, "expensive"),
+        MyFilterContentViewItem.SingleChoice("Latest", false, "latest"),
+    )
+
+    fun giveMyBrandList() = listOf(
         MyFilterContentViewItem.MultipleChoice("Goldstar", false, "goldstar"),
         MyFilterContentViewItem.MultipleChoice("Bishrom", false, "bishrom"),
         MyFilterContentViewItem.MultipleChoice("Hills & Clouds", false, "hills-and-clouds"),
@@ -206,6 +243,7 @@ fun giveMySortList()=listOf(
         MyFilterContentViewItem.MultipleChoice("Gofi", false, "gofi"),
 
         )
+
     fun refactorAllFromList(filterString: String): String {
         return if (filterString.equals(
                 "All",

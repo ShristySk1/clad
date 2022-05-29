@@ -25,6 +25,8 @@ import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.ActivityMainBinding
 import com.ayata.clad.databinding.DialogLoginBinding
 import com.ayata.clad.filter.FragmentFilter
+import com.ayata.clad.filter.MyFilterRecyclerViewItem
+import com.ayata.clad.filter.filterdialog.MyFilterContentViewItem
 import com.ayata.clad.home.FragmentHome
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.preorder.FragmentPreorder
@@ -489,6 +491,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
         binding.appbar.btnFilter2.setOnClickListener {
 //            hideAndShowFragment(false)
+            FragmentFilter.MY_LIST=FragmentFilter.OLD_LIST.map {
+                when (it) {
+                    is MyFilterRecyclerViewItem.Title -> it.copy()
+                    is MyFilterRecyclerViewItem.Color -> it.copy()
+                }
+            }
+//            FragmentFilter.MY_COLOR_LIST = ArrayList(FragmentFilter.MY_OLD_COLOR_LIST.map {
+//                when (it) {
+//                    is MyFilterContentViewItem.MultipleChoiceColor -> it.copy()
+//                    else -> it.copy()
+//                }
+//            })
+//            FragmentFilter.MY_OLD_SIZE_LIST = ArrayList(FragmentFilter.MY_OLD_SIZE_LIST.map {
+//                when (it) {
+//                    is MyFilterContentViewItem.Title -> it.copy()
+//                    is MyFilterContentViewItem.MultipleChoice -> it.copy()
+//                    is MyFilterContentViewItem.MultipleChoiceColor -> it.copy()
+//                    is MyFilterContentViewItem.SingleChoice ->it.copy()
+//                }
+//            })
             supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.enter_from_right,
