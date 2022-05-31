@@ -48,7 +48,7 @@ class FragmentAddressAdd : Fragment() {
            val p1= validateTextField(binding.textInputTitle)
            val p2= validateTextField(binding.textInputAddress)
            val p3= validateTextField(binding.textInputCity)
-           val p4= validateTextField(binding.textInputPhone)
+           val p4= validateTextFieldPhone(binding.textInputPhone)
 //            validateTextField(binding.textInputState)
             val p5=validateTextField(binding.textInputZip)
 
@@ -250,6 +250,19 @@ class FragmentAddressAdd : Fragment() {
         return if (data.isEmpty() or (data == " ")) {
             textField.error = "This field can't be empty"
             false
+        } else {
+            textField.error = null
+            true
+        }
+    }
+    private fun validateTextFieldPhone(textField: TextInputLayout): Boolean {
+        val data = textField.editText!!.text.toString().trim()
+        return if (data.isEmpty() or (data == " ")) {
+            textField.error = "This field can't be empty"
+            false
+        }else if(data.length!=10){
+            textField.error = "This field must have 10 digit number."
+           false
         } else {
             textField.error = null
             true

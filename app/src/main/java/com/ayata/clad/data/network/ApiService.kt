@@ -134,6 +134,9 @@ interface ApiService {
         @Field("cart_id") cartId: Int
     ): Response<JsonObject>
 
+    @POST("remove-coupon/")
+    suspend fun deleteCoupon(@Header("Authorization") token: String): Response<JsonObject>
+
 
     //not made
     @POST("size/")

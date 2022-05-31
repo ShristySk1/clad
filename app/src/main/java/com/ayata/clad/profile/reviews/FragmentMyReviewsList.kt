@@ -154,7 +154,7 @@ class FragmentMyReviewsList : Fragment() {
     private fun observeGetReview() {
         val livedata = viewModel.observeGetReviewApi()
         livedata
-            .observeOnceAfterInit(viewLifecycleOwner) {
+            .observe(viewLifecycleOwner) {
                 Log.d("teststatus", "observeGetReview: "+it.status);
                 when (it.status) {
                     Status.SUCCESS -> {

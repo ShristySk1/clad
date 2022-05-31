@@ -25,6 +25,7 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
     private val quantityResponse = MutableLiveData<Resource<JsonObject>>()
     private val cartSelectResponse = SingleLiveEvent<Resource<JsonObject>>()
     private val applyCouppnResponse = SingleLiveEvent<Resource<JsonObject>>()
+    private val deleteCouponResponse = SingleLiveEvent<Resource<JsonObject>>()
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
@@ -58,6 +59,31 @@ class CheckoutViewModel constructor(private val mainRepository: ApiRepository) :
 
     fun getCartListAPI(): LiveData<Resource<JsonObject>> {
         return cartResponse
+    }
+    fun deleteCouponApi(token: String) {
+        deleteCouponResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.deleteCouponApi("$token")
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("cartListAPI", "success: " + response.body())
+                        deleteCouponResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("cartListAPI", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        deleteCouponResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            } catch (e: Exception) {
+                deleteCouponResponse.postValue(Resource.error(e.message.toString(), null))
+            }
+        }
+    }
+
+    fun getDeleteCouponObserver(): LiveData<Resource<JsonObject>> {
+        return deleteCouponResponse
     }
 
     fun removeFromCartAPI(token: String, id: Int) {

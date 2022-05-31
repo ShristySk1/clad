@@ -63,7 +63,7 @@ private const val ARG_PARAM1 = "param1"
         (activity as MainActivity).showBottomNavigation(false)
 
         //set total rating
-        binding.tvTotalReview.text = "${param1.totalReview} REVIEWS"
+        binding.tvTotalReview.text = "${param1.totalReview} REVIEW(S)"
         binding.ratingBar1.rating = param1.rating!!.toFloat()
         binding.tvRating.text = "${param1.rating}/5"
     }

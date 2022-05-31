@@ -86,8 +86,11 @@ class FragmentShipping : Fragment() {
                 Status.SUCCESS -> {
                     binding.spinKit.rootContainer.visibility = View.GONE
                     try {
-                        it.data?.details?.let { it1 -> prepareListAddress2(it1) }
+                        it.data?.details?.let { it1 ->
+                            Log.d("testmyship", "setUpViewModel: "+it);
+                            prepareListAddress2(it1) }
                     } catch (e: Exception) {
+                        Log.d("testmyship", "setUpViewModel: "+e.message);
                     }
                 }
 
@@ -188,6 +191,7 @@ class FragmentShipping : Fragment() {
             val fragment = FragmentAddressAdd()
             val bundle = Bundle()
             bundle.putBoolean("ship", true)
+            fragment.arguments=bundle
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, fragment).addToBackStack(null).commit()
         }
@@ -262,11 +266,12 @@ class FragmentShipping : Fragment() {
             binding.recyclerView2.titleAddress.text = details[0].title
             binding.recyclerView2.address.text = details[0].streetName
 //            binding.recyclerView2.checkBox.visibility=View.GONE
+            Log.d("sgippinghere", "heree: ");
             binding.addNewBtn.visibility = View.GONE
         } else {
             binding.addNewBtn.visibility = View.VISIBLE
             binding.recyclerView2.rootContainer.visibility = View.GONE
-
+            Log.d("sgippinghere", "heree: "+details.size);
         }
     }
 

@@ -35,6 +35,7 @@ import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModel
 import com.ayata.clad.shopping_bag.viewmodel.CheckoutViewModelFactory
 import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.PreferenceHandler
+import com.ayata.clad.utils.ProgressDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.nikhilpanju.recyclerviewenhanced.RecyclerTouchListener
@@ -59,6 +60,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private var updatePosition = -1
     private lateinit var listContainingGrandtotal: CartResponse
     private var onTouchListener: RecyclerTouchListener? = null
+    private lateinit var progressDialog: ProgressDialog
 
 
     companion object {
@@ -87,9 +89,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         setSelectObserver()
         setRemoveObserver()
         setApplyCouponObserver()
-        binding.deleteCoupon.setOnClickListener {
-            //delete api
-        }
+        setDeleteCouponObserver()
+
         return binding.root
     }
 
@@ -113,6 +114,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "getCartAPI: ${it.data}")
+                    progressDialog.dismiss()
                     val jsonObject = it.data
                     if (jsonObject != null) {
                         try {
@@ -149,9 +151,68 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     adapterCheckout.notifyDataSetChanged()
                 }
                 Status.LOADING -> {
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "apply_coupon_progress")
                 }
                 Status.ERROR -> {
                     //Handle Error
+                    progressDialog.dismiss()
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+    private fun setDeleteCouponObserver() {
+        binding.deleteCoupon.setOnClickListener {
+            //delete api
+            viewModel.deleteCouponApi(PreferenceHandler.getToken(requireContext())?:"")
+        }
+        viewModel.getDeleteCouponObserver().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    progressDialog.dismiss()
+                    Log.d(TAG, "getCartAPI delete: ${it.data}")
+                    val jsonObject = it.data
+                    if (jsonObject != null) {
+                        try {
+                            val checkoutResponse =
+                                Gson().fromJson<CartResponse>(
+                                    jsonObject,
+                                    CartResponse::class.java
+                                )
+                            if (checkoutResponse.message != null && checkoutResponse.cartTotalNpr != null) {
+                                //coupon successfully applied
+                                listContainingGrandtotal = checkoutResponse
+                                updateTotals(checkoutResponse)
+                                checkoutResponse.coupon_code?.let {
+                                    showCoupon(checkoutResponse.coupon_code)
+                                } ?: kotlin.run {
+                                    hideCoupon()
+                                }
+                                showSnackBar(checkoutResponse.message)
+                            } else {
+                                if (checkoutResponse.message != null) {
+                                    Toast.makeText(
+                                        context,
+                                        checkoutResponse.message,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "getWishListAPI:delete coupon ${e.message}")
+                            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    adapterCheckout.notifyDataSetChanged()
+                }
+                Status.LOADING -> {
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "delete_coupon_progress")
+                }
+                Status.ERROR -> {
+                    //Handle Error
+                    progressDialog.dismiss()
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }

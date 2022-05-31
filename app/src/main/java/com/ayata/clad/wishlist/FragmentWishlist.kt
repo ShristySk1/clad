@@ -52,7 +52,7 @@ class FragmentWishlist : Fragment() {
 
     private var listRecommendation = ArrayList<ProductDetail>()
     private lateinit var binding: FragmentWishlistBinding
-    private var myWishList = ArrayList<Wishlist>()
+    private var myWishList = mutableListOf<Wishlist>()
     private var myWishListRecommendation = ArrayList<Wishlist>()
     private lateinit var adapterWishList: AdapterWishList
     private lateinit var adapterRecommended: AdapterRecommended
@@ -61,6 +61,11 @@ class FragmentWishlist : Fragment() {
     private lateinit var viewModelHome: HomeViewModel
     private lateinit var progressDialog: ProgressDialog
     private lateinit var currentproduct:Wishlist
+    val list = listOf(
+        MyFilterContentViewItem.SingleChoice("Recommended", true),
+        MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false),
+        MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false),
+    )
 
 
     //size dialog
@@ -274,11 +279,7 @@ class FragmentWishlist : Fragment() {
 
     private fun setUpFilterListener() {
         binding.btnFilter.setOnClickListener {
-            val list = listOf(
-                MyFilterContentViewItem.SingleChoice("Recommended", true),
-                MyFilterContentViewItem.SingleChoice("Cheapest (low - high)", false),
-                MyFilterContentViewItem.SingleChoice("Most Expensive (high - low)", false),
-            )
+
             showDialogSingleChoice(
                 "SORT BY", list
             )
@@ -476,35 +477,35 @@ class FragmentWishlist : Fragment() {
         val dialogBinding = DialogFilterBinding.inflate(LayoutInflater.from(requireContext()))
         val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(dialogBinding.root)
-        val list = listContent
         val adapterfilterContent = AdapterFilterContent(
-            context, list
+            context, listContent
         ).also { adapter ->
             adapter.setCircleClickListener { data ->
-                for (item in list) {
+                for (item in listContent) {
                     item.isSelected = item.equals(data)
                 }
+                adapter.notifyDataSetChanged()
                 when (data.title) {
                     "Cheapest (low - high)" -> {
-                        myWishList.sortBy {
-                            it.product.price
+
+                        myWishList.sortBy {it->
+                           it.selected.price
                         }
                         adapterWishList.notifyDataSetChanged()
                     }
                     "Most Expensive (high - low)" -> {
                         myWishList.sortByDescending {
-                            it.product.price
+                            it.selected.price
                         }
                         adapterWishList.notifyDataSetChanged()
                     }
                     "Recommended" -> {
-                        myWishList.clear()
-                        myWishList.addAll(myWishListRecommendation)
+                        myWishList.shuffle()
                         adapterWishList.notifyDataSetChanged()
                     }
 
                 }
-                adapter.notifyDataSetChanged()
+
                 bottomSheetDialog.dismiss()
             }
         }
@@ -627,6 +628,13 @@ class FragmentWishlist : Fragment() {
 
     private fun setDataToView(wishlist: List<Wishlist>) {
         myWishList.clear()
+        wishlist.forEach {wishlist->
+            wishlist.product.variants.forEach { variant ->
+                if (variant.variantId == wishlist.selected.variantId) {
+                    wishlist.selected.price = variant.price
+                }
+            }
+        }
         myWishList.addAll(wishlist)
         myWishListRecommendation.addAll(wishlist)
         Log.d(TAG, "setUpView upper: " + wishlist.size);

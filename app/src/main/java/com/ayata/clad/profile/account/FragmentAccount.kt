@@ -173,24 +173,24 @@ class FragmentAccount : Fragment() {
                     4 -> {//NOTIFICATION
                     }
                     6 -> {//TERMS AND CONDITIONS
-                        val termsLink = "https://leaderboard.medipuzzle.avyaas.com/terms.php"
-                        val defaultBrowser =
-                            Intent.makeMainSelectorActivity(
-                                Intent.ACTION_MAIN,
-                                Intent.CATEGORY_APP_BROWSER
-                            )
-                        defaultBrowser.data = Uri.parse(termsLink)
-                        startActivity(defaultBrowser)
+//                        val termsLink = "https://leaderboard.medipuzzle.avyaas.com/terms.php"
+//                        val defaultBrowser =
+//                            Intent.makeMainSelectorActivity(
+//                                Intent.ACTION_MAIN,
+//                                Intent.CATEGORY_APP_BROWSER
+//                            )
+//                        defaultBrowser.data = Uri.parse(termsLink)
+//                        startActivity(defaultBrowser)
                     }
                     7 -> {//PRIVACY POLICY
-                        val privacyLink = "https://leaderboard.medipuzzle.avyaas.com/privacy.php"
-                        val defaultBrowser =
-                            Intent.makeMainSelectorActivity(
-                                Intent.ACTION_MAIN,
-                                Intent.CATEGORY_APP_BROWSER
-                            )
-                        defaultBrowser.data = Uri.parse(privacyLink)
-                        startActivity(defaultBrowser)
+//                        val privacyLink = "https://leaderboard.medipuzzle.avyaas.com/privacy.php"
+//                        val defaultBrowser =
+//                            Intent.makeMainSelectorActivity(
+//                                Intent.ACTION_MAIN,
+//                                Intent.CATEGORY_APP_BROWSER
+//                            )
+//                        defaultBrowser.data = Uri.parse(privacyLink)
+//                        startActivity(defaultBrowser)
                     }
                     8 -> {
                         //theme

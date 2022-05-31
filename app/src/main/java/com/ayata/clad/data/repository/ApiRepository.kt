@@ -39,6 +39,7 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
         retrofitService.removeFromWishAPI(token, jsonObject)
 
     suspend fun cartListApi(token: String) = retrofitService.cartListAPI(token)
+    suspend fun deleteCouponApi(token: String) = retrofitService.deleteCoupon(token)
     suspend fun addToCartApi(token: String, id: Int) = retrofitService.addToCartAPI(token, id)
     suspend fun removeFromCartAPI(token: String, jsonObject: JsonObject) =
         retrofitService.removeFromCartAPI(token, jsonObject)
