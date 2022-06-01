@@ -35,6 +35,8 @@ import com.ayata.clad.home.response.Variant
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.adapter.AdapterColor
+import com.ayata.clad.product.adapter.AdapterQA
+import com.ayata.clad.product.qa.FragmentQA
 import com.ayata.clad.product.reviews.FragmentReview
 import com.ayata.clad.product.viewmodel.ProductViewModel
 import com.ayata.clad.product.viewmodel.ProductViewModelFactory
@@ -77,8 +79,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     var choosenSizePosition = 0
     var isStockAvailable = true
     var makeMainLayoutVisible = true
-    val MAX_TEXT_CHARACTER=200
-    val MAX_TEXT_LINES=5
+    val MAX_TEXT_CHARACTER = 200
+    val MAX_TEXT_LINES = 5
     private val createLinkViewModel by lazy {
         ViewModelProvider(this).get(CreateLinkViewModel::class.java)
     }
@@ -108,6 +110,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         tapToCopyListener()
         productLikedListener()
         setUpRecyclerRecommendation()
+        setUpRecyclerQA()
         binding.btnShare.setOnClickListener {
 //            https://clad.ayata.com.np/product/details/soft-fur-jacket/
             try {
@@ -141,6 +144,33 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         return binding.root
     }
 
+    private fun setUpRecyclerQA() {
+        binding.detail2.textQuestionTopic.text =
+            String.format(requireContext().getString(com.ayata.clad.R.string.questions_about_this_product_5),"14",1)
+        binding.detail2.askQA.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentQA()).addToBackStack(null).commit()
+        }
+        binding.detail2.tvViewAllQuestion.setOnClickListener{
+            parentFragmentManager.beginTransaction().replace(R.id.main_fragment,FragmentQA()).addToBackStack(null).commit()
+
+        }
+        val myQAList = listOf("s")
+        if (myQAList.size > 0) {
+            binding.detail2.groupQuestion.visibility = View.VISIBLE
+            binding.detail2.recyclerQa.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = AdapterQA(myQAList,0, object : AdapterQA.OnItemClickListener {
+                    override fun onColorClicked(color: ModelColor, position: Int) {
+
+                    }
+
+                })
+            }
+        } else {
+            binding.detail2.groupQuestion.visibility = View.GONE
+        }
+    }
+
     private fun observeProductApi() {
         viewModel.getProductAPI().observeOnceAfterInit(viewLifecycleOwner, {
             if (it != null) {
@@ -171,6 +201,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                     Status.ERROR -> {
                         setShimmerLayout(false)
                         //Handle Error
+                        binding.mainLayout.visibility = View.GONE
                         Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                         Log.d(TAG, "addToCartAPI:Error ${it.message}")
                     }
@@ -293,6 +324,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 .commit()
         }
     }
+
     private fun initViews() {
         ShowMoreLess.Builder(requireContext())
             /*.textLengthAndLengthType(

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".product.qa.FragmentQA">
+    <TextView
+        android:id="@+id/textQuestionTopic"
+        style="@style/bigText"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="Questions about this Product(5)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_qa"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_comment"
+        app:layout_constraintTop_toBottomOf="@id/textQuestionTopic" />
+   <LinearLayout
+    android:id="@id/layout_comment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingVertical="16dp"
+    android:background="@color/colorWhite"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    android:orientation="horizontal">
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:background="@drawable/background_curve_gray"
+        android:hint="Enter your question(s) here"
+        android:paddingVertical="8dp"
+        android:inputType="text"
+        android:textSize="14sp"
+        android:paddingHorizontal="16dp"
+        />
+    <ImageButton
+        android:id="@+id/imageView2"
+        android:layout_width="48dp"
+        android:layout_height="38dp"
+        android:padding="5dp"
+        android:background="@drawable/background_curve_black_5dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:theme="@style/colorControlHighlight_gray"
+        android:src="@drawable/ic_send"
+        android:tint="@color/colorWhite"
+        android:layout_marginHorizontal="16dp"
+      />
+</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

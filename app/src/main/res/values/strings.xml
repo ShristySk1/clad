@@ -72,6 +72,7 @@
     <string name="wl_case2">Remove from wishlist</string>
     <string name="wl_case3">Change Size</string>
     <string name="save">Save</string>
+    <string name="questions_about_this_product_5">Questions about this Product(%1$s)</string>
 
     <array name="initial_slider_values">
         <item>300.0</item>
