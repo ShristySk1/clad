@@ -11,8 +11,8 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
+import com.ayata.clad.R
 import com.ayata.clad.databinding.ActivityStoryBinding
-import com.ayata.clad.home.model.ModelJustDropped
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.response.Story
 import com.ayata.clad.utils.Constants
@@ -25,12 +25,13 @@ import jp.shts.android.storiesprogressview.StoriesProgressView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.Serializable
 
 
 class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     AdapterStoryProduct.OnItemClickListener {
-//    StoriesProgressView.StoriesListener
+    //    StoriesProgressView.StoriesListener
+    private var x1: Float = 0f
+    private var x2: Float = 0f
 
     companion object {
         const val TAG: String = "StoryActivityLog"
@@ -53,16 +54,18 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
     private lateinit var adapterStoryProduct: AdapterStoryProduct
     private var listProduct = ArrayList<ProductDetail>()
-    private val i by lazy {   Intent(this, MainActivity::class.java)
+    private val i by lazy {
+        Intent(this, MainActivity::class.java)
     }
 
     private lateinit var binding: ActivityStoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("testmyindex", "onCreate: " + storyIndex);
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         //default
         i.putExtra(Constants.FROM_STORY, false)
-        i.putExtra("data","")
+        i.putExtra("data", "")
         //end default
         binding = ActivityStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -105,10 +108,10 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         binding.btnClose.setOnClickListener {
             onBackPressed()
         }
-
     }
 
     private fun initRecyclerView() {
+        Log.d("testmyindex", "initRecyclerView: ");
         adapterStoryProduct = AdapterStoryProduct(context = this, listProduct, this)
         binding.recyclerProduct.apply {
             adapter = adapterStoryProduct
@@ -258,9 +261,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         if ((counter - 1) < 0) {
             if (storyIndex > 0) {
                 --storyIndex
-                val i = Intent(this, StoryActivity::class.java)
-                startActivity(i)
-                finish()
+                startMyActivityPrev()
             }
         } else {
             fromPause = false
@@ -279,9 +280,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
             ++storyIndex
 //            binding.stories.destroy()
 //            setStoryView(listStory[++storyIndex])
-            val i = Intent(this, StoryActivity::class.java)
-            startActivity(i)
-            finish()
+            startMyActivityNext()
         } else {
             onBackPressed()
         }
@@ -295,6 +294,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                 // the story will pause for specific time.
                 pressTime = System.currentTimeMillis()
                 binding.stories.pause()
+                x1 = event.getX();
                 false
             }
             MotionEvent.ACTION_MOVE -> {
@@ -307,9 +307,60 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                 binding.stories.resume()
                 Log.d(TAG, "pressTime: ${limit < now - pressTime}")
                 limit < now - pressTime
+
+
+                x2 = event.x
+                val deltaX: Float = x2 - x1
+                if (deltaX < 0) {
+                    //show next activity
+                    //SWIPE RIGHT TO LEFT
+                    if (storyIndex < listStory.lastIndex) {
+                        counter = 0
+                        ++storyIndex
+                        Log.d("storyindex", "testmyindex" + listStory.get(storyIndex).vendor);
+                        startMyActivityNext()
+                    } else {
+                        onBackPressed()
+                    }
+                } else if (deltaX > 0) {
+                    //SHOW PREVIOUS ACTIVITY
+                    //LEFT TO RIGHT SWIPE
+                    if ((counter - 1) < 0) {
+                        if (storyIndex > 0) {
+                            --storyIndex
+                            Log.d("storyindex", "testmyindex" + listStory.size);
+                            startMyActivityPrev()
+                        }
+                    } else {
+                        fromPause = false
+                        loadImage(listImageStory[--counter])
+                    }
+                }
             }
         }
         false
+    }
+
+    private fun startMyActivityNext() {
+        val i = Intent(this, StoryActivity::class.java)
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        startActivity(i)
+        finish()
+        overridePendingTransition(R.anim.slide_in_right_without_animatioon, R.anim.slide_out_left_without_animation);
+
+    }
+
+    private fun startMyActivityPrev() {
+        val i = Intent(this, StoryActivity::class.java)
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i)
+        finish()
+        overridePendingTransition(
+            R.anim.slide_in_left_without_animation,
+            R.anim.slide_out_right_without_animation
+        ); // remember to put it after startActivity, if you put it to above, animation will not working
+// document say if we don't want animation we can put 0. However, if we put 0 instead of R.anim.no_animation, the exist activity will become black when animate
     }
 
     override fun onDestroy() {
@@ -329,7 +380,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
     override fun onProductClick(data: ProductDetail, position: Int) {
         i.putExtra(Constants.FROM_STORY, true)
-        i.putExtra("data",data as ProductDetail)
+        i.putExtra("data", data as ProductDetail)
         startActivity(i)
     }
 }

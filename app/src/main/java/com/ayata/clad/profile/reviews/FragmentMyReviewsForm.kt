@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.LinearLayout
+import android.widget.RatingBar.OnRatingBarChangeListener
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -48,6 +49,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
+
 const val MY_PHOTO_NUMBER = 4
 
 class FragmentMyReviewsForm : Fragment() {
@@ -81,7 +83,7 @@ class FragmentMyReviewsForm : Fragment() {
         binding =
             FragmentMyReviewFormBinding.inflate(inflater, container, false)
         initAppbar()
-
+setRatingListener()
         setUpViewModel()
         setTab(binding.tabSize, binding.tabComfort)
         initRecyclerview()
@@ -145,6 +147,13 @@ class FragmentMyReviewsForm : Fragment() {
 
 
         return binding.root
+    }
+
+    private fun setRatingListener() {
+        binding.ratingBar1.setOnRatingBarChangeListener(OnRatingBarChangeListener { ratingBar, rating, fromUser ->
+            if (rating < 1.0f) {
+                ratingBar.rating = 1.0f}
+        })
     }
 
     private fun setTab(tabSize: TabLayout, tabComfort: TabLayout) {

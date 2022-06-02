@@ -175,7 +175,7 @@ class FragmentCancelForm : Fragment() {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     reason_ = listReason[position].state
                 }

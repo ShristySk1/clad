@@ -53,8 +53,7 @@ internal class AdapterStoryProduct(private var context:Context?,
         }else{
             holder.price.text="${context!!.getString(R.string.usd)} ${item.dollar_price}"
         }
-        holder.discount.text=item.discountPercent.toString()
-
+        holder.discount.text=if (item.discountPercent!=0.0)item.discountPercent.toString() else if(item.discountAmount!=0.0) item.discountAmount.toString() else "0.0"
 //        holder.progressBar.visibility = View.VISIBLE
         Glide.with(context!!)
             .load(item.imageUrl[0])

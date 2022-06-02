@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <com.ayata.clad.utils.AsteriskTextView
                     android:id="@+id/text1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                         android:textSize="@dimen/ae_text1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
+                <com.ayata.clad.utils.AsteriskTextView
                     android:id="@+id/text2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                         android:textSize="@dimen/ae_text1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
+                <com.ayata.clad.utils.AsteriskTextView
                     android:id="@+id/text4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -121,7 +121,44 @@
                         android:textSize="@dimen/ae_text1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
+
+                <com.ayata.clad.utils.AsteriskTextView
+                    android:id="@+id/text10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/pe_margin1"
+                    android:layout_marginTop="@dimen/pe_margin3"
+                    android:text="Landmark"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/ae_text2"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLandmark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/pe_margin2"
+                    android:layout_marginTop="5dp"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="Specify your landmark"
+                        android:inputType="text"
+                        android:paddingVertical="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/ae_text1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                <com.ayata.clad.utils.AsteriskTextView
                     android:id="@+id/text5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -151,7 +188,7 @@
                         android:layout_marginHorizontal="15dp"
                         android:layout_marginTop="5dp" />
 <!--                </com.google.android.material.textfield.TextInputLayout>-->
-                <TextView
+                <com.ayata.clad.utils.AsteriskTextView
                     android:id="@+id/text8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -206,7 +243,7 @@
                         android:textSize="@dimen/ae_text1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
+                <com.ayata.clad.utils.AsteriskTextView
                     android:id="@+id/text7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

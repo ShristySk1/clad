@@ -4,6 +4,7 @@ package com.ayata.clad.home.response
 import com.ayata.clad.profile.giftcard.response.Coupon
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
+import java.time.temporal.TemporalAmount
 
 data class ProductDetail(
     val brand: Brand?,
@@ -12,6 +13,10 @@ data class ProductDetail(
     val description: String="",
     @SerializedName("discount_percent")
     val discountPercent: Double=0.0,
+    @SerializedName("discount_amount")
+    val discountAmount: Double=0.0,
+    @SerializedName("discount_type")
+    val discountType: String="",
     @SerializedName("image_url")
     val imageUrl: List<String>,
     @SerializedName("is_coming_soon")
