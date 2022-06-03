@@ -11,10 +11,15 @@ data class Selected(
     val colorName: String,
     @SerializedName("image_url")
     val imageUrl: String,
+    @SerializedName("brand")
+    val brand: String="",
+    @SerializedName("name")
+    val name: String="",
     val quantity: Int,
     val size: String,
-    val sku: Int,
-    var price:Double,//own parameter
+    val sku: String,
+    @SerializedName("price")
+    var price:Double,//in wishlist
     val stock_status:String,
     @SerializedName("v_dollar_total")
     val vDollarTotal: Double,
@@ -23,5 +28,7 @@ data class Selected(
     @SerializedName("variant_id")
     val variantId: Int,
     @SerializedName("is_in_cart")
-    var isInCart: Boolean
+    var isInCart: Boolean,
+    @SerializedName("stock_amount")
+    val stockTotalQty: Int,
 ):Serializable

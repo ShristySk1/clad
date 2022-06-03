@@ -66,8 +66,8 @@ class FragmentProfileEdit : Fragment() {
         binding.textInputName.editText?.setText(detail.firstName)
         binding.textInputNameLast.editText?.setText(detail.lastName)
         binding.textInputEmail.editText?.setText(detail.email)
-        binding.textInputDOB.editText?.setText(detail.dob)
-        binding.textInputPhone.editText?.setText(detail.phone_no)
+        binding.textInputDOB.editText?.setText(detail.dob?:"")
+        binding.textInputPhone.editText?.setText(detail.phone_no?:"")
         gender=detail.gender?:""
         when (detail.gender) {
             "M" -> {

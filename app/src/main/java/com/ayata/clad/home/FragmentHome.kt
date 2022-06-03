@@ -501,7 +501,6 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
                                 val detail = homeResponse.details
                                 prepareDataForPopularBrands(detail.brands)
                                 prepareDataForRecommended(detail.recommended)
-//                                (activity as MainActivity).saveRecommendationInMainActivty(detail.recommended)
                                 prepareDataForJustDropped(detail.justDropped)
                                 prepareDataForMostPopular(detail.mostPopular)
                                 prepareDataForPopularMonth(detail.popularThisMonth)

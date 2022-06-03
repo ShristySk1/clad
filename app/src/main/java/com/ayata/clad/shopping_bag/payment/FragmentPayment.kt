@@ -23,6 +23,7 @@ import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.FragmentCartPaymentBinding
 import com.ayata.clad.profile.myorder.order.response.Order
+import com.ayata.clad.profile.myorder.order.response.OrderResponse
 import com.ayata.clad.shopping_bag.adapter.AdapterPaymentMethod
 import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelPaymentMethod
@@ -31,6 +32,7 @@ import com.ayata.clad.shopping_bag.payment.response.PaymentResponse
 import com.ayata.clad.shopping_bag.payment.viewmodel.PaymentViewModel
 import com.ayata.clad.shopping_bag.payment.viewmodel.PaymentViewModelFactory
 import com.ayata.clad.shopping_bag.response.checkout.CartResponse
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -126,6 +128,7 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.spinKit.rootContainer.visibility = View.GONE
+                    hideError()
                     Log.d("testdata", "addToWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
@@ -135,8 +138,9 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
                             preparePaymentMethod(paymentResponse.gateways)
 
                         } catch (e: Exception) {
-                            Log.d("testdata", "addToWishListAPI:Error ${e.message}")
+                            Log.d("testdata chek", "addToWishListAPI:Error ${e.message}")
                             Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                            showError(e.message.toString())
                         }
                     }
                 }
@@ -146,11 +150,21 @@ class FragmentPayment : Fragment(), AdapterPaymentMethod.OnItemClickListener {
                 Status.ERROR -> {
                     //Handle Error
                     binding.spinKit.rootContainer.visibility = View.GONE
+                    showError(it.message.toString())
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d("testdata", "addToWishListAPI:Error ${it.message}")
                 }
             }
         })
+    }
+    private fun showError(it: String) {
+        binding.layoutBottom.visibility=View.GONE
+        Caller().error("Error!", it, requireContext(), binding.root)
+    }
+
+    private fun hideError() {
+        Caller().hideErrorEmpty(binding.root)
+        binding.layoutBottom.visibility=View.VISIBLE
     }
 
     private fun initBundle() {

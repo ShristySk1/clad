@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Item Id: 788455"
+                android:text="SKU:"
                 android:textColor="@color/colorGrayText"
                 android:textSize="12sp"
                 android:layout_marginTop="2dp"

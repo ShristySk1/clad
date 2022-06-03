@@ -8,8 +8,6 @@ import java.io.Serializable
 data class Cart(
     @SerializedName("cart_id")
     val cartId: Int,
-    @SerializedName("product_details")
-    val productDetails: ProductDetail,
     val selected: Selected,
     val is_selected:Boolean
 ):Serializable

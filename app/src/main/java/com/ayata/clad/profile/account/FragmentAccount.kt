@@ -2,20 +2,20 @@ package com.ayata.clad.profile.account
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayata.clad.BuildConfig
 import com.ayata.clad.MainActivity
 import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
-import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
 import com.ayata.clad.databinding.DialogFilterBinding
 import com.ayata.clad.databinding.FragmentAccountBinding
@@ -26,7 +26,6 @@ import com.ayata.clad.login.viewmodel.LoginViewModelFactory
 import com.ayata.clad.onboarding.ActivityOnboarding
 import com.ayata.clad.profile.address.FragmentAddressDetail
 import com.ayata.clad.profile.edit.FragmentProfileEdit
-import com.ayata.clad.profile.reviews.FragmentMyReviews
 import com.ayata.clad.profile.reviews.FragmentMyReviewsList
 import com.ayata.clad.utils.PreferenceHandler
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -44,7 +43,7 @@ class FragmentAccount : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentAccountBinding.inflate(inflater, container, false)
-        prevTheme = if (PreferenceHandler.isThemeDark(context)?:false) {
+        prevTheme = if (PreferenceHandler.isThemeDark(context) ?: false) {
             "dark"
         } else {
             "light"
@@ -64,7 +63,7 @@ class FragmentAccount : Fragment() {
     }
 
     private fun initView() {
-        binding.btnLogOut.setOnClickListener{
+        binding.btnLogOut.setOnClickListener {
             //api logout
             PreferenceHandler.getToken(context)?.let { it1 -> loginViewModel.logout(it1) }
 //            loginViewModel.dologout().observe(viewLifecycleOwner, {
@@ -173,24 +172,22 @@ class FragmentAccount : Fragment() {
                     4 -> {//NOTIFICATION
                     }
                     6 -> {//TERMS AND CONDITIONS
-//                        val termsLink = "https://leaderboard.medipuzzle.avyaas.com/terms.php"
-//                        val defaultBrowser =
-//                            Intent.makeMainSelectorActivity(
-//                                Intent.ACTION_MAIN,
-//                                Intent.CATEGORY_APP_BROWSER
-//                            )
-//                        defaultBrowser.data = Uri.parse(termsLink)
-//                        startActivity(defaultBrowser)
+
+                        activity?.let {
+                            it.supportFragmentManager.beginTransaction().replace(
+                                R.id.main_fragment,
+                                WebViewFragment.newInstance(BuildConfig.TERMS_AND_CONDITIONS,"Terms And Conditions")
+                            ).addToBackStack(null).commit()
+                        }
                     }
                     7 -> {//PRIVACY POLICY
-//                        val privacyLink = "https://leaderboard.medipuzzle.avyaas.com/privacy.php"
-//                        val defaultBrowser =
-//                            Intent.makeMainSelectorActivity(
-//                                Intent.ACTION_MAIN,
-//                                Intent.CATEGORY_APP_BROWSER
-//                            )
-//                        defaultBrowser.data = Uri.parse(privacyLink)
-//                        startActivity(defaultBrowser)
+
+                        activity?.let {
+                            it.supportFragmentManager.beginTransaction().replace(
+                                R.id.main_fragment,
+                                WebViewFragment.newInstance(BuildConfig.PRIVACY_POLICY,"Privacy Policy")
+                            ).addToBackStack(null).commit()
+                        }
                     }
                     8 -> {
                         //theme
@@ -224,7 +221,7 @@ class FragmentAccount : Fragment() {
             MyFilterContentViewItem.SingleChoice("Dark Theme", false)
         )
 
-        if (PreferenceHandler.isThemeDark(context)?:false) {
+        if (PreferenceHandler.isThemeDark(context) ?: false) {
             list[1].isSelected = true
             list[0].isSelected = false
         } else {

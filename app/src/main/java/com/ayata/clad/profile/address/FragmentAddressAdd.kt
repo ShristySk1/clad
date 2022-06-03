@@ -153,10 +153,10 @@ class FragmentAddressAdd : Fragment() {
             val p2 = validateTextField(binding.textInputAddress)
             val p3 = validateTextField(binding.textInputCity)
             val p4 = validateTextFieldPhone(binding.textInputPhone)
-//            validateTextField(binding.textInputState)
-            val p5 = validateTextField(binding.textInputZip)
+//            val p5 = validateTextField(binding.textInputZip)
+            val p6 = validateTextField(binding.textInputLandmark)
 
-            if (!p1 or !p2 or !p3 or !p4 or !p5) {
+            if (!p1 or !p2 or !p3 or !p4  or !p6) {
                 return@setOnClickListener
             }
             //save api
@@ -187,7 +187,7 @@ class FragmentAddressAdd : Fragment() {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     spin_state = modellist[position].state
                     setSpinnerDistrict(modellist[position])
@@ -214,7 +214,7 @@ class FragmentAddressAdd : Fragment() {
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
-                view: View, position: Int, id: Long
+                view: View?, position: Int, id: Long
             ) {
                 spin_district = modelTest.district[position]
 

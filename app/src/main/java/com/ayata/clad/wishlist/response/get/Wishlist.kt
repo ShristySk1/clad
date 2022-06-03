@@ -9,6 +9,6 @@ import java.io.Serializable
 data class Wishlist(
     val wishlist_id:Int,
     val selected:Selected,
-    @SerializedName("product_details")
-    val product: ProductDetail
+//    @SerializedName("product_details")
+//    val product: ProductDetail
 ):Serializable

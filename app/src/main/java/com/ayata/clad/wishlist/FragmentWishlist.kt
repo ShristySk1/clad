@@ -152,9 +152,9 @@ class FragmentWishlist : Fragment() {
                             showSnackBar(msg = "Product removed from wishlist")
                             var remove: Wishlist? = null;
                             var position: Int? = null
-                            Log.d("testnumber", "bottom : " + currentproduct.product.name);
+                            Log.d("testnumber", "bottom : " + currentproduct.selected.name);
                             for ((index, item) in myWishList.withIndex()) {
-                                Log.d("testnumber", "removeWishListAPI: " + item.product.name);
+                                Log.d("testnumber", "removeWishListAPI: " + item.selected.name);
                                 if (item.wishlist_id == currentproduct.wishlist_id) {
                                     remove = item
                                     position = index
@@ -366,7 +366,7 @@ class FragmentWishlist : Fragment() {
                 //wishlist
                 Log.d("testmyfilter", "setUpRecyclerRecommendation: $recommendedProduct")
                 val bundle = Bundle()
-                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL, recommendedProduct.product)
+                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL_ID, recommendedProduct.selected.variantId)
                 val fragmentProductDetail = FragmentProductDetail()
                 fragmentProductDetail.arguments = bundle
                 parentFragmentManager.beginTransaction().replace(
@@ -376,7 +376,7 @@ class FragmentWishlist : Fragment() {
             }
         }.also { it ->
             it.setSettingClickListener { product ->
-                val isWish = product.product.isInWishlist
+//                val isWish = product.product.isInWishlist
 //                val list=ArrayList<MyFilterContentViewItem.MultipleChoice>()
 //                if(product.isCart){
 //                    list.add(MyFilterContentViewItem.MultipleChoice(getString(R.string.wl_case3), isCart))
@@ -399,9 +399,7 @@ class FragmentWishlist : Fragment() {
             }
         }.also {
             it.setBagClickListener { wishlist ->
-                val currentVariant = wishlist.product.variants.filter {
-                    it.variantId == wishlist.selected.variantId
-                }.single()
+                val currentVariant = wishlist.selected
                 if (!currentVariant.isInCart) {
                     addToCartAPI(wishlist)
                 } else {
@@ -538,7 +536,6 @@ class FragmentWishlist : Fragment() {
     }
 
     private fun removeWishListAPI(product: Wishlist) {
-        Log.d("testnumber", "top : " + product.product.name);
         currentproduct=product
         viewModel.removeFromWishAPI(
             PreferenceHandler.getToken(context).toString(),
@@ -628,13 +625,14 @@ class FragmentWishlist : Fragment() {
 
     private fun setDataToView(wishlist: List<Wishlist>) {
         myWishList.clear()
-        wishlist.forEach {wishlist->
-            wishlist.product.variants.forEach { variant ->
-                if (variant.variantId == wishlist.selected.variantId) {
-                    wishlist.selected.price = variant.price
-                }
-            }
-        }
+        //assuming pric already set from server we can comment below code
+//        wishlist.forEach {wishlist->
+//            wishlist.product.variants.forEach { variant ->
+//                if (variant.variantId == wishlist.selected.variantId) {
+//                    wishlist.selected.price = variant.price
+//                }
+//            }
+//        }
         myWishList.addAll(wishlist)
         myWishListRecommendation.addAll(wishlist)
         Log.d(TAG, "setUpView upper: " + wishlist.size);

@@ -64,7 +64,7 @@ class AdapterWishList(
                     .equals(context!!.getString(R.string.npr_case), true)
             ) {
                 //npr
-                binding.price.text = "${context!!.getString(R.string.rs)} ${item.selected.vTotal}"
+                binding.price.text = "${context!!.getString(R.string.rs)} ${item.selected.price}"
             } else {
                 //usd
                 binding.price.text =
@@ -99,8 +99,8 @@ class AdapterWishList(
                     function(item)
                 }
             }
-            binding.name.text = item.product.name
-            binding.company.text = item.product.vendor
+            binding.name.text = item.selected.name
+            binding.company.text = item.selected.brand
 
         }
     }

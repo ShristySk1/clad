@@ -31,7 +31,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater) -> B) :
-    AppCompatActivity() {
+    AppCompatActivity(), CustomExceptionHandler {
     private lateinit var binding: B
     private var referCode: String = ""
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -43,6 +43,7 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
         setContentView(binding.root)
         setUpGoogle()
         setupViewModel()
+
     }
 
     protected fun signIn() {
@@ -90,18 +91,23 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
 //        (binding).spinKit.visibility= View.VISIBLE
         //check for referal code
         Log.d("testreferal", "login: imhere");
-       val sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        DialogWithData().show(supportFragmentManager, DialogWithData.TAG)
+        val sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        try {
+            DialogWithData(0,this).show(supportFragmentManager, DialogWithData.TAG)
+        } catch (e: Throwable) {
+            Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+        }
+
         sharedViewModel.name.observe(this, Observer {
-            Log.d("testreferal", "login: imhere with referal "+it);
-            referCode=it
+            Log.d("testreferal", "login: imhere with referal " + it);
+            referCode = it
             progressDialog = ProgressDialog.newInstance("", "")
             progressDialog.show(supportFragmentManager, "login_progress")
             val id = currentUser.idToken
             if (id != null) {
                 Log.d(com.ayata.clad.login.TAG, "login:token   " + id);
                 Log.d(com.ayata.clad.login.TAG, "token end  refer_code ");
-                loginViewModel.login(id,referCode)
+                loginViewModel.login(id, referCode)
             } else {
                 Toast.makeText(this, "null id", Toast.LENGTH_LONG).show()
 
@@ -114,24 +120,36 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
 //                    activityOnboarding.spinKit.visibility= View.GONE
                         //{"message":"Token created successfully","details":{"token":"0d43a2fcea8a4fcd14481cb8018a4890f0330126","profile":{"email":"srezty@gmail.com","first_name":"Shristy","last_name":"Shakya"}}}
                         val email =
-                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("email")
+                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get(
+                                "email"
+                            )
                                 .toString()
                         val firstname =
-                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("first_name")
+                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get(
+                                "first_name"
+                            )
                                 .toString()
                         val lastname =
-                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("last_name")
+                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get(
+                                "last_name"
+                            )
                                 .toString()
                         //contact_number
                         val contact_number: String? =
-                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("phone_no")
+                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get(
+                                "phone_no"
+                            )
                                 ?.toString()
                         //dob
                         val dob: String? =
-                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("dob")
+                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get(
+                                "dob"
+                            )
                                 ?.toString()
                         val gender: String? =
-                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get("gender")
+                            it.data?.get("details")?.asJsonObject?.get("profile")?.asJsonObject?.get(
+                                "gender"
+                            )
                                 ?.toString()
 
                         val token = it.data?.get("details")?.asJsonObject?.get("token").toString()
@@ -181,8 +199,8 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
         PreferenceHandler.setToken(this, "Token " + token)
         Log.d(com.ayata.clad.login.TAG, "saveUserCredential: " + currentUser.photoUrl.toString());
         PreferenceHandler.setGender(this, gender ?: "")
-        PreferenceHandler.setDOB(this, dob ?: "")
-        PreferenceHandler.setPhone(this, contact ?: "")
+        PreferenceHandler.setDOB(this, dob ?.let { if(it.equals("null")) "" else it }?: kotlin.run { ""})
+        PreferenceHandler.setPhone(this, contact?.let { if(it.equals("null")) "" else it }?: kotlin.run { ""})
         getBitmapFromURL(currentUser.photoUrl.toString())
     }
 
@@ -212,5 +230,11 @@ abstract class BaseActivity<B : ViewBinding>(val bindingFactory: (LayoutInflater
         }.execute(src)
     }
 
+    override fun handleException(e: String) {
+        Toast.makeText(this,e,Toast.LENGTH_SHORT).show()
+    }
+}
 
+interface CustomExceptionHandler {
+    fun handleException(e: String)
 }

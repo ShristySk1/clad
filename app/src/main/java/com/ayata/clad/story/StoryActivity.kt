@@ -15,6 +15,10 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.ActivityStoryBinding
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.response.Story
+import com.ayata.clad.utils.ActivitySwitcher
+import com.ayata.clad.utils.ActivitySwitcher.AnimationFinishedListener
+import com.ayata.clad.utils.ActivitySwitcher.animationOut
+import com.ayata.clad.utils.ActivitySwitcher.animationOutReverse
 import com.ayata.clad.utils.Constants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -344,22 +348,44 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     private fun startMyActivityNext() {
         val i = Intent(this, StoryActivity::class.java)
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
+// disable default animation for new intent
+//        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+//        animationOut(findViewById(R.id.container),
+//            windowManager,
+//            object : AnimationFinishedListener {
+//                override fun onAnimationFinished() {
+//                    startActivity(i)
+//                    finish()
+//                }
+//            })
         startActivity(i)
         finish()
-        overridePendingTransition(R.anim.slide_in_right_without_animatioon, R.anim.slide_out_left_without_animation);
+        overridePendingTransition(
+            R.anim.slide_in_right_without_animatioon,
+            R.anim.slide_out_left_without_animation
+        );
 
     }
 
     private fun startMyActivityPrev() {
         val i = Intent(this, StoryActivity::class.java)
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+//        animationOutReverse(findViewById(R.id.container),
+//            windowManager,
+//            object : AnimationFinishedListener {
+//                override fun onAnimationFinished() {
+//                    startActivity(i)
+//                    finish()
+//                }
+//            })
         startActivity(i)
-        finish()
+                    finish()
         overridePendingTransition(
             R.anim.slide_in_left_without_animation,
             R.anim.slide_out_right_without_animation
-        ); // remember to put it after startActivity, if you put it to above, animation will not working
+        );
+    // remember to put it after startActivity, if you put it to above, animation will not working
 // document say if we don't want animation we can put 0. However, if we put 0 instead of R.anim.no_animation, the exist activity will become black when animate
     }
 
@@ -383,4 +409,5 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         i.putExtra("data", data as ProductDetail)
         startActivity(i)
     }
+
 }

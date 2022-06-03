@@ -130,15 +130,15 @@ internal class AdapterCheckout(
         }
         //hangle disable and enability of plus minus buttons
         setImageButtonEnabled(context!!,item.qty != 1,holder.remove,R.drawable.ic_minus)
-        setImageButtonEnabled(context!!,item.qty < item.stockQty,holder.add,R.drawable.ic_add)
+        setImageButtonEnabled(context!!,item.qty < item.stockTotalQty,holder.add,R.drawable.ic_add)
         /////
         holder.quantity.text = "QTY: " + item.qty
-        holder.itemId.text = "Item ID: " + item.itemId
+        holder.itemId.text = "SKU: " + item.sku
         holder.checkBox.isChecked = item.isSelected
         holder.number.text = (item.qty.toString())
         holder.color.text = item.color + ","
         holder.colorHexImage.apply { setColorFilter(Color.parseColor(item.colorHex)) }
-        holder.brand.text = "Brand: ${item.brand}"
+        holder.brand.text = "Brand: ${if((item.brand).isEmpty())"NA" else item.brand}"
         holder.progressBar.visibility = View.VISIBLE
         Log.d("testimage", "onBindViewHolder: " + item.image);
         Glide.with(context!!).asDrawable()

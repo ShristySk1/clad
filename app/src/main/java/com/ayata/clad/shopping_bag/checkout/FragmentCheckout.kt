@@ -270,7 +270,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //                    binding.spinKit.visibility = View.GONE
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
                 }
             }
         })
@@ -324,7 +323,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                                 }
                             } catch (e: Exception) {
-                                Log.d(TAG, "getCartAPI:Error ${e.message}")
+                                Toast.makeText(requireContext(),e.message,Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -337,7 +336,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //                    binding.spinKit.visibility = View.GONE
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "removeWishListAPI:Error ${it.message}")
                 }
             }
         })
@@ -417,10 +415,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     private fun setAddObserver() {
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             if (it != null) {
-                Log.d("testmystatus", "addToCartAPI: " + it.status);
                 when (it.status) {
                     Status.SUCCESS -> {
-                        Log.d("testsuccess", "addToCartAPI: ${it.data}")
                         val jsonObject = it.data
                         if (jsonObject != null) {
                             try {
@@ -434,7 +430,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                 val p_dollar = checkoutResponse.cartTotalDollar
                                 listContainingGrandtotal = checkoutResponse
                                 //update cart
-                                Log.d("imhere", "addToCartAPI: ");
                                 if (cartArray.size == 1) {
                                     updateCartAtPosition(
                                         cartArray[0].selected,
@@ -551,7 +546,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             val bundle: Bundle = Bundle()
             val selectedCarts = listCheckout.filter { it.isSelected == true }
             val otherPrices = listContainingGrandtotal
-            Log.d("tetstcarts", "initView: " + selectedCarts);
             bundle.putSerializable("carts", selectedCarts as ArrayList<ModelCheckout>)
             bundle.putSerializable("totals", otherPrices)
             frag.arguments = bundle
@@ -622,13 +616,11 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     ) {
         apiCartList = res
         listCheckout.clear()
-        Log.d(TAG, "prepareList: " + listCheckout.size);
-        Log.d(TAG, "prepareList: " + apiCartList.size);
 
         for (item in apiCartList) {
             listCheckout.add(
                 ModelCheckout(
-                    item.productDetails?.name ?: "",
+                    item.selected?.name,
                     item.selected?.variantId ?: 0,
                     item?.selected?.vTotal ?: 0.0,
                     item.selected?.vDollarTotal ?: 0.0,
@@ -639,11 +631,12 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     item.cartId ?: 0,
                     item.selected.colorName,
                     item.selected.colorHex,
-                    item.productDetails.brand?.name ?: "",
+                    item.selected.brand,
                     item.selected.stock_status,
-                    item.productDetails.isCouponAvailable ?: false,
-                    item.productDetails.coupon?.let { it.code } ?: run { "" },
-                    item.selected.sku
+                     false,
+                    "",
+                    item.selected.sku,
+                    item.selected.stockTotalQty
                 )
             )
         }
@@ -690,7 +683,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     override fun onRemove(data: ModelCheckout, position: Int) {
         updatePosition = position
-        Log.d("myposition up", "onRemove: " + position);
 
         minusFromCartAPI(data.cartId, position)
     }
@@ -698,7 +690,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     override fun onCompleteRemove(data: ModelCheckout, position: Int) {
         //complete remove api
         updatePosition = position
-        Log.d("myposition remove", "onRemove: " + position);
         removeFromCartAPI(data.cartId, position)
     }
 
@@ -724,7 +715,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
     }
 
     private fun updateTotals() {
-        Log.d("uodatetoals", "updateTotals: here");
         binding.subTotal.setText(
             getMyPrice(
                 listContainingGrandtotal.cartTotalNpr,
@@ -829,37 +819,6 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //
 //        bottomSheetDialog.show()
 //    }
-
-    private fun prepareListSize(data: ModelCheckout) {
-        listSize.clear()
-        for (cart in apiCartList) {
-            for (v in cart.productDetails.variants) {
-                if (data.itemId == v.variantId) {
-//                    for (v in cart?.product?.variant!!) {
-                    listSize.add(ModelCircleText(v.variantId ?: 0, v.size ?: "", false, "", ""))
-                    //}
-                }
-            }
-
-        }
-//        listSize.add(ModelCircleText("s", true))
-//        listSize.add(ModelCircleText("m", false))
-//        listSize.add(ModelCircleText("l", false))
-//        listSize.add(ModelCircleText("xl", false))
-//        listSize.add(ModelCircleText("xxl", false))
-        adapterCircleSize.notifyDataSetChanged()
-    }
-
-    private fun prepareListQuantity() {
-        listQty.clear()
-//        listQty.add(ModelCircleText("1", true))
-//        listQty.add(ModelCircleText("2", false))
-//        listQty.add(ModelCircleText("3", false))
-//        listQty.add(ModelCircleText("4", false))
-//        listQty.add(ModelCircleText("5", false))
-        adapterCircleQty.notifyDataSetChanged()
-    }
-
     private fun setShimmerLayout(isVisible: Boolean) {
         if (isVisible) {
             binding.layoutMain.visibility = View.GONE
@@ -918,6 +877,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
                                 }
                             } catch (e: Exception) {
+                                showError(e.message.toString())
                                 Log.d(TAG, "getWishListAPI:Error2 ${e.message}")
                             }
                         }
@@ -958,12 +918,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 
     private fun hideError() {
         binding.layoutMain.visibility = View.VISIBLE
-//        if (binding.root.findViewById<LinearLayout>(R.id.layout_root) != null) {
-//            MyLayoutInflater().onDelete(
-//                binding.layoutContainer,
-//                binding.root.findViewById(R.id.layout_root)
-//            )
-//        }
+
         Caller().hideErrorEmpty(binding.layoutContainer)
 
     }

@@ -29,6 +29,7 @@ import com.ayata.clad.shopping_bag.model.ModelCheckout
 import com.ayata.clad.shopping_bag.model.ModelShippingAddress
 import com.ayata.clad.shopping_bag.payment.FragmentPayment
 import com.ayata.clad.shopping_bag.response.checkout.CartResponse
+import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.PreferenceHandler
 
@@ -80,17 +81,19 @@ class FragmentShipping : Fragment() {
     }
 
     private fun setUpViewModel() {
-
         viewModel.observeShippingAddress().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    hideError()
                     binding.spinKit.rootContainer.visibility = View.GONE
                     try {
-                        it.data?.details?.let { it1 ->
+                        it.data?.details
+                            ?.let { it1 ->
                             Log.d("testmyship", "setUpViewModel: "+it);
-                            prepareListAddress2(it1) }
+                            prepareListAddress2(it1) }?: kotlin.run { showError(it.message.toString()) }
                     } catch (e: Exception) {
                         Log.d("testmyship", "setUpViewModel: "+e.message);
+                        showError(e.message.toString())
                     }
                 }
 
@@ -100,6 +103,7 @@ class FragmentShipping : Fragment() {
                 Status.ERROR -> {
                     //Handle Error
                     binding.spinKit.rootContainer.visibility = View.GONE
+                    showError(it.message.toString())
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -108,9 +112,12 @@ class FragmentShipping : Fragment() {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.spinKit.rootContainer.visibility = View.GONE
+                    hideError()
                     try {
-                        it.data?.details?.let { it1 -> prepareListAddress1(it1) }
+                        it.data?.details
+                            ?.let { it1 -> prepareListAddress1(it1) }?: kotlin.run { showError(it.message.toString()) }
                     } catch (e: Exception) {
+                        showError(e.message.toString())
                     }
                 }
                 Status.LOADING -> {
@@ -119,6 +126,7 @@ class FragmentShipping : Fragment() {
                 Status.ERROR -> {
                     //Handle Error
                     binding.spinKit.rootContainer.visibility = View.GONE
+                    showError(it.message.toString())
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -144,7 +152,19 @@ class FragmentShipping : Fragment() {
             textDescription = ""
         )
     }
+    private fun showError(it: String) {
+//        binding.layoutMain.visibility = View.GONE
+        binding.addNewBtn.visibility = View.GONE
+        binding.layoutBottom.visibility=View.GONE
+        Caller().error("Error!", it, requireContext(), binding.root)
+    }
 
+    private fun hideError() {
+//        binding.layoutMain.visibility = View.VISIBLE
+        binding.layoutBottom.visibility=View.VISIBLE
+        Caller().hideErrorEmpty(binding.root)
+
+    }
     private fun initView() {
         binding.textTerms.text =
             SpannableStringBuilder().append("By placing an order you agree to our \n")
