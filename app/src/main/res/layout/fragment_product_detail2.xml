@@ -476,15 +476,17 @@
                 android:id="@+id/layout_qa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+
                 android:background="@drawable/background_outline_bottom"
                 android:paddingBottom="16dp">
 
                 <TextView
                     android:id="@+id/textQuestionTopic"
                     style="@style/bigText"
+                    android:layout_marginTop="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_marginLeft="16dp"
                     android:text="@string/questions_about_this_product_5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -495,10 +497,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="16dp"
-                    android:text="View All"
                     android:clickable="true"
-                    android:textColor="@color/ripple_text_color"
+                    android:text="View All"
+
                     android:textAlignment="textEnd"
+                    android:textColor="@color/ripple_text_color"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textQuestionTopic"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/textQuestionTopic" />
@@ -510,13 +513,14 @@
                     android:clipToPadding="false"
                     android:paddingHorizontal="16dp"
                     android:paddingTop="8dp"
+
                     app:layout_constraintTop_toBottomOf="@id/textQuestionTopic" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/groupQuestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="tvViewAllQuestion,textQuestionTopic" />
+                    app:constraint_referenced_ids="tvViewAllQuestion,textQuestionTopic,recycler_qa" />
 
                 <FrameLayout
                     android:id="@+id/askQA"
@@ -524,7 +528,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-
+                    android:layout_marginTop="16dp"
                     android:background="@drawable/background_outline_gray"
                     android:clickable="true"
                     app:layout_constraintTop_toBottomOf="@id/recycler_qa">
@@ -535,7 +539,6 @@
                         android:layout_gravity="center"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="18dp"
-
                         android:text="Ask Questions"
                         android:textAlignment="center"
                         android:textColor="@color/colorBlack" />

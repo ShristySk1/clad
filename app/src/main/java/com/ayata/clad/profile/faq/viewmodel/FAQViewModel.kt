@@ -17,6 +17,8 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
     private val errorMessage = MutableLiveData<String>()
 
     private val faqResponse = MutableLiveData<Resource<JsonObject>>()
+    private val addFaqResponse = MutableLiveData<Resource<JsonObject>>()
+    private val deleteResponse = MutableLiveData<Resource<JsonObject>>()
 
 
     private var job: Job? = null
@@ -32,11 +34,11 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
                 val response = mainRepository.getFAQ("$token")
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        Log.d("profileDetailAPI", "success: " + response.body())
+                        Log.d("faqresponse", "success: " + response.body())
                         faqResponse.postValue(Resource.success(response.body()))
                         loading.value = false
                     } else {
-                        Log.e("profileDetailAPI", "error: $response")
+                        Log.e("faqresponse", "error: $response")
                         onError("Error : ${response.message()} ")
                         faqResponse.postValue(Resource.error(response.message(), null))
                     }
@@ -52,6 +54,65 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
     fun observerGetFAQAPI(): LiveData<Resource<JsonObject>> {
         return faqResponse
     }
+
+    fun addFAQAPI(jsonObject: JsonObject) {
+        addFaqResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.addFaqQuestion(jsonObject)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("faqresponse", "success: " + response.body())
+                        addFaqResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("faqresponse", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        addFaqResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            }catch (e:Exception){
+                addFaqResponse.postValue(Resource.error(e.message.toString(), null))
+            }
+
+
+        }
+
+    }
+    fun observerAddFAQAPI(): LiveData<Resource<JsonObject>> {
+        return addFaqResponse
+    }
+
+    fun deleteFAQAPI(questionId: Int) {
+        deleteResponse.postValue(Resource.loading(null))
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            try {
+                val response = mainRepository.deleteFaqQuestion(questionId)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Log.d("faqresponse", "success: " + response.body())
+                        deleteResponse.postValue(Resource.success(response.body()))
+                        loading.value = false
+                    } else {
+                        Log.e("faqresponse", "error: $response")
+                        onError("Error : ${response.message()} ")
+                        deleteResponse.postValue(Resource.error(response.message(), null))
+                    }
+                }
+            }catch (e:Exception){
+                deleteResponse.postValue(Resource.error(e.message.toString(), null))
+            }
+        }
+
+    }
+    fun observerDeleteFAQAPI(): LiveData<Resource<JsonObject>> {
+        return deleteResponse
+    }
+
+
+
+
+
     private fun onError(message: String) {
         errorMessage.postValue(message)
         loading.postValue(false)

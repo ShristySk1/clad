@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ayata.clad.R
 import com.ayata.clad.home.model.ModelStory
 import com.ayata.clad.home.response.Story
+import com.ayata.clad.utils.Constants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -69,7 +70,7 @@ internal  class AdapterStories(private var context:Context?, private var listIte
                     return false
                 }
             })
-            .error(R.drawable.logo_brand_example).into(holder.image)
+            .error(Constants.ERROR_DRAWABLE).into(holder.image)
 
         holder.clickView()
     }

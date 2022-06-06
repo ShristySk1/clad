@@ -62,7 +62,10 @@ interface ApiService {
     //google login
     @POST("oauth/google/")
     @FormUrlEncoded
-    suspend fun loginGoogle(@Field("auth_token") auth_token: String,@Field("refer_code") referCode:String): Response<JsonObject>
+    suspend fun loginGoogle(
+        @Field("auth_token") auth_token: String,
+        @Field("refer_code") referCode: String
+    ): Response<JsonObject>
 
     //dashboard
     @GET("home/")
@@ -75,7 +78,7 @@ interface ApiService {
     @GET("products/all/")
     suspend fun categoryProductListAPI(
         @Header("Authorization") token: String,
-        @QueryMap(encoded = true) map: Map<String,String>,
+        @QueryMap(encoded = true) map: Map<String, String>,
         @Query("page") page: Int,
     ): Response<JsonObject>
 
@@ -250,6 +253,7 @@ interface ApiService {
         @Field("comment") comment: String,
         @Field("reason") reason: String
     ): Response<JsonObject>
+
     //return order
     @POST("return-order/")
     suspend fun returnOrder(
@@ -311,11 +315,24 @@ interface ApiService {
         @Query("color") colorHex: String,
         @Query("brand") brand: String
     ): Response<JsonObject>
+
     //faq
     @GET("")
     suspend fun getFAQ(
         @Query("slug") slug: String
     ): Response<JsonObject>
+
+
+    @POST("add-question/")
+    suspend fun addFAQQuestion(
+        @Body jsonObject: JsonObject
+    ): Response<JsonObject>
+
+    @POST("delete-question/")
+    suspend fun deleteFAQQuestion(
+        @Field("q_id") questionId: Int
+    ): Response<JsonObject>
+
     @GET("product/details/")
     suspend fun getProduct(
         @Header("Authorization") token: String,

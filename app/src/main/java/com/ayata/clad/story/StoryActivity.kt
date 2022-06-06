@@ -61,6 +61,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     private val i by lazy {
         Intent(this, MainActivity::class.java)
     }
+    var imageLoaded:ImageLoadedInterface?=null
 
     private lateinit var binding: ActivityStoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +113,19 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         binding.btnClose.setOnClickListener {
             onBackPressed()
         }
+        imageLoaded=object :ImageLoadedInterface{
+            override fun onImageLoad(boolean: Boolean) {
+                Log.d("testloading", "onImageLoad: "+boolean)
+                if(boolean){
+                    binding.stories.resume()
+                }else{
+                    ;
+                    binding.stories.pause()
+                }
+            }
+
+        }
+
     }
 
     private fun initRecyclerView() {
@@ -138,7 +152,6 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
             listProduct.add(it)
         }
         adapterStoryProduct.notifyDataSetChanged()
-
     }
 
     private fun setStoryView(data: Story) {
@@ -208,6 +221,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
             Log.d(TAG, "loadImage: pause")
             binding.stories.pause()
             isImageLoading = true
+            imageLoaded?.let {  it.onImageLoad(true)}
         }
         Glide.with(this).load(imageUrl)
             .listener(object : RequestListener<Drawable> {
@@ -222,6 +236,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                         binding.stories.resume()
                     }
                     isImageLoading = false
+                    imageLoaded?.let {  it.onImageLoad(false)}
                     return false
                 }
 
@@ -239,6 +254,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                         binding.stories.resume()
                     }
                     isImageLoading = false
+                    imageLoaded?.let {  it.onImageLoad(false)}
                     return false
                 }
             })
@@ -246,10 +262,10 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     }
 
     override fun onNext() {
-        Log.d(TAG, "onNext: loading $isImageLoading")
-        if (isImageLoading) {
-            return
-        }
+//        Log.d(TAG, "onNext: loading $isImageLoading")
+//        if (isImageLoading) {
+//            return
+//        }
         if (counter >= listImageStory.lastIndex) {
             Log.d(TAG, "onNext: complete")
             onComplete()
@@ -276,9 +292,9 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
     override fun onComplete() {
         Log.d(TAG, "onComplete: $fromPause loading $isImageLoading")
-        if (isImageLoading) {
-            return
-        }
+//        if (isImageLoading) {
+//            return
+//        }
         if (storyIndex < listStory.lastIndex) {
             counter = 0
             ++storyIndex
@@ -347,7 +363,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
     private fun startMyActivityNext() {
         val i = Intent(this, StoryActivity::class.java)
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 // disable default animation for new intent
 //        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 //        animationOut(findViewById(R.id.container),
@@ -369,7 +385,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 
     private fun startMyActivityPrev() {
         val i = Intent(this, StoryActivity::class.java)
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
 //        animationOutReverse(findViewById(R.id.container),
 //            windowManager,
@@ -410,4 +426,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         startActivity(i)
     }
 
+}
+interface ImageLoadedInterface{
+    fun onImageLoad(boolean: Boolean)
 }

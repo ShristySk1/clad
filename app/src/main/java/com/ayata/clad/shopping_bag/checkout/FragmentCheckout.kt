@@ -564,7 +564,9 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         binding.checkBoxAll.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 for (item in listCheckout) {
-                    item.isSelected = true
+                    if(item.stockTotalQty>0) {
+                        item.isSelected = true
+                    }
                 }
                 adapterCheckout.notifyDataSetChanged()
                 showFillingText()

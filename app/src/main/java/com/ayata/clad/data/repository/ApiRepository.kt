@@ -204,5 +204,8 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
 
     //faq
     suspend fun getFAQ(slug: String) = retrofitService.getFAQ(slug)
+    suspend fun addFaqQuestion(jsonObject: JsonObject) = retrofitService.addFAQQuestion(jsonObject)
+    suspend fun deleteFaqQuestion(id: Int) = retrofitService.deleteFAQQuestion(id)
+
     suspend fun getProduct(token:String,productId: Int) = retrofitService.getProduct(token,productId)
 }

@@ -51,7 +51,8 @@ internal class AdapterCheckout(
         val stock = itemView.findViewById<TextView>(R.id.stock)
         var coupen = itemView.findViewById<TextView>(R.id.tv_text_to_copy)
         var disableView = itemView.findViewById<View>(R.id.disableView)
-
+        var disableTextView = itemView.findViewById<TextView>(R.id.text_disable)
+        var disableImageView = itemView.findViewById<ImageView>(R.id.image_disable)
 
         fun clickView() {
             layoutQuantity.setOnClickListener {
@@ -172,6 +173,8 @@ internal class AdapterCheckout(
         val s = "Out of stock"
         if (holder.stock.text.toString().toLowerCase().equals(s.toLowerCase())) {
             holder.disableView.visibility = View.VISIBLE
+            holder.disableImageView.visibility=View.VISIBLE
+            holder.disableTextView.visibility=View.VISIBLE
             holder.add.visibility = View.GONE
             holder.remove.visibility = View.GONE
             holder.checkBox.visibility=View.GONE
@@ -180,6 +183,8 @@ internal class AdapterCheckout(
             holder.add.visibility = View.VISIBLE
             holder.remove.visibility = View.VISIBLE
             holder.disableView.visibility = View.GONE
+            holder.disableImageView.visibility=View.GONE
+            holder.disableTextView.visibility=View.GONE
         }
         if (item.isCoupenAvailable) {
             holder.coupen.visibility = View.VISIBLE

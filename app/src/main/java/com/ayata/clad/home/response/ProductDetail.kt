@@ -53,6 +53,8 @@ data class ProductDetail(
     val seoDescription: String,
     @SerializedName("seo_keywords")
     val seoKeywords: List<String>,
+    @SerializedName("queries")
+    val queries: List<Query>?,
     @SerializedName("seo_title")
     val seoTitle: String,
     val slug: String,
