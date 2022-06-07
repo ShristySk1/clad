@@ -12,9 +12,11 @@
         android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:text="Questions about this Product(5)"
+        android:text="Questions about this Product(0)"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <include android:id="@+id/progress_bar" android:visibility="gone" layout="@layout/dialog_progress"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_qa"
         android:layout_width="match_parent"

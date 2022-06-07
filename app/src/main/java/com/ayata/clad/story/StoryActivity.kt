@@ -119,7 +119,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                 if(boolean){
                     binding.stories.resume()
                 }else{
-                    ;
+
                     binding.stories.pause()
                 }
             }

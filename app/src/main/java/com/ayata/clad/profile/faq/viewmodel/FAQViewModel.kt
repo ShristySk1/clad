@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayata.clad.data.network.Resource
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.product.qa.response.ResponseQA
 import com.ayata.clad.profile.edit.response.Details
 import com.ayata.clad.utils.Constants
 import com.ayata.clad.utils.SingleLiveEvent
@@ -16,9 +17,9 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
 
     private val errorMessage = MutableLiveData<String>()
 
-    private val faqResponse = MutableLiveData<Resource<JsonObject>>()
-    private val addFaqResponse = MutableLiveData<Resource<JsonObject>>()
-    private val deleteResponse = MutableLiveData<Resource<JsonObject>>()
+    private val faqResponse = MutableLiveData<Resource<ResponseQA>>()
+    private val addFaqResponse = MutableLiveData<Resource<ResponseQA>>()
+    private val deleteResponse = MutableLiveData<Resource<ResponseQA>>()
 
 
     private var job: Job? = null
@@ -27,11 +28,11 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
     }
     private val loading = MutableLiveData<Boolean>()
 
-    fun getFAQAPI(token: String) {
+    fun getFAQAPI(token: String,productId: Int) {
         faqResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
-                val response = mainRepository.getFAQ("$token")
+                val response = mainRepository.getFAQ(token,productId)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("faqresponse", "success: " + response.body())
@@ -51,15 +52,15 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
         }
 
     }
-    fun observerGetFAQAPI(): LiveData<Resource<JsonObject>> {
+    fun observerGetFAQAPI(): LiveData<Resource<ResponseQA>> {
         return faqResponse
     }
 
-    fun addFAQAPI(jsonObject: JsonObject) {
+    fun addFAQAPI(token:String,jsonObject: JsonObject) {
         addFaqResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
-                val response = mainRepository.addFaqQuestion(jsonObject)
+                val response = mainRepository.addFaqQuestion(token,jsonObject)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("faqresponse", "success: " + response.body())
@@ -79,15 +80,15 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
         }
 
     }
-    fun observerAddFAQAPI(): LiveData<Resource<JsonObject>> {
+    fun observerAddFAQAPI(): LiveData<Resource<ResponseQA>> {
         return addFaqResponse
     }
 
-    fun deleteFAQAPI(questionId: Int) {
+    fun deleteFAQAPI(token: String,questionId: Int) {
         deleteResponse.postValue(Resource.loading(null))
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
-                val response = mainRepository.deleteFaqQuestion(questionId)
+                val response = mainRepository.deleteFaqQuestion(token,questionId)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Log.d("faqresponse", "success: " + response.body())
@@ -105,7 +106,7 @@ class FAQViewModel constructor(private val mainRepository: ApiRepository) : View
         }
 
     }
-    fun observerDeleteFAQAPI(): LiveData<Resource<JsonObject>> {
+    fun observerDeleteFAQAPI(): LiveData<Resource<ResponseQA>> {
         return deleteResponse
     }
 

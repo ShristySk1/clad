@@ -9,5 +9,11 @@ data class Query(
     val postedAt: String,
     @SerializedName("posted_by")
     val postedBy: String,
-    val question: String
+    @SerializedName("id")
+    val questionId: Int?,
+    val question: String,
+    @SerializedName("replied_at")
+    val repliedAt: String,
+    @SerializedName("is_deletable")
+    val isDeletable:Boolean
 )

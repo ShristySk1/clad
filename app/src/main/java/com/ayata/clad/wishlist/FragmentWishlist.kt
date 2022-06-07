@@ -366,7 +366,7 @@ class FragmentWishlist : Fragment() {
                 //wishlist
                 Log.d("testmyfilter", "setUpRecyclerRecommendation: $recommendedProduct")
                 val bundle = Bundle()
-                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL_ID, recommendedProduct.selected.variantId)
+                bundle.putSerializable(FragmentHome.PRODUCT_DETAIL_ID, recommendedProduct.selected.productId)
                 val fragmentProductDetail = FragmentProductDetail()
                 fragmentProductDetail.arguments = bundle
                 parentFragmentManager.beginTransaction().replace(

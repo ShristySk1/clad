@@ -2,6 +2,7 @@ package com.ayata.clad.data.network
 
 import android.content.Context
 import com.ayata.clad.data.network.interceptor.NetworkConnectionInterceptor
+import com.ayata.clad.product.qa.response.ResponseQA
 import com.ayata.clad.profile.address.response.ShippingAddressResponse
 import com.ayata.clad.profile.edit.response.Details
 import com.google.gson.JsonObject
@@ -317,21 +318,23 @@ interface ApiService {
     ): Response<JsonObject>
 
     //faq
-    @GET("")
+    @GET("questions/")
     suspend fun getFAQ(
-        @Query("slug") slug: String
-    ): Response<JsonObject>
+        @Header("Authorization") token: String,
+        @Query("product_id") productId: Int
+    ): Response<ResponseQA>
 
-
-    @POST("add-question/")
+    @POST("questions/")
     suspend fun addFAQQuestion(
+        @Header("Authorization") token: String,
         @Body jsonObject: JsonObject
-    ): Response<JsonObject>
+    ): Response<ResponseQA>
 
     @POST("delete-question/")
     suspend fun deleteFAQQuestion(
+        @Header("Authorization") token: String,
         @Field("q_id") questionId: Int
-    ): Response<JsonObject>
+    ): Response<ResponseQA>
 
     @GET("product/details/")
     suspend fun getProduct(

@@ -1,7 +1,9 @@
 package com.ayata.clad.product.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.ayata.clad.R
@@ -10,9 +12,13 @@ import com.ayata.clad.databinding.ItemRecyclerQuestionTypeAnswerBinding
 import com.ayata.clad.databinding.ItemRecyclerQuestionTypeQuestionBinding
 import com.ayata.clad.product.qa.ModelQA
 
-class AdapterQaMultiple(data: List<ModelQA>) :
+class AdapterQaMultiple() :
     RecyclerView.Adapter<AdapterQaMultiple.HomeRecyclerViewHolder>() {
-    var items = data
+    var items = listOf<ModelQA>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecyclerViewHolder {
 
@@ -46,9 +52,16 @@ class AdapterQaMultiple(data: List<ModelQA>) :
 
     override fun onBindViewHolder(holder: HomeRecyclerViewHolder, position: Int) {
         when (holder) {
-            is HomeRecyclerViewHolder.QuestionViewHolder -> holder.bind(
-                items[position] as ModelQA.Question
-            )
+            is HomeRecyclerViewHolder.QuestionViewHolder -> {
+                holder.bind(
+                    items[position] as ModelQA.Question
+                )
+                holder.itemView.findViewById<TextView>(R.id.tv_edit).setOnClickListener {
+                    itemEditClick?.let {
+                        it(items[position] as ModelQA.Question,position)
+                    }
+                }
+            }
             is HomeRecyclerViewHolder.AnswerViewHolder -> holder.bind(items[position] as ModelQA.Answer)
             is HomeRecyclerViewHolder.DividerViewHolder -> holder.bind(items[position] as ModelQA.Divider)
         }
@@ -72,9 +85,20 @@ class AdapterQaMultiple(data: List<ModelQA>) :
                 item: ModelQA.Question
             ) {
                 with(item) {
+                    if (item.isDeleteable) {
+                        binding.tvDelete.visibility = View.VISIBLE
+                    } else {
+                        binding.tvDelete.visibility = View.GONE
+                    }
+                    if (item.isEditable) {
+                        binding.tvEdit.visibility = View.VISIBLE
+                    } else {
+                        binding.tvEdit.visibility = View.GONE
+                    }
                     binding.apply {
                         tvQuestion.text = item.question
                         tvDate.text = "${item.postedBy} - ${item.postedAt}"
+
                     }
                 }
             }
@@ -106,10 +130,10 @@ class AdapterQaMultiple(data: List<ModelQA>) :
 
     }
 
-//    private var itemFilterClick: ((ModelQA.Question,Int) -> Unit)? = null
-//    fun setFilterClickListener(listener: ((MyFilterRecyclerViewItem.Title,Int) -> Unit)) {
-//        itemFilterClick = listener
-//    }
+    private var itemEditClick: ((ModelQA.Question, Int) -> Unit)? = null
+    fun setEditClickListener(listener: ((ModelQA.Question, Int) -> Unit)) {
+        itemEditClick = listener
+    }
 //
 //    private var itemFilterColorClick: ((MyFilterRecyclerViewItem.Color,Int) -> Unit)? = null
 //    fun setFilterColorClickListener(listener: ((MyFilterRecyclerViewItem.Color,Int) -> Unit)) {

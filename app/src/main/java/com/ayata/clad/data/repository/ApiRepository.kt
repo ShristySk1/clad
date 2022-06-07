@@ -203,9 +203,9 @@ class ApiRepository constructor(private val retrofitService: ApiService) {
     ) = retrofitService.getOrderFilter(token, page, size, color, brand)
 
     //faq
-    suspend fun getFAQ(slug: String) = retrofitService.getFAQ(slug)
-    suspend fun addFaqQuestion(jsonObject: JsonObject) = retrofitService.addFAQQuestion(jsonObject)
-    suspend fun deleteFaqQuestion(id: Int) = retrofitService.deleteFAQQuestion(id)
+    suspend fun getFAQ(token: String,productId: Int) = retrofitService.getFAQ(token,productId)
+    suspend fun addFaqQuestion(token:String,jsonObject: JsonObject) = retrofitService.addFAQQuestion(token,jsonObject)
+    suspend fun deleteFaqQuestion(token: String,id: Int) = retrofitService.deleteFAQQuestion(token,id)
 
     suspend fun getProduct(token:String,productId: Int) = retrofitService.getProduct(token,productId)
 }

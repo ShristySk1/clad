@@ -63,7 +63,6 @@ import kotlin.properties.Delegates
 
 class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private lateinit var myQAList: MutableList<ModelQA>
-    private var myQAQSize by Delegates.notNull<Int>()
     private val TAG = "FragmentProductDetail"
     private lateinit var adapterCircleText: AdapterCircleText
     private lateinit var binding: FragmentProductDetailBinding
@@ -152,72 +151,75 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
         binding.detail2.askQA.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentQA.newInstance(myQAList, myQAQSize,dynamicVarientId))
+                .replace(R.id.main_fragment, FragmentQA.newInstance( productDetail.productId,productDetail.brand?.name?:productDetail.vendor))
                 .addToBackStack(null).commit()
         }
         binding.detail2.tvViewAllQuestion.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentQA.newInstance(myQAList, myQAQSize,dynamicVarientId))
+                .replace(R.id.main_fragment, FragmentQA.newInstance( productDetail.productId,productDetail.brand?.name?:productDetail.vendor))
                 .addToBackStack(null).commit()
-
         }
-        myQAList = mutableListOf(
-
-            ModelQA.Question("Which fabric is this?","10th June 2022","Sita"),
-            ModelQA.Divider(),
-            ModelQA.Question("Is this available in black color as well?","9th June 2022","Nina"),
-            ModelQA.Answer("Sorry. Not available","9th June 2022","GoldStar"),
-            )
-//        myQAList= mutableListOf()
-//        productDetail.queries?.let {
-//            productDetail.queries!!.forEach {
-//                myQAList.add(ModelQA.Question(it.question,it.postedAt,it.postedBy))
-//                if(it.answer.isNotEmpty()) {
-//                    myQAList.add(ModelQA.Answer(it.answer, "", productDetail.brand?.name ?: ""))
-//                }
-//                myQAList.add(ModelQA.Divider())
-//            }
-//        }
-        //we need to show with both question and answer and also only one
-        var myfirstQuestionAnswer = mutableListOf<ModelQA>()
-        if (myQAList.size > 0) {
-            for (model in myQAList) {
-                if (model is ModelQA.Answer) {
-                    if (model.answer.isEmpty()) {
-                        Log.d("ttestquestion", "setUpRecyclerQA: empty");
-                    } else {
-                        Log.d("ttestquestion", "setUpRecyclerQA: added 2");
-                        myfirstQuestionAnswer.add(model)
-                        break
-                    }
-                } else if (model is ModelQA.Question){
-                    Log.d("ttestquestion", "setUpRecyclerQA:added 1 ");
-                    myfirstQuestionAnswer.clear()
-                    myfirstQuestionAnswer.add(model)
-                }
-            }
-            if(myfirstQuestionAnswer.size>0){
+//        myQAList = mutableListOf(
+//
+//            ModelQA.Question("Which fabric is this?","10th June 2022","Sita"),
+//            ModelQA.Divider(),
+//            ModelQA.Question("Is this available in black color as well?","9th June 2022","Nina"),
+//            ModelQA.Answer("Sorry. Not available","9th June 2022","GoldStar"),
+//            )
+        myQAList= mutableListOf()
+        productDetail.queries?.let {
+            if(it.size>0) {
                 binding.detail2.groupQuestion.visibility = View.VISIBLE
+                productDetail.queries!!.forEach {
+                    myQAList.add(ModelQA.Question(it.question, it.postedAt, it.postedBy,false,false,it.questionId))
+                    if (it.answer.isNotEmpty()) {
+                        myQAList.add(ModelQA.Answer(it.answer, it.repliedAt, productDetail.brand?.name?:productDetail.vendor))
+                    }
+                    myQAList.add(ModelQA.Divider())
+                }
             }else{
                 binding.detail2.groupQuestion.visibility = View.GONE
             }
-        } else {
+        }?: kotlin.run {
             binding.detail2.groupQuestion.visibility = View.GONE
         }
-
-        Log.d("ttestquestion", "setUpRecyclerQA: " + myfirstQuestionAnswer);
-
-        myQAQSize = myQAList.filterIsInstance(ModelQA.Question::class.java).size
-        binding.detail2.textQuestionTopic.text =
-            String.format(
-                requireContext().getString(com.ayata.clad.R.string.questions_about_this_product_5),
-                myQAQSize,
-                1
-            )
+        //we need to show with both question and answer and also only one
+//        var myfirstQuestionAnswer = mutableListOf<ModelQA>()
+//        if (myQAList.size > 0) {
+//            for (model in myQAList) {
+//                if (model is ModelQA.Answer) {
+//                    if (model.answer.isEmpty()) {
+//                        Log.d("ttestquestion", "setUpRecyclerQA: empty");
+//                    } else {
+//                        Log.d("ttestquestion", "setUpRecyclerQA: added 2");
+//                        myfirstQuestionAnswer.add(model)
+//                        break
+//                    }
+//                } else if (model is ModelQA.Question){
+//                    Log.d("ttestquestion", "setUpRecyclerQA:added 1 ");
+//                    myfirstQuestionAnswer.clear()
+//                    myfirstQuestionAnswer.add(model)
+//                }
+//            }
+//            if(myfirstQuestionAnswer.size>0){
+//                binding.detail2.groupQuestion.visibility = View.VISIBLE
+//            }else{
+//                binding.detail2.groupQuestion.visibility = View.GONE
+//            }
+//        } else {
+//            binding.detail2.groupQuestion.visibility = View.GONE
+//        }
+//        binding.detail2.textQuestionTopic.text =
+//            String.format(
+//                requireContext().getString(com.ayata.clad.R.string.questions_about_this_product_5),
+//                1,
+//                1
+//            )
         binding.detail2.recyclerQa.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = AdapterQaMultiple(myfirstQuestionAnswer)
+            AdapterQaMultiple().also { adapter = it }.also { it.items=myQAList }
         }
+
 
 
     }

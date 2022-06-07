@@ -27,6 +27,8 @@ data class Selected(
     val vTotal: Double,
     @SerializedName("variant_id")
     val variantId: Int,
+    @SerializedName("product_id")
+    val productId: Int,
     @SerializedName("is_in_cart")
     var isInCart: Boolean,
     @SerializedName("stock_amount")
