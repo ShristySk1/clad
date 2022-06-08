@@ -1,5 +1,6 @@
 package com.ayata.clad.product.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,13 @@ import com.ayata.clad.databinding.ItemRecyclerQuestionTypeAnswerBinding
 import com.ayata.clad.databinding.ItemRecyclerQuestionTypeQuestionBinding
 import com.ayata.clad.product.qa.ModelQA
 
-class AdapterQaMultiple() :
+class AdapterQaMultiple(params: MutableList<ModelQA>) :
     RecyclerView.Adapter<AdapterQaMultiple.HomeRecyclerViewHolder>() {
-    var items = listOf<ModelQA>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+    var items = params
+    fun setMyItems(params: MutableList<ModelQA>) {
+        this.items = params
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecyclerViewHolder {
 
@@ -57,10 +58,25 @@ class AdapterQaMultiple() :
                     items[position] as ModelQA.Question
                 )
                 holder.itemView.findViewById<TextView>(R.id.tv_edit).setOnClickListener {
+                    Log.d("testposition", "onBindViewHolder: " + position);
                     itemEditClick?.let {
-                        it(items[position] as ModelQA.Question,position)
+                        it(items[position] as ModelQA.Question, position)
                     }
                 }
+                holder.itemView.rootView.setOnLongClickListener(object : View.OnLongClickListener {
+                    override fun onLongClick(p0: View?): Boolean {
+                        //check if editable and deletable
+                        if ((items[position] as ModelQA.Question).isDeleteable && (items[position] as ModelQA.Question).isEditable) {
+                            itemDeleteClick?.let {
+                                it(items[position] as ModelQA.Question, position)
+                            }
+                        }
+                        return false
+                    }
+
+                })
+
+
             }
             is HomeRecyclerViewHolder.AnswerViewHolder -> holder.bind(items[position] as ModelQA.Answer)
             is HomeRecyclerViewHolder.DividerViewHolder -> holder.bind(items[position] as ModelQA.Divider)
@@ -86,9 +102,9 @@ class AdapterQaMultiple() :
             ) {
                 with(item) {
                     if (item.isDeleteable) {
-                        binding.tvDelete.visibility = View.VISIBLE
+//                        binding.tvDelete.visibility = View.VISIBLE
                     } else {
-                        binding.tvDelete.visibility = View.GONE
+//                        binding.tvDelete.visibility = View.GONE
                     }
                     if (item.isEditable) {
                         binding.tvEdit.visibility = View.VISIBLE
@@ -134,11 +150,12 @@ class AdapterQaMultiple() :
     fun setEditClickListener(listener: ((ModelQA.Question, Int) -> Unit)) {
         itemEditClick = listener
     }
-//
-//    private var itemFilterColorClick: ((MyFilterRecyclerViewItem.Color,Int) -> Unit)? = null
-//    fun setFilterColorClickListener(listener: ((MyFilterRecyclerViewItem.Color,Int) -> Unit)) {
-//        itemFilterColorClick = listener
-//    }
+
+    //
+    private var itemDeleteClick: ((ModelQA.Question, Int) -> Unit)? = null
+    fun setDeleteClickListener(listener: ((ModelQA.Question, Int) -> Unit)) {
+        itemDeleteClick = listener
+    }
 //
 
 }

@@ -1,18 +1,22 @@
 package com.ayata.clad.product.qa
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayata.clad.MainActivity
+import com.ayata.clad.R
 import com.ayata.clad.data.network.ApiService
 import com.ayata.clad.data.network.Status
 import com.ayata.clad.data.repository.ApiRepository
+import com.ayata.clad.databinding.DialogCustomBinding
 import com.ayata.clad.databinding.FragmentQABinding
 import com.ayata.clad.product.adapter.AdapterQaMultiple
 import com.ayata.clad.profile.faq.viewmodel.FAQViewModel
@@ -20,6 +24,7 @@ import com.ayata.clad.profile.faq.viewmodel.FAQViewModelFactory
 import com.ayata.clad.utils.Caller
 import com.ayata.clad.utils.PreferenceHandler
 import com.ayata.clad.utils.ProgressDialog
+import com.ayata.clad.utils.removeSlice
 import com.google.gson.JsonObject
 
 
@@ -46,9 +51,9 @@ class FragmentQA : Fragment() {
     private lateinit var binding: FragmentQABinding
     private lateinit var progressDialog: ProgressDialog
     private lateinit var viewModel: FAQViewModel
-    private val myqaAdapter by lazy { AdapterQaMultiple() }
+    private lateinit var myqaAdapter:AdapterQaMultiple
     private var isFromEdit: ModelQA.Question? = null
-    private var editPosition:Int=-1
+    private var editPosition: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +63,7 @@ class FragmentQA : Fragment() {
             productId = it.getInt(ARG_PRODUCTID)
             brand = it.getString(ARG_BRAND)
         }
-        viewModel.getFAQAPI(PreferenceHandler.getToken(requireContext())?:"",productId!!)
+        viewModel.getFAQAPI(PreferenceHandler.getToken(requireContext()) ?: "", productId!!)
     }
 
     override fun onCreateView(
@@ -67,14 +72,105 @@ class FragmentQA : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentQABinding.inflate(inflater, container, false)
-
+        setUpRecyclerQA()
         postListener()
         getListener()
-        setUpRecyclerQA()
+        deleteListener()
+
         initAppbar()
         return binding.root
     }
 
+    private fun deleteListener() {
+        myqaAdapter.setDeleteClickListener { question, i ->
+//            setQuestionForEdit(question, i)
+//            showDialog(
+//                "Alert!",
+//                "Are you sure you want to remove this query?",
+//                ::removeFromListApi
+//            )
+        }
+        viewModel.observerDeleteFAQAPI().observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    progressDialog.dismiss()
+                    val resposnseqa = it.data
+                    if (resposnseqa != null) {
+                        try {
+                            resposnseqa.queries?.let {
+                                //clear edit text
+                                binding.editText2.setText("")
+
+                            } ?: run {
+                                Toast.makeText(
+                                    requireContext(),
+                                    resposnseqa.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                if (editPosition != -1) {
+                                    //delete
+                                    param1?.removeAt(editPosition)
+                                    myqaAdapter.notifyItemRemoved(editPosition)
+                                    param1?.removeAt(editPosition)
+                                    myqaAdapter.notifyItemRemoved(editPosition)
+//                                    removeSlice(param1!!,editPosition,editPosition+1)
+//                                    myqaAdapter.notifyItemRangeRemoved(editPosition,2)
+                                } else {
+                                    Toast.makeText(requireContext(),"Error Position: $editPosition",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    resetEditValues()
+                }
+                Status.LOADING -> {
+                    Log.d("imloading", "deleteListener: ");
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "delete_progress")
+                }
+                Status.ERROR -> {
+                    resetEditValues()
+                    //Handle Error
+                    progressDialog.dismiss()
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+    private fun removeFromListApi(){
+        getQuestionForEdit()?.let { question ->
+
+            viewModel.deleteFAQAPI(
+                PreferenceHandler.getToken(requireContext()) ?: "",
+                question.questionId ?: -1
+            )
+        }
+    }
+    private fun showDialog(title: String, message: String, action: () -> Unit) {
+        val bind: DialogCustomBinding =
+            DialogCustomBinding.inflate(LayoutInflater.from(context))
+        val dialog = Dialog(requireContext(), R.style.CustomDialog)
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.setCancelable(false)
+        dialog?.setContentView(bind.root)
+        bind.textTitle.text = title
+        bind.textMsg.text =
+            message
+        bind.dialogBtnYes.text = "Yes"
+        bind.dialogBtnYes.setOnClickListener {
+            action()
+            dialog?.dismiss()
+        }
+        bind.dialogBtnNo.text = "No"
+        bind.dialogBtnNo.setOnClickListener {
+            dialog?.dismiss()
+            resetEditValues()
+        }
+        dialog?.show()
+    }
     private fun getListener() {
         viewModel.observerGetFAQAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -111,7 +207,7 @@ class FragmentQA : Fragment() {
                                         param1?.add(ModelQA.Divider())
                                     }
                                     Log.d("size", "getListener: " + param1!!.size);
-                                    myqaAdapter.items = param1!!
+                                    myqaAdapter.setMyItems(param1!!)
                                 } else {
                                     //empty queries
                                     showEmpty("Empty Questions", "Post your quesries.")
@@ -164,7 +260,7 @@ class FragmentQA : Fragment() {
         }
         myqaAdapter.setEditClickListener { question, i ->
             binding.editText2.setText(question.question)
-            setQuestionForEdit(question,i)
+            setQuestionForEdit(question, i)
         }
         viewModel.observerAddFAQAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -179,8 +275,12 @@ class FragmentQA : Fragment() {
                                 //reload recyclerview with added params
                                 //get first data from list
                                 val singleModel = resposnseqa.queries.get(0)
-                                param1?.add(
-                                    ModelQA.Question(
+
+
+                                Log.d("testdata", "postListener: " + editPosition);
+                                if (editPosition != -1) {
+                                    //edit update
+                                    val modelqa = ModelQA.Question(
                                         singleModel.question,
                                         singleModel.postedAt,
                                         singleModel.postedBy,
@@ -188,21 +288,30 @@ class FragmentQA : Fragment() {
                                         if (singleModel.answer.isEmpty() && singleModel.isDeletable) true else false,
                                         singleModel.questionId
                                     )
-                                )
-                                if (singleModel.answer.isNotEmpty()) {
+                                    param1?.set(editPosition, modelqa)
+                                    myqaAdapter.notifyItemChanged(editPosition)
+                                } else {
+                                    //adding at last
                                     param1?.add(
-                                        ModelQA.Answer(
-                                            singleModel.answer,
-                                            singleModel.repliedAt,
-                                            brand ?: ""
+                                        ModelQA.Question(
+                                            singleModel.question,
+                                            singleModel.postedAt,
+                                            singleModel.postedBy,
+                                            singleModel.isDeletable,
+                                            if (singleModel.answer.isEmpty() && singleModel.isDeletable) true else false,
+                                            singleModel.questionId
                                         )
                                     )
-                                }
-                                param1?.add(ModelQA.Divider())
-                                //
-                                if(editPosition!=-1){
-                                    myqaAdapter.notifyItemChanged(editPosition)
-                                }else{
+                                    if (singleModel.answer.isNotEmpty()) {
+                                        param1?.add(
+                                            ModelQA.Answer(
+                                                singleModel.answer,
+                                                singleModel.repliedAt,
+                                                brand ?: ""
+                                            )
+                                        )
+                                    }
+                                    param1?.add(ModelQA.Divider())
                                     myqaAdapter.notifyItemInserted(param1!!.size)
                                 }
 
@@ -234,13 +343,15 @@ class FragmentQA : Fragment() {
         })
     }
 
-    private fun setQuestionForEdit(question: ModelQA.Question?,i:Int) {
+    private fun setQuestionForEdit(question: ModelQA.Question?, i: Int) {
         isFromEdit = question
-        editPosition=i
+        editPosition = i
+        Log.d("testdata", "setQuestionForEdit: " + editPosition);
     }
+
     private fun resetEditValues() {
         isFromEdit = null
-        editPosition=-1
+        editPosition = -1
     }
 
     private fun getQuestionForEdit() = isFromEdit
@@ -263,6 +374,7 @@ class FragmentQA : Fragment() {
 
 
     private fun setUpRecyclerQA() {
+        myqaAdapter=AdapterQaMultiple(param1?: mutableListOf())
         binding.recyclerQa.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = myqaAdapter
@@ -270,7 +382,7 @@ class FragmentQA : Fragment() {
 
         param1?.let {
             if (param1!!.size > 0) {
-                myqaAdapter.items = param1!!
+                myqaAdapter.setMyItems( param1!!)
             } else {
             }
         }

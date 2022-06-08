@@ -217,7 +217,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //            )
         binding.detail2.recyclerQa.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            AdapterQaMultiple().also { adapter = it }.also { it.items=myQAList }
+            AdapterQaMultiple(myQAList).also { adapter = it }.also { it.setMyItems(myQAList) }
         }
 
 

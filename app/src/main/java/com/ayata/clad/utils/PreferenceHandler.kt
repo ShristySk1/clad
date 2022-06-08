@@ -213,7 +213,7 @@ class PreferenceHandler {
         fun getToken(context: Context?)=
             getSharedPreference(
                 context
-            )?.getString(TOKEN, "Token 45949f5c5424dabb912a105240007a2a70dc3977")
+            )?.getString(TOKEN, "")
         fun logout(context: Context) {
             val preferences = getSharedPreference(context)
             val editor = preferences?.edit()

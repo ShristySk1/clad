@@ -46,19 +46,20 @@
     <TextView
         android:id="@+id/tv_edit"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit"
+        android:layout_height="0dp"
         android:clickable="true"
+        android:text="Edit"
         android:textColor="@color/red"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tv_question"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_question" />
 
-    <TextView
-        android:id="@+id/tv_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/tv_date"
-        app:layout_constraintTop_toTopOf="@+id/tv_date" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_delete"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Delete"-->
+<!--        android:textSize="12sp"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/tv_date"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/tv_date" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -331,6 +331,7 @@ interface ApiService {
     ): Response<ResponseQA>
 
     @POST("delete-question/")
+    @FormUrlEncoded
     suspend fun deleteFAQQuestion(
         @Header("Authorization") token: String,
         @Field("q_id") questionId: Int

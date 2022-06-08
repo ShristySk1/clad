@@ -331,7 +331,9 @@ fun TextView.setStockStatus(stock: String, context: Context) {
     }
     this.setText(textToDisplay)
 }
-
+fun <T> removeSlice(list: MutableList<T>, from: Int, end: Int) {
+    list.removeAll(list.slice(from..end))
+}
 
 //val subClasses = DataModel::class.sealedSubclasses.filter { clazz -> clazz == DataModel.Image::class }
 //val imageFromModel = listImage.filterIsInstance<DataModel.Image>()
