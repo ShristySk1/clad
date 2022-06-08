@@ -83,12 +83,12 @@ class FragmentQA : Fragment() {
 
     private fun deleteListener() {
         myqaAdapter.setDeleteClickListener { question, i ->
-//            setQuestionForEdit(question, i)
-//            showDialog(
-//                "Alert!",
-//                "Are you sure you want to remove this query?",
-//                ::removeFromListApi
-//            )
+            setQuestionForEdit(question, i)
+            showDialog(
+                "Alert!",
+                "Are you sure you want to remove this query?",
+                ::removeFromListApi
+            )
         }
         viewModel.observerDeleteFAQAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -102,19 +102,11 @@ class FragmentQA : Fragment() {
                                 binding.editText2.setText("")
 
                             } ?: run {
-                                Toast.makeText(
-                                    requireContext(),
-                                    resposnseqa.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
                                 if (editPosition != -1) {
                                     //delete
-                                    param1?.removeAt(editPosition)
-                                    myqaAdapter.notifyItemRemoved(editPosition)
-                                    param1?.removeAt(editPosition)
-                                    myqaAdapter.notifyItemRemoved(editPosition)
-//                                    removeSlice(param1!!,editPosition,editPosition+1)
-//                                    myqaAdapter.notifyItemRangeRemoved(editPosition,2)
+                                    removeSlice(param1!!,editPosition,editPosition+1)
+                                    myqaAdapter.notifyItemRangeRemoved(editPosition,param1!!.size)
+                                    (activity as MainActivity).showSnakbar(resposnseqa.message)
                                 } else {
                                     Toast.makeText(requireContext(),"Error Position: $editPosition",Toast.LENGTH_SHORT).show()
                                 }
@@ -290,6 +282,7 @@ class FragmentQA : Fragment() {
                                     )
                                     param1?.set(editPosition, modelqa)
                                     myqaAdapter.notifyItemChanged(editPosition)
+                                    (activity as MainActivity).showSnakbar(resposnseqa.message)
                                 } else {
                                     //adding at last
                                     param1?.add(
@@ -313,6 +306,7 @@ class FragmentQA : Fragment() {
                                     }
                                     param1?.add(ModelQA.Divider())
                                     myqaAdapter.notifyItemInserted(param1!!.size)
+                                    (activity as MainActivity).showSnakbar(resposnseqa.message)
                                 }
 
 
