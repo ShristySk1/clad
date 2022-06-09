@@ -170,6 +170,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         productDetail.queries?.let {
             if(it.size>0) {
                 binding.detail2.groupQuestion.visibility = View.VISIBLE
+                binding.detail2.textQaEmpty.visibility = View.GONE
                 productDetail.queries!!.forEach {
                     myQAList.add(ModelQA.Question(it.question, it.postedAt, it.postedBy,false,false,it.questionId))
                     if (it.answer.isNotEmpty()) {
@@ -179,9 +180,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
             }else{
                 binding.detail2.groupQuestion.visibility = View.GONE
+                binding.detail2.textQaEmpty.visibility = View.VISIBLE
             }
         }?: kotlin.run {
             binding.detail2.groupQuestion.visibility = View.GONE
+            binding.detail2.textQaEmpty.visibility = View.VISIBLE
         }
         //we need to show with both question and answer and also only one
 //        var myfirstQuestionAnswer = mutableListOf<ModelQA>()
