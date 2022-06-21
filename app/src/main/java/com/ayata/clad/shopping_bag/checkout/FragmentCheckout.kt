@@ -162,10 +162,11 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
             }
         })
     }
+
     private fun setDeleteCouponObserver() {
         binding.deleteCoupon.setOnClickListener {
             //delete api
-            viewModel.deleteCouponApi(PreferenceHandler.getToken(requireContext())?:"")
+            viewModel.deleteCouponApi(PreferenceHandler.getToken(requireContext()) ?: "")
         }
         viewModel.getDeleteCouponObserver().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -233,31 +234,27 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         viewModel.getRemoveFromCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
+                    progressDialog.dismiss()
 //                    binding.spinKit.visibility = View.GONE
                     Log.d(TAG, "removeWishListAPI: ${it.data}")
                     val jsonObject = it.data
                     if (jsonObject != null) {
+
                         try {
+                            val checkoutResponse =
+                                Gson().fromJson<CartResponse>(
+                                    jsonObject,
+                                    CartResponse::class.java
+                                )
                             val message = jsonObject.get("message").asString
                             Log.d(TAG, "setRemoveObserver: " + message);
-                            if (message.contains("removed", true)) {
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                                Log.d("testtest", "setRemoveObserver: " + updatePosition);
-                                updateCartAtPosition()
-                                val checkoutResponse =
-                                    Gson().fromJson<CartResponse>(
-                                        jsonObject,
-                                        CartResponse::class.java
-                                    )
-                                listContainingGrandtotal = checkoutResponse
-                            } else {
-                                val checkoutResponse =
-                                    Gson().fromJson<CartResponse>(
-                                        jsonObject,
-                                        CartResponse::class.java
-                                    )
-                                listContainingGrandtotal = checkoutResponse
-                            }
+
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            Log.d("testtest", "setRemoveObserver: " + updatePosition);
+                            updateCartAtPosition()
+
+                            listContainingGrandtotal = checkoutResponse
+
                         } catch (e: Exception) {
                             Log.d(TAG, "getCartAPI:Error ${e.message}")
                         }
@@ -265,9 +262,12 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                 }
                 Status.LOADING -> {
 //                    binding.spinKit.visibility = View.VISIBLE
+                    progressDialog = ProgressDialog.newInstance("", "")
+                    progressDialog.show(parentFragmentManager, "delete_progress")
                 }
                 Status.ERROR -> {
 //                    binding.spinKit.visibility = View.GONE
+                    progressDialog.dismiss()
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
@@ -323,7 +323,8 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                                 }
                             } catch (e: Exception) {
-                                Toast.makeText(requireContext(),e.message,Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }
@@ -564,7 +565,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
         binding.checkBoxAll.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 for (item in listCheckout) {
-                    if(item.stockTotalQty>0) {
+                    if (item.stockTotalQty > 0) {
                         item.isSelected = true
                     }
                 }
@@ -635,7 +636,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
                     item.selected.colorHex,
                     item.selected.brand,
                     item.selected.stock_status,
-                     false,
+                    false,
                     "",
                     item.selected.sku,
                     item.selected.stockTotalQty
@@ -781,7 +782,7 @@ class FragmentCheckout : Fragment(), AdapterCheckout.OnItemClickListener {
 //        bottomSheetDialog.show()
 //    }
 
-//    private fun showDialogQTY(data: ModelCheckout, position: Int) {
+    //    private fun showDialogQTY(data: ModelCheckout, position: Int) {
 //
 //        val dialogBinding = DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
 //        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(requireContext())
