@@ -1,320 +1,350 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/mainLayout"
+    <!--    <androidx.coordinatorlayout.widget.CoordinatorLayout-->
+    <!--        android:id="@+id/mainLayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@color/colorWhite"-->
+    <!--        android:fitsSystemWindows="false"-->
+    <!--        android:theme="@style/Base.Theme.DesignDemo"-->
+    <!--        android:visibility="visible">-->
+
+    <!--        <com.google.android.material.appbar.AppBarLayout-->
+    <!--            android:id="@+id/app_bar"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:fitsSystemWindows="true">-->
+
+    <!--            <com.google.android.material.appbar.CollapsingToolbarLayout-->
+    <!--                android:id="@+id/toolbar_layout"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                android:fitsSystemWindows="true"-->
+    <!--                app:contentScrim="@android:color/transparent"-->
+    <!--                app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
+    <!--                app:statusBarScrim="@android:color/transparent">-->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorWhite"
-        android:fitsSystemWindows="false"
-        android:theme="@style/Base.Theme.DesignDemo"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="match_parent"
+            tools:context=".product.FragmentProductDetail">
+
+
+
+            <com.smarteist.autoimageslider.SliderView
+                android:id="@+id/imageSlider"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:background="@color/white"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:minHeight="300dp"
+                app:layout_constrainedHeight="true"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:sliderAnimationDuration="600"
+                app:sliderAutoCycleDirection="back_and_forth"
+                app:sliderAutoCycleEnabled="false"
+
+                app:sliderIndicatorAnimationDuration="600"
+                app:sliderIndicatorGravity="center_horizontal|bottom"
+                app:sliderIndicatorMargin="15dp"
+                app:sliderIndicatorOrientation="horizontal"
+                app:sliderIndicatorPadding="2dp"
+                app:sliderIndicatorRadius="1.5dp"
+                app:sliderIndicatorSelectedColor="#5A5A5A"
+                app:sliderIndicatorUnselectedColor="@color/colorCircleUnselect"
+                app:sliderScrollTimeInSec="2"
+                app:sliderStartAutoCycle="false" />
+            <!--                    <ImageView-->
+            <!--                        android:id="@+id/imageView3"-->
+            <!--                        android:layout_width="match_parent"-->
+            <!--                        android:layout_height="0dp"-->
+            <!--                        android:background="@color/white"-->
+            <!--                        android:clickable="true"-->
+            <!--                        android:foreground="?attr/selectableItemBackground"-->
+            <!--                        android:minHeight="300dp"-->
+            <!--                        android:scaleType="fitCenter"-->
+            <!--                        android:layout_marginBottom="10dp"-->
+            <!--                        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"-->
+            <!--                        app:layout_constraintTop_toTopOf="parent"-->
+            <!--                        tools:src="@drawable/splashimage" />-->
+
+            <!--                    <ImageView-->
+            <!--                        android:layout_width="match_parent"-->
+            <!--                        android:layout_height="match_parent"-->
+            <!--                        android:background="@drawable/background_gradient_image" />-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_Wish"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="25dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageSlider"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_heart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_circle_with_border"
+                    android:backgroundTint="@color/colorWhite"
+                    android:clickable="false"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_heart_outline" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_gallary"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="25dp"
+                app:layout_constraintEnd_toStartOf="@+id/card_Wish"
+                app:layout_constraintTop_toTopOf="@+id/card_Wish">
+
+                <ImageView
+                    android:id="@+id/iv_gallary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_circle_with_border"
+                    android:backgroundTint="@color/colorWhite"
+                    android:clickable="false"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_gallary"
+                    android:tint="@color/colorBlack" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_cart"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="25dp"
+                app:layout_constraintBottom_toBottomOf="@+id/card_gallary"
+                app:layout_constraintEnd_toStartOf="@+id/card_gallary">
+
+                <ImageView
+                    android:id="@+id/image_cart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_circle_with_border"
+                    android:backgroundTint="@color/colorBlack"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_cart"
+                    android:tint="@color/colorWhite"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView5" />
+            </androidx.cardview.widget.CardView>
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/background_circle_product"
+                android:clickable="true"
+
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_arrow_left_angle"
+                android:tint="@color/white"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnShare"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/background_circle_product"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_share"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/imageSlider">
+
+                <com.ayata.clad.utils.SvgRatingBar
+                    android:id="@+id/ratingBar1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="16dp"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:progressDrawable="@drawable/custom_rating_star"
+                    android:rating="0.0"
+                    android:stepSize="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/storeName"
+                    app:layout_constraintTop_toBottomOf="@+id/storeName" />
+
+                <TextView
+                    android:id="@+id/name"
+                    style="@style/largeText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:text="Classic Cotton Jacket"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toStartOf="@+id/price"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/storeName"
+                    style="@style/normalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Clad Fashion Store"
+                    android:textColor="@color/black"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toStartOf="@+id/stock"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name" />
+
+                <TextView
+                    android:id="@+id/stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="53dp"
+                    android:background="@drawable/background_curve_black"
+                    android:backgroundTint="@color/colorYellowLight"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:text="In stock"
+                    android:textColor="@color/colorYellowDark"
+                    android:textSize="10sp"
+                    android:textStyle="normal|bold"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/storeName"
+                    app:layout_constraintEnd_toStartOf="@+id/oldPrice"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/storeName" />
+
+                <TextView
+                    android:id="@+id/price"
+                    style="@style/largeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rs. 2300"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/name"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/oldPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_strikethrough"
+                    android:text="Rs. 2600"
+                    android:textColor="#707070"
+                    android:textSize="17sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/storeName"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/textView4"
+                    style="@style/normalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Color"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/ratingBar1"
+                    app:layout_constraintTop_toBottomOf="@+id/ratingBar1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/textView4"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/constraintLayout4">
+
+                <include
+                    android:id="@+id/detail2"
+                    layout="@layout/fragment_product_detail2" />
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--                <androidx.appcompat.widget.Toolbar-->
+        <!--                    android:id="@+id/toolbar"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="0dp"-->
+        <!--                    app:layout_collapseMode="pin"-->
+        <!--                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
+
+        <!--            </com.google.android.material.appbar.CollapsingToolbarLayout>-->
+        <!--        </com.google.android.material.appbar.AppBarLayout>-->
+
+
+        <!--    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerFrameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:shimmer_highlight_alpha="0.6">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/toolbar_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:contentScrim="@android:color/transparent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:statusBarScrim="@android:color/transparent">
+            <include
+                android:id="@+id/shimmerView"
+                layout="@layout/shimmer_product_detail"
+                tools:visibility="visible" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </FrameLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fitsSystemWindows="true"
-                    app:layout_collapseMode="parallax"
-                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-                    tools:context=".product.FragmentProductDetail">
-
-                    <com.ayata.clad.utils.PercentageCropImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:scaleType="matrix"
-                        tools:src="@drawable/splashimage" />
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/background_gradient_image" />
-
-                    <ImageView
-                        android:id="@+id/btnBack"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="40dp"
-                        android:background="@drawable/ripple_circle_transparent_background"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="15dp"
-                        android:src="@drawable/ic_arrow_left_angle"
-                        android:tint="@color/black"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/btnShare"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
-                        android:layout_marginEnd="10dp"
-                        android:background="@drawable/ripple_circle_transparent_background"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="13dp"
-                        android:src="@drawable/ic_share"
-                        android:tint="@color/black"
-                        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/btnBack" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginBottom="24dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        tools:layout_editor_absoluteX="16dp">
-
-                        <com.ayata.clad.utils.SvgRatingBar
-                            android:id="@+id/ratingBar1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="20dp"
-                            android:layout_marginTop="16dp"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:progressDrawable="@drawable/custom_rating_star"
-                            android:rating="0.0"
-                            android:stepSize="0.5"
-                            app:layout_constraintStart_toStartOf="@+id/storeName"
-                            app:layout_constraintTop_toBottomOf="@+id/storeName" />
-
-                        <TextView
-                            android:id="@+id/name"
-                            style="@style/largerText"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:maxLines="3"
-                            android:ellipsize="end"
-                            android:text="Classic Cotton Jacket"
-                            android:textColor="@color/black"
-                            app:layout_constraintEnd_toStartOf="@+id/price"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/storeName"
-                            style="@style/normalText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Clad Fashion Store"
-                            android:textColor="@color/black"
-                            app:layout_constrainedWidth="true"
-                            app:layout_constraintEnd_toStartOf="@+id/stock"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/name" />
-
-                        <TextView
-                            android:id="@+id/stock"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="53dp"
-                            android:background="@drawable/background_curve_black"
-                            android:backgroundTint="@color/colorYellowLight"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="2dp"
-                            android:text="In stock"
-                            android:textColor="@color/colorYellowDark"
-                            android:textSize="10sp"
-                            android:textStyle="normal|bold"
-                            app:layout_constraintBaseline_toBaselineOf="@+id/storeName"
-                            app:layout_constraintEnd_toStartOf="@+id/oldPrice"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/storeName" />
-
-                        <TextView
-                            android:id="@+id/price"
-                            style="@style/largerText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rs. 2300"
-                            android:textColor="@color/black"
-                            app:layout_constraintBottom_toBottomOf="@+id/name"
-                            app:layout_constraintEnd_toEndOf="parent" />
-
-                        <TextView
-                            android:id="@+id/oldPrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/background_strikethrough"
-                            android:text="Rs. 2600"
-                            android:textColor="#707070"
-                            android:textSize="17sp"
-                            app:layout_constraintBaseline_toBaselineOf="@+id/storeName"
-                            app:layout_constraintEnd_toEndOf="parent" />
-
-
-                        <TextView
-                            android:id="@+id/textView4"
-                            style="@style/normalText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:text="Color"
-                            android:textColor="@color/black"
-                            app:layout_constraintStart_toStartOf="@+id/ratingBar1"
-                            app:layout_constraintTop_toBottomOf="@+id/ratingBar1" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_color"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintEnd_toStartOf="@+id/card_Wish"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="@+id/textView4"
-                            app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-                        <TextView
-                            android:id="@+id/description"
-                            style="@style/normalText"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:paddingVertical="16dp"
-                            android:layout_marginEnd="32dp"
-                            android:paddingRight="16dp"
-                            android:text="Welted sole from construction delivers exceptional durability, and is resistant to oil, fat, acid, petrol and alkali; air-crushed honeycomb perfect for hand wash."
-                            android:textColor="@color/black"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/card_cart"
-                            app:layout_constraintStart_toStartOf="@+id/rv_color"
-                            app:layout_constraintTop_toBottomOf="@+id/rv_color" />
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/card_Wish"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_marginBottom="10dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:cardCornerRadius="25dp"
-                            app:layout_constraintBottom_toTopOf="@+id/card_cart"
-                            app:layout_constraintEnd_toEndOf="parent">
-
-                            <ImageView
-                                android:id="@+id/iv_heart"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/background_circle_with_border"
-                                android:backgroundTint="@color/colorWhite"
-                                android:clickable="false"
-                                android:padding="10dp"
-                                android:src="@drawable/ic_heart_outline" />
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/card_gallary"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_marginBottom="10dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:cardCornerRadius="25dp"
-                            app:layout_constraintBottom_toBottomOf="@+id/textView4"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="@+id/card_Wish"
-                            app:layout_constraintTop_toTopOf="@+id/textView4">
-
-                            <ImageView
-                                android:id="@+id/iv_gallary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/background_circle_with_border"
-                                android:backgroundTint="@color/colorWhite"
-                                android:clickable="false"
-                                android:padding="10dp"
-                                android:src="@drawable/ic_gallary"
-                                android:tint="@color/colorBlack" />
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/card_cart"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_marginBottom="10dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:cardCornerRadius="25dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/description">
-
-                            <ImageView
-                                android:id="@+id/image_cart"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:background="@drawable/background_circle_with_border"
-                                android:backgroundTint="@color/colorBlack"
-                                android:padding="12dp"
-                                android:src="@drawable/ic_cart"
-                                android:tint="@color/colorWhite"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/textView5" />
-                        </androidx.cardview.widget.CardView>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <include
-            android:id="@+id/detail2"
-            layout="@layout/fragment_product_detail2" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmerFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:shimmer_highlight_alpha="0.6">
-
-        <include
-            android:id="@+id/shimmerView"
-            layout="@layout/shimmer_product_detail"
-            tools:visibility="visible" />
-    </com.facebook.shimmer.ShimmerFrameLayout>
-</FrameLayout>
+</ScrollView>

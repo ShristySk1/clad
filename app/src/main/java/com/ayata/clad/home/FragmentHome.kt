@@ -45,7 +45,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
     AdapterBanner.OnItemClickListener {
 
     companion object {
-        val PRODUCT_DETAIL_ID: String="product id"
+        val PRODUCT_DETAIL_ID: String = "product id"
         private const val TAG = "FragmentHome"
         const val PRODUCT_DETAIL = "product detail"
     }
@@ -546,30 +546,35 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
 //        fragmentViewAllProduct.arguments=bundle
 //        parentFragmentManager.beginTransaction().replace(R.id.main_fragment,fragmentViewAllProduct)
 //            .addToBackStack(null).commit()
-        val bundle=Bundle()
-        when (data.sliderType) {
-            "Category" -> {
-                bundle.putSerializable(FragmentSubCategory.CHILD_CATEGORY,data.category)
-                bundle.putString(FragmentSubCategory.CATEGORY_TITLE,data.title)
-                val fragment= FragmentProductList()
-                fragment.arguments=bundle
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.main_fragment, fragment)
-                    .addToBackStack(null).commit()
+        val bundle = Bundle()
+        data.sliderType?.let {
+            when (data.sliderType) {
+                "Category" -> {
+                    bundle.putSerializable(FragmentSubCategory.CHILD_CATEGORY, data.category)
+                    bundle.putString(FragmentSubCategory.CATEGORY_TITLE, data.title)
+                    val fragment = FragmentProductList()
+                    fragment.arguments = bundle
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragment, fragment)
+                        .addToBackStack(null).commit()
+                }
+                "Product" -> {
+                    bundle.putSerializable(PRODUCT_DETAIL, data.product)
+                    val fragmentProductDetail = FragmentProductDetail()
+                    fragmentProductDetail.arguments = bundle
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragment, fragmentProductDetail)
+                        .addToBackStack(null).commit()
+                }
+                "Brand" -> {
+                    (activity as MainActivity).isFromSameActivity = false
+                    val intent = Intent(activity, BrandDetailActivity::class.java)
+                    intent.putExtra("slug", data.brand.slug)
+                    startActivity(intent)
+                }
+                else -> {Toast.makeText(requireContext(), data.sliderType, Toast.LENGTH_SHORT).show()}
             }
-            "Product" -> {
-                bundle.putSerializable(PRODUCT_DETAIL, data.product)
-                val fragmentProductDetail = FragmentProductDetail()
-                fragmentProductDetail.arguments = bundle
-                parentFragmentManager.beginTransaction().replace(R.id.main_fragment, fragmentProductDetail)
-                    .addToBackStack(null).commit()
-            }
-            "Brand" -> {
-                (activity as MainActivity).isFromSameActivity = false
-                val intent = Intent(activity, BrandDetailActivity::class.java)
-                intent.putExtra("slug", data.brand.slug)
-                startActivity(intent)
-            }
-        }
+        } ?: run { Toast.makeText(requireContext(), "null data", Toast.LENGTH_SHORT).show() }
+
     }
 }

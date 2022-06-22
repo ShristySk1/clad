@@ -35,6 +35,7 @@ import com.ayata.clad.home.response.Variant
 import com.ayata.clad.home.viewmodel.HomeViewModel
 import com.ayata.clad.home.viewmodel.HomeViewModelFactory
 import com.ayata.clad.product.adapter.AdapterColor
+import com.ayata.clad.product.adapter.AdapterProduct
 import com.ayata.clad.product.adapter.AdapterQaMultiple
 import com.ayata.clad.product.qa.FragmentQA
 import com.ayata.clad.product.qa.ModelQA
@@ -44,8 +45,6 @@ import com.ayata.clad.product.viewmodel.ProductViewModelFactory
 import com.ayata.clad.shopping_bag.adapter.AdapterCircleText
 import com.ayata.clad.shopping_bag.model.ModelCircleText
 import com.ayata.clad.utils.*
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -54,11 +53,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.noowenz.showmoreless.ShowMoreLess
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.SliderAnimations
 import java.io.Serializable
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 
 
 class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
@@ -71,7 +71,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private var isProductInCart: Boolean = false
     private lateinit var viewModel: ProductViewModel
     private lateinit var productDetail: ProductDetail
-    lateinit var galleryBundle: List<String>
+    var galleryBundle = listOf<String>()
     private var listRecommendation = ArrayList<ProductDetail>()
     private lateinit var progressDialog: ProgressDialog
 
@@ -138,7 +138,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //            startActivity(Intent.createChooser(intent, "Share Product"))
 
         }
-        binding.imageView3.setOnClickListener {
+        binding.imageSlider.setOnClickListener {
             goToGalleryView()
         }
         binding.cardGallary.setOnClickListener {
@@ -151,12 +151,24 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
         binding.detail2.askQA.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentQA.newInstance( productDetail.productId,productDetail.brand?.name?:productDetail.vendor))
+                .replace(
+                    R.id.main_fragment,
+                    FragmentQA.newInstance(
+                        productDetail.productId,
+                        productDetail.brand?.name ?: productDetail.vendor
+                    )
+                )
                 .addToBackStack(null).commit()
         }
         binding.detail2.tvViewAllQuestion.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, FragmentQA.newInstance( productDetail.productId,productDetail.brand?.name?:productDetail.vendor))
+                .replace(
+                    R.id.main_fragment,
+                    FragmentQA.newInstance(
+                        productDetail.productId,
+                        productDetail.brand?.name ?: productDetail.vendor
+                    )
+                )
                 .addToBackStack(null).commit()
         }
 //        myQAList = mutableListOf(
@@ -166,23 +178,38 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //            ModelQA.Question("Is this available in black color as well?","9th June 2022","Nina"),
 //            ModelQA.Answer("Sorry. Not available","9th June 2022","GoldStar"),
 //            )
-        myQAList= mutableListOf()
+        myQAList = mutableListOf()
         productDetail.queries?.let {
-            if(it.size>0) {
+            if (it.size > 0) {
                 binding.detail2.groupQuestion.visibility = View.VISIBLE
                 binding.detail2.textQaEmpty.visibility = View.GONE
                 productDetail.queries!!.forEach {
-                    myQAList.add(ModelQA.Question(it.question, it.postedAt, it.postedBy,false,false,it.questionId))
+                    myQAList.add(
+                        ModelQA.Question(
+                            it.question,
+                            it.postedAt,
+                            it.postedBy,
+                            false,
+                            false,
+                            it.questionId
+                        )
+                    )
                     if (it.answer.isNotEmpty()) {
-                        myQAList.add(ModelQA.Answer(it.answer, it.repliedAt, productDetail.brand?.name?:productDetail.vendor))
+                        myQAList.add(
+                            ModelQA.Answer(
+                                it.answer,
+                                it.repliedAt,
+                                productDetail.brand?.name ?: productDetail.vendor
+                            )
+                        )
                     }
                     myQAList.add(ModelQA.Divider())
                 }
-            }else{
+            } else {
                 binding.detail2.groupQuestion.visibility = View.GONE
                 binding.detail2.textQaEmpty.visibility = View.VISIBLE
             }
-        }?: kotlin.run {
+        } ?: kotlin.run {
             binding.detail2.groupQuestion.visibility = View.GONE
             binding.detail2.textQaEmpty.visibility = View.VISIBLE
         }
@@ -222,7 +249,6 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             layoutManager = LinearLayoutManager(requireContext())
             AdapterQaMultiple(myQAList).also { adapter = it }.also { it.setMyItems(myQAList) }
         }
-
 
 
     }
@@ -335,7 +361,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         }
         binding.name.text = productDetail.name
         binding.storeName.text = productDetail.vendor
-        binding.description.text = Html.fromHtml(productDetail.description)
+        binding.detail2.description.text = Html.fromHtml(productDetail.description)
         if (productDetail.description.length < MAX_TEXT_CHARACTER) {
 
         } else {
@@ -406,8 +432,8 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             )
             .build().apply {
                 addShowMoreLess(
-                    textView = binding.description,
-                    text = binding.description.text,
+                    textView = binding.detail2.description,
+                    text = binding.detail2.description.text,
                     isContentExpanded = false
                 )
                 setListener(object : ShowMoreLess.OnShowMoreLessClickedListener {
@@ -597,7 +623,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     private fun initView() {
         (activity as MainActivity).showToolbar(false)
         (activity as MainActivity).showBottomNavigation(false)
-        setProductImage(binding.imageView3)
+//        setProductImage(binding.imageSlider)
         binding.btnBack.setOnClickListener {
             (activity as MainActivity).onBackPressed()
         }
@@ -623,7 +649,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         }
     }
 
-    private fun setProductImage(imageView: PercentageCropImageView) {
+//    private fun setProductImage(imageView: Sl) {
 //        Glide.with(requireContext())
 //            .load(R.drawable.splashimage)
 //            .transition(DrawableTransitionOptions.withCrossFade())
@@ -631,12 +657,12 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 //            .into(binding.imageView3)
 
 
-        imageView.cropYCenterOffsetPct = 0f
+//        imageView.cropYCenterOffsetPct = 0f
 ////        If you wish to have a bottom crop, call:
 //        imageView.setCropYCenterOffsetPct(1.0f);
 ////        If you wish to have a crop 1/3 of the way down, call:
 //        imageView.setCropYCenterOffsetPct(0.33f);
-    }
+//    }
 
     private fun setUpTabChoose(size: String?, width: String?, quality: Double, comfort: String?) {
         //size
@@ -684,9 +710,15 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         val listModelColor = ArrayList<ModelColor>()
         for (key in keys) {
             listModelColor.add(
+//                ModelColor(
+//                    key,
+//                    getImageUrlFromColorKey(key) ?: "",
+//                    0//not necessary
+//                )
+
                 ModelColor(
                     key,
-                    getImageUrlFromColorKey(key) ?: "",
+                    galleryBundle,
                     0//not necessary
                 )
             )
@@ -705,14 +737,14 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun setUpFullScreen() {
-        activity?.let {
-            it.window.apply {
-                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                statusBarColor = Color.TRANSPARENT
-            }
-        }
+//        activity?.let {
+//            it.window.apply {
+//                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                statusBarColor = Color.TRANSPARENT
+//            }
+//        }
     }
 
     private fun setUpRecyclerSize() {
@@ -799,13 +831,15 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     override fun onColorClicked(color: ModelColor, position: Int) {
-        Glide.with(requireContext())
-            .load(color.imageUrl)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .error(Constants.ERROR_DRAWABLE)
-            .fallback(Constants.ERROR_DRAWABLE)
-            .into(binding.imageView3)
-        binding.imageView3.cropYCenterOffsetPct = 0f
+//        Glide.with(requireContext())
+//            .load(color.imageUrl)
+//            .transition(DrawableTransitionOptions.withCrossFade())
+//            .error(Constants.ERROR_DRAWABLE)
+//            .fallback(Constants.ERROR_DRAWABLE)
+//            .into(binding.imageView3)
+
+
+//        binding.imageView3.cropYCenterOffsetPct = 0f
         Log.d("testcolorclick", "onColorClicked: " + position);
         //reset data
         prepareListSize(color.colorHex)
@@ -849,7 +883,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun addToWishListAPI() {
         Log.d(TAG, "addToWishListAPI: " + dynamicVarientId);
-        binding.imageView3.isClickable = false
+        binding.imageSlider.isClickable = false
         viewModel.addToWishAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToWishAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -866,17 +900,17 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                             )
                             isProductWishList = true
                             setWishlist(true)
-                            binding.imageView3.isClickable = true
+                            binding.imageSlider.isClickable = true
                             MainActivity.NavCount.myWishlist =
                                 MainActivity.NavCount.myWishlist?.plus(1)
 
                         } catch (e: Exception) {
-                            binding.imageView3.isClickable = true
+                            binding.imageSlider.isClickable = true
                             Log.d(TAG, "addToWishListAPI:Error ${e.message}")
                             Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        binding.imageView3.isClickable = true
+                        binding.imageSlider.isClickable = true
                     }
 
                 }
@@ -892,7 +926,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
                 Status.ERROR -> {
                     progressDialog.dismiss()
-                    binding.imageView3.isClickable = true
+                    binding.imageSlider.isClickable = true
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToWishListAPI:Error ${it.message}")
@@ -955,7 +989,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
 
     private fun addCart() {
 //        Toast.makeText(context, dynamicVarientId.toString(), Toast.LENGTH_SHORT).show()
-        binding.imageView3.isClickable = false
+        binding.imageSlider.isClickable = false
         viewModel.addToCartAPI(PreferenceHandler.getToken(context).toString(), dynamicVarientId)
         viewModel.getAddToCartAPI().observe(viewLifecycleOwner, {
             when (it.status) {
@@ -967,7 +1001,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                         try {
                             isProductInCart = true
                             setCart(true)
-                            binding.imageView3.isClickable = true
+                            binding.imageSlider.isClickable = true
                             showSnackBar(
                                 jsonObject.get("message").toString().removeDoubleQuote(),
                                 Constants.GO_TO_CART
@@ -976,11 +1010,11 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                                 MainActivity.NavCount.myBoolean?.plus(1)
 
                         } catch (e: Exception) {
-                            binding.imageView3.isClickable = true
+                            binding.imageSlider.isClickable = true
                             Log.d(TAG, "addToCartAPI:Error ${e.message}")
                         }
                     } else {
-                        binding.imageView3.isClickable = true
+                        binding.imageSlider.isClickable = true
                     }
 
                 }
@@ -996,7 +1030,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 }
                 Status.ERROR -> {
                     progressDialog.dismiss()
-                    binding.imageView3.isClickable = true
+                    binding.imageSlider.isClickable = true
                     //Handle Error
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     Log.d(TAG, "addToCartAPI:Error ${it.message}")
@@ -1050,6 +1084,16 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             setCart(isProductInCart)
             setStockStatus(myCurrentVarient.stockStatus, binding.stock)
             setImageGallary(myCurrentVarient.imageUrl)
+            var adapterBanner = AdapterProduct(requireContext(), galleryBundle,object:AdapterProduct.OnItemClickListener{
+                override fun onProductClicked(data: String) {
+                    goToGalleryView()
+                }
+
+            })
+            binding.imageSlider.setSliderAdapter(adapterBanner)
+            binding.imageSlider.setInfiniteAdapterEnabled(false)
+            binding.imageSlider.setIndicatorAnimation(IndicatorAnimationType.WORM)
+            binding.imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
         }
     }
 

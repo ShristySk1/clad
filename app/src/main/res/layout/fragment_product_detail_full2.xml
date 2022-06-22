@@ -10,6 +10,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpMain"
         android:layout_width="0dp"
+        android:background="@color/white"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/indicator"
         app:layout_constraintLeft_toLeftOf="parent"

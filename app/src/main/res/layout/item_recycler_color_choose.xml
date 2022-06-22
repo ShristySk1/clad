@@ -8,13 +8,24 @@
     android:backgroundTint="@color/white"
     android:background="@drawable/background_circle_with_border"
     android:layout_height="35dp">
-    <ImageView
-        android:id="@+id/color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tint="@color/blue_btn_bg_color"
+    <RelativeLayout
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/background_circle_with_border"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:id="@+id/layout_circle"
+        app:layout_constraintLeft_toLeftOf="parent"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/colorGrayText"
+            android:background="@drawable/background_circle_with_border"/>
+        <ImageView
+            android:id="@+id/color"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="0.5dp"
+            android:src="@drawable/background_circle_with_border" />
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
