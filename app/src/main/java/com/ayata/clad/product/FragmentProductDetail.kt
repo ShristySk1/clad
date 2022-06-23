@@ -361,7 +361,14 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
         }
         binding.name.text = productDetail.name
         binding.storeName.text = productDetail.vendor
-        binding.detail2.description.text = Html.fromHtml(productDetail.description)
+        Log.d("testdescx", "setProductData: "+productDetail.description);
+        if (productDetail.description.isEmpty()) {
+            hideDesc()
+
+        } else {
+            showDesc(productDetail.description)
+        }
+
         if (productDetail.description.length < MAX_TEXT_CHARACTER) {
 
         } else {
@@ -406,6 +413,17 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
                 .commit()
         }
         setUpRecyclerQA()
+    }
+
+    fun showDesc(desc: String) {
+        binding.detail2.tvDesc.visibility = View.VISIBLE
+        binding.detail2.description.visibility=View.VISIBLE
+        binding.detail2.description.text = Html.fromHtml(desc)
+    }
+
+    fun hideDesc() {
+        binding.detail2.tvDesc.visibility = View.GONE
+        binding.detail2.description.visibility = View.GONE
     }
 
     private fun initViews() {
@@ -946,7 +964,7 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
     }
 
     private fun showDialogSize() {
-        Log.d("sizechecked", "prepareListSize: 3" + listText);
+//        Log.d("sizechecked", "prepareListSize: 3" + listText);
         if (binding.detail2.constraintLayout2.isVisible) {
             val dialogBinding =
                 DialogShoppingSizeBinding.inflate(LayoutInflater.from(requireContext()))
@@ -1084,12 +1102,15 @@ class FragmentProductDetail : Fragment(), AdapterColor.OnItemClickListener {
             setCart(isProductInCart)
             setStockStatus(myCurrentVarient.stockStatus, binding.stock)
             setImageGallary(myCurrentVarient.imageUrl)
-            var adapterBanner = AdapterProduct(requireContext(), galleryBundle,object:AdapterProduct.OnItemClickListener{
-                override fun onProductClicked(data: String) {
-                    goToGalleryView()
-                }
+            var adapterBanner = AdapterProduct(
+                requireContext(),
+                galleryBundle,
+                object : AdapterProduct.OnItemClickListener {
+                    override fun onProductClicked(data: String) {
+                        goToGalleryView()
+                    }
 
-            })
+                })
             binding.imageSlider.setSliderAdapter(adapterBanner)
             binding.imageSlider.setInfiniteAdapterEnabled(false)
             binding.imageSlider.setIndicatorAnimation(IndicatorAnimationType.WORM)

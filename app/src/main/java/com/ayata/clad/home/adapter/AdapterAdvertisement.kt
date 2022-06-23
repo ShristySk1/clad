@@ -9,33 +9,37 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.annotation.Nullable
 import com.ayata.clad.R
+import com.ayata.clad.home.response.Advertisement
 import com.ayata.clad.home.response.Slider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.smarteist.autoimageslider.SliderViewAdapter
 
 
-internal class AdapterBanner(private val context:Context, private val listItems:ArrayList<Slider>,
-                             private val onItemClickListener: OnItemClickListener) : SliderViewAdapter<AdapterBanner.MyViewHolder>() {
+internal class AdapterAdvertisement(private val context:Context, private val listItems: List<Advertisement>,
+                                    private val onItemClickListener: OnItemClickListener) : SliderViewAdapter<AdapterAdvertisement.MyViewHolder>() {
 
 
     internal inner class MyViewHolder(itemView: View) : ViewHolder(itemView) {
 //        var itemView: View
         var imageView: ImageView
-        var progressBar:ProgressBar
+        var progressBar: ProgressBar
+
 
         init {
             imageView = itemView.findViewById(R.id.image)
             progressBar = itemView.findViewById(R.id.progressBar)
+
 //            this.itemView = itemView
         }
 
-        fun clickView(data: Slider){
+        fun clickView(data: Advertisement){
             itemView.setOnClickListener {
-                onItemClickListener.onBannerClicked(data)
+                onItemClickListener.onProductClicked(data)
             }
         }
     }
@@ -54,7 +58,8 @@ internal class AdapterBanner(private val context:Context, private val listItems:
         val item=listItems[position]
         Glide.with(context)
             .load(item.imageUrl)
-            .centerCrop()
+            .fitCenter()
+            .transition(DrawableTransitionOptions.withCrossFade())
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     @Nullable e: GlideException?,
@@ -83,7 +88,7 @@ internal class AdapterBanner(private val context:Context, private val listItems:
     }
 
     interface OnItemClickListener{
-        fun onBannerClicked(data:Slider)
+        fun onProductClicked(data:Advertisement)
     }
 
 }

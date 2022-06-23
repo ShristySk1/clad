@@ -1,6 +1,7 @@
 package com.ayata.clad.home.response
 
 
+import com.ayata.clad.shop.response.ChildCategory
 import com.google.gson.annotations.SerializedName
 
 data class Advertisement(
@@ -8,13 +9,12 @@ data class Advertisement(
     val adPosition: String,
     @SerializedName("ad_type")
     val adType: String,
-    val brand: Any,
-    val category: Category,
+    val brand: Brand?,
+    val category: ChildCategory?,
     val description: String,
     val id: Int,
     @SerializedName("image_url")
     val imageUrl: String,
-    val product: Any,
-    val tag: Any,
+    val product: ProductDetail?,
     val title: String
 )

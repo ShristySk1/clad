@@ -15,10 +15,6 @@ import com.ayata.clad.R
 import com.ayata.clad.databinding.ActivityStoryBinding
 import com.ayata.clad.home.response.ProductDetail
 import com.ayata.clad.home.response.Story
-import com.ayata.clad.utils.ActivitySwitcher
-import com.ayata.clad.utils.ActivitySwitcher.AnimationFinishedListener
-import com.ayata.clad.utils.ActivitySwitcher.animationOut
-import com.ayata.clad.utils.ActivitySwitcher.animationOutReverse
 import com.ayata.clad.utils.Constants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -49,7 +45,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     var limit = 500L
 
     private var counter = 0
-    private val timeEach = 2000L
+    private val timeEach = 4000L
 
     private var listImageStory = ArrayList<String>()
     private var listoflistofproducts = ArrayList<ArrayList<ProductDetail>>()
@@ -61,7 +57,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     private val i by lazy {
         Intent(this, MainActivity::class.java)
     }
-    var imageLoaded:ImageLoadedInterface?=null
+//    var imageLoaded:ImageLoadedInterface?=null
 
     private lateinit var binding: ActivityStoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,10 +77,10 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         counter = 0
         // adding on click listener for our reverse view.
         binding.reverse.setOnClickListener {
-            if (!fromPause) {
-                fromPause = false
-                binding.stories.reverse()
-            }
+//            if (!fromPause) {
+//                fromPause = false
+            binding.stories.reverse()
+//            }
         }
 
         // on below line we are calling a set on touch
@@ -95,10 +91,10 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         // view to skip a specific story.
         binding.skip.setOnClickListener {
             Log.d(TAG, "onCreate: skip")
-            if (!fromPause) {
-                fromPause = false
-                binding.stories.skip()
-            }
+//            if (!fromPause) {
+//                fromPause = false
+            binding.stories.skip()
+//            }
         }
         // on below line we are calling a set on touch
         // listener method to move to next story.
@@ -113,18 +109,18 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         binding.btnClose.setOnClickListener {
             onBackPressed()
         }
-        imageLoaded=object :ImageLoadedInterface{
-            override fun onImageLoad(boolean: Boolean) {
-                Log.d("testloading", "onImageLoad: "+boolean)
-                if(boolean){
-                    binding.stories.resume()
-                }else{
-
-                    binding.stories.pause()
-                }
-            }
-
-        }
+//        imageLoaded=object :ImageLoadedInterface{
+//            override fun onImageLoad(boolean: Boolean) {
+//                Log.d("testloading", "onImageLoad: "+boolean)
+//                if(boolean){
+//                    binding.stories.resume()
+//                }else{
+//
+//                    binding.stories.pause()
+//                }
+//            }
+//
+//        }
 
     }
 
@@ -196,10 +192,13 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
             listoflistofproducts.add(it.products as ArrayList<ProductDetail>)
         }
         // on below line we are setting the total count for our stories.
-        binding.stories.setStoriesCount(listImageStory.size)
+        binding.stories.setStoriesCount(data.contents.size)
 
+//        val timeTotal = timeEach * data.contents.size
+        val timeTotal = timeEach
 
-        val timeTotal = timeEach * data.contents.size
+        Log.d("mycontent", "setStoryView: " + data.contents.size);
+        Log.d("mytotaltime", "setStoryView: " + timeTotal);
         // on below line we are setting story duration for each story.
         binding.stories.setStoryDuration(timeTotal)
 
@@ -217,12 +216,12 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
         val listOfProductForSingleImage = listoflistofproducts[counter]
         prepareData(listOfProductForSingleImage)
         Log.d(TAG, "loadImage: here")
-        if (!fromPause) {
-            Log.d(TAG, "loadImage: pause")
-            binding.stories.pause()
-            isImageLoading = true
-            imageLoaded?.let {  it.onImageLoad(true)}
-        }
+//        if (!fromPause) {
+        Log.d(TAG, "loadImage: pause")
+//            binding.stories.pause()
+        isImageLoading = true
+//            imageLoaded?.let {  it.onImageLoad(true)}
+//        }
         Glide.with(this).load(imageUrl)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -232,11 +231,11 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                     isFirstResource: Boolean
                 ): Boolean {
                     Log.d(TAG, "onLoadFailed: ")
-                    if (!fromPause && isImageLoading) {
-                        binding.stories.resume()
-                    }
+//                    if (!fromPause && isImageLoading) {
+//                        binding.stories.resume()
+//                    }
                     isImageLoading = false
-                    imageLoaded?.let {  it.onImageLoad(false)}
+//                    imageLoaded?.let {  it.onImageLoad(false)}
                     return false
                 }
 
@@ -248,13 +247,13 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                     isFirstResource: Boolean
                 ): Boolean {
                     Log.d(TAG, "onResourceReady: $fromPause")
-                    if (!fromPause && isImageLoading) {
-                        Log.d(TAG, "onResourceReady: resume")
-                        fromPause = false
-                        binding.stories.resume()
-                    }
+//                    if (!fromPause && isImageLoading) {
+                    Log.d(TAG, "onResourceReady: resume")
+                    fromPause = false
+//                        binding.stories.resume()
+//                    }
                     isImageLoading = false
-                    imageLoaded?.let {  it.onImageLoad(false)}
+//                    imageLoaded?.let {  it.onImageLoad(false)}
                     return false
                 }
             })
@@ -262,13 +261,17 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     }
 
     override fun onNext() {
-//        Log.d(TAG, "onNext: loading $isImageLoading")
 //        if (isImageLoading) {
 //            return
 //        }
+        Log.d(
+            TAG,
+            "onNext: loading $isImageLoading" + "counter: " + counter + "lastinded: " + listImageStory.lastIndex
+        )
+//        counter++;
+
         if (counter >= listImageStory.lastIndex) {
-            Log.d(TAG, "onNext: complete")
-            onComplete()
+
         } else {
             Log.d(TAG, "onNext: $fromPause")
             fromPause = false
@@ -277,33 +280,38 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     }
 
     override fun onPrev() {
+//        if(isImageLoading){
+//            return;
+//        }
         Log.d(TAG, "onPrev: Here $fromPause  $counter")
         if ((counter - 1) < 0) {
             if (storyIndex > 0) {
                 --storyIndex
+                counter = 0
                 startMyActivityPrev()
             }
         } else {
             fromPause = false
+//            counter--;
             loadImage(listImageStory[--counter])
         }
 
     }
 
     override fun onComplete() {
-        Log.d(TAG, "onComplete: $fromPause loading $isImageLoading")
-//        if (isImageLoading) {
-//            return
-//        }
+        Log.d(TAG, "onNext: complete")
+//            onComplete()
         if (storyIndex < listStory.lastIndex) {
             counter = 0
             ++storyIndex
-//            binding.stories.destroy()
+            binding.stories.destroy()
 //            setStoryView(listStory[++storyIndex])
+            Log.d("errorhere from next", "onNext: " + storyIndex);
             startMyActivityNext()
         } else {
             onBackPressed()
         }
+
     }
 
     private val handleTouch = OnTouchListener { v, event ->
@@ -324,31 +332,36 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
                 // screen this method will skip to next image.
                 val now = System.currentTimeMillis()
                 fromPause = limit < now - pressTime
-                binding.stories.resume()
-                Log.d(TAG, "pressTime: ${limit < now - pressTime}")
-                limit < now - pressTime
 
+                Log.d(TAG, "pressTime: ${limit < now - pressTime}")
 
                 x2 = event.x
                 val deltaX: Float = x2 - x1
-                if (deltaX < 0) {
+                Log.d(TAG, "mydeltadata" + deltaX);
+                if((deltaX>=0&&deltaX<50) or (deltaX<=0 && deltaX>-50)){
+                    Log.d("deltaishere", ": ");
+                    binding.stories.resume()
+                    limit < now - pressTime
+
+                }else if(deltaX < -50) {
                     //show next activity
                     //SWIPE RIGHT TO LEFT
                     if (storyIndex < listStory.lastIndex) {
                         counter = 0
                         ++storyIndex
-                        Log.d("storyindex", "testmyindex" + listStory.get(storyIndex).vendor);
+                        binding.stories.destroy()
                         startMyActivityNext()
                     } else {
                         onBackPressed()
                     }
-                } else if (deltaX > 0) {
+                } else if (deltaX > 50) {
                     //SHOW PREVIOUS ACTIVITY
                     //LEFT TO RIGHT SWIPE
                     if ((counter - 1) < 0) {
                         if (storyIndex > 0) {
-                            --storyIndex
-                            Log.d("storyindex", "testmyindex" + listStory.size);
+                            storyIndex--
+                            counter = 0
+                            Log.d("storyindex", "testmyindex" + storyIndex);
                             startMyActivityPrev()
                         }
                     } else {
@@ -362,6 +375,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     }
 
     private fun startMyActivityNext() {
+        Log.d("mystoryindex", "startMyActivityNext: " + storyIndex);
         val i = Intent(this, StoryActivity::class.java)
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 // disable default animation for new intent
@@ -384,6 +398,7 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     }
 
     private fun startMyActivityPrev() {
+        binding.stories.destroy()
         val i = Intent(this, StoryActivity::class.java)
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -396,12 +411,13 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
 //                }
 //            })
         startActivity(i)
-                    finish()
+        finish()
+
         overridePendingTransition(
             R.anim.slide_in_left_without_animation,
             R.anim.slide_out_right_without_animation
         );
-    // remember to put it after startActivity, if you put it to above, animation will not working
+        // remember to put it after startActivity, if you put it to above, animation will not working
 // document say if we don't want animation we can put 0. However, if we put 0 instead of R.anim.no_animation, the exist activity will become black when animate
     }
 
@@ -427,6 +443,6 @@ class StoryActivity : AppCompatActivity(), StoriesProgressView.StoriesListener,
     }
 
 }
-interface ImageLoadedInterface{
-    fun onImageLoad(boolean: Boolean)
-}
+//interface ImageLoadedInterface{
+//    fun onImageLoad(boolean: Boolean)
+//}

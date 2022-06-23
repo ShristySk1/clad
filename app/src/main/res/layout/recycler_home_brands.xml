@@ -4,19 +4,20 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_main"
-    android:background="@color/brand_background"
+    android:background="@color/white"
     android:foreground="?attr/selectableItemBackground">
 
     <RelativeLayout
         android:id="@+id/layout"
         android:paddingVertical="30dp"
-        android:paddingHorizontal="20dp"
+        android:paddingHorizontal="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     <RelativeLayout
         android:id="@+id/imageLayout"
         android:layout_width="wrap_content"
         android:layout_height="75dp"
+        android:gravity="center"
         android:layout_centerHorizontal="true">
         <ImageView
             android:id="@+id/imageView"
