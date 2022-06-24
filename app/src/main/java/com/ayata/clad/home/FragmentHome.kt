@@ -640,7 +640,7 @@ class FragmentHome : Fragment(), AdapterPopularMonth.OnItemClickListener,
                 brandSlug = data.brand.slug,
                 childCategory = data.category,
                 mainTitle = data.title,
-                productId = data.product.productId
+                productId = data.product?.productId
             )
         } ?: run { Toast.makeText(requireContext(), "null data", Toast.LENGTH_SHORT).show() }
 
