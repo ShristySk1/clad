@@ -1,6 +1,7 @@
 package com.ayata.clad.data.network
 
 import android.content.Context
+import com.ayata.clad.BuildConfig
 import com.ayata.clad.data.network.interceptor.NetworkConnectionInterceptor
 import com.ayata.clad.product.qa.response.ResponseQA
 import com.ayata.clad.profile.address.response.ShippingAddressResponse
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit
 interface ApiService {
 
     companion object {
-        private const val baseUrl = "https://clad.ayata.com.np/api/v1/"
+        private const val baseUrl = BuildConfig.BASE_URL
         private val httpLoggingInterceptor = run {
             val httpLoggingInterceptor = HttpLoggingInterceptor()
             httpLoggingInterceptor.apply {
